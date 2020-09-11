@@ -7,7 +7,7 @@ This GitHub project is still experimental and, at this stage, aims to build a nu
 4. Python
 
 ## `mlr3`
-Working code is already available. The script that runs the whole process (from data loading and prep to model benchmarking and results evaluation) is `mlr3_run_pipeline.R` and consists of four lines of code. Run each line of this code individually to familiarize yourselves with the process. 
+Working code is already available (the data is [here](https://github.com/ChrisBeeley/naturallanguageprocessing/blob/master/cleanData.Rdata)). The script that runs the whole process (from data loading and prep to model benchmarking and results evaluation) is `mlr3_run_pipeline.R` and consists of four lines of code. Run each line of this code individually to familiarize yourselves with the process. 
 
 As a starter, the answers to the prompts in `mlr3_prepare_test_and_training_tasks.R` should be as follows:
 1. pipeline_data
