@@ -16,11 +16,3 @@ source('mlr3_data_clean_and_prepare.R')
 source('mlr3_prepare_test_and_training_tasks.R')
 
 source('mlr3_pipeline_optimal_defaults.R')
-
-source('mlr3_save_model.R')
-
-source('mlr3_testing_pipeline_on_new_data.R')
-
-source('mlr3_interpret_model_with_dalex.R')
-
-

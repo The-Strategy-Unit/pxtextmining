@@ -1,7 +1,7 @@
 fun <- function() {
   task_id <- readline(
     "Please provide a name for the mlr3 task.
-    E.g. if using KS1 data, the task could be called 'ks1'"
+    E.g. if using NHS patient feedback data, the task could be called 'nhspf'"
   )
   task_id <- as.character(task_id)
   return(task_id)
