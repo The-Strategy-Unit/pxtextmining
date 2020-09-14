@@ -8,13 +8,24 @@
 # Probst et al. (2009). http://jmlr.csail.mit.edu/papers/volume20/18-444/18-444.pdf
 ####################################################################################
 
+future::plan("multiprocess")
+
 ####################################################################################
 # We will be using various learners (incl. XGBoost and Random Forest) throughout with different hyperparameter settings
 # Learners are defined below in alphabetical order
 ####################################################################################
 cat('Setting up learners.\n')
 
-# Define Random Forest learner with the optimal hyperparameters of Probst et al. for the Brier score (Table 9 in their study)
+# Generalized Linear Model with Elastic Net
+glmnet_brier <- lrn("classif.glmnet", predict_type = "prob")
+glmnet_brier$param_set$values <- list(
+  alpha = 0.997,
+  lambda = 0.004
+)
+
+nb_learner <- lrn("classif.naive_bayes", predict_type = "prob")
+
+# Random Forest
 rf_brier <- lrn("classif.ranger", predict_type = "prob")
 rf_brier$param_set$values <- list(
   num.trees = 198,
@@ -23,6 +34,16 @@ rf_brier$param_set$values <- list(
   mtry = round(0.666 * (task$ncol - 1)), # NOTE: if feature selection is performed, user must change this manually to reflect the smaller number of features in the new task
   respect.unordered.factors = 'ignore',
   min.node.size = 1
+)
+
+# Support Vector Machines
+svm_brier <- lrn("classif.svm", predict_type = "prob")
+svm_brier$param_set$values <- list(
+  kernel = 'radial',
+  cost = 950.787,
+  gamma = 0.005,
+  #degree = 3, # This is irrelevant when kernel isn't polynomial
+  type = 'C-classification'
 )
 
 # Define XGBoost learner with the optimal hyperparameters of Probst et al. for the Brier score
@@ -42,8 +63,11 @@ xgb_brier$param_set$values <- list(
 )
 
 learners <- list(
+  #glmnet_brier,
+  nb_learner,
   rf_brier,
-  xgb_brier
+  svm_brier#,
+  #xgb_brier
 )
 names(learners) <- sapply(learners, function(x) x$id)
 
@@ -62,13 +86,23 @@ po_date <- po("datefeatures",
 
 po_text <- po(
   "textvectorizer", 
-  param_vals = list(stopwords_language = "en"),
+  param_vals = list(
+    stopwords_language = "en",
+    scheme_df = 'inverse',
+    remove_punct = TRUE,
+    remove_symbols = TRUE,
+    remove_numbers = TRUE
+  ),
   affect_columns = selector_name('improve')
 )
 
 po_char_to_factor <- po(
   'colapply', 
-  affect_columns = selector_type(c("character")), 
+  affect_columns = 
+    selector_union(
+      selector_type(c("character")),
+      selector_grep('date.', fixed = TRUE)
+    ), 
   applicator = as.factor
 )
 
@@ -123,7 +157,7 @@ ps_table <- as.data.table(pipe$param_set)
 View(ps_table[, 1:4])
 
 ps_text <- ParamSet$new(list(
-  ParamInt$new('textvectorizer.n', lower = 2, upper = 5))
+  ParamInt$new('textvectorizer.n', lower = 2, upper = 3))
 )
 
 param_set <- ParamSetCollection$new(list(
