@@ -1,10 +1,14 @@
 library(tidyverse)
 library(janitor)
 library(ruimtehol)
+library(ggwordcloud)
+library(M3C)
 
 load('cleanData.RData')
 
-text_data <- trustData %>%
+# Data preprocessing
+# 1. Clean names and remove NAs in table
+data_text <- trustData %>%
   clean_names %>%
   left_join(
     select(categoriesTable, Number, Super), 
@@ -15,42 +19,98 @@ text_data <- trustData %>%
   filter_all(~ !is.na(.)) %>%
   as_tibble
 
-train_id <- text_data %>%
+# 2. Text data in StarSpace-friendly format
+data_text$improve <- strsplit(data_text$improve, "\\W")
+data_text$improve <- 
+  map_chr(
+    data_text$improve, 
+    ~ paste(setdiff(.x, ""), collapse = " ")
+  )
+data_text$improve <- tolower(data_text$improve)
+data_text$super <- strsplit(as.character(data_text$super), split = ",")
+data_text$super <- map(data_text$super, ~ gsub(" ", "-", .x))
+
+train_id <- data_text %>%
   rownames_to_column %>%
-  slice_sample(prop = 2 / 3) %>%
+  slice_sample(prop = 0.9) %>%
   pull(rowname) %>%
   as.numeric
 
-train_data <- text_data[train_id, ]
-test_data <- text_data[-train_id, ]
+data_train <- data_text[train_id, ]
+data_test <- data_text[-train_id, ]
 
-train_data$x <- strsplit(train_data$improve, "\\W")
-train_data$x <- sapply(train_data$x, FUN = function(x) paste(setdiff(x, ""), collapse = " "))
-train_data$x <- tolower(train_data$x)
-train_data$y <- strsplit(as.character(train_data$super), split = ",")
-train_data$y <- lapply(train_data$y, FUN=function(x) gsub(" ", "-", x))
+model <- embed_tagspace(x = data_train$improve, y = data_train$super,
+                        early_stopping = 0.8,
+                        validationPatience = 10,
+                        dim = 100,
+                        lr = 0.01, 
+                        epoch = 60, 
+                        loss = "softmax", 
+                        adagrad = TRUE, 
+                        similarity = "cosine", 
+                        negSearchLimit = 50,
+                        ngrams = 5, 
+                        minCount = 5)
 
-model <- embed_tagspace(x = train_data$x, y = train_data$y,
-  dim = 50, 
-  lr = 0.01, epoch = 40, loss = "softmax", adagrad = TRUE, 
-  similarity = "cosine", negSearchLimit = 50,
-  ngrams = 2, minCount = 2)
+plot(model)
 
-plot(model)                     
+cat("Don't be surprised if model is pretty awful. This is a very early, exploratory stage.")
 
-text <- test_data$improve
-pr <- predict(model, text, k = 3)
+# Dictionary
+dict <- starspace_dictionary(model)
+#str(dict)
 
-acc <- pr %>%
-  lapply(
-    function(x) {
-      x$prediction %>%
-        select(label, label_starspace) %>%
-        slice(1) %>%
-        mutate_at('label_starspace', ~ sub('__label__', '', .))
+## Get embeddings of the dictionary of words as well as the categories
+embedding_words  <- as.matrix(model, type = "words")
+embedding_labels <- as.matrix(model, type = "label")
+
+## Find closest labels / predict
+embedding_combination <- 
+  starspace_embedding(
+    model, 
+    data_test$improve, 
+    type = "document"
+  )
+
+pr <- predict(model, data_test$improve) %>%
+  map_dfr(~ {
+    .x$prediction %>%
+      slice(1) %>%
+      select(label)
+  }) %>% 
+  bind_cols(select(data_test, super)) %>%
+  mutate(
+    super = as.character(super),
+    same = label == super
+  )
+
+pr_embeddings <- predict(model, data_test$improve, type = 'embedding') %>%
+  as_tibble(.name_repair = 'universal') %>%
+  rename_all(~ paste0('emb_dim_', sub('...', '', .)))
+
+# Assess on test data
+cat(paste0('Accuracy is ', round(sum(pr$same) / nrow(pr) * 100), '%'))
+
+tsne(t(distinct(pr_embeddings)), perplex = 15, 
+  labels = as.factor(pr$label[!duplicated(pr_embeddings)]))
+cat(
+  "Clusters in T-SNE plot slightly distinct from each other\n
+We need much better than that, but at least we can see some elementary structure."
+)
+
+
+# Word clouds
+rownames(embedding_labels) %>%
+  map(
+    ~ {
+      starspace_knn(model, .x, k = 11)$prediction %>%
+        slice(-1) %>%
+        select(-rank) %>%
+        ggplot(aes(label = label, size = similarity, color = similarity)) + 
+        geom_text_wordcloud_area() +
+        scale_size_area(max_size = 16) +
+        theme_minimal() +
+        scale_color_gradient(low = "orange", high = "blue") + 
+        ggtitle(sub('__label__', '', .x))
     }
-  ) %>%
-  bind_rows %>%
-  mutate(same = label == label_starspace)
-
-sum(acc$same) / nrow(acc)
+  )

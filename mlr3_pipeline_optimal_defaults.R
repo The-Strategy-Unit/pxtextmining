@@ -91,7 +91,9 @@ po_text <- po(
     scheme_df = 'inverse',
     remove_punct = TRUE,
     remove_symbols = TRUE,
-    remove_numbers = TRUE
+    remove_numbers = TRUE,
+    termfreq_type = 'prop',
+    min_termfreq = 0.90 # Keep only words occurring frequently (top 90%)
   ),
   affect_columns = selector_name('improve')
 )
