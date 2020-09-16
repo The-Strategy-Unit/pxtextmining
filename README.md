@@ -6,7 +6,7 @@ This GitHub project is _still experimental_ and, at this stage, aims to build a 
 3. Some other relevant package that is available in R (e.g. a Keras package)
 4. Python
 
-The data is [here](https://github.com/ChrisBeeley/naturallanguageprocessing/blob/master/cleanData.Rdata) and that's where it will stay until GitHub stops crashing when I try to upload the data to this project!
+The data is [here](https://github.com/ChrisBeeley/naturallanguageprocessing/blob/master/cleanData.Rdata) and that's where it will stay until GitHub stops crashing when I try to upload them to this project!
 
 At this experimental stage, don't be surprised if the chunks of the code contain errors, are cryptic or don't work at all, or if the models don't perform _that_ great. Consider this repo as an interface for sharing work with my colleagues, until we make some big announcement along the lines "World, look what a great pipeline we've built!".
 
