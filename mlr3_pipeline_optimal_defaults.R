@@ -14,7 +14,7 @@ future::plan("multiprocess")
 # We will be using various learners (incl. XGBoost and Random Forest) throughout with different hyperparameter settings
 # Learners are defined below in alphabetical order
 ####################################################################################
-cat('Setting up learners.\n')
+message('Setting up learners.\n')
 
 # Generalized Linear Model with Elastic Net
 glmnet_brier <- lrn("classif.glmnet", predict_type = "prob")
@@ -63,11 +63,11 @@ xgb_brier$param_set$values <- list(
 )
 
 learners <- list(
-  #glmnet_brier,
-  nb_learner,
-  rf_brier,
-  svm_brier#,
-  #xgb_brier
+  #glmnet_brier, # Having problems with it inside the pipeline. GLM NET uses Elastic Net to perform feature selection during training. It looks like the pipeline gets confused when testing on the k-th CV fold, as the training and test datasets have different features
+  nb_learner, # Naive Bayes can handle datasets with high dimensionality
+  rf_brier#, # Being a tree, I'm guessing it can also handle the high-dimensionality nature of text data?
+  #svm_brier#,
+  #xgb_brier # Can be slow with the defaults of Probst et al. It may be the learning rate in combination with the large number of trees?
 )
 names(learners) <- sapply(learners, function(x) x$id)
 
@@ -91,9 +91,7 @@ po_text <- po(
     scheme_df = 'inverse',
     remove_punct = TRUE,
     remove_symbols = TRUE,
-    remove_numbers = TRUE,
-    termfreq_type = 'prop',
-    min_termfreq = 0.90 # Keep only words occurring frequently (top 90%)
+    remove_numbers = TRUE
   ),
   affect_columns = selector_name('improve')
 )
@@ -124,7 +122,7 @@ feature_engineering <-
 # Create pipeline as a graph. This way, pipeline can be plotted. Pipeline can then be converted into a learner with GraphLearner$new(pipeline)
 # Pipeline is a collection of pipe operators and learners
 ####################################################################################
-cat('Perparing pipeline, parameter sets and resampling strategy.\n')
+message('Perparing pipeline, parameter sets and resampling strategy.\n')
 
 # Our pipeline
 graph <- 
@@ -186,7 +184,7 @@ instance <- TuningInstanceSingleCrit$new(
 tuner <- TunerRandomSearch$new() # One of many ways of searching the (hyper)parameter space. Type ?Tuner so see all of them
 
 # Tune pipe learner to find best-performing branch
-cat('Tuning pipeline.\n')
+message('Tuning pipeline.\n')
 tuner$optimize(instance)
 
 # Take a look at the results
@@ -243,15 +241,15 @@ tryCatch(
 # OPTIONAL:
 # 6. Calculate feature importance and remove irrelevant features, e.g. predictors contributing less than 5% to an XGBoost model
 # 7. Re-train model on whole dataset (train + test)
-cat('Setting optimal tuning in pipeline.\n')
+message('Setting optimal tuning in pipeline.\n')
 pipe$param_set$values <- instance$result_learner_param_vals # 1. Set optimal (hyper)parameter values
 
-cat('Training pipeline on training dataset.\n')
+message('Training pipeline on training dataset.\n')
 pipe$train(task_train) # 2. Train learner
 
 #pipe$predict(task_train)$confusion # 3. Overly optimistic on training data
 
-cat('Assessing performance on test dataset.\n')
+message('Assessing performance on test dataset.\n')
 pred <- pipe$predict(task_test)
 
 conf_mat_test <- pred$confusion %>% # 4. How is model performing on unseen data?
@@ -276,7 +274,7 @@ pred %>%
   pr_curve(truth, starts_with('prob.')) %>%
   autoplot
 
-cat('Training pipeline on whole dataset.\n')
+message('Training pipeline on whole dataset.\n')
 pipe$train(task) # 5. Train on whole dataset
 
 # Step 6
