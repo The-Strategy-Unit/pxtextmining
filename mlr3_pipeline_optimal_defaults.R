@@ -63,9 +63,9 @@ xgb_brier$param_set$values <- list(
 )
 
 learners <- list(
-  #glmnet_brier, # Having problems with it inside the pipeline. GLM NET uses Elastic Net to perform feature selection during training. It looks like the pipeline gets confused when testing on the k-th CV fold, as the training and test datasets have different features
-  nb_learner, # Naive Bayes can handle datasets with high dimensionality
-  rf_brier#, # Being a tree, I'm guessing it can also handle the high-dimensionality nature of text data?
+  glmnet_brier#, # Having problems with it inside the pipeline. GLM NET uses Elastic Net to perform feature selection during training. It looks like the pipeline gets confused when testing on the k-th CV fold, as the training and test datasets have different features
+  #nb_learner, # Naive Bayes can handle datasets with high dimensionality
+  #rf_brier#, # Being a tree, I'm guessing it can also handle the high-dimensionality nature of text data?
   #svm_brier#,
   #xgb_brier # Can be slow with the defaults of Probst et al. It may be the learning rate in combination with the large number of trees?
 )
@@ -144,13 +144,20 @@ source('mlr3_prompt_resampling_strategy.R')
 source('mlr3_prompt_cv_folds.R')
 
 if (resampling_strategy == "repeated_cv") {
-  cv_reps <- cv_folds
-  cv <- rsmp("repeated_cv", repeats = cv_reps, folds = cv_folds) # Repeats and folds should be set to 5 (5 x 5 runs) or 10 (10 x 10 runs)
+  cv_reps <- cv_folds_or_holdout_sample_size
+  resampling_strategy <- rsmp("repeated_cv", 
+    repeats = cv_reps, folds = cv_folds_or_holdout_sample_size) # Repeats and folds should be set to 5 (5 x 5 runs) or 10 (10 x 10 runs)
+  resampling_strategy$instantiate(task_train)
 } else if (resampling_strategy == "cv") {
   cv_reps <- 1 # Need that for later
-  cv <- rsmp("cv", folds = cv_folds) # Repeats and folds should be set to 5 (5 x 5 runs) or 10 (10 x 10 runs)
+  resampling_strategy <- rsmp("cv", folds = cv_folds_or_holdout_sample_size) # Repeats and folds should be set to 5 (5 x 5 runs) or 10 (10 x 10 runs)
+  resampling_strategy$instantiate(task_train)
+} else if (resampling_strategy == "holdout") {
+  resampling_strategy <- 
+    rsmp("holdout", ratio = cv_folds_or_holdout_sample_size)
+  resampling_strategy$instantiate(task_train)
 }
-cv$instantiate(task_train)
+
 
 # Parameter set of the pipeline
 ps_table <- as.data.table(pipe$param_set)
@@ -176,7 +183,7 @@ source('mlr3_prompt_n_evaluations.R')
 instance <- TuningInstanceSingleCrit$new(
   task = task_train,
   learner = pipe,
-  resampling = cv,
+  resampling = resampling_strategy,
   measure = measure_classif,
   search_space = param_set,
   terminator = trm("evals", n_evals = n_evaluations), 
@@ -257,6 +264,11 @@ conf_mat_test <- pred$confusion %>% # 4. How is model performing on unseen data?
   as.data.frame %>%
   rename_all(.funs = ~ paste0(., '_truth'))
 View(conf_mat_test, 'Confusion matrix on test data')
+
+actual_class <- pred$truth
+predicted_class <- pred$response
+tab_class <- table(actual_class, predicted_class)
+caret::confusionMatrix(tab_class, mode = "everything")
 
 as.data.table(pred) %>% # 4. Also take a quick glance at the predicted probabilities
   arrange(truth, response) %>%

@@ -6,6 +6,6 @@ fun <- function() {
 dataset <- if(interactive()) fun()
 
 while (!is.data.frame(dataset)) {
-  cat('Data must be in a data frame, tibble or data table!\n')
+  message('Data must be in a data frame, tibble or data table!\n')
   dataset <- if(interactive()) fun()
 }

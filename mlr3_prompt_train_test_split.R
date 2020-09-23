@@ -1,4 +1,4 @@
-cat(
+message(
   "The dataset will be split into training and test sets.
 The training set will be used to tune the pipeline.
 The test set will be used to assess the model's performance on unseen data.
@@ -18,6 +18,6 @@ while (
   training_frac >= 1 | 
   training_frac <= 0
 ) {
-  cat('Invalid training set size value! Please provide a number greater than 0 and smaller than 1. \n')
+  message('Invalid training set size value! Please provide a number greater than 0 and smaller than 1. \n')
   training_frac <- if(interactive()) fun()
 }

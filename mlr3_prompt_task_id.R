@@ -12,7 +12,7 @@ while (
   grepl("'", task_id) | # If user provides a string, e.g. 'a' or "a", readline() will store it as "'a'" or '"a"' respectively.
   grepl('"', task_id)
 ) {
-  cat(
+  message(
     'Name must be an unquoted string!
 Have you accidentally placed the name inside quotes or supplied a numeric?\n')
   task_id <- if(interactive()) fun()

@@ -1,4 +1,4 @@
-cat(
+message(
   "Benchmarking of different learners will be done based on an appropriate\n
 performance measure. All available performance measures can be found in\n
 as.data.table(mlr_measures) (e.g. classif.bbrier, classif.sensitivity etc.).\n"
@@ -27,7 +27,7 @@ while (
   !(is_empty(unlist(as.data.table(mlr_measures)[measure_classif$id, 'task_properties'])) &
     'multiclass' %in% task$properties)
 ) {
-  cat('Invalid entry. Possible issues:\n
+  message('Invalid entry. Possible issues:\n
 1. Typo/spelling mistake.\n
 2. Measure provided is for regression. Remember this is a classification exercise!\n
 3. Measure provided is for binary classification while task is multiclass.\n'
