@@ -19,6 +19,7 @@ from optparse import OptionParser
 import sys
 from time import time
 import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
 
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
@@ -103,16 +104,29 @@ def benchmark(clf):
     print("train time: %0.3fs" % train_time)
 
     t0 = time()
-    pred = gs.predict(X_test)
+    pred_class = gs.predict(X_test)
     test_time = time() - t0
     print("test time:  %0.3fs" % test_time)
 
-    score = metrics.accuracy_score(y_test, pred)
-    print("accuracy:   %0.3f" % score)
+    score_accuracy = metrics.accuracy_score(y_test, pred_class)
+    print("accuracy:   %0.3f" % score_accuracy)
+
+    score_f1 = metrics.f1_score(y_test, pred_class, average='weighted')
+    print("f1:   %0.3f" % score_f1)
+
+    if hasattr(clf, 'predict_proba'):
+        pred_prob = gs.predict_proba(X_test)
+        score_roc = metrics.roc_auc_score(y_test, pred_prob,
+                                          average='weighted',
+                                          multi_class='ovr')
+    else:
+        score_roc = 0
+
+    print("ROC:   %0.3f" % score_roc)
 
     print()
     clf_descr = str(clf).split('(')[0]
-    return clf_descr, score, train_time, test_time
+    return clf_descr, score_accuracy, score_f1, score_roc, train_time, test_time
 
 
 results = []
@@ -122,31 +136,14 @@ for clf in learners:
 ##############################################################################
 # Add plots
 # ------------------------------------
-# The bar plot indicates the accuracy, training time (normalized) and test time
-# (normalized) of each classifier.
-indices = np.arange(len(results))
+# Bar plot with performance metrics, training time (normalized) and test time
+# (normalized) of each learner.
+df = DataFrame(results).transpose()
+df.columns = ['Learner', 'Accuracy', 'F1', 'ROC', 'Training time', 'Test time']
+df['Training time'] = df['Training time'] / max(df['Training time'])
+df['Test time'] = df['Training time'] / max(df['Test time'])
 
-results = [[x[i] for x in results] for i in range(4)]
-print(DataFrame(results))
-DataFrame(results).max(axis=1)
-
-clf_names, score, training_time, test_time = results
-training_time = np.array(training_time) / np.max(training_time)
-test_time = np.array(test_time) / np.max(test_time)
-
-plt.figure(figsize=(12, 8))
-plt.title("Score")
-plt.barh(indices, score, .2, label="score", color='navy')
-plt.barh(indices + .3, training_time, .2, label="training time",
-         color='c')
-plt.barh(indices + .6, test_time, .2, label="test time", color='darkorange')
-plt.yticks(())
-plt.legend(loc='best')
-plt.subplots_adjust(left=.25)
-plt.subplots_adjust(top=.95)
-plt.subplots_adjust(bottom=.05)
-
-for i, c in zip(indices, clf_names):
-    plt.text(-.3, i, c)
-
+cmap = ListedColormap(['#0343df', '#e50000', '#ffff14', '#929591', '#0343df'])
+ax = df.plot.bar(x='Learner', colormap=cmap)
+ax.set_xlabel(None)
 plt.show()
