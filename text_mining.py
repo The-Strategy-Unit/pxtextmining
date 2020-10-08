@@ -11,12 +11,9 @@ See example in https://scikit-learn.org/stable/auto_examples/text/plot_document_
 """
 
 
-import logging
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
-from optparse import OptionParser
-import sys
 from time import time
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
@@ -25,9 +22,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.feature_selection import SelectFromModel
+# from sklearn.feature_selection import SelectFromModel
 from sklearn.feature_selection import SelectKBest, chi2
-from sklearn.linear_model import LogisticRegression
+# from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import RidgeClassifier
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import SGDClassifier
@@ -37,10 +34,7 @@ from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import NearestCentroid
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.utils.extmath import density
 from sklearn import metrics
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import f1_score
 from sklearn.model_selection import GridSearchCV
 
 RandomForestClassifier().get_params()
@@ -92,12 +86,14 @@ def benchmark(clf):
     pipe = Pipeline([
         ('vect', CountVectorizer()),
         ('tfidf', TfidfTransformer()),
-        ('kbest', SelectKBest(chi2, k=10000)),
+        #  ('kbest', SelectKBest(chi2, k=10000)),
+        ('kbest', SelectKBest(chi2)),
         ('clf', clf)
     ])
-    param_grid = [
-        {'vect__ngram_range': [(1, 1), (2, 2)]}
-    ]
+    param_grid = {
+        'vect__ngram_range': ((1, 1), (2, 2), (1, 3)),
+        'kbest__k': (5000, 10000)
+    }
     gs = GridSearchCV(pipe, param_grid)
     gs.fit(X_train, y_train)
     train_time = time() - t0
@@ -138,7 +134,7 @@ for clf in learners:
 # ------------------------------------
 # Bar plot with performance metrics, training time (normalized) and test time
 # (normalized) of each learner.
-df = DataFrame(results).transpose()
+df = DataFrame(results)
 df.columns = ['Learner', 'Accuracy', 'F1', 'ROC', 'Training time', 'Test time']
 df['Training time'] = df['Training time'] / max(df['Training time'])
 df['Test time'] = df['Training time'] / max(df['Test time'])
