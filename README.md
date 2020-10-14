@@ -1,17 +1,40 @@
 # positive_about_change_text_mining
 
-This GitHub project is _still experimental_ and, at this stage, aims to build a number of different Machine Learning pipelines for text data. A few avenues that will be explored are the following:
-1. Benchmarking of different algorithms with R package [`mlr3`](https://github.com/mlr-org])
-2. Facebook's [StarSpace](https://github.com/facebookresearch/StarSpace) with R package [`ruimtehol`](https://github.com/bnosac/ruimtehol)
-3. [`Quanteda`'s](https://quanteda.io/index.html) implementation of multinomial Naive Bayes (https://tutorials.quanteda.io/machine-learning/nb/) 
-4. Some other relevant package that is available in R (e.g. a Keras package)
-4. Python!
+## Project description
+Nottinghamshire Healthcare NHS Foundation Trust hold  patient feedback that is currently manually labelled by our "coders" (i.e. the staff who read the feedback and decide what it is about). As we hold thousands of patient feedback records, we (the Data Science team) are running this project to aid the coders with a text classification model that will semi-automate the labelling process. Read more [here](https://involve.nottshc.nhs.uk/blog/new-nhs-england-funded-project-in-our-team-developing-text-mining-algorithms-for-patient-feedback-data/).
+
+This project will build and benchmark a number of text classification models using state-of-the-art Machine Learning (ML) packages in [`Python`](https://www.python.org/) and [`R`](https://www.r-project.org/). The final products will be the following:
+
+1. An interactive dashboard that will make the findings of complex ML models accessible to non-technical audiences.
+2. Open Source code that other NHS trusts will be able to use for analyzing their own patient feedback records.
+
+## Technical
+A few avenues are currently explored with `R` and `Python`:
+
+1. Python's [`scikit-learn`](https://scikit-learn.org/stable/index.html). At this point, the script benchmarks ML models able to efficiently handle large sparse matrices ("bag-of-words" approach). We intend to expand this to other approaches, e.g. [`Keras`](https://keras.io/)/[`BERT`](https://pypi.org/project/keras-bert/), [`spaCy`](https://spacy.io/), [`TextBlob`](https://textblob.readthedocs.io/en/dev/quickstart.html#words-inflection-and-lemmatization) etc.
+2. Benchmarking of different algorithms with R package [`mlr3`](https://github.com/mlr-org]).
+3. Facebook's [StarSpace](https://github.com/facebookresearch/StarSpace) with R package [`ruimtehol`](https://github.com/bnosac/ruimtehol).
+4. [`Quanteda`'s](https://quanteda.io/index.html) implementation of Multinomial Naive Bayes (https://tutorials.quanteda.io/machine-learning/nb/).
 
 The data is [here](https://github.com/ChrisBeeley/naturallanguageprocessing/blob/master/cleanData.Rdata) and that's where it will stay until GitHub stops crashing when I try to upload them to this project!
 
-At this experimental stage, don't be surprised if the chunks of the code contain errors, are cryptic or don't work at all, or if the models aren't appropriate or don't perform _that_ great. Consider this repo as an interface for sharing work with my colleagues, until we make some big announcement along the lines "World, look what a great pipeline we've built!".
+### Preliminary findings
+#### `R` is not a good option
+We soon concluded that building the ML pipelines in `R` would be incomplete and inefficient:
 
-## `mlr3` (R)
+1. **`mlr3`.** The text tokenizer pipe operator in `mlr3pipelines` is [slow](https://github.com/mlr-org/mlr3pipelines/issues/511) and the readily available models in `mlr3learners` and `mlr3extralearners` are very inefficient with sparse matrices.
+2. **`ruimtehol`.** The accuracy of the StarSpace model does not exceed 59% in both superviser and semi-supervised settings.
+3. **`Quanteda`.** The Multinomial Naive Bayes model in `quanteda.textmodels` is extremely fast. However, `Quanteda` does not (yet?) offer options for a fully automated pipeline that would deal with issues such as train-test data leakage etc.
+
+Therefore, the `R` scripts are, and will probably remain, experimental, so don't be surprised if the chunks of the code contain errors, are cryptic or don't work at all, or if the models aren't appropriate or don't perform _that_ great.
+
+Further details in the Appendix.
+
+### `Python` rules!
+People who have been using `Python` for a long time may be a little more cynical about it. For me, switching from `R` to `Python` for the first time was like talking to God. The learners are immensely more efficient and building pipelines with `scikit-learn` is pretty straightforward. Preliminary findings place accuracy between 65-75% on the training dataset, and at around 65% on the test dataset. This is not bad for a starter, although more actions will be taken to hopefully improve performance as much as possible.
+
+## Appendix
+### `mlr3` (R)
 The pipeline performs data pre-processing (e.g. one-hot encode dates, if a date column is used; tokenize text and get word frequencies; etc.) and then benchmarks a number of classification algorithms. Five algorithms were considered:
 
 | Model                                                 | Issues      | Verdict     |
@@ -39,8 +62,5 @@ The answers to the prompts in `mlr3_pipeline_optimal_defaults.R` should be as fo
 
 You can always change these values, but note that more CV folds and evaluations would mean more computation time and memory usage.
 
-### Preliminary findings
-
-
-## StarSpace `ruimtehol` (R)
+### StarSpace `ruimtehol` (R)
 As a starter, script `starspace.R` prepares the data in the appropriate format and builds a simple supervised model from which embeddings and other useful information (e.g. word clouds for each tag) can be extracted. The script also produces a rough model accuracy metric with the test data, as well as a T-SNE plot to visually assess how well the model performs on unseen data.
