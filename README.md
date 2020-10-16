@@ -30,7 +30,7 @@ Therefore, the `R` scripts are, and will probably remain, experimental, so don't
 
 Further details in the Appendix.
 
-### `Python` rules!
+#### `Python` rules!
 People who have been using `Python` for a long time may be a little more cynical about it. For me, switching from `R` to `Python` for the first time was like talking to God. The learners are immensely more efficient and building pipelines with `scikit-learn` is pretty straightforward. Preliminary findings place accuracy between 65-75% on the training dataset, and at around 65% on the test dataset. This is not bad for a starter, although more actions will be taken to hopefully improve performance as much as possible.
 
 ## Appendix
