@@ -1,5 +1,12 @@
 load('cleanData.RData')
 
+# Add "Couldn't be improved" class
+categoriesTable <- categoriesTable %>% 
+  bind_rows(
+    data.frame(Category = "General", Super = "Couldn't be improved", 
+      Number = 4444, type = "both")
+  )
+
 source('mlr3_prompt_random_stratified_subset.R')
 
 pipeline_data <- trustData %>%
@@ -22,3 +29,11 @@ pipeline_data <- trustData %>%
   slice_sample(prop = prop)
 
 names(pipeline_data)
+
+# Take a look at "Couldn't be improved" text. Worth keeping it in?
+pipeline_data %>% 
+  filter(
+    super == "Couldn't be improved",
+    !grepl('nothing', improve, ignore.case = TRUE)
+  ) %>%
+  View
