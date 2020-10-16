@@ -20,7 +20,7 @@ exec(open("./text_mining_load_and_prepare_data.py").read())
 # Define learners that can handle sparse matrices
 # ------------------------------------
 learners = [RidgeClassifier(),
-            LinearSVC(),
+            LinearSVC(max_iter=10000),
             SGDClassifier(),
             Perceptron(),
             PassiveAggressiveClassifier(),
@@ -32,7 +32,7 @@ learners = [RidgeClassifier(),
             RandomForestClassifier()
             ]
 
-#learners = [SGDClassifier(), MultinomialNB()] # Uncomment this for quick & dirty experimentation
+#learners = [LinearSVC(), MultinomialNB()] # Uncomment this for quick & dirty experimentation
 
 #############################################################################
 # NLTK-based function for lemmatizing. Will be passed in CountVectorizer()
@@ -76,7 +76,7 @@ class ClfSwitcher(BaseEstimator):
 # Bayes can't handle negative data. NOTE: FIND OUT IF IT IS METHODOLOGICALLY 
 # SOUND TO DO THIS!
 # Pipeline for numeric features
-numeric_features = ['comment_polarity', 'comment_subjectivity']
+numeric_features = ['comment_polarity']
 numeric_transformer = Pipeline(steps=[
     ('minmax', MinMaxScaler())])
 
@@ -115,13 +115,13 @@ for i in learners:
     aux['clf__estimator'] = [i]
     if i.__class__.__name__ == LinearSVC().__class__.__name__:
         aux['clf__estimator__class_weight'] = [None, 'balanced']
-        aux['clf__estimator__dual'] = [True, False]
+        #aux['clf__estimator__dual'] = [True, False] # https://stackoverflow.com/questions/52670012/convergencewarning-liblinear-failed-to-converge-increase-the-number-of-iterati
     if i.__class__.__name__ == BernoulliNB().__class__.__name__:
-        aux['clf__estimator__alpha'] = (0, 0.1, 0.5, 1)
+        aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
     if i.__class__.__name__ == ComplementNB().__class__.__name__:
-        aux['clf__estimator__alpha'] = (0, 0.1, 0.5, 1)
+        aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
     if i.__class__.__name__ == MultinomialNB().__class__.__name__:
-        aux['clf__estimator__alpha'] = (0, 0.1, 0.5, 1)
+        aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
     if i.__class__.__name__ == SGDClassifier().__class__.__name__:
         aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
     if i.__class__.__name__ == RandomForestClassifier().__class__.__name__:
