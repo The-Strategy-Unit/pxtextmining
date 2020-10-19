@@ -13,8 +13,8 @@ See example in https://scikit-learn.org/stable/auto_examples/text/plot_document_
 ##############################################################################
 # Load libraries and data
 # ------------------------------------
-exec(open("./text_mining_import_libraries.py").read())
-exec(open("./text_mining_load_and_prepare_data.py").read())
+#exec(open("./text_mining_import_libraries.py").read())
+#exec(open("./text_mining_load_and_prepare_data.py").read())
 
 #############################################################################
 # Define learners that can handle sparse matrices

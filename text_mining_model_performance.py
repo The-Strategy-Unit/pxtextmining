@@ -30,6 +30,8 @@ pred = gscv.best_estimator_.predict(X_test)
 # Evaluate on test dataset
 print('Model accuracy on the test set is %s percent' 
       % (int(gscv.best_estimator_.score(X_test, y_test) * 100)))
+print('Balanced accuracy on the test set is %s percent' 
+      % (int(balanced_accuracy_score(y_test, pred) * 100)))
 print('Matthews correlation on the test set is %s ' 
       % (round(matthews_corrcoef(y_test, pred), 2)))
 
