@@ -19,6 +19,17 @@ A few avenues are currently explored with `R` and `Python`:
 The data is [here](https://github.com/ChrisBeeley/naturallanguageprocessing/blob/master/cleanData.Rdata) and that's where it will stay until GitHub stops crashing when I try to upload them to this project!
 
 ### Preliminary findings
+
+#### `Python` pipelines
+The learners in `Python` are immensely more efficient than their `R` counterparts and building pipelines with `scikit-learn` is pretty straightforward. Moreover, `Python` offers a much wider range of options for text preprocessing and mining.
+
+##### A first pipeline
+For a starter, we built a simple pipeline with learners that can efficiently handle large sparse matrices ("bag-of-words" approach). The pipeline does some preprocessing for text tokenization, word frequencies etc. and benchmarks learners with a 5-fold cross-validation and an appropriate score for imbalanced datasets (Balanced Accuracy or Matthews Correlation Coefficient). Fitting the pipeline using Balanced Accuracy as the scorer, we find that the best model in terms of Balanced Accuracy is a Linear SVC classifier:
+
+![](p_compare_models_bar.png)
+
+The optimal (hyper)parameter values for the best mode as well as for all other learners, as well as other metrics (fit time, scores per cross-validation fold etc.) are in "tuning_results_first_pipeline.csv".
+
 #### `R` is not a good option
 We soon concluded that building the ML pipelines in `R` would be incomplete and inefficient:
 
@@ -29,9 +40,6 @@ We soon concluded that building the ML pipelines in `R` would be incomplete and 
 Therefore, the `R` scripts are, and will probably remain, experimental, so don't be surprised if the chunks of the code contain errors, are cryptic or don't work at all, or if the models aren't appropriate or don't perform _that_ great.
 
 Further details in the Appendix.
-
-#### `Python` rules!
-People who have been using `Python` for a long time may be a little more cynical about it. For me, switching from `R` to `Python` for the first time was like talking to God. The learners are immensely more efficient and building pipelines with `scikit-learn` is pretty straightforward. Preliminary findings place accuracy between 65-75% on the training dataset, and at around 65% on the test dataset. This is not bad for a starter, although more actions will be taken to hopefully improve performance as much as possible.
 
 ## Appendix
 ### `mlr3` (R)

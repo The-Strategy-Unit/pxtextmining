@@ -48,6 +48,11 @@ for i in tuning_results['param_clf__estimator']:
     tuned_learners.append(i.__class__.__name__)
 tuning_results['learner'] = tuned_learners
 
+# Save as CSV
+aux = tuning_results.sort_values(y_axis, ascending=False)
+#aux = aux.filter(regex='mean|learner')
+aux.to_csv('tuning_results.csv')
+
 #############################################################################
 # Plot results
 # ------------------------------------
@@ -71,10 +76,14 @@ aux = aux.sort_values([y_axis], ascending=False)
 print(aux)
 aux = aux.melt('learner')
 aux['variable'] = aux['variable'].str.replace('mean_test_', '')
+aux['learner'] = aux['learner'].str.replace('Classifier', '')
+
 p_compare_models_bar = sns.barplot(x='learner', y='value', hue='variable', 
                                data=aux)
+p_compare_models_bar.figure.set_size_inches(15, 12)
 p_compare_models_bar.set_xticklabels(p_compare_models_bar.get_xticklabels(), 
                                  rotation=90)
 plt.legend(bbox_to_anchor=(1.01, 1),borderaxespad=0)
 p_compare_models_bar.set(xlabel=None, ylabel=None,
                      title='Learner performance ordered by ' + refit)
+p_compare_models_bar.figure.savefig("p_compare_models_bar.png")
