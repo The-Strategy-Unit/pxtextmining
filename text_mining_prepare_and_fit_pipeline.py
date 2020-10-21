@@ -134,15 +134,21 @@ for i in learners:
 # Set a scoring measure (other than accuracy) and train several 
 # classification models.
 
-# Set Matthews Correlation Coefficient as the scoring measure. Looks promising
+# Matthews Correlation Coefficient as the scoring measure looks promising
 # https://towardsdatascience.com/the-best-classification-metric-youve-never-heard-of-the-matthews-correlation-coefficient-3bf50a2f3e9a
 # https://towardsdatascience.com/matthews-correlation-coefficient-when-to-use-it-and-when-to-avoid-it-310b3c923f7e
 # https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0177678&type=printable
-matthews_corrcoef_scorer = make_scorer(matthews_corrcoef)
+# Balanced accuracy too
+
+scoring = {'Accuracy': make_scorer(accuracy_score), 
+           'Balanced accuracy': make_scorer(balanced_accuracy_score),
+           'Matthews correlation coefficient': make_scorer(matthews_corrcoef)}
 
 # Grid search with 5-fold cross-validation
+refit='Balanced accuracy'
 gscv = GridSearchCV(pipe, param_grid, n_jobs=-1, return_train_score=False, 
-                    verbose=3, scoring=matthews_corrcoef_scorer)
+                    cv=5, verbose=3, 
+                    scoring=scoring, refit=refit)
 gscv.fit(X_train, y_train)
 
 #############################################################################

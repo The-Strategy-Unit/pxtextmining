@@ -48,10 +48,33 @@ for i in tuning_results['param_clf__estimator']:
     tuned_learners.append(i.__class__.__name__)
 tuning_results['learner'] = tuned_learners
 
+#############################################################################
+# Plot results
+# ------------------------------------
+# Boxplots of average (over all CV folds) learner performance for main scoring 
+# measure (par 'refit' in grid search) for each (hyper)parameter combination.
+# Par plots of average (over all CV folds) learner performance for different 
+# scoring measures for the best (hyper)parameter combination for each learner.
 print('Plotting performance of the different models')
-p_compare_models = sns.boxplot(x="learner", y="mean_test_score",
+# Boxplots
+y_axis = 'mean_test_' + refit
+p_compare_models_box = sns.boxplot(x="learner", y=y_axis,
             data=tuning_results)
-p_compare_models.set_xticklabels(p_compare_models.get_xticklabels(), 
+p_compare_models_box.set_xticklabels(p_compare_models_box.get_xticklabels(), 
                                  rotation=90)
-p_compare_models.set(xlabel=None, ylabel=str(gscv.scorer_),
+p_compare_models_box.set(xlabel=None, ylabel=refit,
                      title='Mean test score for each (hyper)parameter combination')
+
+# Bar plots
+aux = tuning_results.filter(regex='mean_test|learner').groupby(['learner']).max().reset_index()
+aux = aux.sort_values([y_axis], ascending=False)
+print(aux)
+aux = aux.melt('learner')
+aux['variable'] = aux['variable'].str.replace('mean_test_', '')
+p_compare_models_bar = sns.barplot(x='learner', y='value', hue='variable', 
+                               data=aux)
+p_compare_models_bar.set_xticklabels(p_compare_models_bar.get_xticklabels(), 
+                                 rotation=90)
+plt.legend(bbox_to_anchor=(1.01, 1),borderaxespad=0)
+p_compare_models_bar.set(xlabel=None, ylabel=None,
+                     title='Learner performance ordered by ' + refit)

@@ -43,7 +43,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import NearestCentroid
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
-from sklearn.metrics import matthews_corrcoef, make_scorer, balanced_accuracy_score
+from sklearn.metrics import matthews_corrcoef, make_scorer, accuracy_score, balanced_accuracy_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.inspection import permutation_importance
 
