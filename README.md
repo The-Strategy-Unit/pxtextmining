@@ -28,7 +28,7 @@ For a starter, we built a simple pipeline with learners that can efficiently han
 
 ![](p_compare_models_bar.png)
 
-The optimal (hyper)parameter values for the best mode as well as for all other learners, as well as other metrics (fit time, scores per cross-validation fold etc.) are in "tuning_results_first_pipeline.csv".
+The optimal (hyper)parameter values for the best model and rest of learners, as well as other metrics (fit time, scores per cross-validation fold etc.) are in [tuning_results_first_pipeline.csv](https://github.com/CDU-data-science-team/positive_about_change_text_mining/blob/master/tuning_results_first_pipeline.csv).
 
 #### `R` is not a good option
 We soon concluded that building the ML pipelines in `R` would be incomplete and inefficient:
