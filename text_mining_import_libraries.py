@@ -43,9 +43,12 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import NearestCentroid
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
-from sklearn.metrics import matthews_corrcoef, make_scorer, accuracy_score, balanced_accuracy_score
+from sklearn.metrics import matthews_corrcoef, make_scorer, accuracy_score
+from sklearn.metrics import balanced_accuracy_score, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 from sklearn.inspection import permutation_importance
+from sklearn.base import BaseEstimator, TransformerMixin
+import xgboost as xgb
 
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer

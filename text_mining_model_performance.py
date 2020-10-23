@@ -9,7 +9,7 @@ Created on Fri Oct 16 08:24:05 2020
 gscv = joblib.load('finalized_model_4444.sav')
 
 # Extract best estimator and replace ClfSwitcher() with it in the pipeline
-aux = DataFrame(gscv.best_params_.items())
+aux = pd.DataFrame(gscv.best_params_.items())
 best_estimator = aux[aux[0] == 'clf__estimator'][1][0]
 estimator_position = len(gscv.best_estimator_) - 1
 gscv.best_estimator_.steps.pop(estimator_position)
@@ -20,8 +20,9 @@ print('The best estimator is %s' % (gscv.best_estimator_[estimator_position]))
 print('The best parameters are:')
 for param, value in gscv.best_params_.items():
     print('{}: {}'.format(param, value))
-print('The best score from the cross-validation for \n the supplied scorer ("%s") is %s' 
-      % (gscv.scorer_, round(gscv.best_score_, 2)))
+print('The best score from the cross-validation for \n the supplied scorer (' +
+      refit +  ') is %s' 
+      % (round(gscv.best_score_, 2)))
 
 # Fit estimator with training dataset
 gscv.best_estimator_.fit(X_train, y_train)
@@ -32,16 +33,18 @@ print('Model accuracy on the test set is %s percent'
       % (int(gscv.best_estimator_.score(X_test, y_test) * 100)))
 print('Balanced accuracy on the test set is %s percent' 
       % (int(balanced_accuracy_score(y_test, pred) * 100)))
+print('Class balance accuracy on the test set is %s percent' 
+      % (int(class_balance_accuracy_score(y_test, pred) * 100)))
 print('Matthews correlation on the test set is %s ' 
       % (round(matthews_corrcoef(y_test, pred), 2)))
 
 cm = metrics.confusion_matrix(y_test, pred)
-print('Confusion matrix:\n %s' % DataFrame(cm))
+print('Confusion matrix:\n %s' % pd.DataFrame(cm))
 metrics.plot_confusion_matrix(gscv.best_estimator_, X_test, y_test)
 #ConfusionMatrixDisplay(cm).plot()
 
 # Plot all tuning results for all learners to be able to compare performances
-tuning_results = DataFrame(gscv.cv_results_)
+tuning_results = pd.DataFrame(gscv.cv_results_)
 print(tuning_results.columns)
 tuned_learners = []
 for i in tuning_results['param_clf__estimator']:
@@ -51,7 +54,7 @@ tuning_results['learner'] = tuned_learners
 # Save as CSV
 aux = tuning_results.sort_values(y_axis, ascending=False)
 #aux = aux.filter(regex='mean|learner')
-aux.to_csv('tuning_results.csv')
+aux.to_csv('tuning_results_' + refit.lower().replace(' ', '_') + '.csv')
 
 #############################################################################
 # Plot results
@@ -86,4 +89,5 @@ p_compare_models_bar.set_xticklabels(p_compare_models_bar.get_xticklabels(),
 plt.legend(bbox_to_anchor=(1.01, 1),borderaxespad=0)
 p_compare_models_bar.set(xlabel=None, ylabel=None,
                      title='Learner performance ordered by ' + refit)
-p_compare_models_bar.figure.savefig("p_compare_models_bar.png")
+filename = "p_compare_models_bar_" + refit.lower().replace(' ', '_') + ".png"
+p_compare_models_bar.figure.savefig(filename)

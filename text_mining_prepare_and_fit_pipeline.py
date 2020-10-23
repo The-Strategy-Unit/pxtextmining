@@ -10,6 +10,9 @@ See example in https://scikit-learn.org/stable/auto_examples/text/plot_document_
 
 """
 
+# https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html
+# https://scikit-learn.org/stable/modules/feature_extraction.html#feature-hashing
+
 ##############################################################################
 # Load libraries and data
 # ------------------------------------
@@ -19,7 +22,8 @@ See example in https://scikit-learn.org/stable/auto_examples/text/plot_document_
 #############################################################################
 # Define learners that can handle sparse matrices
 # ------------------------------------
-learners = [RidgeClassifier(),
+learners = [#XGBClassifier(),
+            RidgeClassifier(),
             LinearSVC(max_iter=10000),
             SGDClassifier(),
             Perceptron(),
@@ -29,7 +33,7 @@ learners = [RidgeClassifier(),
             MultinomialNB(),
             KNeighborsClassifier(),
             NearestCentroid(),
-            RandomForestClassifier()
+            #RandomForestClassifier()
             ]
 
 #learners = [LinearSVC(), MultinomialNB()] # Uncomment this for quick & dirty experimentation
@@ -67,7 +71,6 @@ class ClfSwitcher(BaseEstimator):
     def score(self, X, y):
         return self.estimator.score(X, y)
 
-
 #############################################################################
 # Prepare pipeline
 # ------------------------------------
@@ -103,7 +106,7 @@ param_grid_preproc = {
     'preprocessor__text__tfidf__ngram_range': ((1, 1), (2, 2), (1, 3)),
     'preprocessor__text__tfidf__tokenizer': [LemmaTokenizer(), None],
     'preprocessor__text__tfidf__use_idf': [True, False],
-    'kbest__k': (5000, 10000),
+    'kbest__k': (5000, 'all'),
     #'kbest__k': (np.array([15, 25, 50]) * X_train.shape[0] / 100).astype(int),
     #'rfecv__estimator': [DecisionTreeClassifier()],
     #'rfecv__step': (0.1, 0.25, 0.5) # Has a scoring argument too. Investigate
@@ -127,6 +130,16 @@ for i in learners:
     if i.__class__.__name__ == RandomForestClassifier().__class__.__name__:
         aux['clf__estimator__max_features'] = ('sqrt', 0.666)
     param_grid.append(aux)
+    # Use TfidfVectorizer() as CountVectorizer() also, to determine if raw
+    # counts instead of frequencies improves perfomance. This requires 
+    # use_idf=False and norm=None. We want to ensure that norm=None is only
+    # will not be combined with use_idf=True inside the grid search, so we
+    # create a separate parameter set to prevent this from happening.
+    aux1 = aux.copy()
+    aux1['preprocessor__text__tfidf__use_idf'] = [False]
+    aux1['preprocessor__text__tfidf__norm'] = [None]
+    param_grid.append(aux1)
+    
 
 #############################################################################
 # Benchmark classifiers
@@ -134,19 +147,44 @@ for i in learners:
 # Set a scoring measure (other than accuracy) and train several 
 # classification models.
 
-# Matthews Correlation Coefficient as the scoring measure looks promising
+# Matthews Correlation Coefficient as the scoring measure looks promising:
 # https://towardsdatascience.com/the-best-classification-metric-youve-never-heard-of-the-matthews-correlation-coefficient-3bf50a2f3e9a
 # https://towardsdatascience.com/matthews-correlation-coefficient-when-to-use-it-and-when-to-avoid-it-310b3c923f7e
 # https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0177678&type=printable
 # Balanced accuracy too
+# Class Balance Accuracy as well:
+# https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&context=etd
 
+# Create Class Balance Accuracy scorer (p. 40 in PDF mentioned above)
+def class_balance_accuracy_score(y_true, y_pred):
+    cm = confusion_matrix(y_true, y_pred)
+    c_i_dot = np.sum(cm, axis=1)
+    c_dot_i = np.sum(cm, axis=0)
+    cba = []
+    for i in range(len(c_dot_i)):
+        cba.append(cm[i][i] / max(c_i_dot[i], c_dot_i[i]))
+    cba = sum(cba) / (i + 1)
+    return cba
+
+# Make sure that dictionary keys for '_score' metrics don't have the word
+# 'score' oin them, e.g. key for accuracy_score() should be 'Accuracy', 
+# not 'Accuracy Score'. Also, make sure each word is capitalized.
 scoring = {'Accuracy': make_scorer(accuracy_score), 
-           'Balanced accuracy': make_scorer(balanced_accuracy_score),
-           'Matthews correlation coefficient': make_scorer(matthews_corrcoef)}
+           'Balanced Accuracy': make_scorer(balanced_accuracy_score),
+           'Matthews Correlation Coefficient': make_scorer(matthews_corrcoef),
+           'Class Balance Accuracy': make_scorer(class_balance_accuracy_score)}
 
 # Grid search with 5-fold cross-validation
-refit='Balanced accuracy'
-gscv = GridSearchCV(pipe, param_grid, n_jobs=-1, return_train_score=False, 
+prompt_text = "We need a scorer based on which the pipeline will select \
+the best learner. Enter the desired scorer, currently one of accuracy_score, \
+balanced_accuracy_score, matthews_corrcoef or \
+class_balance_accuracy_score:"
+print(prompt_text)
+# https://stackoverflow.com/questions/23294658/asking-the-user-for-input-until-they-give-a-valid-response
+refit = input()
+refit = refit.replace('_', ' ').replace(' score', '').title()
+
+gscv = GridSearchCV(pipe, param_grid, n_jobs=5, return_train_score=False, 
                     cv=5, verbose=3, 
                     scoring=scoring, refit=refit)
 gscv.fit(X_train, y_train)
