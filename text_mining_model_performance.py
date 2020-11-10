@@ -43,6 +43,15 @@ print('Confusion matrix:\n %s' % pd.DataFrame(cm))
 metrics.plot_confusion_matrix(gscv.best_estimator_, X_test, y_test)
 #ConfusionMatrixDisplay(cm).plot()
 
+# Accuracy per class
+accuracy_per_class = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis] 
+accuracy_per_class = pd.DataFrame(accuracy_per_class.diagonal())
+accuracy_per_class.columns = ['accuracy']
+unique, frequency = np.unique(y_test, return_counts = True)
+accuracy_per_class['class'] = unique
+accuracy_per_class['counts'] = frequency
+accuracy_per_class = accuracy_per_class[['class', 'counts', 'accuracy']]
+
 # Plot all tuning results for all learners to be able to compare performances
 tuning_results = pd.DataFrame(gscv.cv_results_)
 print(tuning_results.columns)
@@ -52,6 +61,7 @@ for i in tuning_results['param_clf__estimator']:
 tuning_results['learner'] = tuned_learners
 
 # Save as CSV
+y_axis = 'mean_test_' + refit
 aux = tuning_results.sort_values(y_axis, ascending=False)
 #aux = aux.filter(regex='mean|learner')
 aux.to_csv('tuning_results_' + refit.lower().replace(' ', '_') + '.csv')
@@ -65,7 +75,6 @@ aux.to_csv('tuning_results_' + refit.lower().replace(' ', '_') + '.csv')
 # scoring measures for the best (hyper)parameter combination for each learner.
 print('Plotting performance of the different models')
 # Boxplots
-y_axis = 'mean_test_' + refit
 p_compare_models_box = sns.boxplot(x="learner", y=y_axis,
             data=tuning_results)
 p_compare_models_box.set_xticklabels(p_compare_models_box.get_xticklabels(), 

@@ -10,11 +10,92 @@ See example in https://scikit-learn.org/stable/auto_examples/text/plot_document_
 
 """
 
+from copy import deepcopy
+import joblib
+from textblob import TextBlob
+import pickle
+import numpy as np
+import pandas as pd
+from pandas import DataFrame
+from time import time
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.compose import make_column_transformer
+from sklearn.compose import make_column_selector
+from sklearn.compose import ColumnTransformer
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.feature_selection import SelectFromModel
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+# from sklearn.feature_selection import SelectFromModel
+from sklearn.feature_selection import SelectKBest, chi2, RFE, RFECV
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.base import BaseEstimator
+from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import RidgeClassifier
+from sklearn.svm import LinearSVC, SVR
+from sklearn.linear_model import SGDClassifier
+from sklearn.linear_model import Perceptron
+from sklearn.linear_model import PassiveAggressiveClassifier
+from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import NearestCentroid
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import metrics
+from sklearn.metrics import matthews_corrcoef, make_scorer
+from sklearn.model_selection import GridSearchCV
+from sklearn.inspection import permutation_importance
+
+from nltk import word_tokenize
+from nltk.stem import WordNetLemmatizer
+
 ##############################################################################
-# Load libraries and data
+# Load data from the training set
 # ------------------------------------
-exec(open("./text_mining_import_libraries.py").read())
-exec(open("./text_mining_load_and_prepare_data.py").read())
+filename = "text_data_4444.csv"
+text_data = pd.read_csv(filename)
+text_data = text_data.rename(columns={'super': 'target'})
+type(text_data)
+
+#############################################################################
+# Calculate polarity and subjectivity of feedback and add to data
+# ------------------------------------
+# Polarity and subjectivity will hopefully add an extra piece of
+# useful information in the feature set for the learners to learn from.
+text_polarity = []
+text_subjectivity = []
+for i in range(len(text_data)):
+    tb = TextBlob(text_data['improve'][i])
+    text_polarity.append(tb.sentiment.polarity)
+    text_subjectivity.append(tb.sentiment.subjectivity)
+
+text_data['comment_polarity'] = text_polarity
+text_data['comment_subjectivity'] = text_subjectivity
+
+# It may however not work, because TextBlob seems to fail to capture the 
+# positive polarity of comments for label "Couldn't be improved".
+text_data[text_data['target'] == "Couldn't be improved"]['comment_polarity'].hist()
+
+# Force polarity to always be 1 for "Couldn't be improved"
+text_data.loc[text_data['target'] == "Couldn't be improved", 'comment_polarity'] = 1
+text_data[text_data['target'] == "Couldn't be improved"]['comment_polarity'].hist()
+
+#############################################################################
+# Split a training set and a test set
+# ------------------------------------
+#X = text_data['improve']  # This way it's a series. Don't do text_data.drop(['target'], axis=1) as TfidfVectorizer() doesn't like it
+X = text_data[['improve', 'comment_polarity', 'comment_subjectivity']]
+y = text_data['target'].to_numpy()
+X_train, X_test, y_train, y_test = train_test_split(X, y,
+                                                    test_size=0.33,
+                                                    stratify=y,
+                                                    shuffle=True,
+                                                    random_state=42
+                                                    )
 
 #############################################################################
 # Define learners that can handle sparse matrices
@@ -32,7 +113,7 @@ learners = [RidgeClassifier(),
             RandomForestClassifier()
             ]
 
-#learners = [SGDClassifier(), MultinomialNB()] # Uncomment this for quick & dirty experimentation
+#learners = [SGDClassifier(), MultinomialNB()]
 
 #############################################################################
 # NLTK-based function for lemmatizing. Will be passed in CountVectorizer()
@@ -144,10 +225,91 @@ matthews_corrcoef_scorer = make_scorer(matthews_corrcoef)
 gscv = GridSearchCV(pipe, param_grid, n_jobs=-1, return_train_score=False, 
                     verbose=3, scoring=matthews_corrcoef_scorer)
 gscv.fit(X_train, y_train)
+gscv.best_estimator_
+gscv.best_params_
+gscv.best_score_
 
-#############################################################################
-# Save model to disk
-# ------------------------------------
+#gscv = joblib.load('finalized_model_4444.sav')
+estimator_position = len(gscv.best_estimator_) - 1
+best_estimator = gscv.best_estimator_[estimator_position].estimator
+gscv.best_estimator_.steps.pop(estimator_position)
+gscv.best_estimator_.steps.append(('clf', best_estimator))
+gscv.best_estimator_.fit(X_train, y_train)
+gscv.best_estimator_.score(X_test, y_test)
+pred = gscv.best_estimator_.predict(X_test)
+metrics.matthews_corrcoef(y_test, pred)
+cm = metrics.confusion_matrix(y_test, pred)
+DataFrame(cm)
+metrics.plot_confusion_matrix(gscv.best_estimator_, X_test, y_test)
+#ConfusionMatrixDisplay(cm).plot()
+
 # https://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
+# save the model to disk
 filename = 'finalized_model_4444.sav'
 pickle.dump(gscv, open(filename, 'wb'))
+
+# def benchmark(clf):
+#     print('_' * 80)
+#     print("Training: ")
+#     print(clf)
+#     t0 = time()
+#     pipe = Pipeline([
+#         ('vect', CountVectorizer()),
+#         ('tfidf', TfidfTransformer()),
+#         #  ('kbest', SelectKBest(chi2, k=10000)),
+#         ('kbest', SelectKBest(chi2)),
+#         ('clf', clf)
+#     ])
+#     param_grid = {
+#         'vect__ngram_range': ((1, 1), (2, 2), (1, 3)),
+#         'kbest__k': (5000, 10000)
+#     }
+#     gs = GridSearchCV(pipe, param_grid)
+#     gs.fit(X_train, y_train)
+#     train_time = time() - t0
+#     print("train time: %0.3fs" % train_time)
+#
+#     t0 = time()
+#     pred_class = gs.predict(X_test)
+#     test_time = time() - t0
+#     print("test time:  %0.3fs" % test_time)
+#
+#     score_accuracy = metrics.accuracy_score(y_test, pred_class)
+#     print("accuracy:   %0.3f" % score_accuracy)
+#
+#     score_f1 = metrics.f1_score(y_test, pred_class, average='weighted')
+#     print("f1:   %0.3f" % score_f1)
+#
+#     if hasattr(clf, 'predict_proba'):
+#         pred_prob = gs.predict_proba(X_test)
+#         score_roc = metrics.roc_auc_score(y_test, pred_prob,
+#                                           average='weighted',
+#                                           multi_class='ovr')
+#     else:
+#         score_roc = 0
+#
+#     print("ROC:   %0.3f" % score_roc)
+#
+#     print()
+#     clf_descr = str(clf).split('(')[0]
+#     return clf_descr, score_accuracy, score_f1, score_roc, train_time, test_time
+#
+#
+# results = []
+# for clf in learners:
+#     results.append(benchmark(clf))
+#
+# ##############################################################################
+# # Add plots
+# # ------------------------------------
+# # Bar plot with performance metrics, training time (normalized) and test time
+# # (normalized) of each learner.
+# df = DataFrame(results)
+# df.columns = ['Learner', 'Accuracy', 'F1', 'ROC', 'Training time', 'Test time']
+# df['Training time'] = df['Training time'] / max(df['Training time'])
+# df['Test time'] = df['Training time'] / max(df['Test time'])
+#
+# cmap = ListedColormap(['#0343df', '#e50000', '#ffff14', '#929591', '#0343df'])
+# ax = df.plot.bar(x='Learner', colormap=cmap)
+# ax.set_xlabel(None)
+# plt.show()

@@ -37,16 +37,22 @@ learners = [#XGBClassifier(),
             ]
 
 #learners = [LinearSVC(), MultinomialNB()] # Uncomment this for quick & dirty experimentation
+learners = [LinearSVC(max_iter=10000)]
 
 #############################################################################
-# NLTK-based function for lemmatizing. Will be passed in CountVectorizer()
+# NLTK/spaCy-based function for lemmatizing
 # ------------------------------------
 # https://scikit-learn.org/stable/modules/feature_extraction.html?highlight=stemming
 class LemmaTokenizer:
-    def __init__(self):
-        self.wnl = WordNetLemmatizer()
+    def __init__(self, tknz='wordnet'):
+        self.tknz = tknz
     def __call__(self, doc):
-        return [self.wnl.lemmatize(t) for t in word_tokenize(doc)]
+        if self.tknz == 'wordnet':
+            wln = WordNetLemmatizer()
+            return [wln.lemmatize(t) for t in word_tokenize(doc)]
+        if self.tknz == 'spacy': 
+            return [t.lemma_ for t in nlp(doc, 
+                                          disable=["tagger", "parser", "ner"])]
 
 #############################################################################
 # Function for automating pipeline for > 1 learners
@@ -86,7 +92,7 @@ numeric_transformer = Pipeline(steps=[
 # Pipeline for text features
 text_features = 'improve' # Needs to be a scalar, otherwise TfidfVectorizer() throws an error
 text_transformer = Pipeline(steps=[
-    ('tfidf', (TfidfVectorizer(max_df=0.95)))]) # https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/
+    ('tfidf', (TfidfVectorizer()))]) # https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/
 
 # Pass both pipelines/preprocessors to a column transformer
 preprocessor = ColumnTransformer(
@@ -104,7 +110,9 @@ pipe = Pipeline(steps=[('preprocessor', preprocessor),
 param_grid_preproc = {
     'clf__estimator': None,
     'preprocessor__text__tfidf__ngram_range': ((1, 1), (2, 2), (1, 3)),
-    'preprocessor__text__tfidf__tokenizer': [LemmaTokenizer(), None],
+    'preprocessor__text__tfidf__tokenizer': [LemmaTokenizer(tknz='spacy'),
+                                             LemmaTokenizer(tknz='wordnet')],
+    'preprocessor__text__tfidf__max_df': [0.7, 0.95],
     'preprocessor__text__tfidf__use_idf': [True, False],
     'kbest__k': (5000, 'all'),
     #'kbest__k': (np.array([15, 25, 50]) * X_train.shape[0] / 100).astype(int),

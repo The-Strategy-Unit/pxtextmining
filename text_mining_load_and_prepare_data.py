@@ -38,6 +38,37 @@ text_data.loc[text_data['target'] == "Couldn't be improved", 'comment_polarity']
 text_data[text_data['target'] == "Couldn't be improved"]['comment_polarity'].hist()
 
 #############################################################################
+# Apply Spacy's Named Entity Recognition (NER)
+# ------------------------------------
+# Create a function that detects NERs and run it on all text records.
+# Then replace each word that has a NER with its NER type.
+# For identification purposes, place NER types between '_',
+# e.g. 'CARDINAL' will become '_CARDINAL_'.
+
+"""nlp = spacy.load("en_core_web_sm")
+
+def ner_detector(text):
+    ner = []
+    doc = nlp(text)
+    for ent in doc.ents:
+        ner.append((ent.text, ent.label_))
+    return ner
+
+if os.path.isfile('text_data_4444_ner.csv'):
+    filename = "text_data_4444_ner.csv"
+    text_data = pd.read_csv(filename)
+else:
+    ner = text_data['improve'].map(ner_detector)
+    text = text_data['improve'].copy()
+    
+    for index, value in zip(text_data.index, ner):
+        if ner[index]:
+            original_string = value[0][0]
+            replacer_string = '_' + value[0][1] + '_'
+            text[index] = text[index].replace(original_string, replacer_string)
+        text_data['improve'] = text"""
+
+#############################################################################
 # Split a training set and a test set
 # ------------------------------------
 #X = text_data['improve']  # This way it's a series. Don't do text_data.drop(['target'], axis=1) as TfidfVectorizer() doesn't like it

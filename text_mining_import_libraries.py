@@ -52,3 +52,7 @@ import xgboost as xgb
 
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
+
+import spacy
+nlp = spacy.load("en_core_web_sm")
+import os
