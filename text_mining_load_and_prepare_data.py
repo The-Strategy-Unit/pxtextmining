@@ -19,7 +19,7 @@ type(text_data)
 # ------------------------------------
 # Polarity and subjectivity will hopefully add an extra piece of
 # useful information in the feature set for the models to learn from.
-text_polarity = []
+"""text_polarity = []
 text_subjectivity = []
 for i in range(len(text_data)):
     tb = TextBlob(text_data['improve'][i])
@@ -37,6 +37,11 @@ text_data[text_data['target'] == "Couldn't be improved"]['comment_polarity'].his
 text_data.loc[text_data['target'] == "Couldn't be improved", 'comment_polarity'] = 1
 text_data[text_data['target'] == "Couldn't be improved"]['comment_polarity'].hist()
 
+# NOTE: Problem with forcing polarity to always be 1 for Can't be improved is
+# that we simply cannot do that for incoming, unclassified comments. Since 
+# TextBlob isn't doing a very good job at detecting positive polarity for 
+# this class, it wouldn't be a reliable feature.
+"""
 #############################################################################
 # Apply Spacy's Named Entity Recognition (NER)
 # ------------------------------------
@@ -72,7 +77,8 @@ else:
 # Split a training set and a test set
 # ------------------------------------
 #X = text_data['improve']  # This way it's a series. Don't do text_data.drop(['target'], axis=1) as TfidfVectorizer() doesn't like it
-X = text_data[['improve', 'comment_polarity', 'comment_subjectivity']]
+#X = text_data[['improve', 'comment_polarity', 'comment_subjectivity']]
+X = pd.DataFrame(text_data['improve']) # Safest bet is to always have X as a DataFrame. That way, the column selector in the preprocessor doesn't complain
 y = text_data['target'].to_numpy()
 X_train, X_test, y_train, y_test = train_test_split(X, y,
                                                     test_size=0.33,

@@ -33,11 +33,11 @@ learners = [#XGBClassifier(),
             MultinomialNB(),
             KNeighborsClassifier(),
             NearestCentroid(),
-            #RandomForestClassifier()
+            RandomForestClassifier()
             ]
 
 #learners = [LinearSVC(), MultinomialNB()] # Uncomment this for quick & dirty experimentation
-learners = [LinearSVC(max_iter=10000)]
+#learners = [LinearSVC(max_iter=10000)]
 
 #############################################################################
 # NLTK/spaCy-based function for lemmatizing
@@ -85,9 +85,9 @@ class ClfSwitcher(BaseEstimator):
 # Bayes can't handle negative data. NOTE: FIND OUT IF IT IS METHODOLOGICALLY 
 # SOUND TO DO THIS!
 # Pipeline for numeric features
-numeric_features = ['comment_polarity']
+"""numeric_features = ['comment_polarity']
 numeric_transformer = Pipeline(steps=[
-    ('minmax', MinMaxScaler())])
+    ('minmax', MinMaxScaler())])"""
 
 # Pipeline for text features
 text_features = 'improve' # Needs to be a scalar, otherwise TfidfVectorizer() throws an error
@@ -97,7 +97,7 @@ text_transformer = Pipeline(steps=[
 # Pass both pipelines/preprocessors to a column transformer
 preprocessor = ColumnTransformer(
     transformers=[
-        ('num', numeric_transformer, numeric_features),
+        #('num', numeric_transformer, numeric_features),
         ('text', text_transformer, text_features)])
 
 # Pipeline with preprocessors, any other operations and a learner
