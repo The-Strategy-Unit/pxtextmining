@@ -124,6 +124,7 @@ param_grid = []
 for i in learners:
     aux = param_grid_preproc.copy()
     aux['clf__estimator'] = [i]
+    aux['preprocessor__text__tfidf__norm'] = ['l2'] # See long comment below
     if i.__class__.__name__ == LinearSVC().__class__.__name__:
         aux['clf__estimator__class_weight'] = [None, 'balanced']
         #aux['clf__estimator__dual'] = [True, False] # https://stackoverflow.com/questions/52670012/convergencewarning-liblinear-failed-to-converge-increase-the-number-of-iterati
@@ -134,15 +135,34 @@ for i in learners:
     if i.__class__.__name__ == MultinomialNB().__class__.__name__:
         aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
     if i.__class__.__name__ == SGDClassifier().__class__.__name__:
+        aux['clf__estimator__class_weight'] = [None, 'balanced']
+        aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
+    if i.__class__.__name__ == RidgeClassifier().__class__.__name__:
+        aux['clf__estimator__class_weight'] = [None, 'balanced']
+        aux['clf__estimator__alpha'] = (0.1, 1.0, 10.0)
+    if i.__class__.__name__ == Perceptron().__class__.__name__:
+        aux['clf__estimator__class_weight'] = [None, 'balanced']
         aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
     if i.__class__.__name__ == RandomForestClassifier().__class__.__name__:
         aux['clf__estimator__max_features'] = ('sqrt', 0.666)
     param_grid.append(aux)
     # Use TfidfVectorizer() as CountVectorizer() also, to determine if raw
     # counts instead of frequencies improves perfomance. This requires 
-    # use_idf=False and norm=None. We want to ensure that norm=None is only
+    # use_idf=False and norm=None. We want to ensure that norm=None
     # will not be combined with use_idf=True inside the grid search, so we
-    # create a separate parameter set to prevent this from happening.
+    # create a separate parameter set to prevent this from happening. We do
+    # this below with temp variable aux1.
+    # Meanwhile, we want norm='l2' (the default) for the grid defined by temp
+    # variable aux above. If we don't explicitly set norm='l2' in aux, the 
+    # norm column in the table of the CV results (following fitting) is 
+    # always emppty. My speculation is that Scikit-learn does consider norm
+    # to be 'l2' for aux, but it doesn't print it. That's because unless we
+    # explicitly run aux['preprocessor__text__tfidf__norm'] = ['l2'], setting
+    # norm as 'l2' in aux is implicit (i.e. it's the default), while setting
+    # norm as None in aux1 is explicit (i.e. done by the user). But we want
+    # the colum norm in the CV results to clearly state which runs used the 
+    # 'l2' norm, hence we explicitly run command 
+    # aux['preprocessor__text__tfidf__norm'] = ['l2'] earlier on.
     aux1 = aux.copy()
     aux1['preprocessor__text__tfidf__use_idf'] = [False]
     aux1['preprocessor__text__tfidf__norm'] = [None]
