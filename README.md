@@ -26,7 +26,7 @@ The learners in `Python` are immensely more efficient than their `R` counterpart
 ##### A first pipeline
 For a starter, we built a simple pipeline with learners that can efficiently handle large sparse matrices ("bag-of-words" approach). The pipeline does some preprocessing for text tokenization, word frequencies etc. and benchmarks learners with a 5-fold cross-validation and an appropriate score for imbalanced datasets (Balanced Accuracy or Matthews Correlation Coefficient). Fitting the pipeline using Balanced Accuracy as the scorer, we find that the best model in terms of Balanced Accuracy is a Linear SVC classifier:
 
-![](p_compare_models_bar.png)
+![](p_compare_models_bar_class_balance_accuracy.png)
 
 The optimal (hyper)parameter values for the best model and rest of learners, as well as other metrics (fit time, scores per cross-validation fold etc.) are in [tuning_results_first_pipeline.csv](https://github.com/CDU-data-science-team/positive_about_change_text_mining/blob/master/tuning_results_first_pipeline.csv).
 
