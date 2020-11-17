@@ -13,18 +13,12 @@ See example in https://scikit-learn.org/stable/auto_examples/text/plot_document_
 # https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html
 # https://scikit-learn.org/stable/modules/feature_extraction.html#feature-hashing
 
-##############################################################################
-# Load libraries and data
-# ------------------------------------
-#exec(open("./text_mining_import_libraries.py").read())
-#exec(open("./text_mining_load_and_prepare_data.py").read())
-
 #############################################################################
 # Define learners that can handle sparse matrices
 # ------------------------------------
 learners = [#XGBClassifier(),
             RidgeClassifier(),
-            LinearSVC(max_iter=10000),
+            #LinearSVC(max_iter=10000), # I always run into convergence issue with this. Switch off permanently. See hermidalc's comment on 20 Apr 2020 on https://github.com/scikit-learn/scikit-learn/issues/11536
             SGDClassifier(),
             Perceptron(),
             PassiveAggressiveClassifier(),
@@ -33,11 +27,10 @@ learners = [#XGBClassifier(),
             MultinomialNB(),
             KNeighborsClassifier(),
             NearestCentroid(),
-            RandomForestClassifier()
+            #RandomForestClassifier()
             ]
 
-#learners = [LinearSVC(), MultinomialNB()] # Uncomment this for quick & dirty experimentation
-#learners = [LinearSVC(max_iter=10000)]
+learners = [SGDClassifier()] # Uncomment this for quick & dirty experimentation
 
 #############################################################################
 # NLTK/spaCy-based function for lemmatizing
@@ -92,7 +85,11 @@ numeric_transformer = Pipeline(steps=[
 # Pipeline for text features
 text_features = 'improve' # Needs to be a scalar, otherwise TfidfVectorizer() throws an error
 text_transformer = Pipeline(steps=[
-    ('tfidf', (TfidfVectorizer()))]) # https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/
+    # Lemmatization with NLTK and spaCy returns similar results. Slightly 
+    # better with spaCy, and also faster. Define spaCy as the lemmatizer here
+    # and switch off preprocessor__text__tfidf__tokenizer in param grid below.
+    #('tfidf', (TfidfVectorizer(min_df=3)))]) # https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/
+    ('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(tknz='spacy'))))]) # https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/
 
 # Pass both pipelines/preprocessors to a column transformer
 preprocessor = ColumnTransformer(
@@ -107,15 +104,22 @@ pipe = Pipeline(steps=[('preprocessor', preprocessor),
                       ('clf', ClfSwitcher())])
 
 # Parameter grid
+"""# Let's first define a variable for the SelectKBest grid. We will be running
+# a 5-fold CV, in which 4/5 (80%) of the data will be in the train set.
+# We can then set k to be, say 50% of the 80% of the data.
+kbest_number_of_features = len(X_train.index) * 4 / 5"""
+
 param_grid_preproc = {
     'clf__estimator': None,
     'preprocessor__text__tfidf__ngram_range': ((1, 1), (2, 2), (1, 3)),
-    'preprocessor__text__tfidf__tokenizer': [LemmaTokenizer(tknz='spacy'),
-                                             LemmaTokenizer(tknz='wordnet')],
+    # Lemmatization with NLTK and spaCy returns similar results. Slightly 
+    # better with spaCy, and also faster. Remove from grid below.
+    #'preprocessor__text__tfidf__tokenizer': [LemmaTokenizer(tknz='spacy'),
+    #                                         LemmaTokenizer(tknz='wordnet')],
     'preprocessor__text__tfidf__max_df': [0.7, 0.95],
+    'preprocessor__text__tfidf__min_df': [3, 1], # Value 1 is the default, which does nothing (i.e. keeps all terms)
     'preprocessor__text__tfidf__use_idf': [True, False],
-    'kbest__k': (5000, 'all'),
-    #'kbest__k': (np.array([15, 25, 50]) * X_train.shape[0] / 100).astype(int),
+    'kbest__k': (1000, 'all'),
     #'rfecv__estimator': [DecisionTreeClassifier()],
     #'rfecv__step': (0.1, 0.25, 0.5) # Has a scoring argument too. Investigate
 }
@@ -134,7 +138,7 @@ for i in learners:
         aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
     if i.__class__.__name__ == MultinomialNB().__class__.__name__:
         aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
-    if i.__class__.__name__ == SGDClassifier().__class__.__name__:
+    if i.__class__.__name__ == SGDClassifier().__class__.__name__: # Perhaps try out loss='log' at some point?
         aux['clf__estimator__class_weight'] = [None, 'balanced']
         aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
     if i.__class__.__name__ == RidgeClassifier().__class__.__name__:

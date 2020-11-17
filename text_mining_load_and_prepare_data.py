@@ -9,10 +9,16 @@ Created on Fri Oct 16 08:39:26 2020
 ##############################################################################
 # Load and prepare data
 # ------------------------------------
+print('Loading dataset...')
 filename = "text_data_4444.csv"
 text_data = pd.read_csv(filename)
 text_data = text_data.rename(columns={'super': 'target'})
 type(text_data)
+
+# Strip \r and \n from the text
+print('Stripping whitespaces and line brakes from text...')
+for text, index in zip(text_data['improve'], text_data.index):
+    text_data['improve'][index] = " ".join(text.splitlines())
 
 #############################################################################
 # Calculate polarity and subjectivity of feedback and add to data
@@ -78,6 +84,7 @@ else:
 # ------------------------------------
 #X = text_data['improve']  # This way it's a series. Don't do text_data.drop(['target'], axis=1) as TfidfVectorizer() doesn't like it
 #X = text_data[['improve', 'comment_polarity', 'comment_subjectivity']]
+print('Preparing training and test sets...')
 X = pd.DataFrame(text_data['improve']) # Safest bet is to always have X as a DataFrame. That way, the column selector in the preprocessor doesn't complain
 y = text_data['target'].to_numpy()
 X_train, X_test, y_train, y_test = train_test_split(X, y,
