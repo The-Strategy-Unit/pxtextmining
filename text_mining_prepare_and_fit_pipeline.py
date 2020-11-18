@@ -19,7 +19,7 @@ See example in https://scikit-learn.org/stable/auto_examples/text/plot_document_
 learners = [#XGBClassifier(),
             RidgeClassifier(),
             #LinearSVC(max_iter=10000), # I always run into convergence issue with this. Switch off permanently. See hermidalc's comment on 20 Apr 2020 on https://github.com/scikit-learn/scikit-learn/issues/11536
-            SGDClassifier(),
+            SGDClassifier(max_iter=10000),
             Perceptron(),
             PassiveAggressiveClassifier(),
             BernoulliNB(),
@@ -30,7 +30,7 @@ learners = [#XGBClassifier(),
             #RandomForestClassifier()
             ]
 
-learners = [SGDClassifier()] # Uncomment this for quick & dirty experimentation
+learners = [SGDClassifier(max_iter=10000)] # Uncomment this for quick & dirty experimentation
 
 #############################################################################
 # NLTK/spaCy-based function for lemmatizing
@@ -54,7 +54,7 @@ class LemmaTokenizer:
 class ClfSwitcher(BaseEstimator):
     def __init__(
                  self,
-                 estimator=SGDClassifier(),
+                 estimator=SGDClassifier(max_iter=10000),
     ): self.estimator = estimator
 
     def fit(self, X, y=None, **kwargs):
@@ -88,7 +88,8 @@ text_transformer = Pipeline(steps=[
     # Lemmatization with NLTK and spaCy returns similar results. Slightly 
     # better with spaCy, and also faster. Define spaCy as the lemmatizer here
     # and switch off preprocessor__text__tfidf__tokenizer in param grid below.
-    #('tfidf', (TfidfVectorizer(min_df=3)))]) # https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/
+    #('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(tknz='spacy'), # https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/
+    #                           stop_words='english')))]) # No easy way around stop word lists. For now, use Scikit's list in combination with max/min_df. See https://scikit-learn.org/stable/modules/feature_extraction.html#stop-words
     ('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(tknz='spacy'))))]) # https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/
 
 # Pass both pipelines/preprocessors to a column transformer
@@ -99,8 +100,9 @@ preprocessor = ColumnTransformer(
 
 # Pipeline with preprocessors, any other operations and a learner
 pipe = Pipeline(steps=[('preprocessor', preprocessor),
-                       ('kbest', SelectKBest(chi2)),
-                      #('rfecv', RFECV(DecisionTreeClassifier(), cv=5)),
+                       #('kbest', SelectKBest(chi2)),
+                       #('rfe', RFE(estimator=LogisticRegression(solver="sag", max_iter=10000), step=0.5)),
+                       ('selectperc', SelectPercentile(chi2)),
                       ('clf', ClfSwitcher())])
 
 # Parameter grid
@@ -119,7 +121,8 @@ param_grid_preproc = {
     'preprocessor__text__tfidf__max_df': [0.7, 0.95],
     'preprocessor__text__tfidf__min_df': [3, 1], # Value 1 is the default, which does nothing (i.e. keeps all terms)
     'preprocessor__text__tfidf__use_idf': [True, False],
-    'kbest__k': (1000, 'all'),
+    #'kbest__k': (1000, 'all'),
+    'selectperc__percentile': [10, 50, 100],
     #'rfecv__estimator': [DecisionTreeClassifier()],
     #'rfecv__step': (0.1, 0.25, 0.5) # Has a scoring argument too. Investigate
 }
@@ -216,7 +219,7 @@ print(prompt_text)
 refit = input()
 refit = refit.replace('_', ' ').replace(' score', '').title()
 
-gscv = GridSearchCV(pipe, param_grid, n_jobs=5, return_train_score=False, 
+gscv = GridSearchCV(pipe, param_grid, n_jobs=5, return_train_score=False,
                     cv=5, verbose=3, 
                     scoring=scoring, refit=refit)
 gscv.fit(X_train, y_train)

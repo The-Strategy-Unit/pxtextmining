@@ -6,6 +6,7 @@ Created on Fri Oct 16 08:26:15 2020
 @author: 
 """
 
+import re
 from copy import deepcopy
 import joblib
 from textblob import TextBlob
@@ -29,7 +30,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 # from sklearn.feature_selection import SelectFromModel
-from sklearn.feature_selection import SelectKBest, chi2, RFE, RFECV
+from sklearn.feature_selection import SelectKBest, chi2, RFE, RFECV, SelectPercentile
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.base import BaseEstimator
 from sklearn.linear_model import LogisticRegression
@@ -45,7 +46,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 from sklearn.metrics import matthews_corrcoef, make_scorer, accuracy_score
 from sklearn.metrics import balanced_accuracy_score, confusion_matrix
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.inspection import permutation_importance
 from sklearn.base import BaseEstimator, TransformerMixin
 import xgboost as xgb

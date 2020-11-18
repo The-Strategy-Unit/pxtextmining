@@ -10,7 +10,7 @@ gscv = joblib.load('finalized_model_4444.sav')
 
 # Extract best estimator and replace ClfSwitcher() with it in the pipeline
 aux = pd.DataFrame(gscv.best_params_.items())
-best_estimator = aux[aux[0] == 'clf__estimator'][1][0]
+best_estimator = aux[aux[0] == 'clf__estimator'].reset_index()[1][0]
 estimator_position = len(gscv.best_estimator_) - 1
 gscv.best_estimator_.steps.pop(estimator_position)
 gscv.best_estimator_.steps.append(('clf', best_estimator))

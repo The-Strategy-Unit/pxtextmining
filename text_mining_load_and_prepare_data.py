@@ -15,10 +15,14 @@ text_data = pd.read_csv(filename)
 text_data = text_data.rename(columns={'super': 'target'})
 type(text_data)
 
-# Strip \r and \n from the text
-print('Stripping whitespaces and line brakes from text...')
+# Strip punctuation, excess spaces, \r and \n from the text
+print('Stripping punctuation from text...')
+text_data['improve'] = text_data['improve'].str.replace('[^\w\s]', '')
+print('Stripping excess spaces, whitespaces and line breaks from text...')
 for text, index in zip(text_data['improve'], text_data.index):
-    text_data['improve'][index] = " ".join(text.splitlines())
+    aux = re.sub(' +', ' ', text) # Strip excess spaces
+    aux = " ".join(text.splitlines()) # Strip \n and \r
+    text_data['improve'][index] = aux
 
 #############################################################################
 # Calculate polarity and subjectivity of feedback and add to data
