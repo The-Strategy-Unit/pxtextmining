@@ -30,7 +30,7 @@ learners = [#XGBClassifier(),
             #RandomForestClassifier()
             ]
 
-learners = [SGDClassifier(max_iter=10000)] # Uncomment this for quick & dirty experimentation
+#learners = [SGDClassifier(max_iter=10000)] # Uncomment this for quick & dirty experimentation
 
 #############################################################################
 # NLTK/spaCy-based function for lemmatizing
@@ -106,11 +106,6 @@ pipe = Pipeline(steps=[('preprocessor', preprocessor),
                       ('clf', ClfSwitcher())])
 
 # Parameter grid
-"""# Let's first define a variable for the SelectKBest grid. We will be running
-# a 5-fold CV, in which 4/5 (80%) of the data will be in the train set.
-# We can then set k to be, say 50% of the 80% of the data.
-kbest_number_of_features = len(X_train.index) * 4 / 5"""
-
 param_grid_preproc = {
     'clf__estimator': None,
     'preprocessor__text__tfidf__ngram_range': ((1, 1), (2, 2), (1, 3)),
@@ -219,9 +214,9 @@ print(prompt_text)
 refit = input()
 refit = refit.replace('_', ' ').replace(' score', '').title()
 
-gscv = GridSearchCV(pipe, param_grid, n_jobs=5, return_train_score=False,
+gscv = RandomizedSearchCV(pipe, param_grid, n_jobs=5, return_train_score=False,
                     cv=5, verbose=3, 
-                    scoring=scoring, refit=refit)
+                    scoring=scoring, refit=refit, n_iter=100)
 gscv.fit(X_train, y_train)
 
 #############################################################################

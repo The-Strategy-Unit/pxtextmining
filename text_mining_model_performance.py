@@ -75,12 +75,12 @@ aux.to_csv('tuning_results_' + refit.lower().replace(' ', '_') + '.csv')
 # scoring measures for the best (hyper)parameter combination for each learner.
 print('Plotting performance of the different models')
 # Boxplots
-p_compare_models_box = sns.boxplot(x="learner", y=y_axis,
+"""p_compare_models_box = sns.boxplot(x="learner", y=y_axis,
             data=tuning_results)
 p_compare_models_box.set_xticklabels(p_compare_models_box.get_xticklabels(), 
                                  rotation=90)
 p_compare_models_box.set(xlabel=None, ylabel=refit,
-                     title='Mean test score for each (hyper)parameter combination')
+                     title='Mean test score for each (hyper)parameter combination')"""
 
 # Bar plots
 aux = tuning_results.filter(regex='mean_test|learner').groupby(['learner']).max().reset_index()
