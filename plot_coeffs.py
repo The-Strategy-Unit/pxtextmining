@@ -10,8 +10,10 @@ def plot_coefficients(classifier, feature_names, top_features=20,
     # which_class is for one-vs-rest multiclass problems where the coef_ is
     # a table with dimensions n_classes X n_features
     #class_index = np.where(classifier.classes_ == which_class)[0]
+    #class_index = np.where(classifier.best_estimator_.named_steps['clf'].estimator.classes_ == which_class)[0]
     class_index = np.where(classifier.best_estimator_.named_steps['clf'].estimator.classes_ == which_class)[0]
     #coef = classifier.best_estimator_.named_steps['clf'].coef_[class_index].ravel()
+    #coef = classifier.best_estimator_.named_steps['clf'].estimator.coef_[class_index].ravel()
     coef = classifier.best_estimator_.named_steps['clf'].estimator.coef_[class_index].ravel()
     top_positive_coefficients = np.argsort(coef)[-top_features:]
     top_negative_coefficients = np.argsort(coef)[:top_features]
