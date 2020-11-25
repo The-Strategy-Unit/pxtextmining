@@ -14,26 +14,23 @@ body <- dashboardPage(
   ),
   dashboardBody(
     # Boxes need to be put in a row (or column)
-    fluidRow(box(textOutput("modelAccuracyBox"), background = 'red', width = 7)),
     fluidRow(
-      #column(7,
-             #box(
-             #box(textOutput("modelAccuracyBox"), background = 'red'),
-               box(width = 7,
-                 #box(textOutput("modelAccuracyBox"), background = 'red'),
-                 #box(
-                   selectInput("pred", "Choose a label:", 
-                               choices=sort(unique(test_data$pred))),
-                   reactableOutput("pedictedLabels")
-                 #)
-               ),
-             #)
-             
-      #),
+      box(
+        textOutput("modelAccuracyBox"), background = 'red', width = 7
+      )
+    ),
+    
+    fluidRow(
+      box(width = 7,
+          selectInput("pred", "Choose a label:", 
+                      choices=sort(unique(test_data$pred))),
+          reactableOutput("pedictedLabels")
+      ),
       
-      #column(5,
-             box(plotOutput("tfidf_bars", width = 5))
-      #)
+      fluidRow(
+        box(plotOutput("tfidf_bars"), width = 5),
+        box(textOutput("tfidfExplanation"), background = 'red', width = 5)
+      ),
     )
   )
 )

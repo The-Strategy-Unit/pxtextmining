@@ -54,7 +54,24 @@ function(input, output) {
       filter(pred == input$pred) %>%
       ggplot(aes(tf_idf, reorder(word, tf_idf))) +
       geom_col() +
-      labs(x = "tf-idf", y = NULL) + 
-      theme_bw()
+      #labs(x = "TF-IDF*", y = NULL) + 
+      labs(x = "TF-IDF*", y = NULL, 
+           title = paste0("Most frequent words in feedback text that is about\n", 
+                          "\"", input$pred, "\"")) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+      )
+  })
+  
+  output$tfidfExplanation <- renderText({
+    paste0("*TF-IDF stands for Term Frequency–Inverse Document Frequency.
+          It is a standard way of calculating the frequency (i.e. importance) 
+          of a word in the given text. It is a little more sophisticated than
+          standard frequency as it adjusts for words that appear too frequently
+          in the text. For example, stop words like ", "\"", "a", "\"", " and ",
+          "\"", "the", "\"", " are very frequent but uniformative of 
+          the cotext of the text.")
   })
 }
