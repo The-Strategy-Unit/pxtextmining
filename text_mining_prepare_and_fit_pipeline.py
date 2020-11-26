@@ -30,7 +30,7 @@ learners = [#XGBClassifier(),
             RandomForestClassifier()
             ]
 
-#learners = [SGDClassifier(max_iter=10000)] # Uncomment this for quick & dirty experimentation
+learners = [SGDClassifier(max_iter=10000)] # Uncomment this for quick & dirty experimentation
 
 #############################################################################
 # Prepare pipeline
@@ -71,7 +71,7 @@ preprocessor = ColumnTransformer(
         ('text', text_transformer, text_features)])
 
 # Pipeline with preprocessors, any other operations and a learner
-pipe = Pipeline(steps=[#('sampling', RandomOverSampler(sampling_strategy='not majority')),
+pipe = Pipeline(steps=[('sampling', RandomOverSampler(sampling_strategy=RandomOverSamplerDictionary)),
                        ('preprocessor', preprocessor),
                        #('rfe', RFE(estimator=LogisticRegression(solver="sag", max_iter=10000), step=0.5)),
                        ('selectperc', SelectPercentile(chi2)),
@@ -185,7 +185,7 @@ fit_pipeline = input()
 if fit_pipeline == 'y':
     gscv = RandomizedSearchCV(pipe, param_grid, n_jobs=5, return_train_score=False,
                               cv=5, verbose=3,
-                              scoring=scoring, refit=refit, n_iter=300)
+                              scoring=scoring, refit=refit, n_iter=10)
     gscv.fit(X_train, y_train)
     gscv.best_estimator_.fit(X_train, y_train)
 

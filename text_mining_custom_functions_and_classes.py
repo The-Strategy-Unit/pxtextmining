@@ -37,10 +37,25 @@ class ClfSwitcher(BaseEstimator):
         return self.estimator.score(X, y)
 
 #############################################################################
+# Upbalance
+# ------------------------------------
+def RandomOverSamplerDictionary(y, threshold=200):
+    unique, frequency = np.unique(y, return_counts=True)
+    rare_classes = pd.DataFrame()
+    rare_classes['counts'], rare_classes.index = frequency, unique
+    if len(rare_classes[rare_classes.counts < threshold]):
+        rare_classes = rare_classes.to_dict()['counts']
+    else:
+        rare_classes = rare_classes[rare_classes.counts < threshold]
+        # rare_classes.counts = (100, 100, 100, 100, 100, 100, 100)
+        rare_classes.counts = threshold
+        rare_classes = rare_classes.to_dict()['counts']
+    return(rare_classes)
+
+#############################################################################
 # Create Class Balance Accuracy scorer
 # ------------------------------------
 # See p. 40 in https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&context=etd
-
 def class_balance_accuracy_score(y_true, y_pred):
     cm = confusion_matrix(y_true, y_pred)
     c_i_dot = np.sum(cm, axis=1)

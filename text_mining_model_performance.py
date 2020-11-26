@@ -50,8 +50,7 @@ accuracy_per_class = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 accuracy_per_class = pd.DataFrame(accuracy_per_class.diagonal())
 accuracy_per_class.columns = ['accuracy']
 unique, frequency = np.unique(y_test, return_counts = True)
-accuracy_per_class['class'] = unique
-accuracy_per_class['counts'] = frequency
+accuracy_per_class['class'], accuracy_per_class['counts'] = unique, frequency
 accuracy_per_class = accuracy_per_class[['class', 'counts', 'accuracy']]
 accuracy_per_class.to_csv('accuracy_per_class.csv', index=False)
 

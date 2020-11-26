@@ -2,7 +2,7 @@ library(tidyverse)
 library(reactable)
 library(tidytext)
 
-data_for_tfidf <- read.csv('C:/Users/andreas.soteriades/Documents/git_projects/positive_about_change_text_mining/text_data_4444.csv')
+data_for_tfidf <- read.csv('C:/Users/andreas.soteriades/Documents/git_projects/positive_about_change_text_mining/training_data.csv')
 test_data <- read.csv('C:/Users/andreas.soteriades/Documents/git_projects/positive_about_change_text_mining/y_pred_and_x_test.csv')
 accuracy_per_class <- read.csv('C:/Users/andreas.soteriades/Documents/git_projects/positive_about_change_text_mining/accuracy_per_class.csv')
 
@@ -55,7 +55,7 @@ function(input, output) {
       ungroup() %>%
       filter(super == input$pred) %>%
       ggplot(aes(tf_idf, reorder(word, tf_idf))) +
-      geom_col() +
+      geom_col(fill = 'blue', alpha = 0.6) +
       labs(x = "TF-IDF*", y = NULL, 
            title = paste0("Most frequent words in feedback text that is about\n", 
                           "\"", input$pred, "\"")) +
