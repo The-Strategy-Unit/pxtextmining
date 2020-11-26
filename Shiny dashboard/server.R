@@ -2,9 +2,9 @@ library(tidyverse)
 library(reactable)
 library(tidytext)
 
-data_for_tfidf <- read.csv('C:/Users/andreas.soteriades/Documents/git_projects/positive_about_change_text_mining/text_data_4444.csv')
-test_data <- read.csv('C:/Users/andreas.soteriades/Documents/git_projects/positive_about_change_text_mining/y_pred_and_x_test.csv')
-accuracy_per_class <- read.csv('C:/Users/andreas.soteriades/Documents/git_projects/positive_about_change_text_mining/accuracy_per_class.csv')
+data_for_tfidf <- read.csv('../text_data_4444.csv')
+test_data <- read.csv('../y_pred_and_x_test.csv')
+accuracy_per_class <- read.csv('../accuracy_per_class.csv')
 
 # Define a server for the Shiny app
 function(input, output) {
