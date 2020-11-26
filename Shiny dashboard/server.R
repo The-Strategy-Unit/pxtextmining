@@ -2,7 +2,8 @@ library(tidyverse)
 library(reactable)
 library(tidytext)
 
-test_data <- read.csv('C:/Users/andreas.soteriades/Documents/git_projects/positive_about_change_text_mining/text_data_4444.csv')
+data_for_tfidf <- read.csv('C:/Users/andreas.soteriades/Documents/git_projects/positive_about_change_text_mining/text_data_4444.csv')
+test_data <- read.csv('C:/Users/andreas.soteriades/Documents/git_projects/positive_about_change_text_mining/y_pred_and_x_test.csv')
 accuracy_per_class <- read.csv('C:/Users/andreas.soteriades/Documents/git_projects/positive_about_change_text_mining/accuracy_per_class.csv')
 
 # Define a server for the Shiny app
@@ -11,18 +12,19 @@ function(input, output) {
   output$pedictedLabels <- renderReactable({
     
     feedback_col_new_name <- paste0(
-      "Feedback that model predicted as ", "\"", input$super, "\""
+      "Feedback that model predicted as ", "\"", input$pred, "\""
     )
     
     reactable(
       test_data %>%
-      filter(super == input$super) %>%
+      filter(pred == input$pred) %>%
       select(improve),
       columns = list(improve = colDef(name = feedback_col_new_name)),
       #rownames = TRUE,
       searchable = TRUE,
       sortable = FALSE,
       defaultPageSize = 100,
+      pageSizeOptions = 100,
       language = reactableLang(
         searchPlaceholder = "Search for a word..."),
     )
@@ -30,7 +32,7 @@ function(input, output) {
   
   output$modelAccuracyBox <- renderText({
     accuracy_score <- accuracy_per_class %>%
-      filter(class == input$super) %>%
+      filter(class == input$pred) %>%
       select(accuracy) %>%
       mutate(accuracy = round(accuracy * 100)) %>%
       pull
@@ -41,23 +43,22 @@ function(input, output) {
   })
   
   output$tfidf_bars <- renderPlot({
-    test_data %>%
+    data_for_tfidf %>%
       unnest_tokens(word, improve) %>%
       count(super, word, sort = TRUE) %>%
       bind_tf_idf(word, super, n) %>%
       arrange(desc(tf_idf)) %>%
       anti_join(stop_words, by = c("word" = "word")) %>% # Do this because some stop words make it through the TF-IDF filtering that happens below.
-      as_tibble %>%
+      #as_tibble %>%
       group_by(super) %>%
       slice_max(tf_idf, n = 15) %>%
       ungroup() %>%
-      filter(super == input$super) %>%
+      filter(super == input$pred) %>%
       ggplot(aes(tf_idf, reorder(word, tf_idf))) +
       geom_col() +
-      #labs(x = "TF-IDF*", y = NULL) + 
       labs(x = "TF-IDF*", y = NULL, 
            title = paste0("Most frequent words in feedback text that is about\n", 
-                          "\"", input$super, "\"")) +
+                          "\"", input$pred, "\"")) +
       theme_bw() +
       theme(
         panel.grid.major = element_blank(),
