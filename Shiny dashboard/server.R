@@ -66,12 +66,14 @@ function(input, output) {
   })
   
   output$tfidfExplanation <- renderText({
-    paste0("*TF-IDF stands for Term Frequency–Inverse Document Frequency.
+    HTML(paste0("*TF-IDF stands for 
+          <u><a href='https://en.wikipedia.org/wiki/Tf%E2%80%93idf'>
+          Term Frequency–Inverse Document Frequency</a></u>.
           It is a standard way of calculating the frequency (i.e. importance) 
           of a word in the given text. It is a little more sophisticated than
           standard frequency as it adjusts for words that appear too frequently
           in the text. For example, stop words like ", "\"", "a", "\"", " and ",
           "\"", "the", "\"", " are very frequent but uniformative of 
-          the cotext of the text.")
+          the cotext of the text."))
   })
 }

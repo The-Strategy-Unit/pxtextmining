@@ -29,7 +29,7 @@ body <- dashboardPage(
       
       fluidRow(
         box(plotOutput("tfidf_bars"), width = 5),
-        box(textOutput("tfidfExplanation"), background = 'red', width = 5)
+        box(htmlOutput("tfidfExplanation"), background = 'red', width = 5)
       ),
     )
   )
