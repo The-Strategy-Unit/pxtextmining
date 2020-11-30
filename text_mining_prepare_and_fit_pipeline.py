@@ -30,7 +30,7 @@ learners = [#XGBClassifier(),
             RandomForestClassifier()
             ]
 
-learners = [SGDClassifier(max_iter=10000)] # Uncomment this for quick & dirty experimentation
+#learners = [SGDClassifier(max_iter=10000)] # Uncomment this for quick & dirty experimentation
 
 #############################################################################
 # Prepare pipeline
@@ -185,9 +185,8 @@ fit_pipeline = input()
 if fit_pipeline == 'y':
     gscv = RandomizedSearchCV(pipe, param_grid, n_jobs=5, return_train_score=False,
                               cv=5, verbose=3,
-                              scoring=scoring, refit=refit, n_iter=10)
+                              scoring=scoring, refit=refit, n_iter=100)
     gscv.fit(X_train, y_train)
-    gscv.best_estimator_.fit(X_train, y_train)
 
     #############################################################################
     # Save model to disk

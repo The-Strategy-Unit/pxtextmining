@@ -23,7 +23,9 @@ The data is [here](https://github.com/ChrisBeeley/naturallanguageprocessing/blob
 The learners in `Python` are immensely more efficient than their `R` counterparts and building pipelines with `scikit-learn` is pretty straightforward. Moreover, `Python` offers a much wider range of options for text preprocessing and mining.
 
 ##### A first pipeline
-For a starter, we built a simple pipeline with learners that can efficiently handle large sparse matrices ("bag-of-words" approach). The pipeline does some preprocessing for text tokenization/lemmatization, word frequencies etc. and benchmarks learners with a 5-fold cross-validation and an appropriate score for imbalanced datasets ([Class Balance Accuracy](https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&context=etd), [Balanced Accuracy](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.balanced_accuracy_score.html) or [Matthews Correlation Coefficient](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.matthews_corrcoef.html)) or with the standard Accuracy score (classes correctly predicted over number of records). Fitting the pipeline using Class Balance Accuracy as the scorer, we find that the best model is a Linear SVC classifier:
+For a starter, we built a simple pipeline with learners that can efficiently handle large sparse matrices ("bag-of-words" approach). We used an exhaustive grid search ([`GridSearchCV()`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html)) to assess the impact of different (hyper)parameter combinations on model performance. (For efficiency, we switched to [`RandomizedSearchCV()`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV) later on.) 
+
+The pipeline (as well as subsequent pipelines) does some preprocessing for text tokenization/lemmatization, word frequencies etc. and benchmarks learners with a 5-fold cross-validation and an appropriate score for imbalanced datasets ([Class Balance Accuracy](https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&context=etd), [Balanced Accuracy](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.balanced_accuracy_score.html) or [Matthews Correlation Coefficient](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.matthews_corrcoef.html)) or with the standard Accuracy score (classes correctly predicted over number of records). Fitting the pipeline using Class Balance Accuracy as the scorer, we find that the best model is a Linear SVC classifier:
 
 ![](p_compare_models_bar_first_pipeline.png)
 
@@ -35,9 +37,19 @@ The optimal (hyper)parameter values for the best model and rest of learners, as 
 2. More often than not, we ran into convergence issues with [`LinearSVC()`](https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html)- even with `max_iter=10000`. There is an ongoing discussion [here](https://github.com/scikit-learn/scikit-learn/issues/11536) (see _hermidalc_'s comment on 20 April 2020). As a safety measure, we will not be considering this learner in subsequent runs.
 3. We may need to reconsider the performance metric. Unlike scorers that account for class imbalances, the Accuracy score is simple and easily communicated. The downside is that it may be inflated by a few classes that the model predicts correctly most of the time. But it is perfectly suited to situations where the aim is to correctly predict the tags for as many feedback records as possible, regardless of their tag. We could combine this scorer with _human-in-the-loop_ ML. Something to think about.
 
-#### RandomSearchCV()
+#### Improving the pipeline
 
-![](p_compare_models_bar_class_balance_accuracy_random_search.png)
+A major disadvantage of the grid search ([`GridSearchCV()`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html)) approach for pipeline tuning used in the first pipeline is that it takes hours to fit, without necessarily resulting in a model with notably better performance than the rest.
+
+We  therefore switched to a random (or randomized) search ([`RandomizedSearchCV()`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV)). With random search, the algorithm chooses randomly (hyper)parameter combinations. The number of random combinations chosen is set by the user. This significantly reduces tuning time with minimal impact on model performance. See a comparison of grid search and random search [here](https://scikit-learn.org/stable/auto_examples/model_selection/plot_randomized_search.html#sphx-glr-auto-examples-model-selection-plot-randomized-search-py) and [here](https://jmlr.csail.mit.edu/papers/v13/bergstra12a.html).
+
+Here are the results for a random search with 300 repetitions, using `spaCy` for tokenization and lemmatization, and with `LinearSVC()` switched off ([see earlier comments](#a-first-pipeline)):
+
+![](p_compare_models_bar_class_balance_accuracy_random_search.png).
+
+Performance metric for the optimal and all other learners are here:
+
+[tuning_results_second_pipeline.csv](https://github.com/CDU-data-science-team/positive_about_change_text_mining/blob/master/tuning_results_second_pipeline.csv).
 
 #### `R` is not a good option
 We soon concluded that building the ML pipelines in `R` would be incomplete and inefficient:

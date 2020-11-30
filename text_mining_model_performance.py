@@ -8,15 +8,18 @@ Created on Fri Oct 16 08:24:05 2020
 
 gscv = joblib.load('finalized_model_4444.sav')
 
-"""# Extract best estimator and replace ClfSwitcher() with it in the pipeline
+# Extract best estimator and replace ClfSwitcher() with it in the pipeline, otherwise some functions may not work.
+# For example, metrics.plot_confusion_matrix() expects to find ('clf', BEST_ESTIMATOR()), but instead it would find
+# ('clf', ClfSwitcher(estimator=BEST_ESTIMATOR())), causing it to throw an error.
 aux = pd.DataFrame(gscv.best_params_.items())
 best_estimator = aux[aux[0] == 'clf__estimator'].reset_index()[1][0]
 estimator_position = len(gscv.best_estimator_) - 1
 gscv.best_estimator_.steps.pop(estimator_position)
-gscv.best_estimator_.steps.append(('clf', best_estimator))"""
+gscv.best_estimator_.steps.append(('clf', best_estimator))
+gscv.best_estimator_.fit(X_train, y_train) # Fit whole pipeline with best estimator
 
 # Print various results and metrics
-print('The best estimator is %s' % (gscv.best_estimator_.named_steps['clf'].estimator))
+print('The best estimator is %s' % (gscv.best_estimator_.named_steps['clf']))
 print('The best parameters are:')
 for param, value in gscv.best_params_.items():
     print('{}: {}'.format(param, value))

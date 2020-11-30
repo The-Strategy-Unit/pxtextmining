@@ -43,7 +43,7 @@ def RandomOverSamplerDictionary(y, threshold=200):
     unique, frequency = np.unique(y, return_counts=True)
     rare_classes = pd.DataFrame()
     rare_classes['counts'], rare_classes.index = frequency, unique
-    if len(rare_classes[rare_classes.counts < threshold]):
+    if len(rare_classes[rare_classes.counts < threshold]) == 0:
         rare_classes = rare_classes.to_dict()['counts']
     else:
         rare_classes = rare_classes[rare_classes.counts < threshold]
