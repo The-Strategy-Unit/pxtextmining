@@ -25,6 +25,7 @@ from sklearn.compose import make_column_selector
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
+from imblearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectFromModel
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -50,10 +51,13 @@ from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.inspection import permutation_importance
 from sklearn.base import BaseEstimator, TransformerMixin
 import xgboost as xgb
+from imblearn.over_sampling import RandomOverSampler
+from collections import Counter
 
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
 import spacy
 nlp = spacy.load("en_core_web_sm")
+#pd.DataFrame(nlp.Defaults.stop_words).to_csv('stop_words_spacy.csv', index=False) # Good to have a CSV of spaCy's stop words
 import os

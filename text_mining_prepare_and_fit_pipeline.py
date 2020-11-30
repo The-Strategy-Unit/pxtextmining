@@ -27,58 +27,20 @@ learners = [#XGBClassifier(),
             MultinomialNB(),
             KNeighborsClassifier(),
             NearestCentroid(),
-            #RandomForestClassifier()
+            RandomForestClassifier()
             ]
 
 #learners = [SGDClassifier(max_iter=10000)] # Uncomment this for quick & dirty experimentation
 
 #############################################################################
-# NLTK/spaCy-based function for lemmatizing
-# ------------------------------------
-# https://scikit-learn.org/stable/modules/feature_extraction.html?highlight=stemming
-class LemmaTokenizer:
-    def __init__(self, tknz='wordnet'):
-        self.tknz = tknz
-    def __call__(self, doc):
-        if self.tknz == 'wordnet':
-            wln = WordNetLemmatizer()
-            return [wln.lemmatize(t) for t in word_tokenize(doc)]
-        if self.tknz == 'spacy': 
-            return [t.lemma_ for t in nlp(doc, 
-                                          disable=["tagger", "parser", "ner"])]
-
-#############################################################################
-# Function for automating pipeline for > 1 learners
-# ------------------------------------
-# https://stackoverflow.com/questions/48507651/multiple-classification-models-in-a-scikit-pipeline-python
-class ClfSwitcher(BaseEstimator):
-    def __init__(
-                 self,
-                 estimator=SGDClassifier(max_iter=10000),
-    ): self.estimator = estimator
-
-    def fit(self, X, y=None, **kwargs):
-        self.estimator.fit(X, y)
-        return self
-
-    def predict(self, X, y=None):
-        return self.estimator.predict(X)
-
-    def predict_proba(self, X):
-        return self.estimator.predict_proba(X)
-
-    def score(self, X, y):
-        return self.estimator.score(X, y)
-
-#############################################################################
 # Prepare pipeline
 # ------------------------------------
 # Preprocess numerical and text data in different ways.
-# Numerical data are min-max normalized because X^2 and Multinomial Naive 
+"""# Numerical data are min-max normalized because X^2 and Multinomial Naive 
 # Bayes can't handle negative data. NOTE: FIND OUT IF IT IS METHODOLOGICALLY 
 # SOUND TO DO THIS!
 # Pipeline for numeric features
-"""numeric_features = ['comment_polarity']
+numeric_features = ['comment_polarity']
 numeric_transformer = Pipeline(steps=[
     ('minmax', MinMaxScaler())])"""
 
@@ -92,6 +54,16 @@ text_transformer = Pipeline(steps=[
     #                           stop_words='english')))]) # No easy way around stop word lists. For now, use Scikit's list in combination with max/min_df. See https://scikit-learn.org/stable/modules/feature_extraction.html#stop-words
     ('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(tknz='spacy'))))]) # https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/
 
+"""# Pipeline for class balancing
+classes_to_oversample = {
+    'Equality/Diversity': 1500,
+    'Involvement': 1500,
+    'Leave': 1500,
+    'MHA': 1500,
+    'Service Quality/Outcomes': 1500,
+    'Physical Health': 1500
+}"""
+
 # Pass both pipelines/preprocessors to a column transformer
 preprocessor = ColumnTransformer(
     transformers=[
@@ -99,16 +71,16 @@ preprocessor = ColumnTransformer(
         ('text', text_transformer, text_features)])
 
 # Pipeline with preprocessors, any other operations and a learner
-pipe = Pipeline(steps=[('preprocessor', preprocessor),
-                       #('kbest', SelectKBest(chi2)),
+pipe = Pipeline(steps=[('sampling', RandomOverSampler(sampling_strategy=RandomOverSamplerDictionary)),
+                       ('preprocessor', preprocessor),
                        #('rfe', RFE(estimator=LogisticRegression(solver="sag", max_iter=10000), step=0.5)),
                        ('selectperc', SelectPercentile(chi2)),
-                      ('clf', ClfSwitcher())])
+                       ('clf', ClfSwitcher())])
 
 # Parameter grid
 param_grid_preproc = {
     'clf__estimator': None,
-    'preprocessor__text__tfidf__ngram_range': ((1, 1), (2, 2), (1, 3)),
+    'preprocessor__text__tfidf__ngram_range': ((1, 3), (2, 3), (3, 3)),
     # Lemmatization with NLTK and spaCy returns similar results. Slightly 
     # better with spaCy, and also faster. Remove from grid below.
     #'preprocessor__text__tfidf__tokenizer': [LemmaTokenizer(tknz='spacy'),
@@ -117,7 +89,7 @@ param_grid_preproc = {
     'preprocessor__text__tfidf__min_df': [3, 1], # Value 1 is the default, which does nothing (i.e. keeps all terms)
     'preprocessor__text__tfidf__use_idf': [True, False],
     #'kbest__k': (1000, 'all'),
-    'selectperc__percentile': [10, 50, 100],
+    'selectperc__percentile': [70, 85, 100],
     #'rfecv__estimator': [DecisionTreeClassifier()],
     #'rfecv__step': (0.1, 0.25, 0.5) # Has a scoring argument too. Investigate
 }
@@ -139,6 +111,7 @@ for i in learners:
     if i.__class__.__name__ == SGDClassifier().__class__.__name__: # Perhaps try out loss='log' at some point?
         aux['clf__estimator__class_weight'] = [None, 'balanced']
         aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
+        aux['clf__estimator__loss'] = ['hinge', 'log']
     if i.__class__.__name__ == RidgeClassifier().__class__.__name__:
         aux['clf__estimator__class_weight'] = [None, 'balanced']
         aux['clf__estimator__alpha'] = (0.1, 1.0, 10.0)
@@ -157,7 +130,7 @@ for i in learners:
     # Meanwhile, we want norm='l2' (the default) for the grid defined by temp
     # variable aux above. If we don't explicitly set norm='l2' in aux, the 
     # norm column in the table of the CV results (following fitting) is 
-    # always emppty. My speculation is that Scikit-learn does consider norm
+    # always empty. My speculation is that Scikit-learn does consider norm
     # to be 'l2' for aux, but it doesn't print it. That's because unless we
     # explicitly run aux['preprocessor__text__tfidf__norm'] = ['l2'], setting
     # norm as 'l2' in aux is implicit (i.e. it's the default), while setting
@@ -185,17 +158,6 @@ for i in learners:
 # Class Balance Accuracy as well:
 # https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&context=etd
 
-# Create Class Balance Accuracy scorer (p. 40 in PDF mentioned above)
-def class_balance_accuracy_score(y_true, y_pred):
-    cm = confusion_matrix(y_true, y_pred)
-    c_i_dot = np.sum(cm, axis=1)
-    c_dot_i = np.sum(cm, axis=0)
-    cba = []
-    for i in range(len(c_dot_i)):
-        cba.append(cm[i][i] / max(c_i_dot[i], c_dot_i[i]))
-    cba = sum(cba) / (i + 1)
-    return cba
-
 # Make sure that dictionary keys for '_score' metrics don't have the word
 # 'score' oin them, e.g. key for accuracy_score() should be 'Accuracy', 
 # not 'Accuracy Score'. Also, make sure each word is capitalized.
@@ -214,14 +176,21 @@ print(prompt_text)
 refit = input()
 refit = refit.replace('_', ' ').replace(' score', '').title()
 
-gscv = RandomizedSearchCV(pipe, param_grid, n_jobs=5, return_train_score=False,
-                    cv=5, verbose=3, 
-                    scoring=scoring, refit=refit, n_iter=100)
-gscv.fit(X_train, y_train)
+prompt_text = "Pipeline is ready. Would you like to fit it? [y/n] \
+(Type 'n' if you have already fitted and saved it)"
 
-#############################################################################
-# Save model to disk
-# ------------------------------------
-# https://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
-filename = 'finalized_model_4444.sav'
-pickle.dump(gscv, open(filename, 'wb'))
+print(prompt_text)
+fit_pipeline = input()
+
+if fit_pipeline == 'y':
+    gscv = RandomizedSearchCV(pipe, param_grid, n_jobs=5, return_train_score=False,
+                              cv=5, verbose=3,
+                              scoring=scoring, refit=refit, n_iter=100)
+    gscv.fit(X_train, y_train)
+
+    #############################################################################
+    # Save model to disk
+    # ------------------------------------
+    # https://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
+    filename = 'finalized_model_4444.sav'
+    pickle.dump(gscv, open(filename, 'wb'))
