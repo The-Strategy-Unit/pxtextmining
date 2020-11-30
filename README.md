@@ -45,7 +45,7 @@ We  therefore switched to a random (or randomized) search ([`RandomizedSearchCV(
 
 Here are the results for a random search with 100 repetitions, using `spaCy` for tokenization and lemmatization, and with `LinearSVC()` switched off ([see earlier comments](#a-first-pipeline)):
 
-![]p_compare_models_bar_second_pipeline.png).
+![](p_compare_models_bar_second_pipeline.png).
 
 Performance metrics for the optimal and all other learners are [here](https://github.com/CDU-data-science-team/positive_about_change_text_mining/blob/andreas/tuning_results_class_balance_accuracy_second_pipeline.csv).
 
