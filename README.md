@@ -43,13 +43,11 @@ A major disadvantage of the grid search ([`GridSearchCV()`](https://scikit-learn
 
 We  therefore switched to a random (or randomized) search ([`RandomizedSearchCV()`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV)). With random search, the algorithm chooses randomly (hyper)parameter combinations. The number of random combinations chosen is set by the user. This significantly reduces tuning time with minimal impact on model performance. See a comparison of grid search and random search [here](https://scikit-learn.org/stable/auto_examples/model_selection/plot_randomized_search.html#sphx-glr-auto-examples-model-selection-plot-randomized-search-py) and [here](https://jmlr.csail.mit.edu/papers/v13/bergstra12a.html).
 
-Here are the results for a random search with 300 repetitions, using `spaCy` for tokenization and lemmatization, and with `LinearSVC()` switched off ([see earlier comments](#a-first-pipeline)):
+Here are the results for a random search with 100 repetitions, using `spaCy` for tokenization and lemmatization, and with `LinearSVC()` switched off ([see earlier comments](#a-first-pipeline)):
 
 ![](p_compare_models_bar_class_balance_accuracy_random_search.png).
 
-Performance metric for the optimal and all other learners are here:
-
-[tuning_results_second_pipeline.csv](https://github.com/CDU-data-science-team/positive_about_change_text_mining/blob/master/tuning_results_second_pipeline.csv).
+Performance metrics for the optimal and all other learners are [here](https://github.com/CDU-data-science-team/positive_about_change_text_mining/blob/andreas/tuning_results_class_balance_accuracy_second_pipeline.csv).
 
 #### `R` is not a good option
 We soon concluded that building the ML pipelines in `R` would be incomplete and inefficient:
