@@ -45,7 +45,7 @@ print('Matthews correlation on the test set is %s '
 
 cm = metrics.confusion_matrix(y_test, pred)
 print('Confusion matrix:\n %s' % pd.DataFrame(cm))
-metrics.plot_confusion_matrix(gscv.best_estimator_, X_test, y_test)
+#metrics.plot_confusion_matrix(gscv.best_estimator_, X_test, y_test)
 #ConfusionMatrixDisplay(cm).plot()
 
 # Accuracy per class

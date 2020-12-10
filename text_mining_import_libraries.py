@@ -24,7 +24,7 @@ from sklearn.compose import make_column_transformer
 from sklearn.compose import make_column_selector
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
+#from sklearn.pipeline import Pipeline
 from imblearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectFromModel
 from sklearn.feature_extraction.text import CountVectorizer
@@ -52,6 +52,7 @@ from sklearn.inspection import permutation_importance
 from sklearn.base import BaseEstimator, TransformerMixin
 import xgboost as xgb
 from imblearn.over_sampling import RandomOverSampler
+from imblearn import FunctionSampler
 from collections import Counter
 
 from nltk import word_tokenize

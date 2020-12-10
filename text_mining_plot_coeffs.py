@@ -1,6 +1,17 @@
 # https://medium.com/@aneesha/visualising-top-features-in-linear-svm-with-scikit-learn-and-matplotlib-3454ab18a14d
 
-gscv.best_estimator_.fit(X_train, y_train)
+gscv = joblib.load('finalized_model_4444.sav')
+
+# Extract best estimator and replace ClfSwitcher() with it in the pipeline, otherwise some functions may not work.
+# For example, metrics.plot_confusion_matrix() expects to find ('clf', BEST_ESTIMATOR()), but instead it would find
+# ('clf', ClfSwitcher(estimator=BEST_ESTIMATOR())), causing it to throw an error.
+aux = pd.DataFrame(gscv.best_params_.items())
+best_estimator = aux[aux[0] == 'clf__estimator'].reset_index()[1][0]
+estimator_position = len(gscv.best_estimator_) - 1
+gscv.best_estimator_.steps.pop(estimator_position)
+gscv.best_estimator_.steps.append(('clf', best_estimator))
+gscv.best_estimator_.fit(X_train, y_train) # Fit whole pipeline with best estimator
+
 feature_names = gscv.best_estimator_.named_steps['preprocessor'].named_transformers_['text'].named_steps['tfidf'].get_feature_names()
 
 

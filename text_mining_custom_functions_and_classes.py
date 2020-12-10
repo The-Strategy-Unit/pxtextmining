@@ -13,6 +13,7 @@ class LemmaTokenizer:
             return [t.lemma_ for t in nlp(doc,
                                           disable=["tagger", "parser", "ner"])]
 
+
 #############################################################################
 # Function for automating pipeline for > 1 learners
 # ------------------------------------
@@ -36,21 +37,36 @@ class ClfSwitcher(BaseEstimator):
     def score(self, X, y):
         return self.estimator.score(X, y)
 
+
 #############################################################################
-# Upbalance
+# Upbalancing
 # ------------------------------------
-def RandomOverSamplerDictionary(y, threshold=200):
+# First, create a function that detects rare classes, i.e. classes whose number of records
+# is smaller than the specified threshold. The function returns a dictionary. The keys are the rare classes and
+# the values are the user-specified up-balancing numbers for each class (can be numeric or array of numeric).
+# Second, define a function that uses the first function to return the up-balanced dataset.
+# Third, pass the second function to imblearn.FunctionSampler to be then passed to the pipeline (see script where
+# pipeline is constructed).
+
+def random_over_sampler_dictionary(y, threshold=200, up_balancing_counts=300):
     unique, frequency = np.unique(y, return_counts=True)
     rare_classes = pd.DataFrame()
     rare_classes['counts'], rare_classes.index = frequency, unique
-    if len(rare_classes[rare_classes.counts < threshold]) == 0:
+    if (len(rare_classes[rare_classes.counts < threshold]) == 0) or (up_balancing_counts == 0):
         rare_classes = rare_classes.to_dict()['counts']
     else:
         rare_classes = rare_classes[rare_classes.counts < threshold]
-        # rare_classes.counts = (100, 100, 100, 100, 100, 100, 100)
-        rare_classes.counts = threshold
+        rare_classes.counts = up_balancing_counts
         rare_classes = rare_classes.to_dict()['counts']
-    return(rare_classes)
+    return rare_classes
+
+
+def random_over_sampler_data_generator(X, y, threshold=200, up_balancing_counts=300, random_state=0):
+    aux = random_over_sampler_dictionary(y, threshold, up_balancing_counts)
+    return RandomOverSampler(
+        sampling_strategy=aux,
+        random_state=random_state).fit_resample(X, y)
+
 
 #############################################################################
 # Create Class Balance Accuracy scorer
