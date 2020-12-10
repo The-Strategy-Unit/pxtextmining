@@ -1,5 +1,6 @@
 Sys.setenv(RETICULATE_PYTHON = "C:/Users/andreas.soteriades/Anaconda3/envs/textminingpy38/python.exe")
 
+library(tidyverse)
 library(reticulate)
 use_python("C:/Users/andreas.soteriades/Anaconda3/envs/textminingpy38/python.exe")
 use_condaenv("textminingpy38", required = TRUE)
