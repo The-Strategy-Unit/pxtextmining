@@ -10,9 +10,20 @@ Created on Fri Oct 16 08:39:26 2020
 # Load and prepare data
 # ------------------------------------
 print('Loading dataset...')
-filename = "text_data_4444.csv"
+prompt_text = "Please supply the name (unquoted) of the dataset, incl. the data type suffix:"
+print(prompt_text)
+filename = input()
 text_data = pd.read_csv(filename)
-text_data = text_data.rename(columns={'super': 'target'})
+
+prompt_text = "Please supply the column name (unquoted) of the dependent variable:"
+print(prompt_text)
+target = input()
+
+prompt_text = "Please supply the column name (unquoted) of the independent, feedback text, variable:"
+print(prompt_text)
+predictor = input()
+
+text_data = text_data.rename(columns={target: 'target', predictor: 'improve'})
 type(text_data)
 
 # Strip punctuation, excess spaces, \r and \n from the text
@@ -22,7 +33,13 @@ print('Stripping excess spaces, whitespaces and line breaks from text...')
 for text, index in zip(text_data['improve'], text_data.index):
     aux = re.sub(' +', ' ', text) # Strip excess spaces
     aux = " ".join(text.splitlines()) # Strip \n and \r
-    text_data['improve'][index] = aux
+    # Command right below issues a warning. Comment out but keep as it's useful stuff for a Python newbie.
+    # See also
+    # https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+    # https://stackoverflow.com/questions/37841525/correct-way-to-set-value-on-a-slice-in-pandas
+    # https://stackoverflow.com/questions/20625582/how-to-deal-with-settingwithcopywarning-in-pandas
+    #text_data['improve'][index] = aux
+    text_data.loc[index, 'improve'] = aux
 
 #############################################################################
 # Calculate polarity and subjectivity of feedback and add to data
@@ -97,3 +114,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y,
                                                     shuffle=True,
                                                     random_state=42
                                                     )
+# Save the training and test set indices. They are useful for linking predicted classes to categories, dates etc.
+# in R for the dashboards
+np.savetxt('index_training_data_' + target + '.txt', X_train.index + 1, fmt='%d')
+np.savetxt('index_test_data_' + target + '.txt', X_test.index + 1, fmt='%d')
