@@ -192,5 +192,5 @@ if fit_pipeline == 'y':
     # Save model to disk
     # ------------------------------------
     # https://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
-    filename = 'finalized_model_4444.sav'
+    filename = 'finalized_model_' + target + '.sav'
     pickle.dump(gscv, open(filename, 'wb'))
