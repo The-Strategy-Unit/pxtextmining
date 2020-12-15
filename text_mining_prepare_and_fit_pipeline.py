@@ -20,17 +20,17 @@ learners = [#XGBClassifier(),
             RidgeClassifier(),
             #LinearSVC(max_iter=10000), # I always run into convergence issue with this. Switch off permanently. See hermidalc's comment on 20 Apr 2020 on https://github.com/scikit-learn/scikit-learn/issues/11536
             SGDClassifier(max_iter=10000),
-            Perceptron(),
+            #Perceptron(),
             PassiveAggressiveClassifier(),
-            BernoulliNB(),
+            #BernoulliNB(),
             ComplementNB(),
-            MultinomialNB(),
-            KNeighborsClassifier(),
-            NearestCentroid(),
-            RandomForestClassifier()
+            #MultinomialNB(),
+            #KNeighborsClassifier(),
+            #NearestCentroid(),
+            #RandomForestClassifier()
             ]
 
-#learners = [SGDClassifier(max_iter=10000)] # Uncomment this for quick & dirty experimentation
+learners = [SGDClassifier(max_iter=10000)] # Uncomment this for quick & dirty experimentation
 
 #############################################################################
 # Prepare pipeline
@@ -54,24 +54,22 @@ text_transformer = Pipeline(steps=[
     #                           stop_words='english')))]) # No easy way around stop word lists. For now, use Scikit's list in combination with max/min_df. See https://scikit-learn.org/stable/modules/feature_extraction.html#stop-words
     ('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(tknz='spacy'))))]) # https://kavita-ganesan.com/tfidftransformer-tfidfvectorizer-usage-differences/
 
-"""# Pipeline for class balancing
-classes_to_oversample = {
-    'Equality/Diversity': 1500,
-    'Involvement': 1500,
-    'Leave': 1500,
-    'MHA': 1500,
-    'Service Quality/Outcomes': 1500,
-    'Physical Health': 1500
-}"""
-
 # Pass both pipelines/preprocessors to a column transformer
 preprocessor = ColumnTransformer(
     transformers=[
         #('num', numeric_transformer, numeric_features),
         ('text', text_transformer, text_features)])
 
+# Create an up-balancing function and pass into the pipeline
+oversampler = FunctionSampler(func=random_over_sampler_data_generator,
+                              kw_args={'threshold': 200,
+                                       'up_balancing_counts': 300,
+                                       'random_state': 0},
+                              validate=False)
+
+
 # Pipeline with preprocessors, any other operations and a learner
-pipe = Pipeline(steps=[('sampling', RandomOverSampler(sampling_strategy=RandomOverSamplerDictionary)),
+pipe = Pipeline(steps=[('sampling', oversampler),
                        ('preprocessor', preprocessor),
                        #('rfe', RFE(estimator=LogisticRegression(solver="sag", max_iter=10000), step=0.5)),
                        ('selectperc', SelectPercentile(chi2)),
@@ -79,9 +77,11 @@ pipe = Pipeline(steps=[('sampling', RandomOverSampler(sampling_strategy=RandomOv
 
 # Parameter grid
 param_grid_preproc = {
+    'sampling__kw_args': [{'threshold': 100}, {'threshold': 200}], # DO NOT place value inside lists (e.g. [200]), because it will generate an error about non-matching lengths, e.g. "ValueError: ('Lengths must match to compare', (17,), (1,))".
+    'sampling__kw_args': [{'up_balancing_counts': 300}, {'up_balancing_counts': 800}],
     'clf__estimator': None,
     'preprocessor__text__tfidf__ngram_range': ((1, 3), (2, 3), (3, 3)),
-    # Lemmatization with NLTK and spaCy returns similar results. Slightly 
+    # Lemmatization with NLTK and spaCy returns similar results. Slightly
     # better with spaCy, and also faster. Remove from grid below.
     #'preprocessor__text__tfidf__tokenizer': [LemmaTokenizer(tknz='spacy'),
     #                                         LemmaTokenizer(tknz='wordnet')],
@@ -192,5 +192,5 @@ if fit_pipeline == 'y':
     # Save model to disk
     # ------------------------------------
     # https://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
-    filename = 'finalized_model_4444.sav'
+    filename = 'finalized_model_' + target + '.sav'
     pickle.dump(gscv, open(filename, 'wb'))

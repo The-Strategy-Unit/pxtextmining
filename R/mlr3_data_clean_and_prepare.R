@@ -1,4 +1,4 @@
-load('cleanData.RData')
+load('R/cleanData.RData')
 
 # Add "Couldn't be improved" class
 categoriesTable <- categoriesTable %>% 
@@ -7,7 +7,7 @@ categoriesTable <- categoriesTable %>%
       Number = 4444, type = "both")
   )
 
-source('mlr3_prompt_random_stratified_subset.R')
+source('R/mlr3_prompt_random_stratified_subset.R')
 
 pipeline_data <- trustData %>%
   mutate_if(is.factor, as.character) %>%

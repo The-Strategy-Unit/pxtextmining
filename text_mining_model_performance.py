@@ -6,7 +6,7 @@ Created on Fri Oct 16 08:24:05 2020
 @author: 
 """
 
-gscv = joblib.load('finalized_model_4444.sav')
+gscv = joblib.load('finalized_model_' + target + '.sav')
 
 # Extract best estimator and replace ClfSwitcher() with it in the pipeline, otherwise some functions may not work.
 # For example, metrics.plot_confusion_matrix() expects to find ('clf', BEST_ESTIMATOR()), but instead it would find
@@ -31,7 +31,7 @@ print('The best score from the cross-validation for \n the supplied scorer (' +
 pred = gscv.best_estimator_.predict(X_test)
 y_pred_and_x_test = pd.DataFrame(pred, columns=['pred'])
 y_pred_and_x_test['improve'] = X_test['improve'].values
-y_pred_and_x_test.to_csv('y_pred_and_x_test.csv', index=False)
+y_pred_and_x_test.to_csv('y_pred_and_x_test_' + target + '.csv', index=False)
 
 # Evaluate on test dataset
 print('Model accuracy on the test set is %s percent' 
@@ -45,7 +45,7 @@ print('Matthews correlation on the test set is %s '
 
 cm = metrics.confusion_matrix(y_test, pred)
 print('Confusion matrix:\n %s' % pd.DataFrame(cm))
-metrics.plot_confusion_matrix(gscv.best_estimator_, X_test, y_test)
+#metrics.plot_confusion_matrix(gscv.best_estimator_, X_test, y_test)
 #ConfusionMatrixDisplay(cm).plot()
 
 # Accuracy per class
@@ -55,7 +55,7 @@ accuracy_per_class.columns = ['accuracy']
 unique, frequency = np.unique(y_test, return_counts = True)
 accuracy_per_class['class'], accuracy_per_class['counts'] = unique, frequency
 accuracy_per_class = accuracy_per_class[['class', 'counts', 'accuracy']]
-accuracy_per_class.to_csv('accuracy_per_class.csv', index=False)
+accuracy_per_class.to_csv('accuracy_per_class_' + target + '.csv', index=False)
 
 # Plot all tuning results for all learners to be able to compare performances
 tuning_results = pd.DataFrame(gscv.cv_results_)
@@ -69,7 +69,7 @@ tuning_results['learner'] = tuned_learners
 y_axis = 'mean_test_' + refit
 aux = tuning_results.sort_values(y_axis, ascending=False)
 #aux = aux.filter(regex='mean|learner')
-aux.to_csv('tuning_results_' + refit.lower().replace(' ', '_') + '.csv')
+aux.to_csv('tuning_results_' + target + '_' + refit.lower().replace(' ', '_') + '.csv')
 
 #############################################################################
 # Plot results
@@ -103,5 +103,5 @@ p_compare_models_bar.set_xticklabels(p_compare_models_bar.get_xticklabels(),
 plt.legend(bbox_to_anchor=(1.01, 1), borderaxespad=0)
 p_compare_models_bar.set(xlabel=None, ylabel=None,
                      title='Learner performance ordered by ' + refit)
-filename = "p_compare_models_bar_" + refit.lower().replace(' ', '_') + ".png"
+filename = "p_compare_models_bar_" + target + "_" + refit.lower().replace(' ', '_') + ".png"
 p_compare_models_bar.figure.savefig(filename)
