@@ -19,7 +19,7 @@ See example in https://scikit-learn.org/stable/auto_examples/text/plot_document_
 learners = [#XGBClassifier(),
             RidgeClassifier(),
             #LinearSVC(max_iter=10000), # I always run into convergence issue with this. Switch off permanently. See hermidalc's comment on 20 Apr 2020 on https://github.com/scikit-learn/scikit-learn/issues/11536
-            SGDClassifier(max_iter=10000),
+            SGDClassifier(),
             #Perceptron(),
             PassiveAggressiveClassifier(),
             #BernoulliNB(),
@@ -30,7 +30,7 @@ learners = [#XGBClassifier(),
             #RandomForestClassifier()
             ]
 
-learners = [SGDClassifier(max_iter=10000)] # Uncomment this for quick & dirty experimentation
+learners = [SGDClassifier()] # Uncomment this for quick & dirty experimentation
 
 #############################################################################
 # Prepare pipeline
@@ -45,7 +45,7 @@ numeric_transformer = Pipeline(steps=[
     ('minmax', MinMaxScaler())])"""
 
 # Pipeline for text features
-text_features = 'improve' # Needs to be a scalar, otherwise TfidfVectorizer() throws an error
+text_features = 'predictor' # Needs to be a scalar, otherwise TfidfVectorizer() throws an error
 text_transformer = Pipeline(steps=[
     # Lemmatization with NLTK and spaCy returns similar results. Slightly 
     # better with spaCy, and also faster. Define spaCy as the lemmatizer here
@@ -100,6 +100,7 @@ for i in learners:
     aux['clf__estimator'] = [i]
     aux['preprocessor__text__tfidf__norm'] = ['l2'] # See long comment below
     if i.__class__.__name__ == LinearSVC().__class__.__name__:
+        aux['clf__estimator__max_iter'] = [10000]
         aux['clf__estimator__class_weight'] = [None, 'balanced']
         #aux['clf__estimator__dual'] = [True, False] # https://stackoverflow.com/questions/52670012/convergencewarning-liblinear-failed-to-converge-increase-the-number-of-iterati
     if i.__class__.__name__ == BernoulliNB().__class__.__name__:
@@ -109,6 +110,7 @@ for i in learners:
     if i.__class__.__name__ == MultinomialNB().__class__.__name__:
         aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
     if i.__class__.__name__ == SGDClassifier().__class__.__name__: # Perhaps try out loss='log' at some point?
+        aux['clf__estimator__max_iter'] = [10000]
         aux['clf__estimator__class_weight'] = [None, 'balanced']
         aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
         aux['clf__estimator__loss'] = ['hinge', 'log']

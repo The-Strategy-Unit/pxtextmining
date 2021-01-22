@@ -23,14 +23,18 @@ prompt_text = "Please supply the column name (unquoted) of the independent, feed
 print(prompt_text)
 predictor = input()
 
-text_data = text_data.rename(columns={target: 'target', predictor: 'improve'})
+text_data.columns
+text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
 type(text_data)
+text_data.columns
 
 # Strip punctuation, excess spaces, \r and \n from the text
+predictor_raw = text_data.predictor.copy() # Keep a copy of the original text
+DataFrame(predictor_raw).to_csv('predictor_raw_' + target + '.csv', index=False)
 print('Stripping punctuation from text...')
-text_data['improve'] = text_data['improve'].str.replace('[^\w\s]', '')
+text_data['predictor'] = text_data['predictor'].str.replace('[^\w\s]', '')
 print('Stripping excess spaces, whitespaces and line breaks from text...')
-for text, index in zip(text_data['improve'], text_data.index):
+for text, index in zip(text_data['predictor'], text_data.index):
     aux = re.sub(' +', ' ', text) # Strip excess spaces
     aux = " ".join(text.splitlines()) # Strip \n and \r
     # Command right below issues a warning. Comment out but keep as it's useful stuff for a Python newbie.
@@ -38,8 +42,8 @@ for text, index in zip(text_data['improve'], text_data.index):
     # https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
     # https://stackoverflow.com/questions/37841525/correct-way-to-set-value-on-a-slice-in-pandas
     # https://stackoverflow.com/questions/20625582/how-to-deal-with-settingwithcopywarning-in-pandas
-    #text_data['improve'][index] = aux
-    text_data.loc[index, 'improve'] = aux
+    #text_data['predictor'][index] = aux
+    text_data.loc[index, 'predictor'] = aux
 
 #############################################################################
 # Calculate polarity and subjectivity of feedback and add to data
@@ -49,7 +53,7 @@ for text, index in zip(text_data['improve'], text_data.index):
 """text_polarity = []
 text_subjectivity = []
 for i in range(len(text_data)):
-    tb = TextBlob(text_data['improve'][i])
+    tb = TextBlob(text_data['predictor'][i])
     text_polarity.append(tb.sentiment.polarity)
     text_subjectivity.append(tb.sentiment.subjectivity)
 
@@ -90,23 +94,23 @@ if os.path.isfile('text_data_4444_ner.csv'):
     filename = "text_data_4444_ner.csv"
     text_data = pd.read_csv(filename)
 else:
-    ner = text_data['improve'].map(ner_detector)
-    text = text_data['improve'].copy()
+    ner = text_data['predictor'].map(ner_detector)
+    text = text_data['predictor'].copy()
     
     for index, value in zip(text_data.index, ner):
         if ner[index]:
             original_string = value[0][0]
             replacer_string = '_' + value[0][1] + '_'
             text[index] = text[index].replace(original_string, replacer_string)
-        text_data['improve'] = text"""
+        text_data['predictor'] = text"""
 
 #############################################################################
 # Split a training set and a test set
 # ------------------------------------
-#X = text_data['improve']  # This way it's a series. Don't do text_data.drop(['target'], axis=1) as TfidfVectorizer() doesn't like it
-#X = text_data[['improve', 'comment_polarity', 'comment_subjectivity']]
+#X = text_data['predictor']  # This way it's a series. Don't do text_data.drop(['target'], axis=1) as TfidfVectorizer() doesn't like it
+#X = text_data[['predictor', 'comment_polarity', 'comment_subjectivity']]
 print('Preparing training and test sets...')
-X = pd.DataFrame(text_data['improve']) # Safest bet is to always have X as a DataFrame. That way, the column selector in the preprocessor doesn't complain
+X = pd.DataFrame(text_data['predictor']) # Safest bet is to always have X as a DataFrame. That way, the column selector in the preprocessor doesn't complain
 y = text_data['target'].to_numpy()
 X_train, X_test, y_train, y_test = train_test_split(X, y,
                                                     test_size=0.33,
