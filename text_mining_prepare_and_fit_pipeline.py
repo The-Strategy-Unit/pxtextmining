@@ -20,17 +20,17 @@ learners = [#XGBClassifier(),
             RidgeClassifier(),
             #LinearSVC(max_iter=10000), # I always run into convergence issue with this. Switch off permanently. See hermidalc's comment on 20 Apr 2020 on https://github.com/scikit-learn/scikit-learn/issues/11536
             SGDClassifier(),
-            #Perceptron(),
+            Perceptron(),
             PassiveAggressiveClassifier(),
-            #BernoulliNB(),
+            BernoulliNB(),
             ComplementNB(),
-            #MultinomialNB(),
+            MultinomialNB(),
             #KNeighborsClassifier(),
             #NearestCentroid(),
-            #RandomForestClassifier()
+            RandomForestClassifier()
             ]
 
-learners = [SGDClassifier()] # Uncomment this for quick & dirty experimentation
+#learners = [SGDClassifier()] # Uncomment this for quick & dirty experimentation
 
 #############################################################################
 # Prepare pipeline
