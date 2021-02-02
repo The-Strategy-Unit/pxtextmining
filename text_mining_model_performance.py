@@ -30,7 +30,7 @@ print('The best score from the cross-validation for \n the supplied scorer (' +
 # Predict on test dataset
 pred = gscv.best_estimator_.predict(X_test)
 y_pred_and_x_test = pd.DataFrame(pred, columns=['pred'])
-y_pred_and_x_test['predictor'] = predictor_raw[X_train.index]
+y_pred_and_x_test['predictor'] = predictor_raw[X_test.index]
 y_pred_and_x_test.to_csv('y_pred_and_x_test_' + target + '.csv', index=False)
 
 # Evaluate on test dataset
