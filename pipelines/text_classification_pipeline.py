@@ -1,6 +1,7 @@
 import numpy as np
 import os
 from os import path
+import shutil
 import pickle
 from factories.factory_data_prepros import factory_data_prepros
 from factories.factory_pipeline import factory_pipeline
@@ -37,7 +38,10 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                   metric=metric)
 
     results_file = results_folder_name
+    if os.path.exists(results_file):
+        shutil.rmtree(results_file)
     os.makedirs(results_file)
+    
     if "pipeline" in objects_to_save:
         if save_pipeline_as == "default":
             aux = "finalized_model_" + ".sav"
