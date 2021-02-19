@@ -28,6 +28,7 @@ def factory_data_prepros(filename, target, predictor, test_size=0.33):
     text_data['predictor'] = text_data['predictor'].str.replace('[^\w\s]', '')
     print('Stripping excess spaces, whitespaces and line breaks from text...')
     for text, index in zip(text_data['predictor'], text_data.index):
+        text = str(text)
         aux = re.sub(' +', ' ', text)
         aux = " ".join(text.splitlines())
         text_data.loc[index, 'predictor'] = aux
