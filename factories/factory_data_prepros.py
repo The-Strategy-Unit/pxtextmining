@@ -5,6 +5,16 @@ from sklearn.model_selection import train_test_split
 
 
 def factory_data_prepros(filename, target, predictor, test_size=0.33):
+    """
+    Function loads the dataset, renames the response and predictor as "target" and "predictor" respectively,
+    cleans the text in the predictor, splits the dataset into training and test sets.
+
+    :param str filename: Dataset name (CSV), including the data type suffix.
+    :param str target: Name of the response variable.
+    :param str predictor: Name of the predictor variable.
+    :param float test_size: Proportion of data that will form the test dataset.
+    :return: A tuple of length 4 predictor-train, predictor-test, target-train and target-test datasets.
+    """
 
     print('Loading dataset...')
 
@@ -13,6 +23,7 @@ def factory_data_prepros(filename, target, predictor, test_size=0.33):
     text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
 
     # predictor_raw = text_data.predictor.copy()  # Keep a copy of the original text
+    # Strip punctuation, excess spaces, \r and \n from the text
     print('Stripping punctuation from text...')
     text_data['predictor'] = text_data['predictor'].str.replace('[^\w\s]', '')
     print('Stripping excess spaces, whitespaces and line breaks from text...')

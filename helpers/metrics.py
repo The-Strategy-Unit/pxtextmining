@@ -1,12 +1,13 @@
-#############################################################################
-# Create Class Balance Accuracy scorer
-# ------------------------------------
-# See p. 40 in https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&context=etd
 import numpy as np
 from sklearn.metrics import confusion_matrix
 
 
 def class_balance_accuracy_score(y_true, y_pred):
+    """
+    Function for Class Balance Accuracy scorer
+    See p. 40 in https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&context=etd
+    """
+
     cm = confusion_matrix(y_true, y_pred)
     c_i_dot = np.sum(cm, axis=1)
     c_dot_i = np.sum(cm, axis=0)
