@@ -9,6 +9,7 @@ from factories.factory_model_performance import factory_model_performance
 
 
 def text_classification_pipeline(filename, target, predictor, test_size=0.33,
+                                 keep_emojis=True,
                                  tknz="spacy",
                                  metric="class_balance_accuracy_score",
                                  cv=5, n_iter=100, n_jobs=5, verbose=3,
@@ -25,7 +26,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  save_pipeline_as="default",
                                  results_folder_name="results"):
 
-    x_train, x_test, y_train, y_test = factory_data_prepros(filename, target, predictor, test_size)
+    x_train, x_test, y_train, y_test = factory_data_prepros(filename, target, predictor, test_size, keep_emojis)
 
     pipe = factory_pipeline(x_train, y_train, tknz=tknz, metric=metric,
                             cv=cv, n_iter=n_iter, n_jobs=n_jobs,
