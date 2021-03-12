@@ -2,6 +2,7 @@ import re
 import pandas as pd
 from os import path
 import emojis
+import mysql.connector
 from sklearn.model_selection import train_test_split
 
 
@@ -20,11 +21,21 @@ def factory_data_prepros(filename, target, predictor, test_size=0.33, keep_emoji
 
     print('Loading dataset...')
 
-    data_path = path.join('datasets', filename)
-    text_data = pd.read_csv(data_path)
+    """data_path = path.join('datasets', filename)
+    text_data = pd.read_csv(data_path, encoding='utf-8')
     text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
+"""
+    db = mysql.connector.connect(option_files="my.conf", use_pure=True)
+    with db.cursor() as cursor:
+        cursor.execute(
+            "SELECT  " + target + ", " + predictor + " FROM textData"
+        )
+        text_data = cursor.fetchall()
+        text_data = pd.DataFrame(text_data)
+        text_data.columns = cursor.column_names
+    text_data = text_data.rename(columns={target: "target", predictor: "predictor"})
+    text_data = text_data[text_data.target.notnull()]
 
-    # predictor_raw = text_data.predictor.copy()  # Keep a copy of the original text
     # Strip punctuation, excess spaces, \r and \n from the text
     print('Stripping punctuation from text...')
     #text_data['predictor'] = text_data['predictor'].str.replace('[^\w\s]', '')
@@ -50,6 +61,10 @@ def factory_data_prepros(filename, target, predictor, test_size=0.33, keep_emoji
         # Remove excess whitespaces
         aux = re.sub(" +", " ", aux)
         #aux = " ".join(text.splitlines())
+
+        if str(aux) in ("nan", "None", " "):
+            aux = "__notext__"
+
         text_data.loc[index, "predictor"] = aux
 
     print('Preparing training and test sets...')

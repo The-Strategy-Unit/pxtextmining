@@ -1,7 +1,7 @@
 from pipelines.text_classification_pipeline import text_classification_pipeline
 
 pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_train, index_test = \
-    text_classification_pipeline(filename="text_data.csv", target="target", predictor="feedback",
+    text_classification_pipeline(filename="text_data.csv", target="label", predictor="feedback",
                                  test_size=0.33,
                                  keep_emojis=False,
                                  tknz="spacy",
@@ -28,5 +28,6 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                      "index - test data",
                                      "bar plot"
                                  ],
+                                 save_objects_to_disk = True,
                                  save_pipeline_as="test_pipeline",
                                  results_folder_name="results for Super")

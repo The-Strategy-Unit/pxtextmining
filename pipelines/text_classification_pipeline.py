@@ -1,11 +1,17 @@
 import numpy as np
+import re
 import os
 from os import path
+import pandas as pd
 import shutil
 import pickle
+# import feather
+# import mysql.connector
+from sqlalchemy import create_engine
 from factories.factory_data_prepros import factory_data_prepros
 from factories.factory_pipeline import factory_pipeline
 from factories.factory_model_performance import factory_model_performance
+from factories.factory_write_results import factory_write_results
 
 
 def text_classification_pipeline(filename, target, predictor, test_size=0.33,
@@ -23,6 +29,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                      "index - test data",
                                      "bar plot"
                                  ],
+                                 save_objects_to_disk=False,
                                  save_pipeline_as="default",
                                  results_folder_name="results"):
 
@@ -38,36 +45,11 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                   x_test=x_test, y_test=y_test,
                                   metric=metric)
 
-    results_file = results_folder_name
-    if os.path.exists(results_file):
-        shutil.rmtree(results_file)
-    os.makedirs(results_file)
-    
-    if "pipeline" in objects_to_save:
-        if save_pipeline_as == "default":
-            aux = "finalized_model_" + ".sav"
-            save_pipeline_as = path.join(results_file, aux)
-        else:
-            aux = save_pipeline_as + ".sav"
-            save_pipeline_as = path.join(results_file, aux)
-        pickle.dump(pipe, open(save_pipeline_as, "wb"))
-    if "tuning results" in objects_to_save:
-        aux = path.join(results_file, "tuning_results.csv")
-        tuning_results.to_csv(aux, index=False)
-    if "predictions" in objects_to_save:
-        aux = path.join(results_file, "predictions.txt")
-        np.savetxt(aux, pred, fmt="%s")
-    if "accuracy per class" in objects_to_save:
-        aux = path.join(results_file, "accuracy_per_class.csv")
-        accuracy_per_class.to_csv(aux, index=False)
-    if "index - training data" in objects_to_save:
-        aux = path.join(results_file, "index_training_data.txt")
-        np.savetxt(aux, x_train.index + 1, fmt="%d")
-    if "index - test data" in objects_to_save:
-        aux = path.join(results_file, "index_test_data.txt")
-        np.savetxt(aux, x_test.index + 1, fmt="%d")
-    if "bar plot" in objects_to_save:
-        aux = path.join(results_file, "p_compare_models_bar_" + metric + ".png")
-        p_compare_models_bar.figure.savefig(aux)
+    pred, index_training_data, index_test_data = factory_write_results(pipe, tuning_results, pred,
+                                                                       accuracy_per_class, p_compare_models_bar,
+                                                                       target, x_train, x_test, metric,
+                                                                       objects_to_save,
+                                                                       save_objects_to_disk, save_pipeline_as,
+                                                                       results_folder_name)
 
-    return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, x_train.index, x_test.index
+    return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_training_data, index_test_data
