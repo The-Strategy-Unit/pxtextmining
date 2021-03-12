@@ -53,6 +53,16 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     y_axis = "mean_test_" + refit
     tuning_results = tuning_results.sort_values(y_axis, ascending=False)
 
+    # Convert non-numeric to strings. This is to ensure that writing to MySQL won't throw an error.
+    # (There MUST be a better way of fixing this!)
+    for i in tuning_results.columns:
+        if (
+                (not isinstance(tuning_results[i][0], float)) and
+                (not isinstance(tuning_results[i][0], int)) and
+                (not isinstance(tuning_results[i][0], str))
+        ):
+            tuning_results[i] = tuning_results[i].apply(str)
+
     print("Plotting performance of the best of each estimator...")
     aux = tuning_results.filter(regex="mean_test|learner").groupby(["learner"]).max().reset_index()
     aux = aux.sort_values([y_axis], ascending=False)
