@@ -8,14 +8,13 @@ import pickle
 # import feather
 # import mysql.connector
 from sqlalchemy import create_engine
-from factories.factory_data_prepros import factory_data_prepros
+from factories.factory_data_load_and_split import factory_data_load_and_split
 from factories.factory_pipeline import factory_pipeline
 from factories.factory_model_performance import factory_model_performance
 from factories.factory_write_results import factory_write_results
 
 
 def text_classification_pipeline(filename, target, predictor, test_size=0.33,
-                                 keep_emojis=True,
                                  tknz="spacy",
                                  metric="class_balance_accuracy_score",
                                  cv=5, n_iter=100, n_jobs=5, verbose=3,
@@ -33,7 +32,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  save_pipeline_as="default",
                                  results_folder_name="results"):
 
-    x_train, x_test, y_train, y_test = factory_data_prepros(filename, target, predictor, test_size, keep_emojis)
+    x_train, x_test, y_train, y_test = factory_data_load_and_split(filename, target, predictor, test_size)
 
     pipe = factory_pipeline(x_train, y_train, tknz=tknz, metric=metric,
                             cv=cv, n_iter=n_iter, n_jobs=n_jobs,

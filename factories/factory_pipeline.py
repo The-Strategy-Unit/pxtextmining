@@ -13,6 +13,7 @@ from sklearn.linear_model import PassiveAggressiveClassifier
 from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
 from sklearn.ensemble import RandomForestClassifier
+from helpers.text_preprocessor import text_preprocessor
 from helpers.tokenization import LemmaTokenizer
 from helpers.oversampling import random_over_sampler_data_generator
 from helpers.metrics import class_balance_accuracy_score
@@ -56,7 +57,9 @@ def factory_pipeline(x_train, y_train, tknz,
 
     text_features = 'predictor'
     text_transformer = Pipeline(steps=[
-        ('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(tknz))))])
+        ('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(tknz),
+                                   preprocessor=text_preprocessor)))])
+    #    ('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(tknz))))])
 
     preprocessor = ColumnTransformer(
         transformers=[
@@ -151,6 +154,13 @@ def factory_pipeline(x_train, y_train, tknz,
     pipe_cv = RandomizedSearchCV(pipe, param_grid, n_jobs=n_jobs, return_train_score=False,
                                  cv=cv, verbose=verbose,
                                  scoring=scoring, refit=refit, n_iter=n_iter)
+
+    # These messages are for function helpers.text_preprocessor which is passed to argument
+    # "preprocessor" in TfidfVectorizer. Having them inside text_preprocessor() prints them in each iteration,
+    # which is redundant. Having the here prints them once.
+    print('Stripping punctuation from text...')
+    print("Stripping excess spaces, whitespaces and line breaks from text...")
+
     pipe_cv.fit(x_train, y_train)
 
     return pipe_cv
