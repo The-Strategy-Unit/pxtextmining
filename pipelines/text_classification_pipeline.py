@@ -34,15 +34,10 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
 
     x_train, x_test, y_train, y_test = factory_data_load_and_split(filename, target, predictor, test_size)
 
-    pipe = factory_pipeline(x_train, y_train, tknz=tknz, metric=metric,
-                            cv=cv, n_iter=n_iter, n_jobs=n_jobs,
-                            verbose=verbose,
-                            learners=learners)
+    pipe = factory_pipeline(x_train, y_train, tknz, metric, cv, n_iter, n_jobs, verbose, learners)
 
     tuning_results, pred, accuracy_per_class, p_compare_models_bar = \
-        factory_model_performance(pipe=pipe, x_train=x_train, y_train=y_train,
-                                  x_test=x_test, y_test=y_test,
-                                  metric=metric)
+        factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric)
 
     pred, index_training_data, index_test_data = factory_write_results(pipe, tuning_results, pred,
                                                                        accuracy_per_class, p_compare_models_bar,
