@@ -36,38 +36,6 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
     text_data = text_data.rename(columns={target: "target", predictor: "predictor"})
     text_data = text_data[text_data.target.notnull()]
 
-
-    """# Strip punctuation, excess spaces, \r and \n from the text
-    print('Stripping punctuation from text...')
-    #text_data['predictor'] = text_data['predictor'].str.replace('[^\w\s]', '')
-    print("Stripping excess spaces, whitespaces and line breaks from text...")
-    for text, index in zip(text_data["predictor"], text_data.index):
-        aux = str(text)
-        aux = emojis.decode(aux)
-        pattern = "\:(.*?)\:"  # Decoded emojis are enclosed inside ":", e.g. ":blush:"
-        pattern_search = re.search(pattern, aux)
-        # We want to tell the model that words inside ":" are decoded emojis.
-        # However, "[^\w]" removes ":". It doesn't remove "_" or "__" though, so we may enclose decoded emojis
-        # inside "__" instead.
-        if pattern_search is not None:
-            emoji_decoded = pattern_search.group(1)
-            if keep_emojis:
-                aux = re.sub(pattern, "__" + emoji_decoded + "__", aux)
-                # Sometimes emojis are consecutive e.g. ❤❤ is encoded into __heart____heart__. Split them.
-                aux = re.sub("____", "__ __", aux)
-            else:
-                aux = re.sub(pattern, "", aux)
-        # Remove non-alphanumeric characters
-        aux = re.sub("[^\w]", " ", aux)
-        # Remove excess whitespaces
-        aux = re.sub(" +", " ", aux)
-        #aux = " ".join(text.splitlines())
-
-        if str(aux) in ("nan", "None", " "):
-            aux = "__notext__"
-
-        text_data.loc[index, "predictor"] = aux"""
-
     print('Preparing training and test sets...')
     x = pd.DataFrame(text_data["predictor"])
     y = text_data["target"].to_numpy()
