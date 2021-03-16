@@ -79,4 +79,7 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     p_compare_models_bar.set(xlabel=None, ylabel=None,
                              title="Learner performance ordered by " + refit)
 
-    return tuning_results, pred, accuracy_per_class, p_compare_models_bar
+    print("Fitting optimal pipeline on whole dataset...")
+    pipe.best_estimator_.fit(pd.concat([x_train, x_test]), np.concatenate([y_train, y_test]))
+
+    return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar
