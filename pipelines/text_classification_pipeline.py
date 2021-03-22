@@ -36,7 +36,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
 
     pipe = factory_pipeline(x_train, y_train, tknz, metric, cv, n_iter, n_jobs, verbose, learners)
 
-    tuning_results, pred, accuracy_per_class, p_compare_models_bar = \
+    pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar = \
         factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric)
 
     pred, index_training_data, index_test_data = factory_write_results(pipe, tuning_results, pred,
