@@ -42,15 +42,13 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     if "tuning results" in objects_to_save:
         tuning_results.to_sql(name="tuning_results_" + target, con=engine, if_exists="replace", index=False)
 
-    index_training_data = x_train.index
+    index_training_data = pd.DataFrame(x_train.index, columns=["row_index"])
     if "index - training data" in objects_to_save:
-        pd.DataFrame(index_training_data).to_sql(name="index_training_data_" + target, con=engine,
-                                                 if_exists="replace", index=False)
+        index_training_data.to_sql(name="index_training_data_" + target, con=engine, if_exists="replace", index=False)
     
-    index_test_data = x_test.index
+    index_test_data = pd.DataFrame(x_test.index, columns=["row_index"])
     if "index - test data" in objects_to_save:
-        pd.DataFrame(index_test_data).to_sql(name="index_test_data_" + target, con=engine,
-                                             if_exists="replace", index=False)
+        index_test_data.to_sql(name="index_test_data_" + target, con=engine, if_exists="replace", index=False)
 
     pred = pd.DataFrame(pred, columns=[target + "_pred"])
     pred["row_index"] = index_test_data
@@ -99,14 +97,14 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
         # feather.write_dataframe(accuracy_per_class, aux)
 
     if "index - training data" in objects_to_save and save_objects_to_disk:
-        aux = path.join(results_file, "index_training_data_" + target + ".txt")
-        np.savetxt(aux, index_training_data, fmt="%d")
+        aux = path.join(results_file, "index_training_data_" + target + ".csv")
+        index_training_data.to_csv(aux, index=False)
         # aux = path.join(results_file, "index_training_data")
         # feather.write_dataframe(pd.DataFrame(index_training_data), aux)
 
     if "index - test data" in objects_to_save and save_objects_to_disk:
-        aux = path.join(results_file, "index_test_data_" + target + ".txt")
-        np.savetxt(aux, index_test_data, fmt="%d")
+        aux = path.join(results_file, "index_test_data_" + target + ".csv")
+        index_test_data.to_csv(aux, index=False)
         # aux = path.join(results_file, "index_test_data")
         # feather.write_dataframe(pd.DataFrame(index_test_data), aux)
 
