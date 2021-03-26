@@ -1,6 +1,8 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from imblearn import FunctionSampler
 from imblearn.pipeline import Pipeline
+import spacy
+from nltk.stem import WordNetLemmatizer
 from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef
 from sklearn.compose import ColumnTransformer
 from sklearn.feature_selection import chi2, SelectPercentile
@@ -55,11 +57,16 @@ def factory_pipeline(x_train, y_train, tknz,
     :return: A fitted imblearn.pipeline.Pipeline.
     """
 
+    # Load language model to pass into LemmaTokenizer
+    if tknz == 'spacy':
+        lang_model = spacy.load("en_core_web_sm")
+    else:
+        lang_model = WordNetLemmatizer()
+
     text_features = 'predictor'
     text_transformer = Pipeline(steps=[
-        ('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(tknz),
+        ('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(lang_model, tknz),
                                    preprocessor=text_preprocessor)))])
-    #    ('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(tknz))))])
 
     preprocessor = ColumnTransformer(
         transformers=[
