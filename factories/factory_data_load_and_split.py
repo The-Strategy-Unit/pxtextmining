@@ -26,14 +26,19 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
         db = mysql.connector.connect(option_files="my.conf", use_pure=True)
         with db.cursor() as cursor:
             cursor.execute(
-                "SELECT  " + target + ", " + predictor + " FROM textData"
+                "SELECT  " + target + ", " + predictor + " FROM text_data"
             )
             text_data = cursor.fetchall()
             text_data = pd.DataFrame(text_data)
             text_data.columns = cursor.column_names
 
     text_data = text_data.rename(columns={target: "target", predictor: "predictor"})
-    text_data = text_data[text_data.target.notnull()]
+    text_data = text_data.loc[text_data.target.notnull()].copy()
+
+    if target == 'criticality':
+        text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
+        text_data.loc[text_data.target == '-5', 'target'] = '-4'
+        text_data.loc[text_data.target == '5', 'target'] = '4'
 
     print('Preparing training and test sets...')
     x = pd.DataFrame(text_data["predictor"])
