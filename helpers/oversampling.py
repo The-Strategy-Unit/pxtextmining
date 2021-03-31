@@ -8,10 +8,13 @@ def random_over_sampler_dictionary(y, threshold=200, up_balancing_counts=300):
     Function that detects rare classes.
 
     Finds classes with counts less than a specified threshold. The function performs a few validity checks:
-        1. The threshold must be smaller than the up-balancing number(s). When it's not,
-           the latter takes the value of the former.
-        2. When the up-balancing number is zero or the threshold is smaller than all class counts, then the function
-           returns the original counts.
+
+    1. The threshold must be smaller than the up-balancing number(s). When it's not,
+    the latter takes the value of the former.
+
+    2. When the up-balancing number is zero or the threshold is smaller than all class counts, then the function
+    returns the original counts.
+
     The validity checks ensure that the function does not stop the script. It's completely the user's responsibility
     to ensure that the supplied values are meaningful. For example, if each of the rare classes are > 200 in number but
     the threshold were 100 in one run and 150 in another run of the pipeline, then the result would be the original
@@ -22,7 +25,7 @@ def random_over_sampler_dictionary(y, threshold=200, up_balancing_counts=300):
     :param ndarray y: The dependent variable. Shape (n_samples, ).
     :param int threshold: The class count below which a class is considered rare.
     :param array[int] up_balancing_counts: The number by which to up-balance a class.
-    :return dict: Keys are the rare classes and values are the user-specified up-balancing numbers for each class.
+    :return: rare_classes (dict): Keys are the rare classes and values are the user-specified up-balancing numbers for each class.
     """
 
     unique, frequency = np.unique(y, return_counts=True)

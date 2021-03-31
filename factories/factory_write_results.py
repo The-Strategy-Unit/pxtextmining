@@ -24,6 +24,24 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
                           save_pipeline_as="default",
                           results_folder_name="results"):
 
+    """
+
+    :param pipe:
+    :param tuning_results:
+    :param pred:
+    :param accuracy_per_class:
+    :param p_compare_models_bar:
+    :param target:
+    :param x_train:
+    :param x_test:
+    :param metric:
+    :param objects_to_save:
+    :param save_objects_to_disk:
+    :param save_pipeline_as:
+    :param results_folder_name:
+    :return:
+    """
+
     # ====== Write results to database ====== #
     # Pull database name & host and user credentials from my.conf file
     conf = open('my.conf').readlines()

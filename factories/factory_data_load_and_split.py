@@ -13,8 +13,7 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
     :param str target: Name of the response variable.
     :param str predictor: Name of the predictor variable.
     :param float test_size: Proportion of data that will form the test dataset.
-    :param bool keep_emojis: Whether to keep and decode emojis or completely remove them from text.
-    :return: A tuple of length 4 predictor-train, predictor-test, target-train and target-test datasets.
+    :return: A tuple of length 4: predictor-train, predictor-test, target-train and target-test datasets.
     """
 
     print('Loading dataset...')

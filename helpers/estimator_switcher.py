@@ -4,7 +4,7 @@ from sklearn.linear_model import SGDClassifier
 
 class ClfSwitcher(BaseEstimator):
     """
-    Class for automating Scikit-learn/imblearn pipeline for multiple learners
+    Class for automating Scikit-learn/imblearn pipeline for multiple learners. \n
     https://stackoverflow.com/questions/48507651/multiple-classification-models-in-a-scikit-pipeline-python
     """
 

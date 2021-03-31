@@ -37,19 +37,18 @@ def factory_pipeline(x_train, y_train, tknz,
                      ]):
     """
     Function prepares and fits an imblearn.pipeline.Pipeline that consists of the following steps:
-        1. Up-sampling of rare classes.
-        2. Tokenization and lemmatization of predictor.
-        3. Feature selection. Uses sklearn.feature_selection.SelectPercentile with sklearn.feature_selection.chi2.
-        4. Fitting and benchmarking of user-supplied Scikit-learn estimators.
+    1. Up-sampling of rare classes.
+    2. Tokenization and lemmatization of predictor.
+    3. Feature selection. Uses sklearn.feature_selection.SelectPercentile with sklearn.feature_selection.chi2.
+    4. Fitting and benchmarking of user-supplied Scikit-learn estimators.
 
     :param x_train: Training data (predictor).
     :param y_train: Training data (response).
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
-    :param str metric: Scorer to use during pipeline tuning ("accuracy_score", "balanced_accuracy_score",
-        "matthews_corrcoef", "class_balance_accuracy_score").
+    :param str metric: Scorer to use during pipeline tuning ("accuracy_score", "balanced_accuracy_score", "matthews_corrcoef", "class_balance_accuracy_score").
     :param int cv: Number of cross-validation folds.
     :param int n_iter: Number of parameter settings that are sampled (see sklearn.model_selection.RandomizedSearchCV).
-    :param int n_jobs:Number of jobs to run in parallel (see sklearn.model_selection.RandomizedSearchCV).
+    :param int n_jobs: Number of jobs to run in parallel (see sklearn.model_selection.RandomizedSearchCV).
     :param int verbose: Controls the verbosity (see sklearn.model_selection.RandomizedSearchCV).
     :param list[str] learners: A list of Sci-kit learner names of the learners to tune.
     :return: A fitted imblearn.pipeline.Pipeline.

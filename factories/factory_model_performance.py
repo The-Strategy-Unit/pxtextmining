@@ -9,6 +9,17 @@ from helpers.metrics import class_balance_accuracy_score
 def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
                               metric):
 
+    """
+
+    :param pipe:
+    :param x_train:
+    :param y_train:
+    :param x_test:
+    :param y_test:
+    :param metric:
+    :return:
+    """
+
     refit = metric.replace("_", " ").replace(" score", "").title()
 
     aux = pd.DataFrame(pipe.best_params_.items())

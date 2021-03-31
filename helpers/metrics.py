@@ -4,8 +4,12 @@ from sklearn.metrics import confusion_matrix
 
 def class_balance_accuracy_score(y_true, y_pred):
     """
-    Function for Class Balance Accuracy scorer
-    See p. 40 in https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&context=etd
+    Function for Class Balance Accuracy scorer. \n
+    See p. 40 in https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&context=etd \n
+
+    :param array y_true: True classes, shape = [n_samples].
+    :param array y_pred: Predicted classes, shape = [n_samples].
+    :return: cba (float): The Class Balance Accuracy score.
     """
 
     cm = confusion_matrix(y_true, y_pred)
