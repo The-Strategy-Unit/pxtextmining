@@ -15,7 +15,7 @@ def text_length(X):
         text_length.append(len(X.loc[i, 'predictor']))
 
     text_length_df = pd.DataFrame(text_length)
-    text_length_df.columns = ['text_length1']
+    text_length_df.columns = ['text_length']
     text_length_df.index = X.index
 
     return text_length_df
