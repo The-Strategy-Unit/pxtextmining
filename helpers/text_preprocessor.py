@@ -36,6 +36,7 @@ def text_preprocessor(text_string):
 
     # Remove excess whitespaces
     text_string = re.sub(" +", " ", text_string)
+    text_string = text_string.rstrip() # Removes trailing spaces.
     # text_string = " ".join(text.splitlines())
 
     if str(text_string) in ("nan", "None", " "):
