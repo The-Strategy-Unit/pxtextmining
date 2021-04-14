@@ -4,7 +4,7 @@ from imblearn.pipeline import Pipeline
 from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import FunctionTransformer
-from sklearn.feature_selection import chi2, SelectPercentile
+from sklearn.feature_selection import SelectPercentile, chi2, f_classif
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.linear_model import RidgeClassifier
 from sklearn.svm import LinearSVC
@@ -18,10 +18,13 @@ from helpers.text_preprocessor import text_preprocessor
 from helpers.sentiment_scores import sentiment_scores
 from helpers.text_length import text_length
 from helpers.tokenization import LemmaTokenizer
+from helpers.word_vectorization import EmbeddingsTransformer
 from helpers.oversampling import random_over_sampler_data_generator
 from helpers.metrics import class_balance_accuracy_score
 from helpers.estimator_switcher import ClfSwitcher
 from helpers.scaler_switcher import ScalerSwitcher
+from helpers.feature_selection_switcher import FeatureSelectionSwitcher
+from helpers.text_transformer_switcher import TextTransformerSwitcher
 
 
 def factory_pipeline(x_train, y_train, tknz,
@@ -63,49 +66,56 @@ def factory_pipeline(x_train, y_train, tknz,
     # features_in_0_to_1 = ['text_blob_subjectivity', 'vader_neg', 'vader_neu', 'vader_pos']
     # features_positive_and_unbounded = ['text_length']
 
-    text_length_transformer = Pipeline(steps=[
+    # Define transformers for pipeline #
+    # Transformer that calculates text length and scales it.
+    transformer_text_length = Pipeline(steps=[
         ('length', (FunctionTransformer(text_length))),
         ('scaler', (ScalerSwitcher()))
     ])
 
-    sentiment_transformer = Pipeline(steps=[
+    # Transformer that calculates sentiment indicators (e.g. TextBlob, VADER) and scales them.
+    transformer_sentiment = Pipeline(steps=[
         ('sentiment', (FunctionTransformer(sentiment_scores))),
         ('scaler', (ScalerSwitcher()))
     ])
 
-    text_transformer = Pipeline(steps=[
-        ('tfidf', (TfidfVectorizer(tokenizer=LemmaTokenizer(tknz),
-                                   preprocessor=text_preprocessor)))
+    # Transformer that converts text to Bag-of_words or embeddings.
+    transformer_text = Pipeline(steps=[
+        ('text', (TextTransformerSwitcher()))
     ])
 
+    # Gather transformers.
     preprocessor = ColumnTransformer(
         transformers=[
-            ('sentimenttr', sentiment_transformer, features_text),
-            ('lengthtr', text_length_transformer, features_text),
-            ('tfidftr', text_transformer, features_text)])
+            ('sentimenttr', transformer_sentiment, features_text),
+            ('lengthtr', transformer_text_length, features_text),
+            ('texttr', transformer_text, features_text)])
 
+    # Up-sampling step #
     oversampler = FunctionSampler(func=random_over_sampler_data_generator,
                                   kw_args={'threshold': 200,
                                            'up_balancing_counts': 300,
                                            'random_state': 0},
                                   validate=False)
 
+    # Make pipeline #
     pipe = Pipeline(steps=[('sampling', oversampler),
                            ('preprocessor', preprocessor),
-                           ('selectperc', SelectPercentile(chi2)),
+                           ('featsel', FeatureSelectionSwitcher()),
                            ('clf', ClfSwitcher())])
 
+    # Define (hyper)parameter grid #
+    # A few initial value ranges for some (hyper)parameters.
     param_grid_preproc = {
         'sampling__kw_args': [{'threshold': 100}, {'threshold': 200}],
         'sampling__kw_args': [{'up_balancing_counts': 300}, {'up_balancing_counts': 800}],
         'clf__estimator': None,
-        'preprocessor__tfidftr__tfidf__ngram_range': ((1, 3), (2, 3), (3, 3)),
-        'preprocessor__tfidftr__tfidf__max_df': [0.7, 0.95],
-        'preprocessor__tfidftr__tfidf__min_df': [3, 1],
-        'preprocessor__tfidftr__tfidf__use_idf': [True, False],
-        'selectperc__percentile': [70, 85, 100],
+        'preprocessor__texttr__text__transformer': None,
+        'featsel__selector': [SelectPercentile()],
+        'featsel__selector__percentile': [70, 85, 100]
     }
 
+    # Replace learner name with learner class in 'learners' function argument.
     for i in learners:
         if i in "SGDClassifier":
             learners[learners.index(i)] = SGDClassifier()
@@ -128,56 +138,105 @@ def factory_pipeline(x_train, y_train, tknz,
         if i in "RandomForestClassifier":
             learners[learners.index(i)] = RandomForestClassifier()
 
+    # Further populate (hyper)parameter grid.
+    # NOTE ABOUT PROCESS BELOW:
+    # Use TfidfVectorizer() as CountVectorizer() also, to determine if raw
+    # counts instead of frequencies improves performance. This requires
+    # use_idf=False and norm=None. We want to ensure that norm=None
+    # will not be combined with use_idf=True inside the grid search, so we
+    # create a separate parameter set to prevent this from happening. We do
+    # this below with temp list aux1.
+    # Meanwhile, we want norm='l2' (the default) for the grid defined by temp
+    # list aux. If we don't explicitly set norm='l2' in aux, the
+    # norm column in the table of the CV results (following fitting) is
+    # always empty. My speculation is that Scikit-learn does consider norm
+    # to be 'l2' for aux, but it doesn't print it. That's because unless we
+    # explicitly run aux['preprocessor__text__tfidf__norm'] = ['l2'], setting
+    # norm as 'l2' in aux is implicit (i.e. it's the default), while setting
+    # norm as None in aux1 is explicit (i.e. done by the user). But we want
+    # the colum norm in the CV results to clearly state which runs used the
+    # 'l2' norm, hence we explicitly run command
+    # aux['preprocessor__text__tfidf__norm'] = ['l2'].
+
     param_grid = []
     for i in learners:
-        aux = param_grid_preproc.copy()
-        aux['clf__estimator'] = [i]
-        aux['preprocessor__tfidftr__tfidf__norm'] = ['l2']  # See long comment below
-        if i.__class__.__name__ == LinearSVC().__class__.__name__:
-            aux['clf__estimator__max_iter'] = [10000]
-            aux['clf__estimator__class_weight'] = [None, 'balanced']
-            # aux['clf__estimator__dual'] = [True, False] # https://stackoverflow.com/questions/52670012/convergencewarning-liblinear-failed-to-converge-increase-the-number-of-iterati
-        if i.__class__.__name__ == BernoulliNB().__class__.__name__:
-            aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
-        if i.__class__.__name__ == ComplementNB().__class__.__name__:
-            aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
-        if i.__class__.__name__ == MultinomialNB().__class__.__name__:
-            aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
-        if i.__class__.__name__ == SGDClassifier().__class__.__name__:  # Perhaps try out loss='log' at some point?
-            aux['clf__estimator__max_iter'] = [10000]
-            aux['clf__estimator__class_weight'] = [None, 'balanced']
-            aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
-            aux['clf__estimator__loss'] = ['hinge', 'log']
-        if i.__class__.__name__ == RidgeClassifier().__class__.__name__:
-            aux['clf__estimator__class_weight'] = [None, 'balanced']
-            aux['clf__estimator__alpha'] = (0.1, 1.0, 10.0)
-        if i.__class__.__name__ == Perceptron().__class__.__name__:
-            aux['clf__estimator__class_weight'] = [None, 'balanced']
-            aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
-        if i.__class__.__name__ == RandomForestClassifier().__class__.__name__:
-            aux['clf__estimator__max_features'] = ('sqrt', 0.666)
-        param_grid.append(aux)
-        aux1 = aux.copy()
-        aux1['preprocessor__tfidftr__tfidf__use_idf'] = [False]
-        aux1['preprocessor__tfidftr__tfidf__norm'] = [None]
-        param_grid.append(aux1)
+        for j in [TfidfVectorizer(), EmbeddingsTransformer()]:
+            aux = param_grid_preproc.copy()
+            aux['clf__estimator'] = [i]
+            aux['preprocessor__texttr__text__transformer'] = [j]
 
+            if i.__class__.__name__ == LinearSVC().__class__.__name__:
+                aux['clf__estimator__max_iter'] = [10000]
+                aux['clf__estimator__class_weight'] = [None, 'balanced']
+                # aux['clf__estimator__dual'] = [True, False] # https://stackoverflow.com/questions/52670012/convergencewarning-liblinear-failed-to-converge-increase-the-number-of-iterati
+            if i.__class__.__name__ == BernoulliNB().__class__.__name__:
+                aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
+            if i.__class__.__name__ == ComplementNB().__class__.__name__:
+                aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
+            if i.__class__.__name__ == MultinomialNB().__class__.__name__:
+                aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
+            if i.__class__.__name__ == SGDClassifier().__class__.__name__:  # Perhaps try out loss='log' at some point?
+                aux['clf__estimator__max_iter'] = [10000]
+                aux['clf__estimator__class_weight'] = [None, 'balanced']
+                aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
+                aux['clf__estimator__loss'] = ['hinge', 'log']
+            if i.__class__.__name__ == RidgeClassifier().__class__.__name__:
+                aux['clf__estimator__class_weight'] = [None, 'balanced']
+                aux['clf__estimator__alpha'] = (0.1, 1.0, 10.0)
+            if i.__class__.__name__ == Perceptron().__class__.__name__:
+                aux['clf__estimator__class_weight'] = [None, 'balanced']
+                aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
+            if i.__class__.__name__ == RandomForestClassifier().__class__.__name__:
+                aux['clf__estimator__max_features'] = ('sqrt', 0.666)
+
+            if j.__class__.__name__ == TfidfVectorizer().__class__.__name__:
+                aux['featsel__selector__score_func'] = [chi2]
+                aux['preprocessor__texttr__text__transformer__tokenizer'] = [LemmaTokenizer(tknz)]
+                aux['preprocessor__texttr__text__transformer__preprocessor'] = [text_preprocessor]
+                aux['preprocessor__texttr__text__transformer__norm'] = ['l2']
+                aux['preprocessor__texttr__text__transformer__ngram_range'] = ((1, 3), (2, 3), (3, 3))
+                aux['preprocessor__texttr__text__transformer__max_df'] = [0.7, 0.95]
+                aux['preprocessor__texttr__text__transformer__min_df'] = [3, 1]
+                aux['preprocessor__texttr__text__transformer__use_idf'] = [True, False]
+                param_grid.append(aux)
+
+                aux1 = aux.copy()
+                aux1['preprocessor__texttr__text__transformer__use_idf'] = [False]
+                aux1['preprocessor__texttr__text__transformer__norm'] = [None]
+                param_grid.append(aux1)
+
+            if j.__class__.__name__ == EmbeddingsTransformer().__class__.__name__:
+                aux['featsel__selector__score_func'] = [f_classif]
+
+                # We don't want learners than can't handle negative data in the embeddings.
+                if (i.__class__.__name__ == BernoulliNB().__class__.__name__) or \
+                        (i.__class__.__name__ == ComplementNB().__class__.__name__) or \
+                        (i.__class__.__name__ == MultinomialNB().__class__.__name__):
+                    aux = None
+
+                param_grid.append(aux)
+
+    param_grid = [x for x in param_grid if x is not None]
+
+    # Define fitting metric (refit) and other useful performance metrics.
     refit = metric.replace('_', ' ').replace(' score', '').title()
     scoring = {'Accuracy': make_scorer(accuracy_score),
                'Balanced Accuracy': make_scorer(balanced_accuracy_score),
                'Matthews Correlation Coefficient': make_scorer(matthews_corrcoef),
                'Class Balance Accuracy': make_scorer(class_balance_accuracy_score)}
 
+    # Define pipeline #
     pipe_cv = RandomizedSearchCV(pipe, param_grid, n_jobs=n_jobs, return_train_score=False,
                                  cv=cv, verbose=verbose,
                                  scoring=scoring, refit=refit, n_iter=n_iter)
 
-    # These messages are for function helpers.text_preprocessor which is passed to argument
-    # "preprocessor" in TfidfVectorizer. Having them inside text_preprocessor() prints them in each iteration,
-    # which is redundant. Having the here prints them once.
+    # These messages are for function helpers.text_preprocessor which is used by
+    # TfidfVectorizer() and EmbeddingsTransformer(). Having them inside text_preprocessor() prints
+    # them in each iteration, which is redundant. Having the here prints them once.
     print('Stripping punctuation from text...')
     print("Stripping excess spaces, whitespaces and line breaks from text...")
 
+    # Fit pipeline #
     pipe_cv.fit(x_train, y_train)
 
     return pipe_cv
