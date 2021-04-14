@@ -23,7 +23,7 @@ def sentiment_scores(X):
     text_blob_scores_df.columns = 'text_blob_' + text_blob_scores_df.columns
     text_blob_scores_df.index = X.index
 
-    vader_scores_df = pd.DataFrame(vader_scores)
+    vader_scores_df = pd.DataFrame.from_dict(vader_scores)
     vader_scores_df.columns = 'vader_' + vader_scores_df.columns
     vader_scores_df.index = X.index
 
