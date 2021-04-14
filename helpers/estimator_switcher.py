@@ -8,10 +8,8 @@ class ClfSwitcher(BaseEstimator):
     https://stackoverflow.com/questions/48507651/multiple-classification-models-in-a-scikit-pipeline-python
     """
 
-    def __init__(
-                 self,
-                 estimator=SGDClassifier(max_iter=10000),
-    ): self.estimator = estimator
+    def __init__(self, estimator=SGDClassifier(max_iter=10000)):
+        self.estimator = estimator
 
     def fit(self, X, y=None, **kwargs):
         self.estimator.fit(X, y)

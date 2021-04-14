@@ -8,10 +8,8 @@ class ScalerSwitcher(BaseEstimator, TransformerMixin):
     Class for choosing between Scikit-learn scalers.
     """
 
-    def __init__(
-                 self,
-                 scaler=MinMaxScaler(),
-    ): self.scaler = scaler
+    def __init__(self, scaler=MinMaxScaler()):
+        self.scaler = scaler
 
     def fit(self, X, y=None):
         return self
