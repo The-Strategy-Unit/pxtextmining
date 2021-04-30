@@ -1,4 +1,3 @@
-# from sklearn.utils.fixes import loguniform
 from sklearn.feature_extraction.text import TfidfVectorizer
 from imblearn import FunctionSampler
 from imblearn.pipeline import Pipeline
@@ -198,7 +197,6 @@ def factory_pipeline(x_train, y_train, tknz,
                 aux['preprocessor__texttr__text__transformer__norm'] = ['l2']
                 aux['preprocessor__texttr__text__transformer__ngram_range'] = ((1, 3), (2, 3), (3, 3))
                 aux['preprocessor__texttr__text__transformer__max_df'] = [0.7, 0.95]
-                # aux['preprocessor__texttr__text__transformer__max_df'] = loguniform(0.7, 0.95)
                 aux['preprocessor__texttr__text__transformer__min_df'] = [3, 1]
                 aux['preprocessor__texttr__text__transformer__use_idf'] = [True, False]
 
@@ -232,7 +230,7 @@ def factory_pipeline(x_train, y_train, tknz,
 
     # Define pipeline #
     pipe_cv = RandomizedSearchCV(pipe, param_grid, n_jobs=n_jobs, return_train_score=False,
-                                 cv=cv, # verbose=verbose,
+                                 cv=cv, verbose=verbose,
                                  scoring=scoring, refit=refit, n_iter=n_iter)
 
     # These messages are for function helpers.text_preprocessor which is used by
