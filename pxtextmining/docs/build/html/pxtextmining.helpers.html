@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>pxtextmining.helpers package &mdash; pxtextmining 0.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pxtextmining
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">pxtextmining.helpers package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers.estimator_switcher">pxtextmining.helpers.estimator_switcher module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers.metrics">pxtextmining.helpers.metrics module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers.oversampling">pxtextmining.helpers.oversampling module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers.text_preprocessor">pxtextmining.helpers.text_preprocessor module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers.tokenization">pxtextmining.helpers.tokenization module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pxtextmining</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>pxtextmining.helpers package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/pxtextmining.helpers.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pxtextmining-helpers-package">
+<h1>pxtextmining.helpers package<a class="headerlink" href="#pxtextmining-helpers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pxtextmining.helpers.estimator_switcher">
+<span id="pxtextmining-helpers-estimator-switcher-module"></span><h2>pxtextmining.helpers.estimator_switcher module<a class="headerlink" href="#module-pxtextmining.helpers.estimator_switcher" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pxtextmining.helpers.estimator_switcher.ClfSwitcher">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.estimator_switcher.</span></code><code class="sig-name descname"><span class="pre">ClfSwitcher</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">SGDClassifier(max_iter=10000)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.estimator_switcher.ClfSwitcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
+<p>Class for automating Scikit-learn/imblearn pipeline for multiple learners.</p>
+<p><a class="reference external" href="https://stackoverflow.com/questions/48507651/multiple-classification-models-in-a-scikit-pipeline-python">https://stackoverflow.com/questions/48507651/multiple-classification-models-in-a-scikit-pipeline-python</a></p>
+<dl class="py method">
+<dt id="pxtextmining.helpers.estimator_switcher.ClfSwitcher.fit">
+<code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.estimator_switcher.ClfSwitcher.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pxtextmining.helpers.estimator_switcher.ClfSwitcher.predict">
+<code class="sig-name descname"><span class="pre">predict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.estimator_switcher.ClfSwitcher.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pxtextmining.helpers.estimator_switcher.ClfSwitcher.predict_proba">
+<code class="sig-name descname"><span class="pre">predict_proba</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.estimator_switcher.ClfSwitcher.predict_proba" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pxtextmining.helpers.estimator_switcher.ClfSwitcher.score">
+<code class="sig-name descname"><span class="pre">score</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.estimator_switcher.ClfSwitcher.score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.helpers.metrics">
+<span id="pxtextmining-helpers-metrics-module"></span><h2>pxtextmining.helpers.metrics module<a class="headerlink" href="#module-pxtextmining.helpers.metrics" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pxtextmining.helpers.metrics.class_balance_accuracy_score">
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.metrics.</span></code><code class="sig-name descname"><span class="pre">class_balance_accuracy_score</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.metrics.class_balance_accuracy_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for Class Balance Accuracy scorer.</p>
+<p>See p. 40 in <a class="reference external" href="https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&amp;context=etd">https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&amp;context=etd</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>array</em>) – True classes, shape = [n_samples].</p></li>
+<li><p><strong>y_pred</strong> (<em>array</em>) – Predicted classes, shape = [n_samples].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cba (float): The Class Balance Accuracy score.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.helpers.oversampling">
+<span id="pxtextmining-helpers-oversampling-module"></span><h2>pxtextmining.helpers.oversampling module<a class="headerlink" href="#module-pxtextmining.helpers.oversampling" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pxtextmining.helpers.oversampling.random_over_sampler_data_generator">
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.oversampling.</span></code><code class="sig-name descname"><span class="pre">random_over_sampler_data_generator</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">up_balancing_counts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.oversampling.random_over_sampler_data_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses random_over_sampler_dictionary() to return the up-balanced dataset.
+Can be passed to imblearn.FunctionSampler to be then passed to imblearn.pipeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array X</strong> (<em>nd</em>) – The features table. Shape (n_samples, n_features)</p></li>
+<li><p><strong>y</strong> (<em>ndarray</em>) – The dependent variable. Shape (n_samples, ).</p></li>
+<li><p><strong>threshold</strong> (<em>int</em>) – The class count below which a class is considered rare.</p></li>
+<li><p><strong>up_balancing_counts</strong> (<em>array</em><em>[</em><em>int</em><em>]</em>) – The number by which to up-balance a class.</p></li>
+<li><p><strong>random_state</strong> (<em>int</em>) – RandomState instance or None, optional (default=None).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pxtextmining.helpers.oversampling.random_over_sampler_dictionary">
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.oversampling.</span></code><code class="sig-name descname"><span class="pre">random_over_sampler_dictionary</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">up_balancing_counts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.oversampling.random_over_sampler_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that detects rare classes.</p>
+<p>Finds classes with counts less than a specified threshold. The function performs a few validity checks:</p>
+<p>1. The threshold must be smaller than the up-balancing number(s). When it’s not,
+the latter takes the value of the former.</p>
+<p>2. When the up-balancing number is zero or the threshold is smaller than all class counts, then the function
+returns the original counts.</p>
+<p>The validity checks ensure that the function does not stop the script. It’s completely the user’s responsibility
+to ensure that the supplied values are meaningful. For example, if each of the rare classes are &gt; 200 in number but
+the threshold were 100 in one run and 150 in another run of the pipeline, then the result would be the original
+counts in both cases, i.e. there would be a redundant repetition of runs.
+Finally, the up-balancing number can be 0, an integer or a list of integers with length = number of rare classes.
+It’s the user’s responsibility to ensure that, when it’s a list, it has the correct length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>ndarray</em>) – The dependent variable. Shape (n_samples, ).</p></li>
+<li><p><strong>threshold</strong> (<em>int</em>) – The class count below which a class is considered rare.</p></li>
+<li><p><strong>up_balancing_counts</strong> (<em>array</em><em>[</em><em>int</em><em>]</em>) – The number by which to up-balance a class.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>rare_classes (dict): Keys are the rare classes and values are the user-specified up-balancing numbers for each class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.helpers.text_preprocessor">
+<span id="pxtextmining-helpers-text-preprocessor-module"></span><h2>pxtextmining.helpers.text_preprocessor module<a class="headerlink" href="#module-pxtextmining.helpers.text_preprocessor" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pxtextmining.helpers.text_preprocessor.text_preprocessor">
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.text_preprocessor.</span></code><code class="sig-name descname"><span class="pre">text_preprocessor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.text_preprocessor.text_preprocessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Strips punctuation, excess spaces, and metacharacters “r” and “n” from the text. Converts emojis into “__text__”
+(where “text” is the emoji name) and any NAs resulting from text preprocessing into “__none__”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text_string</strong> (<em>str</em>) – Text string that is passed from sklearn.feature_extraction.text.TfidfVectorizer.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>text_string (str): Cleaned text string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.helpers.tokenization">
+<span id="pxtextmining-helpers-tokenization-module"></span><h2>pxtextmining.helpers.tokenization module<a class="headerlink" href="#module-pxtextmining.helpers.tokenization" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pxtextmining.helpers.tokenization.LemmaTokenizer">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.tokenization.</span></code><code class="sig-name descname"><span class="pre">LemmaTokenizer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tknz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wordnet'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.tokenization.LemmaTokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>NLTK/spaCy-based class for lemmatizing
+<a class="reference external" href="https://scikit-learn.org/stable/modules/feature_extraction.html?highlight=stemming">https://scikit-learn.org/stable/modules/feature_extraction.html?highlight=stemming</a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.helpers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pxtextmining.helpers" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, NHS England.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
