@@ -36,6 +36,14 @@ pxtextmining.factories.factory\_write\_results module
    :undoc-members:
    :show-inheritance:
 
+pxtextmining.factories.xx module
+--------------------------------
+
+.. automodule:: pxtextmining.factories.xx
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

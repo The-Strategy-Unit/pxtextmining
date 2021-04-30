@@ -87,10 +87,16 @@
 <li><a class="reference internal" href="#">pxtextmining.helpers package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-pxtextmining.helpers.estimator_switcher">pxtextmining.helpers.estimator_switcher module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers.feature_selection_switcher">pxtextmining.helpers.feature_selection_switcher module</a></li>
 <li><a class="reference internal" href="#module-pxtextmining.helpers.metrics">pxtextmining.helpers.metrics module</a></li>
 <li><a class="reference internal" href="#module-pxtextmining.helpers.oversampling">pxtextmining.helpers.oversampling module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers.scaler_switcher">pxtextmining.helpers.scaler_switcher module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers.sentiment_scores">pxtextmining.helpers.sentiment_scores module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers.text_length">pxtextmining.helpers.text_length module</a></li>
 <li><a class="reference internal" href="#module-pxtextmining.helpers.text_preprocessor">pxtextmining.helpers.text_preprocessor module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers.text_transformer_switcher">pxtextmining.helpers.text_transformer_switcher module</a></li>
 <li><a class="reference internal" href="#module-pxtextmining.helpers.tokenization">pxtextmining.helpers.tokenization module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.helpers.word_vectorization">pxtextmining.helpers.word_vectorization module</a></li>
 <li><a class="reference internal" href="#module-pxtextmining.helpers">Module contents</a></li>
 </ul>
 </li>
@@ -197,6 +203,26 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-pxtextmining.helpers.feature_selection_switcher">
+<span id="pxtextmining-helpers-feature-selection-switcher-module"></span><h2>pxtextmining.helpers.feature_selection_switcher module<a class="headerlink" href="#module-pxtextmining.helpers.feature_selection_switcher" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pxtextmining.helpers.feature_selection_switcher.FeatureSelectionSwitcher">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.feature_selection_switcher.</span></code><code class="sig-name descname"><span class="pre">FeatureSelectionSwitcher</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">SelectPercentile()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.feature_selection_switcher.FeatureSelectionSwitcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
+<p>Class for choosing between Scikit-learn feature selection tests for use with SelectPercentile().</p>
+<dl class="py method">
+<dt id="pxtextmining.helpers.feature_selection_switcher.FeatureSelectionSwitcher.fit">
+<code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.feature_selection_switcher.FeatureSelectionSwitcher.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pxtextmining.helpers.feature_selection_switcher.FeatureSelectionSwitcher.transform">
+<code class="sig-name descname"><span class="pre">transform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.feature_selection_switcher.FeatureSelectionSwitcher.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-pxtextmining.helpers.metrics">
 <span id="pxtextmining-helpers-metrics-module"></span><h2>pxtextmining.helpers.metrics module<a class="headerlink" href="#module-pxtextmining.helpers.metrics" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
@@ -271,6 +297,58 @@ It’s the user’s responsibility to ensure that, when it’s a list, it has th
 </dd></dl>
 
 </div>
+<div class="section" id="module-pxtextmining.helpers.scaler_switcher">
+<span id="pxtextmining-helpers-scaler-switcher-module"></span><h2>pxtextmining.helpers.scaler_switcher module<a class="headerlink" href="#module-pxtextmining.helpers.scaler_switcher" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pxtextmining.helpers.scaler_switcher.ScalerSwitcher">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.scaler_switcher.</span></code><code class="sig-name descname"><span class="pre">ScalerSwitcher</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MinMaxScaler()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.scaler_switcher.ScalerSwitcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
+<p>Class for choosing between Scikit-learn scalers.</p>
+<dl class="py method">
+<dt id="pxtextmining.helpers.scaler_switcher.ScalerSwitcher.fit">
+<code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.scaler_switcher.ScalerSwitcher.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pxtextmining.helpers.scaler_switcher.ScalerSwitcher.transform">
+<code class="sig-name descname"><span class="pre">transform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.scaler_switcher.ScalerSwitcher.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.helpers.sentiment_scores">
+<span id="pxtextmining-helpers-sentiment-scores-module"></span><h2>pxtextmining.helpers.sentiment_scores module<a class="headerlink" href="#module-pxtextmining.helpers.sentiment_scores" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pxtextmining.helpers.sentiment_scores.sentiment_scores">
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.sentiment_scores.</span></code><code class="sig-name descname"><span class="pre">sentiment_scores</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.sentiment_scores.sentiment_scores" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.helpers.text_length">
+<span id="pxtextmining-helpers-text-length-module"></span><h2>pxtextmining.helpers.text_length module<a class="headerlink" href="#module-pxtextmining.helpers.text_length" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pxtextmining.helpers.text_length.text_length">
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.text_length.</span></code><code class="sig-name descname"><span class="pre">text_length</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.text_length.text_length" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-pxtextmining.helpers.text_preprocessor">
 <span id="pxtextmining-helpers-text-preprocessor-module"></span><h2>pxtextmining.helpers.text_preprocessor module<a class="headerlink" href="#module-pxtextmining.helpers.text_preprocessor" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
@@ -289,6 +367,26 @@ It’s the user’s responsibility to ensure that, when it’s a list, it has th
 </dd></dl>
 
 </div>
+<div class="section" id="module-pxtextmining.helpers.text_transformer_switcher">
+<span id="pxtextmining-helpers-text-transformer-switcher-module"></span><h2>pxtextmining.helpers.text_transformer_switcher module<a class="headerlink" href="#module-pxtextmining.helpers.text_transformer_switcher" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pxtextmining.helpers.text_transformer_switcher.TextTransformerSwitcher">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.text_transformer_switcher.</span></code><code class="sig-name descname"><span class="pre">TextTransformerSwitcher</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transformer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TfidfVectorizer()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.text_transformer_switcher.TextTransformerSwitcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
+<p>Class for choosing between Bag-of-Words and embeddings transformers.</p>
+<dl class="py method">
+<dt id="pxtextmining.helpers.text_transformer_switcher.TextTransformerSwitcher.fit">
+<code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.text_transformer_switcher.TextTransformerSwitcher.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pxtextmining.helpers.text_transformer_switcher.TextTransformerSwitcher.transform">
+<code class="sig-name descname"><span class="pre">transform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.text_transformer_switcher.TextTransformerSwitcher.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-pxtextmining.helpers.tokenization">
 <span id="pxtextmining-helpers-tokenization-module"></span><h2>pxtextmining.helpers.tokenization module<a class="headerlink" href="#module-pxtextmining.helpers.tokenization" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
@@ -297,6 +395,25 @@ It’s the user’s responsibility to ensure that, when it’s a list, it has th
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>NLTK/spaCy-based class for lemmatizing
 <a class="reference external" href="https://scikit-learn.org/stable/modules/feature_extraction.html?highlight=stemming">https://scikit-learn.org/stable/modules/feature_extraction.html?highlight=stemming</a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.helpers.word_vectorization">
+<span id="pxtextmining-helpers-word-vectorization-module"></span><h2>pxtextmining.helpers.word_vectorization module<a class="headerlink" href="#module-pxtextmining.helpers.word_vectorization" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pxtextmining.helpers.word_vectorization.EmbeddingsTransformer">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.word_vectorization.</span></code><code class="sig-name descname"><span class="pre">EmbeddingsTransformer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.word_vectorization.EmbeddingsTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
+<dl class="py method">
+<dt id="pxtextmining.helpers.word_vectorization.EmbeddingsTransformer.fit">
+<code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.word_vectorization.EmbeddingsTransformer.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pxtextmining.helpers.word_vectorization.EmbeddingsTransformer.transform">
+<code class="sig-name descname"><span class="pre">transform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.word_vectorization.EmbeddingsTransformer.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
