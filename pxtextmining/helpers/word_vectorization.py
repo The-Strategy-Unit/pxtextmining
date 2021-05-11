@@ -3,7 +3,7 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 import numpy as np
 import spacy
-from helpers.text_preprocessor import text_preprocessor
+from pxtextmining.helpers.text_preprocessor import text_preprocessor
 nlp = spacy.load("en_core_web_lg")
 
 
