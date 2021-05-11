@@ -1,4 +1,4 @@
-# positive_about_change_text_mining
+# pxtextmining
 
 ## Project description
 Nottinghamshire Healthcare NHS Foundation Trust hold  patient feedback that is currently manually labelled by our "coders" (i.e. the staff who read the feedback and decide what it is about). As we hold thousands of patient feedback records, we (the [Data Science team](https://cdu-data-science-team.github.io/team-blog/about.html)) are running this project to aid the coders with a text classification pipeline that will semi-automate the labelling process. We are also working in partnership with other NHS trusts who hold patient feedback text. Read more  [here](https://involve.nottshc.nhs.uk/blog/new-nhs-england-funded-project-in-our-team-developing-text-mining-algorithms-for-patient-feedback-data/) and [here](https://cdu-data-science-team.github.io/team-blog/posts/2020-12-14-classification-of-patient-feedback/).
