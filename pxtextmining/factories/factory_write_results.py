@@ -20,7 +20,8 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
                                      "index - test data",
                                      "bar plot"
                                  ],
-                          save_objects_to_disk=False,
+                          save_objects_to_server=False,
+                          save_objects_to_disk=True,
                           save_pipeline_as="default",
                           results_folder_name="results"):
 
@@ -42,47 +43,51 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     :return:
     """
 
-    # ====== Write results to database ====== #
-    # Pull database name & host and user credentials from my.conf file
-    conf = open('my.conf').readlines()
-    conf.pop(0)
-    for i in range(len(conf)):
-        match = re.search('=(.*)', conf[i])
-        conf[i] = match.group(1).strip()
-
-    # Connect to mysql by providing a sqlachemy engine
-    engine = create_engine(
-        "mysql+mysqlconnector://" + conf[2] + ":" + conf[3] + "@" + conf[0] + "/" + conf[1],
-        echo=False)
-
-    # Write results to database
-    print("Writing to database...")
-    if "tuning results" in objects_to_save:
-        tuning_results.to_sql(name="tuning_results_" + target, con=engine, if_exists="replace", index=False)
-
     index_training_data = pd.DataFrame(x_train.index, columns=["row_index"])
-    if "index - training data" in objects_to_save:
-        index_training_data.to_sql(name="index_training_data_" + target, con=engine, if_exists="replace", index=False)
-    
     index_test_data = pd.DataFrame(x_test.index, columns=["row_index"])
-    if "index - test data" in objects_to_save:
-        index_test_data.to_sql(name="index_test_data_" + target, con=engine, if_exists="replace", index=False)
-
     pred = pd.DataFrame(pred, columns=[target + "_pred"])
     pred["row_index"] = index_test_data
-    # aux = pd.DataFrame(index_training_data, columns=["row_index"])
-    # pred = pd.concat([pred.reset_index(drop=True), aux], axis=0)
-    if "predictions" in objects_to_save:
-        pd.DataFrame(pred).to_sql(name="predictions_test_" + target, con=engine, if_exists="replace", index=False)
 
-    if "accuracy per class" in objects_to_save:
-        accuracy_per_class.to_sql(name="accuracy_per_class_" + target, con=engine, if_exists="replace", index=False)
+    # ====== Write results to database ====== #
+    if save_objects_to_server:
+        # Pull database name & host and user credentials from my.conf file
+        conf = open('my.conf').readlines()
+        conf.pop(0)
+        for i in range(len(conf)):
+            match = re.search('=(.*)', conf[i])
+            conf[i] = match.group(1).strip()
 
-    # Write results to disk
+        # Connect to mysql by providing a sqlachemy engine
+        engine = create_engine(
+            "mysql+mysqlconnector://" + conf[2] + ":" + conf[3] + "@" + conf[0] + "/" + conf[1],
+            echo=False)
+
+        # Write results to database
+        print("Writing to database...")
+
+        if "tuning results" in objects_to_save:
+            tuning_results.to_sql(name="tuning_results_" + target, con=engine, if_exists="replace", index=False)
+
+        if "index - training data" in objects_to_save:
+            index_training_data.to_sql(name="index_training_data_" + target, con=engine, if_exists="replace",
+                                       index=False)
+
+        if "index - test data" in objects_to_save:
+            index_test_data.to_sql(name="index_test_data_" + target, con=engine, if_exists="replace", index=False)
+
+        # aux = pd.DataFrame(index_training_data, columns=["row_index"])
+        # pred = pd.concat([pred.reset_index(drop=True), aux], axis=0)
+        if "predictions" in objects_to_save:
+            pred.to_sql(name="predictions_test_" + target, con=engine, if_exists="replace", index=False)
+
+        if "accuracy per class" in objects_to_save:
+            accuracy_per_class.to_sql(name="accuracy_per_class_" + target, con=engine, if_exists="replace", index=False)
+
+    # ====== Write results to disk ====== #
     if objects_to_save:
         print("Writing to disk...")
 
-    results_file = results_folder_name
+    results_file = 'pxtextmining/' + results_folder_name
     if os.path.exists(results_file):
         shutil.rmtree(results_file)
     os.makedirs(results_file)
@@ -104,7 +109,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
 
     if "predictions" in objects_to_save and save_objects_to_disk:
         aux = path.join(results_file, "predictions_" + target + ".csv")
-        pred.to_csv(aux, index=False)
+        pd.DataFrame(pred).to_csv(aux, index=False)
         # aux = path.join(results_file, "predictions")
         # feather.write_dataframe(pd.DataFrame(pred), aux)
 

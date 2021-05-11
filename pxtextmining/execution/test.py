@@ -27,6 +27,7 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                      "index - test data",
                                      "bar plot"
                                  ],
+                                 save_objects_to_server=False,
                                  save_objects_to_disk=True,
                                  save_pipeline_as="test_pipeline",
                                  results_folder_name="results test")

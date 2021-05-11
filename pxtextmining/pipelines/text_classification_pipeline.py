@@ -28,6 +28,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                      "index - test data",
                                      "bar plot"
                                  ],
+                                 save_objects_to_server=True,
                                  save_objects_to_disk=False,
                                  save_pipeline_as="default",
                                  results_folder_name="results"):
@@ -43,6 +44,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                                                        accuracy_per_class, p_compare_models_bar,
                                                                        target, x_train, x_test, metric,
                                                                        objects_to_save,
+                                                                       save_objects_to_server,
                                                                        save_objects_to_disk, save_pipeline_as,
                                                                        results_folder_name)
 
