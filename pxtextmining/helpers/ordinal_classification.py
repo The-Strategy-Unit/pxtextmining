@@ -3,7 +3,6 @@ import pandas as pd
 from sklearn.base import clone
 from sklearn.base import BaseEstimator
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
 
 
 class OrdinalClassifier(BaseEstimator):
@@ -57,4 +56,5 @@ class OrdinalClassifier(BaseEstimator):
         return np.array(y_pred_orig_class_names)
 
     def score(self, X, y):
-        return accuracy_score(y, self.predict(X))
+        return self.estimator.score(X, y)
+
