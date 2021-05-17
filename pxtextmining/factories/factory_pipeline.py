@@ -23,12 +23,13 @@ from pxtextmining.helpers.word_vectorization import EmbeddingsTransformer
 from pxtextmining.helpers.oversampling import random_over_sampler_data_generator
 from pxtextmining.helpers.metrics import class_balance_accuracy_score
 from pxtextmining.helpers.estimator_switcher import ClfSwitcher
+from pxtextmining.helpers.ordinal_classification import OrdinalClassifier
 from pxtextmining.helpers.scaler_switcher import ScalerSwitcher
 from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwitcher
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
 
 
-def factory_pipeline(x_train, y_train, tknz,
+def factory_pipeline(ordinal, x_train, y_train, tknz,
                      metric="class_balance_accuracy_score",
                      cv=5, n_iter=100, n_jobs=5, verbose=3,
                      learners=[
@@ -100,10 +101,16 @@ def factory_pipeline(x_train, y_train, tknz,
                                   validate=False)
 
     # Make pipeline #
-    pipe = Pipeline(steps=[('sampling', oversampler),
-                           ('preprocessor', preprocessor),
-                           ('featsel', FeatureSelectionSwitcher()),
-                           ('clf', ClfSwitcher())])
+    if ordinal:
+        pipe = Pipeline(steps=[('sampling', oversampler),
+                               ('preprocessor', preprocessor),
+                               ('featsel', FeatureSelectionSwitcher()),
+                               ('clf', OrdinalClassifier())])
+    else:
+        pipe = Pipeline(steps=[('sampling', oversampler),
+                               ('preprocessor', preprocessor),
+                               ('featsel', FeatureSelectionSwitcher()),
+                               ('clf', ClfSwitcher())])
 
     # Define (hyper)parameter grid #
     # A few initial value ranges for some (hyper)parameters.
@@ -117,6 +124,10 @@ def factory_pipeline(x_train, y_train, tknz,
     }
 
     # Replace learner name with learner class in 'learners' function argument.
+    if ordinal:
+        learners = [lrn for lrn in learners if lrn not in ["RidgeClassifier", "Perceptron",
+                                                           "PassiveAggressiveClassifier", "NearestCentroid"]]
+
     for i in learners:
         if i in "SGDClassifier":
             learners[learners.index(i)] = SGDClassifier()
@@ -180,7 +191,10 @@ def factory_pipeline(x_train, y_train, tknz,
                 aux['clf__estimator__max_iter'] = [10000]
                 aux['clf__estimator__class_weight'] = [None, 'balanced']
                 aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
-                aux['clf__estimator__loss'] = ['hinge', 'log']
+                if ordinal:
+                    aux['clf__estimator__loss'] = ['log']
+                else:
+                    aux['clf__estimator__loss'] = ['hinge', 'log']
             if i.__class__.__name__ == RidgeClassifier().__class__.__name__:
                 aux['clf__estimator__class_weight'] = [None, 'balanced']
                 aux['clf__estimator__alpha'] = (0.1, 1.0, 10.0)
