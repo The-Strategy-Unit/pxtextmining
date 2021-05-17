@@ -15,6 +15,7 @@ from pxtextmining.factories.factory_write_results import factory_write_results
 
 
 def text_classification_pipeline(filename, target, predictor, test_size=0.33,
+                                 ordinal=False,
                                  tknz="spacy",
                                  metric="class_balance_accuracy_score",
                                  cv=5, n_iter=100, n_jobs=5, verbose=3,
@@ -35,7 +36,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
 
     x_train, x_test, y_train, y_test = factory_data_load_and_split(filename, target, predictor, test_size)
 
-    pipe = factory_pipeline(x_train, y_train, tknz, metric, cv, n_iter, n_jobs, verbose, learners)
+    pipe = factory_pipeline(ordinal, x_train, y_train, tknz, metric, cv, n_iter, n_jobs, verbose, learners)
 
     pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar = \
         factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric)
