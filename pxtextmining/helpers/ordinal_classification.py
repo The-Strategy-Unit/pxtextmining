@@ -10,12 +10,15 @@ class OrdinalClassifier(BaseEstimator):
     # https://towardsdatascience.com/simple-trick-to-train-an-ordinal-regression-with-any-classifier-6911183d2a3c
     """
 
-    def __init__(self, estimator=LogisticRegression()):
+    def __init__(self, estimator=LogisticRegression(), clfs={}, y_factorized=None, unique_class=None, class_dict=None):
         self.estimator = estimator
-        self.clfs = {}
+        self.clfs = clfs
+        self.y_factorized = y_factorized
+        self.unique_class = unique_class
+        self.class_dict = class_dict
 
     def fit(self, X, y=None, **kwargs):
-        self.y_factorized = pd.Series(y).factorize()[0]
+        self.y_factorized = pd.Series(y.astype('int64')).factorize(sort=True)[0]
         self.unique_class = np.sort(np.unique(self.y_factorized))
         self.class_dict = dict(zip(self.y_factorized, y))
 
