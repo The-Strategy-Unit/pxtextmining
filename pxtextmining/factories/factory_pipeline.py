@@ -81,7 +81,7 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
         ('scaler', (ScalerSwitcher()))
     ])
 
-    # Transformer that converts text to Bag-of_words or embeddings.
+    # Transformer that converts text to Bag-of-Words or embeddings.
     transformer_text = Pipeline(steps=[
         ('text', (TextTransformerSwitcher()))
     ])
