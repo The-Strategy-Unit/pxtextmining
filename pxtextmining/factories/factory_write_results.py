@@ -87,7 +87,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     if objects_to_save:
         print("Writing to disk...")
 
-    results_file = 'pxtextmining/' + results_folder_name
+    results_file = results_folder_name
     if os.path.exists(results_file):
         shutil.rmtree(results_file)
     os.makedirs(results_file)
