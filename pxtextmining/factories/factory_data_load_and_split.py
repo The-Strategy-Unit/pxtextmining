@@ -34,6 +34,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
 
     text_data = text_data.rename(columns={target: "target", predictor: "predictor"})
     text_data = text_data.loc[text_data.target.notnull()].copy()
+    text_data = text_data.loc[text_data.target.notna()].copy()
+    text_data['predictor'] = text_data.predictor.fillna('')
 
     if target == 'criticality':
         text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")

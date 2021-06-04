@@ -16,6 +16,8 @@ def sentiment_scores(X):
 
     for i in X.index:
         text = X.loc[i, 'predictor']
+        if text is None or str(text) == 'nan':
+            text = ''
         text_blob_scores.append(TextBlob(text).sentiment)
         vader_scores.append(vader_analyser.polarity_scores(text))
 
