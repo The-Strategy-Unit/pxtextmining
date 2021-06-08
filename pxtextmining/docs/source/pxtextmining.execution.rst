@@ -7,7 +7,7 @@ Submodules
 pxtextmining.execution.test module
 ----------------------------------
 
-.. automodule:: pxtextmining.execution.test
+.. automodule:: pxtextmining.execution.execution_label
    :members:
    :undoc-members:
    :show-inheritance:

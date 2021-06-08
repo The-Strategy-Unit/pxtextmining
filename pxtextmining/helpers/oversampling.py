@@ -25,7 +25,8 @@ def random_over_sampler_dictionary(y, threshold=200, up_balancing_counts=300):
     :param ndarray y: The dependent variable. Shape (n_samples, ).
     :param int threshold: The class count below which a class is considered rare.
     :param array[int] up_balancing_counts: The number by which to up-balance a class.
-    :return: rare_classes (dict): Keys are the rare classes and values are the user-specified up-balancing numbers for each class.
+    :return: rare_classes (dict): Keys are the rare classes and values are the user-specified up-balancing numbers for
+        each class.
     """
 
     unique, frequency = np.unique(y, return_counts=True)
@@ -63,7 +64,7 @@ def random_over_sampler_data_generator(X, y, threshold=200, up_balancing_counts=
     Uses random_over_sampler_dictionary() to return the up-balanced dataset.
     Can be passed to imblearn.FunctionSampler to be then passed to imblearn.pipeline.
 
-    :param nd array X: The features table. Shape (n_samples, n_features)
+    :param ndarray X: The features table. Shape (n_samples, n_features)
     :param ndarray y: The dependent variable. Shape (n_samples, ).
     :param int threshold: The class count below which a class is considered rare.
     :param array[int] up_balancing_counts: The number by which to up-balance a class.

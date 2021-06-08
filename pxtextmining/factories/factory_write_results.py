@@ -37,6 +37,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     :param x_test:
     :param metric:
     :param objects_to_save:
+    :param save_objects_to_server:
     :param save_objects_to_disk:
     :param save_pipeline_as:
     :param results_folder_name:

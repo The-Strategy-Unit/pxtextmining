@@ -28,6 +28,14 @@ pxtextmining.helpers.metrics module
    :undoc-members:
    :show-inheritance:
 
+pxtextmining.helpers.ordinal_classification module
+----------------------------------------
+
+.. automodule:: pxtextmining.helpers.ordinal_classification
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pxtextmining.helpers.oversampling module
 ----------------------------------------
 

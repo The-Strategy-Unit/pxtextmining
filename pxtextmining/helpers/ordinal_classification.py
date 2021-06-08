@@ -6,8 +6,12 @@ from sklearn.linear_model import LogisticRegression
 
 
 class OrdinalClassifier(BaseEstimator):
+
     """
-    # https://towardsdatascience.com/simple-trick-to-train-an-ordinal-regression-with-any-classifier-6911183d2a3c
+    Estimator class for building an ordinal classification model using the method of
+    `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>`_ The code in this class is
+    based on code published online in `this post
+    <https://towardsdatascience.com/simple-trick-to-train-an-ordinal-regression-with-any-classifier-6911183d2a3c>`_.
     """
 
     def __init__(self, estimator=LogisticRegression(), clfs={}, y_factorized=None, unique_class=None, class_dict=None):
