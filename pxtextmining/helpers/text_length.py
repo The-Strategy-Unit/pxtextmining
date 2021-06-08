@@ -10,7 +10,7 @@ def text_length(X):
     :return: A ``pandas.DataFrame`` with the length of each text record. Shape [n_samples, 1].
     """
 
-    X = pd.DataFrame(X).copy()
+    X = pd.DataFrame(X).copy().rename(lambda x: 'predictor', axis='columns')
     text_length = []
 
     for i in X.index:

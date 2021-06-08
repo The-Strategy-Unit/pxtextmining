@@ -15,7 +15,7 @@ def sentiment_scores(X):
     """
 
     vader_analyser = SentimentIntensityAnalyzer()
-    X = pd.DataFrame(X).copy()
+    X = pd.DataFrame(X).copy().rename(lambda x: 'predictor', axis='columns')
     text_blob_scores = []
     vader_scores = []
 
