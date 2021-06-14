@@ -5,10 +5,15 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 def sentiment_scores(X):
     """
+    Calculate sentiment indicators from `TextBlob <https://textblob.readthedocs.io/en/dev/>`_ (polarity and
+    subjectivity) and `vaderSentiment <https://pypi.org/project/vaderSentiment/>`_ (positive, negative and neutral
+    sentiments and compound score).
 
-    :param X:
-    :return:
+    :param X: A dictionary, ``pandas.DataFrame``, tuple or list with the text strings. If it is a dictionary
+        (``pandas.DataFrame``), it must have a single key (column).
+    :return: A ``pandas.DataFrame`` with the sentiment scores for each text record. Shape [n_samples, 6].
     """
+
     vader_analyser = SentimentIntensityAnalyzer()
     X = pd.DataFrame(X).copy()
     text_blob_scores = []

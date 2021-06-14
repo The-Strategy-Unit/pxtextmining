@@ -5,7 +5,8 @@ from sklearn.preprocessing import MinMaxScaler
 
 class ScalerSwitcher(BaseEstimator, TransformerMixin):
     """
-    Class for choosing between Scikit-learn scalers.
+    Class for choosing between ``Scikit-learn``
+    `scalers and preprocessors <https://scikit-learn.org/stable/modules/preprocessing.html#>`_.
     """
 
     def __init__(self, scaler=MinMaxScaler()):

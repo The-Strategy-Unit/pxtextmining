@@ -3,9 +3,11 @@ import pandas as pd
 
 def text_length(X):
     """
+    Calculate the length of a given text.
 
-    :param X:
-    :return:
+    :param X: A dictionary, ``pandas.DataFrame``, tuple or list with the text strings.
+        If it is a dictionary (``pandas.DataFrame``), it must have a single key (column).
+    :return: A ``pandas.DataFrame`` with the length of each text record. Shape [n_samples, 1].
     """
 
     X = pd.DataFrame(X).copy()
