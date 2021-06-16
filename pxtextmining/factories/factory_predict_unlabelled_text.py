@@ -3,16 +3,10 @@ import joblib
 from itertools import chain
 
 
-def factory_predict_unlabelled_text(file_path, dataset, predictor, pipe_path,
                                     preds_column=None, column_names=None):
+def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
 
-    # Load data
-    if file_path is not None:
-        if column_names is None:
-            column_names = [predictor]
-        data_unlabelled = pd.DataFrame(pd.read_csv(file_path, encoding='utf-8', usecols=column_names))
-    else:
-        data_unlabelled = pd.DataFrame(dataset)
+    data_unlabelled = pd.DataFrame(dataset)
 
     # Rename predictor column and replace NAs with empty string.
     data_unlabelled = data_unlabelled.rename(columns={predictor: "predictor"})
