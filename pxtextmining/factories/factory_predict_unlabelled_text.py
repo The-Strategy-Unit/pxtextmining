@@ -5,6 +5,23 @@ from itertools import chain
 
 def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
                                     preds_column=None, column_names='__all__'):
+    """
+    Predict unlabelled text data using a fitted `Scikit-learn`/`imblearn.pipeline.Pipeline
+        <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_.
+
+    :param dataset: A `pandas.DataFrame` (or an object that can be converted into such) with the text data to predict
+        classes for.
+    :param str predictor: The column name of the text variable.
+    :param str pipe_path: A string in the form "path_to_fitted_pipeline/pipeline.sav," where "pipeline" is the name of
+        the SAV file with the fitted `Scikit-learn`/`imblearn.pipeline.Pipeline
+        <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_.
+    :param str preds_column: The user-specified name of the column that will have the predictions. If `None` (default),
+        then the name will be `text_col_name + '_preds'`.
+    :param column_names:  A vector of strings with the names of the columns of the supplied data frame (incl.
+        `text_col_name`) to be added to the returned `pandas.DataFrame`.  If `None`, then the only column in the
+        returned data frame will be `preds_column.` Defaults to "__all__".
+    :return: A `pandas.DataFrame` with the predictions and any other columns supplied in `column_names`.
+    """
 
     data_unlabelled = pd.DataFrame(dataset)
 
