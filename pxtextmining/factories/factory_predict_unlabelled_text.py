@@ -3,8 +3,8 @@ import joblib
 from itertools import chain
 
 
-                                    preds_column=None, column_names=None):
 def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
+                                    preds_column=None, column_names='__all__'):
 
     data_unlabelled = pd.DataFrame(dataset)
 
@@ -19,11 +19,16 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
         preds_column = predictor + '_preds'
     data_unlabelled[preds_column] = predictions
 
+    data_unlabelled = data_unlabelled.rename(columns={'predictor': predictor})
+
+    # Set column names of columns to return in final data frame
+    if column_names is None:
+        column_names = [predictor]
+    elif column_names == '__all__':
+        column_names == list(data_unlabelled)
     returned_cols = [[preds_column], column_names] # column_names is a list. Put preds_column in a list to create a list
                                                    # of lists to unnest later to get a list of strings.
     returned_cols = [x for x in returned_cols if x is not None]
     returned_cols = list(chain.from_iterable(returned_cols)) # Unnest list of lists.
-
-    data_unlabelled = data_unlabelled.rename(columns={"predictor": predictor})
 
     return data_unlabelled[returned_cols]
