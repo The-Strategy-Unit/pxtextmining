@@ -9,7 +9,7 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
     data_unlabelled = pd.DataFrame(dataset)
 
     # Rename predictor column and replace NAs with empty string.
-    data_unlabelled = data_unlabelled.rename(columns={predictor: "predictor"})
+    data_unlabelled = data_unlabelled.rename(columns={predictor: 'predictor'})
     data_unlabelled['predictor'] = data_unlabelled.predictor.fillna('')
 
     # Load pipeline and make predictions
