@@ -44,29 +44,58 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
                          # "NearestCentroid",
                          "RandomForestClassifier"
                      ]):
+
     """
-    Prepare and fit an imblearn.pipeline.Pipeline that performs the following:\n
+    Prepare and fit an `imblearn.pipeline.Pipeline
+    <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_
+    that performs the following:
 
-    1. Feature engineering: converts text into TF-IDFs or GloVe word vectors with spaCy; creates a new feature that is the length of the text in each record; performs sentiment analysis on the text feature and creates sentiment features that are all scores/indicators produced by TextBlob and vaderSentiment. \n
-    1. Up-sampling of rare classes: uses imblearn to up-sample rare classes. Currently the threshold to consider a class as rare and the up-balancing values are fixed and cannot be user-defined. \n
-    1. Tokenization and lemmatization of the text feature: uses C (default) or NLTK. It also strips punctuation, excess spaces, and metacharacters "r" and "n" from the text. It converts emojis into "__text__" (where "text" is the emoji name), and NA/NULL values into "__none__". \n
-    1. Feature selection. Uses sklearn.feature_selection.SelectPercentile with sklearn.feature_selection.chi2.\n
-    1. Fitting and benchmarking of user-supplied Scikit-learn estimators.\n
+    - Feature engineering:
 
-    Grid uses default values
-    Ordinal method
+      * Converts text into TF-IDFs or `GloVe <https://nlp.stanford.edu/projects/glove/>`_ word vectors with
+        `spaCy <https://spacy.io/>`_;
+      * Creates a new feature that is the length of the text in each record;
+      * Performs sentiment analysis on the text feature and creates new features that are all scores/indicators
+        produced by `TextBlob <https://textblob.readthedocs.io/en/dev/>`_
+        and `vaderSentiment <https://pypi.org/project/vaderSentiment/>`_.
+    - Up-sampling of rare classes: uses `imblearn.over_sampling.RandomOverSampler
+      <https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.RandomOverSampler.html#imblearn.over_sampling.RandomOverSampler>`_
+      to up-sample rare classes. Currently the threshold to consider a class as rare and the up-balancing values are
+      fixed and cannot be user-defined.
+    - Tokenization and lemmatization of the text feature: uses ``spaCy`` (default) or `NLTK <https://www.nltk.org/>`_.
+      It also strips punctuation, excess spaces, and metacharacters "r" and "n" from the text. It converts emojis into
+      "__text__" (where "text" is the emoji name), and NA/NULL values into "__none__".
+    - Feature selection: Uses `sklearn.feature_selection.SelectPercentile
+      <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html>`_
+      with `sklearn.feature_selection.chi2
+      <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2>`_.
+    - Fitting and benchmarking of user-supplied ``Scikit-learn`` `estimators
+      <https://scikit-learn.org/stable/modules/classes.html>`_.
 
-    :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>` that can use any standard classification model.
+    The pipeline's parameter grid switches between two approaches to text classification: Bag-of-Words and Embeddings.
+    For the former, both TF-IDF and raw counts are tried out.
+
+    The numeric values in the grid are currently lists/tuples of values that are defined either empirically or are based
+    on the published literature (e.g. for Random Forest, see `Probst et al. (2019) <https://arxiv.org/abs/1802.09596>`_).
+    Values may be replaced by appropriate distributions in a future release.
+
+    :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of
+        `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>`_ that can use any
+        standard classification model.
     :param x_train: Training data (predictor).
     :param y_train: Training data (response).
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
-    :param str metric: Scorer to use during pipeline tuning ("accuracy_score", "balanced_accuracy_score", "matthews_corrcoef", "class_balance_accuracy_score").
+    :param str metric: Scorer to use during pipeline tuning ("accuracy_score", "balanced_accuracy_score",
+        "matthews_corrcoef", "class_balance_accuracy_score").
     :param int cv: Number of cross-validation folds.
-    :param int n_iter: Number of parameter settings that are sampled (see sklearn.model_selection.RandomizedSearchCV).
-    :param int n_jobs: Number of jobs to run in parallel (see sklearn.model_selection.RandomizedSearchCV).
-    :param int verbose: Controls the verbosity (see sklearn.model_selection.RandomizedSearchCV).
-    :param list[str] learners: A list of Sci-kit learner names of the learners to tune. Must be one or more of "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB", "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier".
-    :return: A fitted imblearn.pipeline.Pipeline.
+    :param int n_iter: Number of parameter settings that are sampled (see `sklearn.model_selection.RandomizedSearchCV
+        <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html>`_).
+    :param int n_jobs: Number of jobs to run in parallel (see ``sklearn.model_selection.RandomizedSearchCV``).
+    :param int verbose: Controls the verbosity (see ``sklearn.model_selection.RandomizedSearchCV``).
+    :param list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
+        "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
+        "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier".
+    :return: A tuned ``imblearn.pipeline.Pipeline``.
     """
 
     features_text = 'predictor'
