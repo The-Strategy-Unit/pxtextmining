@@ -46,8 +46,10 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
                      ]):
 
     """
-    Prepare and fit an `imblearn.pipeline.Pipeline
-    <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_
+    Prepare and fit a `sklearn.pipeline.Pipeline
+        <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/
+        `imblearn.pipeline.Pipeline
+        <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_
     that performs the following:
 
     - Feature engineering:
