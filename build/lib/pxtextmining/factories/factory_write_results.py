@@ -120,7 +120,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
 
     if "pipeline" in objects_to_save:
         if save_pipeline_as == "default":
-            aux = "finalized_model_" + target + ".sav"
+            aux = "pipeline_" + target + ".sav"
             save_pipeline_as = path.join(results_file, aux)
         else:
             aux = save_pipeline_as + ".sav"
