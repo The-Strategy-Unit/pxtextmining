@@ -1,13 +1,3 @@
-import numpy as np
-import re
-import os
-from os import path
-import pandas as pd
-import shutil
-import pickle
-# import feather
-# import mysql.connector
-from sqlalchemy import create_engine
 from pxtextmining.factories.factory_data_load_and_split import factory_data_load_and_split
 from pxtextmining.factories.factory_pipeline import factory_pipeline
 from pxtextmining.factories.factory_model_performance import factory_model_performance
@@ -35,6 +25,17 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  results_folder_name="results"):
 
     """
+    Fit and evaluate the pipeline and write the results. Writes between 1 to 7 files, depending on the value of argument
+    ``objects_to_save``:
+
+    - The fitted pipeline (SAV);
+    - All (hyper)parameters tried during fitting and the associated pipeline performance metrics (CSV);
+    - The predictions on the test set (CSV);
+    - Accuracies per class (CSV);
+    - The row indices of the training data (CSV);
+    - The row indices of the test data (CSV);
+    - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
+      the training set, for the best (hyper)parameter values for each learner (PNG);
 
     :param str filename: Dataset name (CSV), including the data type suffix. If None, data is read from the database.
     :param str target: Name of the response variable.
@@ -55,19 +56,32 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
         "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier".
     :param list[str] objects_to_save: Objects to save following pipeline fitting and assessment. These are:
-        the pipeline (SAV file);
-        table with all (hyper)parameter values tried out and performance indicators on the cross-validation data;
-        table with predictions on the test set;
-        table with accuracy and counts per class;
-        row indices for the training set;
-        row indices for the test set;
-        bar plot with the best-performing models- plotted values are the mean scores from a k-fold CV on the training
-        set, for the best (hyper)parameter values for each learner.
-    :param bool save_objects_to_server:
-    :param bool save_objects_to_disk:
-    :param str save_pipeline_as: Save the pipeline as "save_pipeline_as.sav".
+
+        - the pipeline (SAV file);
+        - table with all (hyper)parameter values tried out and performance indicators on the cross-validation data;
+        - table with predictions on the test set;
+        - table with accuracy and counts per class;
+        - row indices for the training set;
+        - row indices for the test set;
+        - bar plot with the best-performing models- plotted values are the mean scores from a k-fold CV on the training
+          set, for the best (hyper)parameter values for each learner;
+    :param bool save_objects_to_server: Whether to save the results to the server. **NOTE:** The feature that writes
+        results to the database is for internal use only. It will be removed when a proper API is developed for this
+        function.
+    :param bool save_objects_to_disk:  Whether to save the results to disk. See ``results_folder_name``.
+    :param str save_pipeline_as: Save the pipeline as ``save_pipeline_as + '.sav'``.
     :param str results_folder_name: Name of folder in which to save the results. It will create a new folder or
-        overwrite and existing one of the same name.
+        overwrite an existing one that has the same name.
+    :return: A ``tuple`` of length 7:
+
+        - The fitted ``Scikit-learn``/``imblearn`` pipeline;
+        - A ``pandas.DataFrame`` with all (hyper)parameter values and models tried during fitting;
+        - A ``pandas.DataFrame`` with the predictions on the test set;
+        - A ``pandas.DataFrame`` with accuracies per class;
+        - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
+          the training set, for the best (hyper)parameter values for each learner.
+        - The row indices of the training data;
+        - The row indices of the test data;
     """
 
     x_train, x_test, y_train, y_test = factory_data_load_and_split(filename, target, predictor, test_size)

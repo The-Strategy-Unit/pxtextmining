@@ -20,13 +20,16 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     :param y_train: Training data (response).
     :param x_test: Test data (predictor).
     :param y_test: Test data (response).
-    :param str metric: Scorer that was used in pipeline tuning ("accuracy_score", "balanced_accuracy_score", "matthews_corrcoef", "class_balance_accuracy_score").
-    :return: A tuple of length 5:
-            The fitted `Scikit-learn`/`imblearn` pipeline;
-            A pandas DataFrame with all (hyper)parameter values and models tried during fitting;
-            A pandas DataFrame with the predictions on the test set;
-            A pandas DataFrame with accuracies per class;
-            A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on the training set, for the best hyperparameter values for each learner.
+    :param str metric: Scorer that was used in pipeline tuning ("accuracy_score", "balanced_accuracy_score",
+        "matthews_corrcoef", "class_balance_accuracy_score").
+    :return: A ``tuple`` of length 5:
+
+            - The fitted ``Scikit-learn``/``imblearn`` pipeline;
+            - A ``pandas.DataFrame`` with all (hyper)parameter values and models tried during fitting;
+            - A ``pandas.DataFrame`` with the predictions on the test set;
+            - A ``pandas.DataFrame`` with accuracies per class;
+            - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
+              the training set, for the best (hyper)parameter values for each learner;
     """
 
     refit = metric.replace("_", " ").replace(" score", "").title()

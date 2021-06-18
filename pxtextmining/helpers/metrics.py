@@ -9,7 +9,7 @@ def class_balance_accuracy_score(y_true, y_pred):
 
     :param array y_true: True classes, shape = [n_samples].
     :param array y_pred: Predicted classes, shape = [n_samples].
-    :return: cba (float): The Class Balance Accuracy score.
+    :return: cba (`float`): The Class Balance Accuracy score.
     """
 
     cm = confusion_matrix(y_true, y_pred)

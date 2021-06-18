@@ -7,9 +7,12 @@ from sklearn.model_selection import train_test_split
 def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
     """
     Function loads the dataset, renames the response and predictor as "target" and "predictor" respectively,
-    cleans the text in the predictor, splits the dataset into training and test sets.
+    and splits the dataset into training and test sets.
 
-    :param str filename: Dataset name (CSV), including the data type suffix. If None, data is read from the database.
+    :param str filename: Dataset name (CSV), including the data type suffix. The dataset should be placed in folder
+        ``pxtextmining/datasets``. If ``filename`` is ``None``, the data are read from the database.
+        **NOTE:** The feature that reads data from the database is for internal use only. It will be removed when a
+        proper API is developed for this function.
     :param str target: Name of the response variable.
     :param str predictor: Name of the predictor variable.
     :param float test_size: Proportion of data that will form the test dataset.
@@ -37,6 +40,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
     text_data = text_data.loc[text_data.target.notna()].copy()
     text_data['predictor'] = text_data.predictor.fillna('')
 
+    # This is specific to NHS patient feedback data labelled with "criticality" classes. Should remove when a
+    # proper API is developed for this function.
     if target == 'criticality':
         text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
         text_data.loc[text_data.target == '-5', 'target'] = '-4'

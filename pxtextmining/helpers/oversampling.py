@@ -25,7 +25,7 @@ def random_over_sampler_dictionary(y, threshold=200, up_balancing_counts=300):
     :param ndarray y: The dependent variable. Shape (n_samples, ).
     :param int threshold: The class count below which a class is considered rare.
     :param array[int] up_balancing_counts: The number by which to up-balance a class.
-    :return: rare_classes (dict): Keys are the rare classes and values are the user-specified up-balancing numbers for
+    :return: rare_classes (`dict`): Keys are the rare classes and values are the user-specified up-balancing numbers for
         each class.
     """
 
@@ -68,7 +68,7 @@ def random_over_sampler_data_generator(X, y, threshold=200, up_balancing_counts=
     :param ndarray y: The dependent variable. Shape (n_samples, ).
     :param int threshold: The class count below which a class is considered rare.
     :param array[int] up_balancing_counts: The number by which to up-balance a class.
-    :param int random_state: RandomState instance or None, optional (default=None).
+    :param int random_state: RandomState instance or ``None``, optional (default=``None``).
     :return: self.
     """
 

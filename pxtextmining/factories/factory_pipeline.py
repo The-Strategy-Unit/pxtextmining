@@ -46,11 +46,7 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
                      ]):
 
     """
-    Prepare and fit a `sklearn.pipeline.Pipeline
-        <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/
-        `imblearn.pipeline.Pipeline
-        <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_
-    that performs the following:
+    Prepare and fit a text classification pipeline that performs the following:
 
     - Feature engineering:
 
@@ -77,8 +73,8 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
     The pipeline's parameter grid switches between two approaches to text classification: Bag-of-Words and Embeddings.
     For the former, both TF-IDF and raw counts are tried out.
 
-    The numeric values in the grid are currently lists/tuples of values that are defined either empirically or are based
-    on the published literature (e.g. for Random Forest, see `Probst et al. (2019) <https://arxiv.org/abs/1802.09596>`_).
+    The numeric values in the grid are currently lists/tuples of values that are defined either empirically or
+    are based on the published literature (e.g. for Random Forest, see `Probst et al. 2019 <https://arxiv.org/abs/1802.09596>`_).
     Values may be replaced by appropriate distributions in a future release.
 
     :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of
@@ -97,7 +93,10 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
     :param list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
         "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier".
-    :return: A tuned ``imblearn.pipeline.Pipeline``.
+    :return: A tuned `sklearn.pipeline.Pipeline
+        <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/
+        `imblearn.pipeline.Pipeline
+        <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_.
     """
 
     features_text = 'predictor'
