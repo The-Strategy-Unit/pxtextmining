@@ -26,22 +26,47 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
                           results_folder_name="results"):
 
     """
+    Write the fitted pipeline and associated files. Writes between 1 to 7 files, depending on the value of argument
+    ``objects_to_save``:
 
-    :param pipe:
-    :param tuning_results:
-    :param pred:
-    :param accuracy_per_class:
-    :param p_compare_models_bar:
-    :param target:
-    :param x_train:
-    :param x_test:
-    :param metric:
-    :param objects_to_save:
-    :param save_objects_to_server:
-    :param save_objects_to_disk:
-    :param save_pipeline_as:
-    :param results_folder_name:
-    :return:
+    - The fitted pipeline (SAV);
+    - All (hyper)parameters tried during fitting and the associated pipeline performance metrics (CSV);
+    - The predictions on the test set (CSV);
+    - Accuracies per class (CSV);
+    - The row indices of the training data (CSV);
+    - The row indices of the test data (CSV);
+    - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
+      the training set, for the best (hyper)parameter values for each learner (PNG);
+
+    :param pipe: Fitted `sklearn.pipeline.Pipeline
+        <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/
+        `imblearn.pipeline.Pipeline
+        <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_
+    :param pandas.core.frame.DataFrame tuning_results: All (hyper)parameter values and models tried during fitting.
+    :param pandas.core.frame.DataFrame pred: The predictions on the test set.
+    :param pandas.core.frame.DataFrame accuracy_per_class: Accuracies per class.
+    :param p_compare_models_bar: A bar plot comparing the mean scores (of the user-supplied metric parameter) from the
+        cross-validation on the training set, for the best hyperparameter values for each learner.
+    :param str target: Name of the response variable.
+    :param pandas.core.frame.DataFrame x_train: The training dataset.
+    :param pandas.core.frame.DataFrame x_test: The test dataset.
+    :param str metric: Scorer that was used in pipeline tuning ("accuracy_score",
+        "balanced_accuracy_score", "matthews_corrcoef" or "class_balance_accuracy_score").
+    :param list[str] objects_to_save: The objects to save. Should be one or more of "pipeline", "tuning results",
+        "predictions", "accuracy per class", "index - training data", "index - test data", "bar plot".
+    :param bool save_objects_to_server: Whether to save the results to the server. **NOTE:** The feature that writes
+        results to the database is for internal use only. It will be removed when a proper API is developed for this
+        function.
+    :param bool save_objects_to_disk: Whether to save the results to disk. See ``results_folder_name``.
+    :param str save_pipeline_as: Name of saved pipeline. If "default", then it will be saved as
+        ``'pipeline_' + target + '.sav'``.
+    :param str results_folder_name: Name of the folder that will contain all saved results specified in
+        ``objects_to_save``.
+    :return: A ``tuple`` of length 3 with the following ``pandas.DataFrame`` objects:
+
+            - The predictions on the test set;
+            - The row indices of the training data;
+            - The row indices of the test data;
     """
 
     index_training_data = pd.DataFrame(x_train.index, columns=["row_index"])

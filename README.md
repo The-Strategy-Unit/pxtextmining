@@ -1,4 +1,4 @@
-# pxtextmining: Text Classification of Patient Experience feedback.
+# pxtextmining: Text Classification of Patient Experience feedback
 
 ## Project description
 Nottinghamshire Healthcare NHS Foundation Trust hold  patient feedback that is currently manually labelled by our "coders" (i.e. the staff who read the feedback and decide what it is about). As we hold thousands of patient feedback records, we (the [Data Science team](https://cdu-data-science-team.github.io/team-blog/about.html)) are running this project to aid the coders with a text classification pipeline that will semi-automate the labelling process. We are also working in partnership with other NHS trusts who hold patient feedback text. Read more  [here](https://involve.nottshc.nhs.uk/blog/new-nhs-england-funded-project-in-our-team-developing-text-mining-algorithms-for-patient-feedback-data/) and [here](https://cdu-data-science-team.github.io/team-blog/posts/2020-12-14-classification-of-patient-feedback/).
@@ -10,37 +10,65 @@ __We are working openly by open-sourcing the analysis code and data where possib
 1. To begin with, download the repo.
 1. It is best to create a `Python` virtual environment. Let's call it `text_venv`.
    Open a terminal, navigate to the folder where you want to put the virtual 
-   environment and run `python3 -m venv text_venv`.
-1. Activate the virtual environment: `source text_venv/bin/activate`.
-1. Navigate to the repo's parent folder and run 
-   `pip install -r requirements.txt` (installs all the necessary
-   `Python` packages in the virtual environment `text_venv`).
-1. In the parent folder, run `python setup.py install` (installs `pxtextmining`
-   as a `Python` package).
+   environment and run 
+   - `python3 -m venv text_venv` (Linux & MacOS);
+   - `python -m venv text_venv` (Windows);
+1. Activate the virtual environment. In the folder containing folder `text_venv`
+   run:
+   - `source text_venv/bin/activate` (Linux & MacOS);
+   - `source text_venv/Scripts/activate` (Windows);
+1. Install wheel: 
+   - `pip3 install wheel`  (Linux & MacOS);
+   - `pip install wheel` (Windows);
+1. Install all the necessary `Python` packages in the virtual environment 
+   `text_venv`). Inside the repo's folder, run: 
+   - `pip3 install -r requirements.txt` (Linux & MacOS);
+   - `pip install -r requirements.txt` (Windows);
+1. Install `pxtextmining` as a `Python` package. Inside the repo's folder, 
+   run: 
+   - `python3 setup.py install` (Linux & MacOS);
+   - `python setup.py install` (Windows);
 
 All steps in one go:
 
-```
-python3 -m venv text_venv
-source text_venv/bin/activate
-pip install -r requirements.txt
-python setup.py install
-```
+1. **Linux & MacOS.**
+   ```
+   python3 -m venv text_venv
+   source text_venv/bin/activate
+   pip3 install wheel
+   pip3 install -r requirements.txt
+   python3 setup.py install
+   ```
+1. **Windows.**
+   ```
+   python -m venv text_venv
+   source text_venv/Scripts/activate
+   pip install wheel
+   pip install -r requirements.txt
+   python setup.py install
+   ```
 
 ## Execution
 
-All execution scripts should be in folder "execution". The execution scripts are
-nothing more than a call of function `pxtextmining.pipelines.text_classification_pipeline`
-with user-specified arguments. The two example scripts, `execution_label.py` and
+All execution scripts may be saved in folder "execution". The execution scripts 
+are nothing more than a call of function 
+`pxtextmining.pipelines.text_classification_pipeline` with user-specified
+arguments. The two example scripts, `execution_label.py` and
 `execution_criticality.py` run the pipeline for each of the two target variables
 in `datasets/text_data.csv`. Note that `execution_criticality.py` runs ordinal 
 classification (`ordinal=True`).
 
-The user can create their own execution script(s). Run the script in a Python 
-IDE (Integrated Development Environment) or on the terminal (don't forget to 
-activate the virtual environment) from the parent folder with 
-`python3 -m pxtextmining/execution.<script_name_without_extension>`. For example, 
-`python3 -m pxtextmining/execution.execution_label` (**do not add the `.py` extension!**).
+The user can create their own execution script(s). Run the script in a `Python` 
+IDE (Integrated Development Environment) or on the terminal (do not forget to 
+activate the virtual environment first) with:
+
+   - `python3 execution/<script_name.py>` (Linux & MacOS).
+   - `python execution/<script_name.py>` (Windows);
+
+For example:
+
+   - `python3 execution/execution_label.py` (Linux & MacOS).
+   - `python execution/execution_label.py` (Windows);
 
 ## Pipeline
 
@@ -72,13 +100,17 @@ The factories are brought together in a single function [`text_classification_pi
 script such as 
 [`test.py`](https://github.com/CDU-data-science-team/positive_about_change_text_mining/tree/develop/execution). 
 The text dataset is loaded either as CSV from folder [datasets](https://github.com/CDU-data-science-team/positive_about_change_text_mining/tree/develop/datasets) 
-or is loaded directly from the database. The former practice is _not_ recommended, 
-because `Excel` can cause all sorts of issues with text encodings. The [results](https://github.com/CDU-data-science-team/positive_about_change_text_mining/tree/develop/results) 
+or is loaded directly from the database. (Loading from/writing to the database 
+is for internal use only and this feature will be removed when a proper API is 
+developed for the functions that read/write data.) Because `Excel` can cause all
+sorts of issues with text encodings, it may be best to use 
+[`LibreOffice`](https://www.libreoffice.org/). 
+The 
+[results](https://github.com/CDU-data-science-team/positive_about_change_text_mining/tree/develop/results) 
 folder always contains a SAV of the fitted model and a PNG of the learner 
-comparison bar plot. Results in tabular form are typically saved in the database, 
-unless the user chooses to write them as CSV files in the "results" folder. 
-All results files have a "_target_variable_name" suffix, for example 
-"tuning_results_label" if the dependent variable is `label`.
+comparison bar plot. Results tables are written as CSV files in 
+a "results_" folder. All results files have a "_target_variable_name" suffix, 
+for example "tuning_results_label" if the dependent variable is `label`.
 
 Here is a visual display of the process:
 
