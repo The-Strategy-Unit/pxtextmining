@@ -4,11 +4,11 @@ import setuptools
 
 setuptools.setup(
     name='pxtextmining',
-    version='0.1.0',
-    description='Text classification pipeline',
+    version='0.2.0',
+    description='Text Classification of Patient Experience feedback',
     # long_description=open('README.txt').read() + '\n\n' + open('CHANGELOG.txt').read(),
     url='',
-    author='Andreas Soteriades',
+    author='Andreas D Soteriades',
     author_email='andreas.soteriades@nottshc.nhs.uk',
     license='MIT',
     # classifiers=,
