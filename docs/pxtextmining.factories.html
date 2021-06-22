@@ -1,0 +1,426 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>pxtextmining.factories package &mdash; pxtextmining 0.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pxtextmining
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">pxtextmining.factories package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.factories.factory_data_load_and_split">pxtextmining.factories.factory_data_load_and_split module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.factories.factory_model_performance">pxtextmining.factories.factory_model_performance module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.factories.factory_pipeline">pxtextmining.factories.factory_pipeline module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.factories.factory_predict_unlabelled_text">pxtextmining.factories.factory_predict_unlabelled_text module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.factories.factory_write_results">pxtextmining.factories.factory_write_results module</a></li>
+<li><a class="reference internal" href="#module-pxtextmining.factories">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pxtextmining</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>pxtextmining.factories package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/pxtextmining.factories.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pxtextmining-factories-package">
+<h1>pxtextmining.factories package<a class="headerlink" href="#pxtextmining-factories-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pxtextmining.factories.factory_data_load_and_split">
+<span id="pxtextmining-factories-factory-data-load-and-split-module"></span><h2>pxtextmining.factories.factory_data_load_and_split module<a class="headerlink" href="#module-pxtextmining.factories.factory_data_load_and_split" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pxtextmining.factories.factory_data_load_and_split.factory_data_load_and_split">
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_data_load_and_split.</span></code><code class="sig-name descname"><span class="pre">factory_data_load_and_split</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.33</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_data_load_and_split.factory_data_load_and_split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function loads the dataset, renames the response and predictor as “target” and “predictor” respectively,
+and splits the dataset into training and test sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – Dataset name (CSV), including the data type suffix. The dataset should be placed in folder
+<code class="docutils literal notranslate"><span class="pre">pxtextmining/datasets</span></code>. If <code class="docutils literal notranslate"><span class="pre">filename</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the data are read from the database.
+<strong>NOTE:</strong> The feature that reads data from the database is for internal use only. It will be removed when a
+proper API is developed for this function.</p></li>
+<li><p><strong>target</strong> (<em>str</em>) – Name of the response variable.</p></li>
+<li><p><strong>predictor</strong> (<em>str</em>) – Name of the predictor variable.</p></li>
+<li><p><strong>test_size</strong> (<em>float</em>) – Proportion of data that will form the test dataset.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tuple of length 4: predictor-train, predictor-test, target-train and target-test datasets.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.factories.factory_model_performance">
+<span id="pxtextmining-factories-factory-model-performance-module"></span><h2>pxtextmining.factories.factory_model_performance module<a class="headerlink" href="#module-pxtextmining.factories.factory_model_performance" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pxtextmining.factories.factory_model_performance.factory_model_performance">
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_model_performance.</span></code><code class="sig-name descname"><span class="pre">factory_model_performance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_model_performance.factory_model_performance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the performance of a fitted pipeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipe</strong> – Fitted <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">sklearn.pipeline.Pipeline</a>/
+<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline">imblearn.pipeline.Pipeline</a></p></li>
+<li><p><strong>x_train</strong> – Training data (predictor).</p></li>
+<li><p><strong>y_train</strong> – Training data (response).</p></li>
+<li><p><strong>x_test</strong> – Test data (predictor).</p></li>
+<li><p><strong>y_test</strong> – Test data (response).</p></li>
+<li><p><strong>metric</strong> (<em>str</em>) – Scorer that was used in pipeline tuning (“accuracy_score”, “balanced_accuracy_score”,
+“matthews_corrcoef”, “class_balance_accuracy_score”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A <code class="docutils literal notranslate"><span class="pre">tuple</span></code> of length 5:</p>
+<ul class="simple">
+<li><p>The fitted <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code>/<code class="docutils literal notranslate"><span class="pre">imblearn</span></code> pipeline;</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with all (hyper)parameter values and models tried during fitting;</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with the predictions on the test set;</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with accuracies per class;</p></li>
+<li><p>A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
+the training set, for the best (hyper)parameter values for each learner;</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.factories.factory_pipeline">
+<span id="pxtextmining-factories-factory-pipeline-module"></span><h2>pxtextmining.factories.factory_pipeline module<a class="headerlink" href="#module-pxtextmining.factories.factory_pipeline" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pxtextmining.factories.factory_pipeline.factory_pipeline">
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_pipeline.</span></code><code class="sig-name descname"><span class="pre">factory_pipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ordinal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tknz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'class_balance_accuracy_score'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learners</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['SGDClassifier',</span> <span class="pre">'RidgeClassifier',</span> <span class="pre">'Perceptron',</span> <span class="pre">'PassiveAggressiveClassifier',</span> <span class="pre">'BernoulliNB',</span> <span class="pre">'ComplementNB',</span> <span class="pre">'MultinomialNB',</span> <span class="pre">'RandomForestClassifier']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_pipeline.factory_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare and fit a text classification pipeline that performs the following:</p>
+<ul class="simple">
+<li><p>Feature engineering:</p>
+<ul>
+<li><p>Converts text into TF-IDFs or <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">GloVe</a> word vectors with
+<a class="reference external" href="https://spacy.io/">spaCy</a>;</p></li>
+<li><p>Creates a new feature that is the length of the text in each record;</p></li>
+<li><p>Performs sentiment analysis on the text feature and creates new features that are all scores/indicators
+produced by <a class="reference external" href="https://textblob.readthedocs.io/en/dev/">TextBlob</a>
+and <a class="reference external" href="https://pypi.org/project/vaderSentiment/">vaderSentiment</a>.</p></li>
+</ul>
+</li>
+<li><p>Up-sampling of rare classes: uses <a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.RandomOverSampler.html#imblearn.over_sampling.RandomOverSampler">imblearn.over_sampling.RandomOverSampler</a>
+to up-sample rare classes. Currently the threshold to consider a class as rare and the up-balancing values are
+fixed and cannot be user-defined.</p></li>
+<li><p>Tokenization and lemmatization of the text feature: uses <code class="docutils literal notranslate"><span class="pre">spaCy</span></code> (default) or <a class="reference external" href="https://www.nltk.org/">NLTK</a>.
+It also strips punctuation, excess spaces, and metacharacters “r” and “n” from the text. It converts emojis into
+“__text__” (where “text” is the emoji name), and NA/NULL values into “__none__”.</p></li>
+<li><p>Feature selection: Uses <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html">sklearn.feature_selection.SelectPercentile</a>
+with <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2">sklearn.feature_selection.chi2</a>.</p></li>
+<li><p>Fitting and benchmarking of user-supplied <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code> <a class="reference external" href="https://scikit-learn.org/stable/modules/classes.html">estimators</a>.</p></li>
+</ul>
+<p>The pipeline’s parameter grid switches between two approaches to text classification: Bag-of-Words and Embeddings.
+For the former, both TF-IDF and raw counts are tried out.</p>
+<p>The numeric values in the grid are currently lists/tuples of values that are defined either empirically or
+are based on the published literature (e.g. for Random Forest, see <a class="reference external" href="https://arxiv.org/abs/1802.09596">Probst et al. 2019</a>).
+Values may be replaced by appropriate distributions in a future release.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ordinal</strong> (<em>bool</em>) – Whether to fit an ordinal classification model. The ordinal model is the implementation of
+<a class="reference external" href="https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf">Frank and Hall (2001)</a> that can use any
+standard classification model.</p></li>
+<li><p><strong>x_train</strong> – Training data (predictor).</p></li>
+<li><p><strong>y_train</strong> – Training data (response).</p></li>
+<li><p><strong>tknz</strong> (<em>str</em>) – Tokenizer to use (“spacy” or “wordnet”).</p></li>
+<li><p><strong>metric</strong> (<em>str</em>) – Scorer to use during pipeline tuning (“accuracy_score”, “balanced_accuracy_score”,
+“matthews_corrcoef”, “class_balance_accuracy_score”).</p></li>
+<li><p><strong>cv</strong> (<em>int</em>) – Number of cross-validation folds.</p></li>
+<li><p><strong>n_iter</strong> (<em>int</em>) – Number of parameter settings that are sampled (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html">sklearn.model_selection.RandomizedSearchCV</a>).</p></li>
+<li><p><strong>n_jobs</strong> (<em>int</em>) – Number of jobs to run in parallel (see <code class="docutils literal notranslate"><span class="pre">sklearn.model_selection.RandomizedSearchCV</span></code>).</p></li>
+<li><p><strong>verbose</strong> (<em>int</em>) – Controls the verbosity (see <code class="docutils literal notranslate"><span class="pre">sklearn.model_selection.RandomizedSearchCV</span></code>).</p></li>
+<li><p><strong>learners</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – A list of <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code> names of the learners to tune. Must be one or more of
+“SGDClassifier”, “RidgeClassifier”, “Perceptron”, “PassiveAggressiveClassifier”, “BernoulliNB”, “ComplementNB”,
+“MultinomialNB”, “KNeighborsClassifier”, “NearestCentroid”, “RandomForestClassifier”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A tuned <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">sklearn.pipeline.Pipeline</a>/
+<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline">imblearn.pipeline.Pipeline</a>.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.factories.factory_predict_unlabelled_text">
+<span id="pxtextmining-factories-factory-predict-unlabelled-text-module"></span><h2>pxtextmining.factories.factory_predict_unlabelled_text module<a class="headerlink" href="#module-pxtextmining.factories.factory_predict_unlabelled_text" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text">
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_predict_unlabelled_text.</span></code><code class="sig-name descname"><span class="pre">factory_predict_unlabelled_text</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preds_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all_cols'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict unlabelled text data using a fitted <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">sklearn.pipeline.Pipeline</a>/<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline">imblearn.pipeline.Pipeline</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> – A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> (or an object that can be converted into such) with the text data to predict
+classes for.</p></li>
+<li><p><strong>predictor</strong> (<em>str</em>) – The column name of the text variable.</p></li>
+<li><p><strong>pipe_path</strong> (<em>str</em>) – A string in the form “path_to_fitted_pipeline/pipeline.sav,” where “pipeline” is the name of
+the SAV file with the fitted <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code>/<code class="docutils literal notranslate"><span class="pre">imblearn.pipeline.Pipeline</span></code>.</p></li>
+<li><p><strong>preds_column</strong> (<em>str</em>) – The user-specified name of the column that will have the predictions. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (default),
+then the name will be <code class="docutils literal notranslate"><span class="pre">text_col_name</span> <span class="pre">+</span> <span class="pre">'_preds'</span></code>.</p></li>
+<li><p><strong>column_names</strong> – A <code class="docutils literal notranslate"><span class="pre">list</span></code>/<code class="docutils literal notranslate"><span class="pre">tuple</span></code> of strings with the names of the columns of the supplied data frame (incl.
+<code class="docutils literal notranslate"><span class="pre">text_col_name</span></code>) to be added to the returned <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.  If “preds_only”, then the only column in
+the returned data frame will be <code class="docutils literal notranslate"><span class="pre">preds_column</span></code>. Defaults to “all_cols”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with the predictions and any other columns supplied in <code class="docutils literal notranslate"><span class="pre">column_names</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.factories.factory_write_results">
+<span id="pxtextmining-factories-factory-write-results-module"></span><h2>pxtextmining.factories.factory_write_results module<a class="headerlink" href="#module-pxtextmining.factories.factory_write_results" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pxtextmining.factories.factory_write_results.factory_write_results">
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_write_results.</span></code><code class="sig-name descname"><span class="pre">factory_write_results</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accuracy_per_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_compare_models_bar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objects_to_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['pipeline',</span> <span class="pre">'tuning</span> <span class="pre">results',</span> <span class="pre">'predictions',</span> <span class="pre">'accuracy</span> <span class="pre">per</span> <span class="pre">class',</span> <span class="pre">'index</span> <span class="pre">-</span> <span class="pre">training</span> <span class="pre">data',</span> <span class="pre">'index</span> <span class="pre">-</span> <span class="pre">test</span> <span class="pre">data',</span> <span class="pre">'bar</span> <span class="pre">plot']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_objects_to_server</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_objects_to_disk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_pipeline_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'results'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_write_results.factory_write_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the fitted pipeline and associated files. Writes between 1 to 7 files, depending on the value of argument
+<code class="docutils literal notranslate"><span class="pre">objects_to_save</span></code>:</p>
+<ul class="simple">
+<li><p>The fitted pipeline (SAV);</p></li>
+<li><p>All (hyper)parameters tried during fitting and the associated pipeline performance metrics (CSV);</p></li>
+<li><p>The predictions on the test set (CSV);</p></li>
+<li><p>Accuracies per class (CSV);</p></li>
+<li><p>The row indices of the training data (CSV);</p></li>
+<li><p>The row indices of the test data (CSV);</p></li>
+<li><p>A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
+the training set, for the best (hyper)parameter values for each learner (PNG);</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipe</strong> – <p>Fitted <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">sklearn.pipeline.Pipeline</a>/
+<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline">imblearn.pipeline.Pipeline</a></p>
+</p></li>
+<li><p><strong>tuning_results</strong> (<em>pandas.core.frame.DataFrame</em>) – All (hyper)parameter values and models tried during fitting.</p></li>
+<li><p><strong>pred</strong> (<em>pandas.core.frame.DataFrame</em>) – The predictions on the test set.</p></li>
+<li><p><strong>accuracy_per_class</strong> (<em>pandas.core.frame.DataFrame</em>) – Accuracies per class.</p></li>
+<li><p><strong>p_compare_models_bar</strong> – A bar plot comparing the mean scores (of the user-supplied metric parameter) from the
+cross-validation on the training set, for the best hyperparameter values for each learner.</p></li>
+<li><p><strong>target</strong> (<em>str</em>) – Name of the response variable.</p></li>
+<li><p><strong>x_train</strong> (<em>pandas.core.frame.DataFrame</em>) – The training dataset.</p></li>
+<li><p><strong>x_test</strong> (<em>pandas.core.frame.DataFrame</em>) – The test dataset.</p></li>
+<li><p><strong>metric</strong> (<em>str</em>) – Scorer that was used in pipeline tuning (“accuracy_score”,
+“balanced_accuracy_score”, “matthews_corrcoef” or “class_balance_accuracy_score”).</p></li>
+<li><p><strong>objects_to_save</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – The objects to save. Should be one or more of “pipeline”, “tuning results”,
+“predictions”, “accuracy per class”, “index - training data”, “index - test data”, “bar plot”.</p></li>
+<li><p><strong>save_objects_to_server</strong> (<em>bool</em>) – Whether to save the results to the server. <strong>NOTE:</strong> The feature that writes
+results to the database is for internal use only. It will be removed when a proper API is developed for this
+function.</p></li>
+<li><p><strong>save_objects_to_disk</strong> (<em>bool</em>) – Whether to save the results to disk. See <code class="docutils literal notranslate"><span class="pre">results_folder_name</span></code>.</p></li>
+<li><p><strong>save_pipeline_as</strong> (<em>str</em>) – Name of saved pipeline. If “default”, then it will be saved as
+<code class="docutils literal notranslate"><span class="pre">'pipeline_'</span> <span class="pre">+</span> <span class="pre">target</span> <span class="pre">+</span> <span class="pre">'.sav'</span></code>.</p></li>
+<li><p><strong>results_folder_name</strong> (<em>str</em>) – Name of the folder that will contain all saved results specified in
+<code class="docutils literal notranslate"><span class="pre">objects_to_save</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A <code class="docutils literal notranslate"><span class="pre">tuple</span></code> of length 3 with the following <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> objects:</p>
+<ul class="simple">
+<li><p>The predictions on the test set;</p></li>
+<li><p>The row indices of the training data;</p></li>
+<li><p>The row indices of the test data;</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pxtextmining.factories">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pxtextmining.factories" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, NHS England.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
