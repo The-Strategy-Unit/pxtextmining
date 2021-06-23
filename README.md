@@ -5,6 +5,12 @@ Nottinghamshire Healthcare NHS Foundation Trust hold  patient feedback that is c
 
 __We are working openly by open-sourcing the analysis code and data where possible to promote replication, reproducibility and further developments (pull requests are more than welcome!). We are also automating common steps in our workflow by shipping the pipeline as a [`Python`](https://www.python.org/) package broken down into sub-modules and helper functions to increase usability and documentation.__
 
+## Documentation
+1. [Installation](#installation);
+2. [Execution](#execution);
+3. Pipeline [description](#pipeline);
+4. Function/class [documentation](https://cdu-data-science-team.github.io/pxtextmining/index.html)
+
 ## Installation
 
 1. To begin with, download the repo.
@@ -78,9 +84,9 @@ During fitting, both the "Bag-of-Words" approach and a word embedding-based
 approach are tried out. The pipeline performs a random grid search ([`RandomizedSearchCV()`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV)) to identify the best-performing learner 
 and (hyper)parameter values. The process also involves a few pre- and post-fitting steps:
 
-1. Data load and split into training and test sets ([`factory_data_load_and_split.py`](https://github.com/CDU-data-science-team/positive_about_change_text_mining/blob/develop/factories/factory_data_load_and_split.py)).
+1. Data load and split into training and test sets ([`factory_data_load_and_split.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.factories.html#module-pxtextmining.factories.factory_data_load_and_split)).
 
-2. Text pre-processing (e.g. remove special characters, whitespaces and line breaks) and tokenization, token lemmatization, calculation of Term Frequency–Inverse Document Frequencies (TF-IDFs), up-balancing of rare classes, feature selection, pipeline training and learner benchmarking ([`factory_pipeline.py`](https://github.com/CDU-data-science-team/positive_about_change_text_mining/blob/develop/factories/factory_pipeline.py)).
+2. Text pre-processing (e.g. remove special characters, whitespaces and line breaks) and tokenization, token lemmatization, calculation of Term Frequency–Inverse Document Frequencies (TF-IDFs), up-balancing of rare classes, feature selection, pipeline training and learner benchmarking ([`factory_pipeline.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.factories.html#module-pxtextmining.factories.factory_pipeline)).
 
 3. Evaluation of pipeline performance on test set, production of evaluation 
 metrics (Accuracy score, 
@@ -88,17 +94,17 @@ metrics (Accuracy score,
 [Balanced Accuracy](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.balanced_accuracy_score.html) (Guyon et al., 2015, Kelleher et al., 2015) or 
 [Matthews Correlation Coefficient](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.matthews_corrcoef.html) (Baldi et al., 2000, Matthews, 1975)) and plots, and fitting of best performer 
 on whole dataset 
-([`factory_model_performance.py`](https://github.com/CDU-data-science-team/positive_about_change_text_mining/blob/develop/factories/factory_model_performance.py)).
+([`factory_model_performance.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.factories.html#module-pxtextmining.factories.factory_model_performance)).
 
 4. Writing the results: fitted pipeline, tuning results, predictions, accuracy 
-per class, model comparison bar plot, training data index, and test data index ([`factory_write_results.py`](https://github.com/CDU-data-science-team/positive_about_change_text_mining/blob/develop/factories/factory_write_results.py)).
+per class, model comparison bar plot, training data index, and test data index ([`factory_write_results.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.factories.html#module-pxtextmining.factories.factory_write_results)).
 
-There are a few helper functions and classes available in the [helpers](https://github.com/CDU-data-science-team/positive_about_change_text_mining/tree/develop/helpers) 
+There are a few helper functions and classes available in the [helpers](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.helpers.html#pxtextmining-helpers-package) 
 folder that the aforementioned factories make use of.
 
-The factories are brought together in a single function [`text_classification_pipeline.py`](https://github.com/CDU-data-science-team/positive_about_change_text_mining/tree/develop/pipelines) that runs the whole process. This function can be run in a user-made 
+The factories are brought together in a single function [`text_classification_pipeline.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.pipelines.html#pxtextmining-pipelines-package) that runs the whole process. This function can be run in a user-made 
 script such as 
-[`test.py`](https://github.com/CDU-data-science-team/positive_about_change_text_mining/tree/develop/execution). 
+[`execution/execution_label.py`](https://github.com/CDU-data-science-team/pxtextmining/tree/develop/execution). 
 The text dataset is loaded either as CSV from folder [datasets](https://github.com/CDU-data-science-team/positive_about_change_text_mining/tree/develop/datasets) 
 or is loaded directly from the database. (Loading from/writing to the database 
 is for internal use only and this feature will be removed when a proper API is 
