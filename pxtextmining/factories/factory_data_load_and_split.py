@@ -53,8 +53,7 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
     x_train, x_test, y_train, y_test = train_test_split(x, y,
                                                         test_size=test_size,
                                                         stratify=y,
-                                                        shuffle=True,
-                                                        # random_state=42 # https://stackoverflow.com/questions/28064634/random-state-pseudo-random-number-in-scikit-learn
+                                                        shuffle=True
                                                         )
 
     return x_train, x_test, y_train, y_test
