@@ -4,7 +4,7 @@ from imblearn.pipeline import Pipeline
 # from sklearn.pipeline import Pipeline
 from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import FunctionTransformer
+from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, StandardScaler
 from sklearn.feature_selection import SelectPercentile, chi2, f_classif
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.linear_model import RidgeClassifier
@@ -105,13 +105,13 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
     # features_positive_and_unbounded = ['text_length']
 
     # Define transformers for pipeline #
-    # Transformer that calculates text length and scales it.
+    # Transformer that calculates text length and transforms it.
     transformer_text_length = Pipeline(steps=[
         ('length', (FunctionTransformer(text_length))),
         ('scaler', (ScalerSwitcher()))
     ])
 
-    # Transformer that calculates sentiment indicators (e.g. TextBlob, VADER) and scales them.
+    # Transformer that calculates sentiment indicators (e.g. TextBlob, VADER) and transforms them.
     transformer_sentiment = Pipeline(steps=[
         ('sentiment', (FunctionTransformer(sentiment_scores))),
         ('scaler', (ScalerSwitcher()))
@@ -154,6 +154,8 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
         'sampling__kw_args': [{'threshold': 100}, {'threshold': 200}],
         'sampling__kw_args': [{'up_balancing_counts': 300}, {'up_balancing_counts': 800}],
         'clf__estimator': None,
+        'preprocessor__sentimenttr__scaler__scaler': None,
+        'preprocessor__lengthtr__scaler__scaler': None,
         'preprocessor__texttr__text__transformer': None,
         'featsel__selector': [SelectPercentile()],
         'featsel__selector__percentile': [70, 85, 100]
@@ -250,6 +252,30 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
                 aux['preprocessor__texttr__text__transformer__min_df'] = [3, 1]
                 aux['preprocessor__texttr__text__transformer__use_idf'] = [True, False]
 
+                # The transformation is a k-means discretizer with 3 bins:
+                #   1. The three bins represent short, medium and long text length. Reluctant to make n_bins a tunable
+                #      parameter for efficiency reasons;
+                #   2. Discretizing and one-hot encoding satisfies the data format requirements for Chi^2-based feature
+                #      selection;
+                #   3. An added benefit is that this data format is acceptable by different models, some of which may
+                #      not be scale-invariant, while others do not accept negative or continuous values other than
+                #      TF-IDFs;
+                aux['preprocessor__lengthtr__scaler__scaler'] = \
+                    [KBinsDiscretizer(n_bins=3, encode='onehot', strategy='kmeans')]
+
+                # The transformation is a k-means discretizer with 4 or 8 bins supplied as a tunable argument later on:
+                #   1. The 4 bins represent weak, weak-medium, medium-strong and strong for values in [0, 1];
+                #   2. The 8 bins represent weak, weak-medium, medium-strong and strong for values in [-1, 0] and [0, 1]
+                #      (i.e. 8 bins for values in [-1, 1]);
+                #   3. We also allow for the possibility of 8 bins for [0, 1] and 4 bins for [-1, 1]- no harm in trying;
+                #   4. Discretizing and one-hot encoding satisfies the data format requirements for Chi^2-based feature
+                #      selection;
+                #   5. An added benefit is that this data format is acceptable by different models, some of which may
+                #      not be scale-invariant, while others do not accept negative or continuous values other than
+                #      TF-IDFs;
+                aux['preprocessor__sentimenttr__scaler__scaler'] = [KBinsDiscretizer(encode='onehot', strategy='kmeans')]
+                aux['preprocessor__sentimenttr__scaler__scaler__n_bins'] = [4, 8] # Based on the idea of having 4 (8) bins for indicators in [0, 1] ([-1, 1]), but open to trying 8 (4) for [0, 1] ([-1, 1]) too.
+
                 param_grid.append(aux)
 
                 aux1 = aux.copy()
@@ -260,6 +286,8 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
 
             if j.__class__.__name__ == EmbeddingsTransformer().__class__.__name__:
                 aux['featsel__selector__score_func'] = [f_classif]
+                aux['preprocessor__lengthtr__scaler__scaler'] = [StandardScaler()]
+                aux['preprocessor__sentimenttr__scaler__scaler'] = [StandardScaler()]
 
                 # We don't want learners than can't handle negative data in the embeddings.
                 if (i.__class__.__name__ == BernoulliNB().__class__.__name__) or \
