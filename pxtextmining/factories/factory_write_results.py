@@ -55,8 +55,15 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     :param list[str] objects_to_save: The objects to save. Should be one or more of "pipeline", "tuning results",
         "predictions", "accuracy per class", "index - training data", "index - test data", "bar plot".
     :param bool save_objects_to_server: Whether to save the results to the server. **NOTE:** The feature that writes
-        results to the database is for internal use only. It will be removed when a proper API is developed for this
-        function.
+        results to the database is for internal use only. Experienced users who would like to write the data to their
+        own databases can, of course, achieve that by slightly modifying the relevant lines in the script. A "my.conf"
+        file will need to be placed in the root, with five lines, as follows (without the ";", "<" and ">"):
+
+        - [connector_python];
+        - host = <host_name>;
+        - database = <database_name>;
+        - user = <username>;
+        - password = <password>;
     :param bool save_objects_to_disk: Whether to save the results to disk. See ``results_folder_name``.
     :param str save_pipeline_as: Name of saved pipeline. If "default", then it will be saved as
         ``'pipeline_' + target + '.sav'``.

@@ -11,8 +11,16 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
 
     :param str filename: Dataset name (CSV), including the data type suffix. The dataset should be placed in folder
         ``pxtextmining/datasets``. If ``filename`` is ``None``, the data are read from the database.
-        **NOTE:** The feature that reads data from the database is for internal use only. It will be removed when a
-        proper API is developed for this function.
+        **NOTE:** The feature that reads data from the database is for internal use only. Experienced users who would
+        like to pull their data from their own databases can, of course, achieve that by slightly modifying the
+        relevant lines in the script. A "my.conf" file will need to be placed in the root, with five lines, as follows
+        (without the ";", "<" and ">"):
+
+        - [connector_python];
+        - host = <host_name>;
+        - database = <database_name>;
+        - user = <username>;
+        - password = <password>;
     :param str target: Name of the response variable.
     :param str predictor: Name of the predictor variable.
     :param float test_size: Proportion of data that will form the test dataset.

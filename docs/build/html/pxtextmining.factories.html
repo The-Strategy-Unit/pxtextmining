@@ -176,10 +176,20 @@ and splits the dataset into training and test sets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – Dataset name (CSV), including the data type suffix. The dataset should be placed in folder
+<li><p><strong>filename</strong> (<em>str</em>) – <p>Dataset name (CSV), including the data type suffix. The dataset should be placed in folder
 <code class="docutils literal notranslate"><span class="pre">pxtextmining/datasets</span></code>. If <code class="docutils literal notranslate"><span class="pre">filename</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the data are read from the database.
-<strong>NOTE:</strong> The feature that reads data from the database is for internal use only. It will be removed when a
-proper API is developed for this function.</p></li>
+<strong>NOTE:</strong> The feature that reads data from the database is for internal use only. Experienced users who would
+like to pull their data from their own databases can, of course, achieve that by slightly modifying the
+relevant lines in the script. A “my.conf” file will need to be placed in the root, with five lines, as follows
+(without the “;”, “&lt;” and “&gt;”):</p>
+<ul>
+<li><p>[connector_python];</p></li>
+<li><p>host = &lt;host_name&gt;;</p></li>
+<li><p>database = &lt;database_name&gt;;</p></li>
+<li><p>user = &lt;username&gt;;</p></li>
+<li><p>password = &lt;password&gt;;</p></li>
+</ul>
+</p></li>
 <li><p><strong>target</strong> (<em>str</em>) – Name of the response variable.</p></li>
 <li><p><strong>predictor</strong> (<em>str</em>) – Name of the predictor variable.</p></li>
 <li><p><strong>test_size</strong> (<em>float</em>) – Proportion of data that will form the test dataset.</p></li>
@@ -351,9 +361,18 @@ cross-validation on the training set, for the best hyperparameter values for eac
 “balanced_accuracy_score”, “matthews_corrcoef” or “class_balance_accuracy_score”).</p></li>
 <li><p><strong>objects_to_save</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – The objects to save. Should be one or more of “pipeline”, “tuning results”,
 “predictions”, “accuracy per class”, “index - training data”, “index - test data”, “bar plot”.</p></li>
-<li><p><strong>save_objects_to_server</strong> (<em>bool</em>) – Whether to save the results to the server. <strong>NOTE:</strong> The feature that writes
-results to the database is for internal use only. It will be removed when a proper API is developed for this
-function.</p></li>
+<li><p><strong>save_objects_to_server</strong> (<em>bool</em>) – <p>Whether to save the results to the server. <strong>NOTE:</strong> The feature that writes
+results to the database is for internal use only. Experienced users who would like to write the data to their
+own databases can, of course, achieve that by slightly modifying the relevant lines in the script. A “my.conf”
+file will need to be placed in the root, with five lines, as follows (without the “;”, “&lt;” and “&gt;”):</p>
+<ul>
+<li><p>[connector_python];</p></li>
+<li><p>host = &lt;host_name&gt;;</p></li>
+<li><p>database = &lt;database_name&gt;;</p></li>
+<li><p>user = &lt;username&gt;;</p></li>
+<li><p>password = &lt;password&gt;;</p></li>
+</ul>
+</p></li>
 <li><p><strong>save_objects_to_disk</strong> (<em>bool</em>) – Whether to save the results to disk. See <code class="docutils literal notranslate"><span class="pre">results_folder_name</span></code>.</p></li>
 <li><p><strong>save_pipeline_as</strong> (<em>str</em>) – Name of saved pipeline. If “default”, then it will be saved as
 <code class="docutils literal notranslate"><span class="pre">'pipeline_'</span> <span class="pre">+</span> <span class="pre">target</span> <span class="pre">+</span> <span class="pre">'.sav'</span></code>.</p></li>
