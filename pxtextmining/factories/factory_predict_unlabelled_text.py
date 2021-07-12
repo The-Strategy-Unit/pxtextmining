@@ -16,9 +16,9 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
     :param str pipe_path: A string in the form "path_to_fitted_pipeline/pipeline.sav," where "pipeline" is the name of
         the SAV file with the fitted ``Scikit-learn``/``imblearn.pipeline.Pipeline``.
     :param str preds_column: The user-specified name of the column that will have the predictions. If ``None`` (default),
-        then the name will be ``text_col_name + '_preds'``.
+        then the name will be ``predictor + '_preds'``.
     :param column_names:  A ``list``/``tuple`` of strings with the names of the columns of the supplied data frame (incl.
-        ``text_col_name``) to be added to the returned ``pandas.DataFrame``.  If "preds_only", then the only column in
+        ``predictor``) to be added to the returned ``pandas.DataFrame``.  If "preds_only", then the only column in
         the returned data frame will be ``preds_column``. Defaults to "all_cols".
     :return: A ``pandas.DataFrame`` with the predictions and any other columns supplied in ``column_names``.
     """
