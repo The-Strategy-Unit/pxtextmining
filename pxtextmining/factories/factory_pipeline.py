@@ -46,7 +46,12 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
                      ]):
 
     """
-    Prepare and fit a text classification pipeline that performs the following:
+    Prepare and fit a text classification pipeline.
+
+    The pipeline's parameter grid switches between two approaches to text classification: Bag-of-Words and Embeddings.
+    For the former, both TF-IDF and raw counts are tried out.
+
+    The pipeline does the following:
 
     - Feature engineering:
 
@@ -56,6 +61,11 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
       * Performs sentiment analysis on the text feature and creates new features that are all scores/indicators
         produced by `TextBlob <https://textblob.readthedocs.io/en/dev/>`_
         and `vaderSentiment <https://pypi.org/project/vaderSentiment/>`_.
+      * Applies `sklearn.preprocessing.KBinsDiscretizer
+        <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.KBinsDiscretizer.html>`_ to the text
+        length and sentiment indicator features, and `sklearn.preprocessing.StandardScaler
+        <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html>`_ to the
+        embeddings (word vectors);
     - Up-sampling of rare classes: uses `imblearn.over_sampling.RandomOverSampler
       <https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.RandomOverSampler.html#imblearn.over_sampling.RandomOverSampler>`_
       to up-sample rare classes. Currently the threshold to consider a class as rare and the up-balancing values are
@@ -66,12 +76,12 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
     - Feature selection: Uses `sklearn.feature_selection.SelectPercentile
       <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html>`_
       with `sklearn.feature_selection.chi2
-      <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2>`_.
+      <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2>`_
+      for TF-IDFs or `sklearn.feature_selection.f_classif
+      <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn-feature-selection-f-classif>`_
+      for embeddings.
     - Fitting and benchmarking of user-supplied ``Scikit-learn`` `estimators
       <https://scikit-learn.org/stable/modules/classes.html>`_.
-
-    The pipeline's parameter grid switches between two approaches to text classification: Bag-of-Words and Embeddings.
-    For the former, both TF-IDF and raw counts are tried out.
 
     The numeric values in the grid are currently lists/tuples of values that are defined either empirically or
     are based on the published literature (e.g. for Random Forest, see `Probst et al. 2019 <https://arxiv.org/abs/1802.09596>`_).
