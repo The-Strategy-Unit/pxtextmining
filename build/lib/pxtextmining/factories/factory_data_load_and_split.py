@@ -48,7 +48,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
     text_data = text_data.loc[text_data.target.notna()].copy()
     text_data['predictor'] = text_data.predictor.fillna('__none__')
 
-    # This is specific to NHS patient feedback data labelled with "criticality" classes
+    # This is specific to NHS patient feedback data labelled with "criticality" classes. Should remove when a
+    # proper API is developed for this function.
     if target == 'criticality':
         text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
         text_data.loc[text_data.target == '-5', 'target'] = '-4'
@@ -60,7 +61,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
     x_train, x_test, y_train, y_test = train_test_split(x, y,
                                                         test_size=test_size,
                                                         stratify=y,
-                                                        shuffle=True
+                                                        shuffle=True,
+                                                        # random_state=42 # https://stackoverflow.com/questions/28064634/random-state-pseudo-random-number-in-scikit-learn
                                                         )
 
     return x_train, x_test, y_train, y_test
