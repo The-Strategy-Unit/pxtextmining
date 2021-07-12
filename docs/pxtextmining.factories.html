@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pxtextmining.factories package &mdash; pxtextmining 0.2.0 documentation</title>
+  <title>pxtextmining.factories package &mdash; pxtextmining 0.2.3 documentation</title>
   
 
   
@@ -242,7 +242,10 @@ the training set, for the best (hyper)parameter values for each learner;</p></li
 <dl class="py function">
 <dt id="pxtextmining.factories.factory_pipeline.factory_pipeline">
 <code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_pipeline.</span></code><code class="sig-name descname"><span class="pre">factory_pipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ordinal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tknz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'class_balance_accuracy_score'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learners</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['SGDClassifier',</span> <span class="pre">'RidgeClassifier',</span> <span class="pre">'Perceptron',</span> <span class="pre">'PassiveAggressiveClassifier',</span> <span class="pre">'BernoulliNB',</span> <span class="pre">'ComplementNB',</span> <span class="pre">'MultinomialNB',</span> <span class="pre">'RandomForestClassifier']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_pipeline.factory_pipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prepare and fit a text classification pipeline that performs the following:</p>
+<dd><p>Prepare and fit a text classification pipeline.</p>
+<p>The pipeline’s parameter grid switches between two approaches to text classification: Bag-of-Words and Embeddings.
+For the former, both TF-IDF and raw counts are tried out.</p>
+<p>The pipeline does the following:</p>
 <ul class="simple">
 <li><p>Feature engineering:</p>
 <ul>
@@ -252,6 +255,9 @@ the training set, for the best (hyper)parameter values for each learner;</p></li
 <li><p>Performs sentiment analysis on the text feature and creates new features that are all scores/indicators
 produced by <a class="reference external" href="https://textblob.readthedocs.io/en/dev/">TextBlob</a>
 and <a class="reference external" href="https://pypi.org/project/vaderSentiment/">vaderSentiment</a>.</p></li>
+<li><p>Applies <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.KBinsDiscretizer.html">sklearn.preprocessing.KBinsDiscretizer</a> to the text
+length and sentiment indicator features, and <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">sklearn.preprocessing.StandardScaler</a> to the
+embeddings (word vectors);</p></li>
 </ul>
 </li>
 <li><p>Up-sampling of rare classes: uses <a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.RandomOverSampler.html#imblearn.over_sampling.RandomOverSampler">imblearn.over_sampling.RandomOverSampler</a>
@@ -261,11 +267,11 @@ fixed and cannot be user-defined.</p></li>
 It also strips punctuation, excess spaces, and metacharacters “r” and “n” from the text. It converts emojis into
 “__text__” (where “text” is the emoji name), and NA/NULL values into “__none__”.</p></li>
 <li><p>Feature selection: Uses <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html">sklearn.feature_selection.SelectPercentile</a>
-with <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2">sklearn.feature_selection.chi2</a>.</p></li>
+with <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2">sklearn.feature_selection.chi2</a>
+for TF-IDFs or <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn-feature-selection-f-classif">sklearn.feature_selection.f_classif</a>
+for embeddings.</p></li>
 <li><p>Fitting and benchmarking of user-supplied <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code> <a class="reference external" href="https://scikit-learn.org/stable/modules/classes.html">estimators</a>.</p></li>
 </ul>
-<p>The pipeline’s parameter grid switches between two approaches to text classification: Bag-of-Words and Embeddings.
-For the former, both TF-IDF and raw counts are tried out.</p>
 <p>The numeric values in the grid are currently lists/tuples of values that are defined either empirically or
 are based on the published literature (e.g. for Random Forest, see <a class="reference external" href="https://arxiv.org/abs/1802.09596">Probst et al. 2019</a>).
 Values may be replaced by appropriate distributions in a future release.</p>
@@ -302,7 +308,7 @@ standard classification model.</p></li>
 <span id="pxtextmining-factories-factory-predict-unlabelled-text-module"></span><h2>pxtextmining.factories.factory_predict_unlabelled_text module<a class="headerlink" href="#module-pxtextmining.factories.factory_predict_unlabelled_text" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text">
-<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_predict_unlabelled_text.</span></code><code class="sig-name descname"><span class="pre">factory_predict_unlabelled_text</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preds_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'__all__'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_predict_unlabelled_text.</span></code><code class="sig-name descname"><span class="pre">factory_predict_unlabelled_text</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preds_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all_cols'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict unlabelled text data using a fitted <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">sklearn.pipeline.Pipeline</a>/<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline">imblearn.pipeline.Pipeline</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -313,10 +319,10 @@ classes for.</p></li>
 <li><p><strong>pipe_path</strong> (<em>str</em>) – A string in the form “path_to_fitted_pipeline/pipeline.sav,” where “pipeline” is the name of
 the SAV file with the fitted <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code>/<code class="docutils literal notranslate"><span class="pre">imblearn.pipeline.Pipeline</span></code>.</p></li>
 <li><p><strong>preds_column</strong> (<em>str</em>) – The user-specified name of the column that will have the predictions. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (default),
-then the name will be <code class="docutils literal notranslate"><span class="pre">text_col_name</span> <span class="pre">+</span> <span class="pre">'_preds'</span></code>.</p></li>
-<li><p><strong>column_names</strong> – A vector of strings with the names of the columns of the supplied data frame (incl.
-<code class="docutils literal notranslate"><span class="pre">text_col_name</span></code>) to be added to the returned <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.  If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the only column in the
-returned data frame will be <code class="docutils literal notranslate"><span class="pre">preds_column</span></code>. Defaults to “__all__”.</p></li>
+then the name will be <code class="docutils literal notranslate"><span class="pre">predictor</span> <span class="pre">+</span> <span class="pre">'_preds'</span></code>.</p></li>
+<li><p><strong>column_names</strong> – A <code class="docutils literal notranslate"><span class="pre">list</span></code>/<code class="docutils literal notranslate"><span class="pre">tuple</span></code> of strings with the names of the columns of the supplied data frame (incl.
+<code class="docutils literal notranslate"><span class="pre">predictor</span></code>) to be added to the returned <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.  If “preds_only”, then the only column in
+the returned data frame will be <code class="docutils literal notranslate"><span class="pre">preds_column</span></code>. Defaults to “all_cols”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
