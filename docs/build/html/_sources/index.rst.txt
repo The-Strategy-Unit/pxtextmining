@@ -1,5 +1,5 @@
 .. pxtextmining documentation master file, created by
-   sphinx-quickstart on Thu Jun 17 10:02:19 2021.
+   sphinx-quickstart on Wed Jun 30 12:13:28 2021.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
