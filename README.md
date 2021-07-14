@@ -3,7 +3,7 @@
 ## Project description
 Nottinghamshire Healthcare NHS Foundation Trust hold  patient feedback that is currently manually labelled by our "coders" (i.e. the staff who read the feedback and decide what it is about). As we hold thousands of patient feedback records, we (the [Data Science team](https://cdu-data-science-team.github.io/team-blog/about.html)) are running this project to aid the coders with a text classification pipeline that will semi-automate the labelling process. We are also working in partnership with other NHS trusts who hold patient feedback text. Read more  [here](https://involve.nottshc.nhs.uk/blog/new-nhs-england-funded-project-in-our-team-developing-text-mining-algorithms-for-patient-feedback-data/) and [here](https://cdu-data-science-team.github.io/team-blog/posts/2020-12-14-classification-of-patient-feedback/).
 
-__We are working openly by open-sourcing the analysis code and data where possible to promote replication, reproducibility and further developments (pull requests are more than welcome!). We are also automating common steps in our workflow by shipping the pipeline as a [`Python`](https://www.python.org/) package broken down into sub-modules and helper functions to increase usability and documentation.__
+__We are working openly by open-sourcing the analysis code and data where possible to promote replication, reproducibility and further developments (pull requests are more than welcome!). We are also automating common steps in our workflow by shipping the pipeline as a [Python](https://www.python.org/) package broken down into sub-modules and helper functions to increase usability and documentation.__
 
 ## Documentation
 1. [Installation](#installation);
@@ -13,31 +13,87 @@ __We are working openly by open-sourcing the analysis code and data where possib
 
 ## Installation
 
-1. To begin with, download the repo.
-1. It is best to create a `Python` virtual environment. Let's call it `text_venv`.
-   Open a terminal, navigate to the folder where you want to put the virtual 
-   environment and run 
+We will show how to install `pxtextmining` from both 
+[PyPI](https://pypi.org/project/pxtextmining/) or the [GitHub](https://github.com/CDU-data-science-team/pxtextmining) repo.
+
+**Before doing so, it is best to create a Python virtual environment in which 
+to install `pxtextmining` and its dependencies.** Let's call the virtual 
+environment `text_venv`:
+
+1. Open a terminal, navigate to the folder where you want to put the virtual 
+   environment and run:
    - `python3 -m venv text_venv` (Linux & MacOS);
    - `python -m venv text_venv` (Windows);
 1. Activate the virtual environment. In the folder containing folder `text_venv`
    run:
    - `source text_venv/bin/activate` (Linux & MacOS);
-   - `source text_venv/Scripts/activate` (Windows);
+   - `text_venv\Scripts\activate` (Windows);
+
+### Install from PyPI
+
+1. Install `pxtextmining` and its PyPI dependencies:
+   - `pip3 install pxtextmining==0.2.5`  (Linux & MacOS);
+   - `pip install pxtextmining==0.2.5` (Windows);
+1. We also need to install a couple of 
+   [`spaCy`](https://github.com/explosion/spacy-models) models. 
+   These are obtained from URL links and thus need to be installed separately:
+   - 
+     ```
+     pip3 install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
+     pip3 install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.3.1/en_core_web_lg-2.3.1.tar.gz
+     ```
+   (Linux & MacOS);
+   - 
+     ```
+     pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
+     pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.3.1/en_core_web_lg-2.3.1.tar.gz
+     ```
+   (Windows);
+   
+   Note that the second model is pretty large, so the installation may take a 
+   while.
+
+All steps in one go:
+
+1. **Linux & MacOS**
+   ```
+   python3 -m venv text_venv
+   source text_venv/bin/activate
+   pip3 install pxtextmining==0.2.5
+   pip3 install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
+   pip3 install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.3.1/en_core_web_lg-2.3.1.tar.gz
+   ```
+1. **Windows**
+   ```
+   python -m venv text_venv
+   text_venv\Scripts\activate
+   pip install pxtextmining==0.2.5
+   pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
+   pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.3.1/en_core_web_lg-2.3.1.tar.gz
+   ```
+
+### Install from GitHub
+
+1. To begin with, download the repo.
 1. Install wheel: 
    - `pip3 install wheel`  (Linux & MacOS);
    - `pip install wheel` (Windows);
-1. Install all the necessary `Python` packages in the virtual environment 
-   `text_venv`). Inside the repo's folder, run: 
+1. Install all the dependencies of `pxtextmining`. Inside the repo's folder, 
+   run: 
    - `pip3 install -r requirements.txt` (Linux & MacOS);
    - `pip install -r requirements.txt` (Windows);
-1. Install `pxtextmining` as a `Python` package. Inside the repo's folder, 
+   
+   This will also install the `spaCy` models, so no additional commands are 
+   required as when installing from [PyPI](#install-from-pypi).  Note that the 
+   second model is pretty large, so the installation may take a while.
+1. Install `pxtextmining` as a Python package. Inside the repo's folder, 
    run: 
    - `python3 setup.py install` (Linux & MacOS);
    - `python setup.py install` (Windows);
 
 All steps in one go:
 
-1. **Linux & MacOS.**
+1. **Linux & MacOS**
    ```
    python3 -m venv text_venv
    source text_venv/bin/activate
@@ -45,10 +101,10 @@ All steps in one go:
    pip3 install -r requirements.txt
    python3 setup.py install
    ```
-1. **Windows.**
+1. **Windows**
    ```
    python -m venv text_venv
-   source text_venv/Scripts/activate
+   text_venv\Scripts\activate
    pip install wheel
    pip install -r requirements.txt
    python setup.py install
@@ -56,15 +112,16 @@ All steps in one go:
 
 ## Execution
 
-All execution scripts may be saved in folder "execution". The execution scripts 
-are nothing more than a call of function 
+Our example scripts are saved in folder [execution](https://github.com/CDU-data-science-team/pxtextmining/tree/main/execution). 
+The execution scripts are nothing more than a call of function 
 `pxtextmining.pipelines.text_classification_pipeline` with user-specified
 arguments. The two example scripts, `execution_label.py` and
 `execution_criticality.py` run the pipeline for each of the two target variables
-in `datasets/text_data.csv`. Note that `execution_criticality.py` runs ordinal 
-classification (`ordinal=True`).
+in [datasets](https://github.com/CDU-data-science-team/pxtextmining/tree/main/datasets). 
+Note that `execution_criticality.py` runs ordinal classification 
+(`ordinal=True`).
 
-The user can create their own execution script(s). Run the script in a `Python` 
+Users can create their own execution script(s). Run the script in a Python 
 IDE (Integrated Development Environment) or on the terminal (do not forget to 
 activate the virtual environment first) with:
 
@@ -76,9 +133,11 @@ For example:
    - `python3 execution/execution_label.py` (Linux & MacOS).
    - `python execution/execution_label.py` (Windows);
 
+The results will be saved in a "results" folder such as [results_label](https://github.com/CDU-data-science-team/pxtextmining/tree/main/results_label).
+
 ## Pipeline
 
-The pipeline is built with `Python`'s 
+The pipeline is built with Python's 
 [`Scikit-learn`](https://scikit-learn.org/stable/index.html) (Pedregosa et al., 2011). 
 During fitting, both the "Bag-of-Words" approach and a word embedding-based 
 approach are tried out. The pipeline performs a random grid search ([`RandomizedSearchCV()`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV)) to identify the best-performing learner 
@@ -119,7 +178,7 @@ if the  dependent variable is `label`.
 
 Here is a visual display of the process:
 
-![](text_classification_package_structure.png)
+![](https://raw.githubusercontent.com/CDU-data-science-team/pxtextmining/main/text_classification_package_structure.png)
 
 ## References
 Baldi P., Brunak S., Chauvin Y., Andersen C.A.F. & Nielsen H. (2000). Assessing 

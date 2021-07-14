@@ -1,7 +1,7 @@
 from pxtextmining.pipelines.text_classification_pipeline import text_classification_pipeline
 
 pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_train, index_test = \
-    text_classification_pipeline(filename='text_data.csv', target="criticality", predictor="feedback",
+    text_classification_pipeline(filename='datasets/text_data.csv', target="criticality", predictor="feedback",
                                  test_size=0.33,
                                  ordinal=True,
                                  tknz="spacy",
