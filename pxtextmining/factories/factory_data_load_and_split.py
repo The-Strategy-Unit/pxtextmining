@@ -9,8 +9,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
     Function loads the dataset, renames the response and predictor as "target" and "predictor" respectively,
     and splits the dataset into training and test sets.
 
-    :param str filename: Dataset name (CSV), including the data type suffix. The dataset should be placed in folder
-        ``pxtextmining/datasets``. If ``filename`` is ``None``, the data are read from the database.
+    :param str filename: Dataset name (CSV), including full path to the data folder (if not in the project's working
+        directory), and the data type suffix (".csv"). If ``filename`` is ``None``, the data are read from the database.
         **NOTE:** The feature that reads data from the database is for internal use only. Experienced users who would
         like to pull their data from their own databases can, of course, achieve that by slightly modifying the
         relevant lines in the script. A "my.conf" file will need to be placed in the root, with five lines, as follows
@@ -31,8 +31,7 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
 
     # Choose to read CSV from folder or table directly from database
     if filename is not None:
-        data_path = path.join('datasets', filename)
-        text_data = pd.read_csv(data_path, encoding='utf-8')
+        text_data = pd.read_csv(filename, encoding='utf-8')
     else:
         db = mysql.connector.connect(option_files="my.conf", use_pure=True)
         with db.cursor() as cursor:
