@@ -68,7 +68,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     :param str save_pipeline_as: Name of saved pipeline. If "default", then it will be saved as
         ``'pipeline_' + target + '.sav'``.
     :param str results_folder_name: Name of the folder that will contain all saved results specified in
-        ``objects_to_save``.
+        ``objects_to_save``. If the folder already exists, it will be overwritten.
     :return: A ``tuple`` of length 3 with the following ``pandas.DataFrame`` objects:
 
             - The predictions on the test set;
