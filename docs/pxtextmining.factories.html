@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pxtextmining.factories package &mdash; pxtextmining 0.2.3 documentation</title>
+  <title>pxtextmining.factories package &mdash; pxtextmining 0.2.6 documentation</title>
   
 
   
@@ -176,8 +176,8 @@ and splits the dataset into training and test sets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – <p>Dataset name (CSV), including the data type suffix. The dataset should be placed in folder
-<code class="docutils literal notranslate"><span class="pre">pxtextmining/datasets</span></code>. If <code class="docutils literal notranslate"><span class="pre">filename</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the data are read from the database.
+<li><p><strong>filename</strong> (<em>str</em>) – <p>Dataset name (CSV), including full path to the data folder (if not in the project’s working
+directory), and the data type suffix (“.csv”). If <code class="docutils literal notranslate"><span class="pre">filename</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the data are read from the database.
 <strong>NOTE:</strong> The feature that reads data from the database is for internal use only. Experienced users who would
 like to pull their data from their own databases can, of course, achieve that by slightly modifying the
 relevant lines in the script. A “my.conf” file will need to be placed in the root, with five lines, as follows
@@ -383,7 +383,7 @@ file will need to be placed in the root, with five lines, as follows (without th
 <li><p><strong>save_pipeline_as</strong> (<em>str</em>) – Name of saved pipeline. If “default”, then it will be saved as
 <code class="docutils literal notranslate"><span class="pre">'pipeline_'</span> <span class="pre">+</span> <span class="pre">target</span> <span class="pre">+</span> <span class="pre">'.sav'</span></code>.</p></li>
 <li><p><strong>results_folder_name</strong> (<em>str</em>) – Name of the folder that will contain all saved results specified in
-<code class="docutils literal notranslate"><span class="pre">objects_to_save</span></code>.</p></li>
+<code class="docutils literal notranslate"><span class="pre">objects_to_save</span></code>. If the folder already exists, it will be overwritten.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
