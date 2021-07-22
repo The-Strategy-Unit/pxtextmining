@@ -27,6 +27,7 @@ from pxtextmining.helpers.ordinal_classification import OrdinalClassifier
 from pxtextmining.helpers.scaler_switcher import ScalerSwitcher
 from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwitcher
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
+from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 
 
 def factory_pipeline(ordinal, x_train, y_train, tknz,
@@ -43,7 +44,8 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
                          # "KNeighborsClassifier",
                          # "NearestCentroid",
                          "RandomForestClassifier"
-                     ]):
+                     ],
+                     theme=None):
 
     """
     Prepare and fit a text classification pipeline.
@@ -72,7 +74,7 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
       fixed and cannot be user-defined.
     - Tokenization and lemmatization of the text feature: uses ``spaCy`` (default) or `NLTK <https://www.nltk.org/>`_.
       It also strips punctuation, excess spaces, and metacharacters "r" and "n" from the text. It converts emojis into
-      "__text__" (where "text" is the emoji name), and NA/NULL values into "__none__".
+      "__text__" (where "text" is the emoji name), and NA/NULL values into "__notext__".
     - Feature selection: Uses `sklearn.feature_selection.SelectPercentile
       <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html>`_
       with `sklearn.feature_selection.chi2
@@ -110,9 +112,6 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
     """
 
     features_text = 'predictor'
-    # features_in_minus_1_to_1 = ['text_blob_polarity', 'vader_compound']
-    # features_in_0_to_1 = ['text_blob_subjectivity', 'vader_neg', 'vader_neu', 'vader_pos']
-    # features_positive_and_unbounded = ['text_length']
 
     # Define transformers for pipeline #
     # Transformer that calculates text length and transforms it.
@@ -147,16 +146,34 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
                                   validate=False)
 
     # Make pipeline #
-    if ordinal:
-        pipe = Pipeline(steps=[('sampling', oversampler),
-                               ('preprocessor', preprocessor),
-                               ('featsel', FeatureSelectionSwitcher()),
-                               ('clf', OrdinalClassifier())])
+    if ordinal and theme is not None:
+        pipe_all_but_theme = Pipeline([
+            ('preprocessor', preprocessor),
+            ('featsel', FeatureSelectionSwitcher())
+        ])
+
+        all_transforms = ColumnTransformer([
+            ('theme', ThemeBinarizer(), ['theme']),
+            ('process', pipe_all_but_theme, [features_text])
+        ])
+
+        pipe = Pipeline([
+            ('sampling', oversampler),
+            ('alltrans', all_transforms),
+            ('clf', OrdinalClassifier(theme='theme', target_class_value='3', theme_class_value=1))
+        ])
+    elif ordinal and theme is None:
+        pipe = Pipeline([
+            ('sampling', oversampler),
+            ('preprocessor', preprocessor),
+            ('featsel', FeatureSelectionSwitcher()),
+            ('clf', OrdinalClassifier())])
     else:
-        pipe = Pipeline(steps=[('sampling', oversampler),
-                               ('preprocessor', preprocessor),
-                               ('featsel', FeatureSelectionSwitcher()),
-                               ('clf', ClfSwitcher())])
+        pipe = Pipeline([
+            ('sampling', oversampler),
+            ('preprocessor', preprocessor),
+            ('featsel', FeatureSelectionSwitcher()),
+            ('clf', ClfSwitcher())])
 
     # Define (hyper)parameter grid #
     # A few initial value ranges for some (hyper)parameters.
@@ -308,6 +325,32 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
                 param_grid.append(aux)
 
     param_grid = [x for x in param_grid if x is not None]
+
+    ########################################
+    if theme is not None:
+        ordinal_with_theme_params = [
+            'featsel__selector',
+            'featsel__selector__percentile',
+            'featsel__selector__score_func',
+            'preprocessor__sentimenttr__scaler__scaler',
+            'preprocessor__sentimenttr__scaler__scaler__n_bins',
+            'preprocessor__lengthtr__scaler__scaler',
+            'preprocessor__texttr__text__transformer',
+            'preprocessor__texttr__text__transformer__tokenizer',
+            'preprocessor__texttr__text__transformer__preprocessor',
+            'preprocessor__texttr__text__transformer__norm',
+            'preprocessor__texttr__text__transformer__ngram_range',
+            'preprocessor__texttr__text__transformer__max_df',
+            'preprocessor__texttr__text__transformer__min_df',
+            'preprocessor__texttr__text__transformer__use_idf']
+
+        for i in range(len(param_grid)):
+            for j in ordinal_with_theme_params:
+                if j in param_grid[i].keys():
+                    old_key = j
+                    new_key = 'alltrans__process__' + old_key
+                    param_grid[i][new_key] = param_grid[i].pop(old_key)
+    #######################################
 
     # Define fitting metric (refit) and other useful performance metrics.
     refit = metric.replace('_', ' ').replace(' score', '').title()
