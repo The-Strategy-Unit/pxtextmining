@@ -22,7 +22,9 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  save_objects_to_server=True,
                                  save_objects_to_disk=False,
                                  save_pipeline_as="default",
-                                 results_folder_name="results"):
+                                 results_folder_name="results",
+                                 reduce_criticality=True,
+                                 theme=None):
 
     """
     Fit and evaluate the pipeline and write the results. Writes between 1 to 7 files, depending on the value of argument
@@ -84,19 +86,29 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
         - The row indices of the test data;
     """
 
-    x_train, x_test, y_train, y_test = factory_data_load_and_split(filename, target, predictor, test_size)
+    x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
+        factory_data_load_and_split(filename, target, predictor, test_size, reduce_criticality, theme)
 
-    pipe = factory_pipeline(ordinal, x_train, y_train, tknz, metric, cv, n_iter, n_jobs, verbose, learners)
+    pipe = factory_pipeline(ordinal, x_train, y_train, tknz, metric, cv, n_iter, n_jobs, verbose, learners, theme)
 
     pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar = \
         factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric)
 
-    pred, index_training_data, index_test_data = factory_write_results(pipe, tuning_results, pred,
-                                                                       accuracy_per_class, p_compare_models_bar,
-                                                                       target, x_train, x_test, metric,
+    pred, index_training_data, index_test_data = factory_write_results(pipe,
+                                                                       tuning_results,
+                                                                       pred,
+                                                                       accuracy_per_class,
+                                                                       p_compare_models_bar,
+                                                                       target,
+                                                                       x_train,
+                                                                       x_test,
+                                                                       index_training_data,
+                                                                       index_test_data,
+                                                                       metric,
                                                                        objects_to_save,
                                                                        save_objects_to_server,
-                                                                       save_objects_to_disk, save_pipeline_as,
+                                                                       save_objects_to_disk,
+                                                                       save_pipeline_as,
                                                                        results_folder_name)
 
     return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_training_data, index_test_data
