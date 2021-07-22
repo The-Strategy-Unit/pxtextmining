@@ -4,7 +4,7 @@ import mysql.connector
 from sklearn.model_selection import train_test_split
 
 
-def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
+def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=True, theme=None):
     """
     Function loads the dataset, renames the response and predictor as "target" and "predictor" respectively,
     and splits the dataset into training and test sets.
@@ -24,6 +24,7 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
     :param str target: Name of the response variable.
     :param str predictor: Name of the predictor variable.
     :param float test_size: Proportion of data that will form the test dataset.
+    :param str theme:
     :return: A tuple of length 4: predictor-train, predictor-test, target-train and target-test datasets.
     """
 
@@ -34,32 +35,48 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33):
         text_data = pd.read_csv(filename, encoding='utf-8')
     else:
         db = mysql.connector.connect(option_files="my.conf", use_pure=True)
-        with db.cursor() as cursor:
-            cursor.execute(
-                "SELECT  " + target + ", " + predictor + " FROM text_data"
-            )
-            text_data = cursor.fetchall()
-            text_data = pd.DataFrame(text_data)
-            text_data.columns = cursor.column_names
+        if theme is None:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    "SELECT  " + target + ", " + predictor + " FROM text_data"
+                )
+                text_data = cursor.fetchall()
+                text_data = pd.DataFrame(text_data)
+                text_data.columns = cursor.column_names
+        else:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    "SELECT  " + target + ", " + predictor + ", " + theme + " FROM text_data"
+                )
+                text_data = cursor.fetchall()
+                text_data = pd.DataFrame(text_data)
+                text_data.columns = cursor.column_names
 
-    text_data = text_data.rename(columns={target: "target", predictor: "predictor"})
+    text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
+    if theme is not None:
+        text_data = text_data.rename(columns={theme: 'theme'})
     text_data = text_data.loc[text_data.target.notnull()].copy()
     text_data = text_data.loc[text_data.target.notna()].copy()
-    text_data['predictor'] = text_data.predictor.fillna('__none__')
+    text_data['predictor'] = text_data.predictor.fillna('__notext__')
 
     # This is specific to NHS patient feedback data labelled with "criticality" classes
-    if target == 'criticality':
+    if reduce_criticality:
         text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
         text_data.loc[text_data.target == '-5', 'target'] = '-4'
         text_data.loc[text_data.target == '5', 'target'] = '4'
+        if theme is not None:
+            text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
 
     print('Preparing training and test sets...')
-    x = pd.DataFrame(text_data["predictor"])
-    y = text_data["target"].to_numpy()
-    x_train, x_test, y_train, y_test = train_test_split(x, y,
-                                                        test_size=test_size,
-                                                        stratify=y,
-                                                        shuffle=True
-                                                        )
+    x = text_data[['predictor']] # Needs to be an array of a data frame- can't be a pandas Series
+    if theme is not None:
+        x['theme'] = text_data['theme'].copy()
+    y = text_data['target'].to_numpy()
+    x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
+        train_test_split(x, y, pd.DataFrame(x).index,
+                         test_size=test_size,
+                         stratify=y,
+                         shuffle=True
+                         )
 
-    return x_train, x_test, y_train, y_test
+    return x_train, x_test, y_train, y_test, index_training_data, index_test_data
