@@ -23,5 +23,5 @@ class ThemeBinarizer(BaseEstimator, TransformerMixin):
     def transform(self, X):
         X.loc[X[self.theme] == self.theme_class_value, self.theme] = str(self.set_class_to)
         X.loc[X[self.theme] != str(self.set_class_to), self.theme] = str(self.set_rest_to)
-        X[self.theme] = X[self.theme].apply(pd.to_numeric, errors='coerce').copy()
+        X[self.theme] = X[self.theme].apply(pd.to_numeric, errors='coerce', downcast='integer').copy()
         return X
