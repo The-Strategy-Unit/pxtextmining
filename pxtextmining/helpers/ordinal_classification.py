@@ -32,11 +32,32 @@ class OrdinalClassifier(BaseEstimator):
         self.class_dict = dict(zip(self.y_factorized, y))
 
         if self.theme is not None:
-            if isinstance(X, scipy.sparse.csr.csr_matrix):
-                X = pd.DataFrame(X.toarray())
-                X = pd.DataFrame(X.drop([0], axis=1))
-            # X[self.theme] = 0
-            # X = pd.DataFrame(X.drop([self.theme], axis=1))
+            # In what follows, the theme column is set to zero, as we don't want it to be a predictor. The only reason
+            # we have carried it over is to force criticality for "Couldn't be improved" to be "3" post-prediction.
+            # Removing the theme column completely raises a Scikit-learn error that X has one column less than the
+            # expected number. It must be an assertion process in the background that ensures that the data passed into
+            # the classifier and the data used for fitting have the same number of features. A hacky way to avoid this
+            # is to assign zeros to the theme column and keep it in.
+            # Assigning a value to a CSR matrix like below will throw an efficiency warning. See more here
+            # https://stackoverflow.com/questions/33091397/sparse-efficiency-warning-while-changing-the-column
+            # My knowledge of Scipy is basic at the time of writing, so I will just have to live with it. I do not think
+            # that it has much impact or any impact at all in terms of processing times with our 10k records.
+            X[:, 0] = 0
+
+            # The above replaces the ifelse statement below. Here's why:
+            # I don't think that the data will ever be passed as pd.DataFrame, so it's safe to comment out the
+            # "elif isinstance(X, pd.DataFrame):" part below. In fact, I don't think that the data format will ever be
+            # anything other than scipy.sparse.csr.csr_matrix, so I can safely comment out the
+            # "if isinstance(X, scipy.sparse.csr.csr_matrix):" part too. I'm not simply deleting it, just in case I need
+            # to bring it back at some point.
+
+            # if isinstance(X, scipy.sparse.csr.csr_matrix):
+            #     X[:, 0] = 0
+            #     indx = range(1, X.shape[1])
+            #     X = X[:, indx]
+            # elif isinstance(X, pd.DataFrame):
+            #     X.iloc[:, 0] = 0
+            #     X = pd.DataFrame(X.drop([0], axis=1))
 
         if self.unique_class.shape[0] > 2:
             for i in range(self.unique_class.shape[0] - 1):
@@ -49,11 +70,15 @@ class OrdinalClassifier(BaseEstimator):
 
     def predict_proba_all(self, X):
         if self.theme is not None:
-            if isinstance(X, scipy.sparse.csr.csr_matrix):
-                X = pd.DataFrame(X.toarray())
-                X = pd.DataFrame(X.drop([0], axis=1))
-            # X[self.theme] = 0
-            # X = pd.DataFrame(X.drop([self.theme], axis=1))
+            X[:, 0] = 0
+
+            # if isinstance(X, scipy.sparse.csr.csr_matrix):
+            #     X[:, 0] = 0
+            #     indx = range(1, X.shape[1])
+            #     X = X[:, indx]
+            # elif isinstance(X, pd.DataFrame):
+            #     X.iloc[:, 0] = 0
+            #     X = pd.DataFrame(X.drop([0], axis=1))
 
         clfs_predict = {k: self.clfs[k].predict_proba(X) for k in self.clfs}
         predicted = []
@@ -73,22 +98,29 @@ class OrdinalClassifier(BaseEstimator):
 
     def predict_proba(self, X):
         if self.theme is not None:
-            if isinstance(X, scipy.sparse.csr.csr_matrix):
-                X = pd.DataFrame(X.toarray())
-                X = pd.DataFrame(X.drop([0], axis=1))
-            # X[self.theme] = 0
-            # X = pd.DataFrame(X.drop([self.theme], axis=1))
+            X[:, 0] = 0
 
+            # if isinstance(X, scipy.sparse.csr.csr_matrix):
+            #     X[:, 0] = 0
+            #     indx = range(1, X.shape[1])
+            #     X = X[:, indx]
+            # elif isinstance(X, pd.DataFrame):
+            #     X.iloc[:, 0] = 0
+            #     X = pd.DataFrame(X.drop([0], axis=1))
         return np.max(self.predict_proba_all(X), axis=1)
 
     def predict(self, X):
         if self.theme is not None:
-            if isinstance(X, scipy.sparse.csr.csr_matrix):
-                X = pd.DataFrame(X.toarray())
-                theme_col = X[[0]].copy()
-                X = pd.DataFrame(X.drop([0], axis=1))
-            # X[self.theme] = 0
-            # X = pd.DataFrame(X.drop([self.theme], axis=1))
+            theme_col = pd.DataFrame(X[:, 0].todense())
+            X[:, 0] = 0
+
+            # if isinstance(X, scipy.sparse.csr.csr_matrix):
+            #     X[:, 0] = 0
+            #     indx = range(1, X.shape[1])
+            #     X = X[:, indx]
+            # elif isinstance(X, pd.DataFrame):
+            #     X.iloc[:, 0] = 0
+            #     X = pd.DataFrame(X.drop([0], axis=1))
 
         y_pred = np.argmax(self.predict_proba_all(X), axis=1)
         y_pred_orig_class_names = []
@@ -101,15 +133,18 @@ class OrdinalClassifier(BaseEstimator):
             re = pd.DataFrame(re, columns=['aux'], index=theme_col.index)
             re.loc[no_improvements_index] = self.target_class_value
             re = np.array(re.aux)
-
         return re
 
     def score(self, X, y):
         if self.theme is not None:
-            if isinstance(X, scipy.sparse.csr.csr_matrix):
-                X = pd.DataFrame(X.toarray())
-                X = pd.DataFrame(X.drop([0], axis=1))
-            # X[self.theme] = 0
-            # X = pd.DataFrame(X.drop([self.theme], axis=1))
+            X[:, 0] = 0
+
+            # if isinstance(X, scipy.sparse.csr.csr_matrix):
+            #     X[:, 0] = 0
+            #     indx = range(1, X.shape[1])
+            #     X = X[:, indx]
+            # elif isinstance(X, pd.DataFrame):
+            #     X.iloc[:, 0] = 0
+            #     X = pd.DataFrame(X.drop([0], axis=1))
         return self.estimator.score(X, y)
 
