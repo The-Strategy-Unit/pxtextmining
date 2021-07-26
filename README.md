@@ -145,7 +145,7 @@ and (hyper)parameter values. The process also involves a few pre- and post-fitti
 
 1. Data load and split into training and test sets ([`factory_data_load_and_split.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.factories.html#module-pxtextmining.factories.factory_data_load_and_split)).
 
-2. Text pre-processing (e.g. remove special characters, whitespaces and line breaks) and tokenization, token lemmatization, calculation of Term Frequency–Inverse Document Frequencies (TF-IDFs), up-balancing of rare classes, feature selection, pipeline training and learner benchmarking ([`factory_pipeline.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.factories.html#module-pxtextmining.factories.factory_pipeline)).
+2. Text pre-processing (e.g. remove special characters, whitespaces and line breaks) and tokenization, token lemmatization, calculation of Term Frequency-Inverse Document Frequencies (TF-IDFs), up-balancing of rare classes, feature selection, pipeline training and learner benchmarking ([`factory_pipeline.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.factories.html#module-pxtextmining.factories.factory_pipeline)).
 
 3. Evaluation of pipeline performance on test set, production of evaluation 
 metrics (Accuracy score, 
@@ -158,16 +158,17 @@ on whole dataset
 4. Writing the results: fitted pipeline, tuning results, predictions, accuracy 
 per class, model comparison bar plot, training data index, and test data index ([`factory_write_results.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.factories.html#module-pxtextmining.factories.factory_write_results)).
 
+5. Predicting unlabelled text ([`factory_predict_unlabelled_text.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.factories.html#module-pxtextmining.factories.factory_predict_unlabelled_text)).
+
 There are a few helper functions and classes available in the [helpers](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.helpers.html#pxtextmining-helpers-package) 
 folder that the aforementioned factories make use of.
 
-The factories are brought together in a single function [`text_classification_pipeline.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.pipelines.html#pxtextmining-pipelines-package) that runs the whole process. This function can be run in a user-made 
+The factories are brought together in a single function [`text_classification_pipeline.py`](https://cdu-data-science-team.github.io/pxtextmining/pxtextmining.pipelines.html#module-pxtextmining.pipelines.text_classification_pipeline) that runs the whole process. This function can be run in a user-made 
 script such as 
 [`execution/execution_label.py`](https://github.com/CDU-data-science-team/pxtextmining/blob/main/execution/execution_label.py). 
 The text dataset is loaded either as CSV from folder [`datasets`](https://github.com/CDU-data-science-team/pxtextmining/tree/main/datasets) 
 or is loaded directly from the database. (Loading from/writing to the database 
-is for internal use only and this feature will be removed when a proper API is 
-developed for the functions that read/write data.) Because `Excel` can cause all
+is for internal use only.) Because `Excel` can cause all
 sorts of issues with text encodings, it may be best to use 
 [`LibreOffice`](https://www.libreoffice.org/). 
 The `results` folders (e.g. [`results_label`](https://github.com/CDU-data-science-team/pxtextmining/tree/main/results_label)) always contain a SAV 
@@ -183,7 +184,7 @@ Here is a visual display of the process:
 ## References
 Baldi P., Brunak S., Chauvin Y., Andersen C.A.F. & Nielsen H. (2000). Assessing 
 the accuracy of prediction algorithms for classification: an overview. 
-_Bioinformatics_  16(5):412–424.
+_Bioinformatics_  16(5):412--424.
 
 Guyon I., Bennett K. Cawley G., Escalante H.J., Escalera S., Ho T.K., Macià N., 
 Ray B., Saeed M., Statnikov A.R, & Viegas E. (2015). [Design of the 2015 ChaLearn AutoML Challenge](https://ieeexplore.ieee.org/document/7280767), 
@@ -194,11 +195,10 @@ Kelleher J.D., Mac Namee B. & D’Arcy A.(2015).
 MIT Press.
 
 Matthews B.W. (1975). Comparison of the predicted and observed secondary 
-structure of T4 phage lysozyme. _Biochimica et Biophysica Acta (BBA) - Protein Structure_ 
-405(2):442–451.
+structure of T4 phage lysozyme. _Biochimica et Biophysica Acta (BBA) - Protein Structure_ 405(2):442--451.
 
 Pedregosa F., Varoquaux G., Gramfort A., Michel V., Thirion B., Grisel O., 
 Blondel M., Prettenhofer P., Weiss R., Dubourg V., Vanderplas J., Passos A., 
 Cournapeau D., Brucher M., Perrot M. & Duchesnay E. (2011), 
 [Scikit-learn: Machine Learning in Python](https://jmlr.csail.mit.edu/papers/v12/pedregosa11a.html). 
-_Journal of Machine Learning Research_ 12:2825–2830
+_Journal of Machine Learning Research_ 12:2825--2830
