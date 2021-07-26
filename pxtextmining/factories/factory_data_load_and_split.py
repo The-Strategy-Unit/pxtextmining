@@ -4,10 +4,14 @@ import mysql.connector
 from sklearn.model_selection import train_test_split
 
 
-def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=True, theme=None):
+def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None):
     """
     Function loads the dataset, renames the response and predictor as "target" and "predictor" respectively,
     and splits the dataset into training and test sets.
+
+    **NOTE:** As described later, arguments `reduce_criticality` and `theme` are for internal use by Nottinghamshire
+    Healthcare NHS Foundation Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) and
+    criticality labels. They can otherwise be safely ignored.
 
     :param str filename: Dataset name (CSV), including full path to the data folder (if not in the project's working
         directory), and the data type suffix (".csv"). If ``filename`` is ``None``, the data are read from the database.
@@ -24,7 +28,19 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     :param str target: Name of the response variable.
     :param str predictor: Name of the predictor variable.
     :param float test_size: Proportion of data that will form the test dataset.
-    :param str theme:
+    :param bool reduce_criticality: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+        that hold data on criticality. If `True`, then all records with a criticality of "-5" (respectively, "5") are
+        assigned a criticality of "-4" (respectively, "4"). This is to avoid situations where the pipeline breaks due to
+        a lack of sufficient data for "-5" and/or "5". Defaults to `False`.
+    :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+        that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
+        Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
+        in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
+        help the model improve predictions on criticality when the theme labels are readily available. Second, to force
+        the criticality for "Couldn't be improved" to always be "3" in the training and test data, as well as in the
+        predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
+        be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
+        other than "3" that are attributed to human error.
     :return: A tuple of length 4: predictor-train, predictor-test, target-train and target-test datasets.
     """
 

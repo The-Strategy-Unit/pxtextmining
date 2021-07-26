@@ -39,6 +39,10 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
       the training set, for the best (hyper)parameter values for each learner (PNG);
 
+    **NOTE:** As described later, arguments `reduce_criticality` and `theme` are for internal use by Nottinghamshire
+    Healthcare NHS Foundation Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) and
+    criticality labels. They can otherwise be safely ignored.
+
     :param str filename: Dataset name (CSV), including the data type suffix. If None, data is read from the database.
     :param str target: Name of the response variable.
     :param str predictor: Name of the predictor variable.
@@ -74,6 +78,19 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     :param str save_pipeline_as: Save the pipeline as ``save_pipeline_as + '.sav'``.
     :param str results_folder_name: Name of folder in which to save the results. It will create a new folder or
         overwrite an existing one that has the same name.
+    :param bool reduce_criticality: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+        that hold data on criticality. If `True`, then all records with a criticality of "-5" (respectively, "5") are
+        assigned a criticality of "-4" (respectively, "4"). This is to avoid situations where the pipeline breaks due to
+        a lack of sufficient data for "-5" and/or "5". Defaults to `False`.
+    :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+        that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
+        Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
+        in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
+        help the model improve predictions on criticality when the theme labels are readily available. Second, to force
+        the criticality for "Couldn't be improved" to always be "3" in the training and test data, as well as in the
+        predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
+        be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
+        other than "3" that are attributed to human error.
     :return: A ``tuple`` of length 7:
 
         - The fitted ``Scikit-learn``/``imblearn`` pipeline;

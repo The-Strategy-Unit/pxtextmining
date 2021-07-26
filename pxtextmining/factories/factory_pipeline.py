@@ -84,11 +84,15 @@ def factory_pipeline(ordinal, x, y, tknz,
     are based on the published literature (e.g. for Random Forest, see `Probst et al. 2019 <https://arxiv.org/abs/1802.09596>`_).
     Values may be replaced by appropriate distributions in a future release.
 
+     **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
+     Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
+     safely ignored.
+
     :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of
         `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>`_ that can use any
         standard classification model.
-    :param x_train: Training data (predictor).
-    :param y_train: Training data (response).
+    :param x: The text feature.
+    :param y: The response variable.
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
     :param str metric: Scorer to use during pipeline tuning ("accuracy_score", "balanced_accuracy_score",
         "matthews_corrcoef", "class_balance_accuracy_score").
@@ -100,6 +104,15 @@ def factory_pipeline(ordinal, x, y, tknz,
     :param list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
         "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier".
+    :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+        that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
+        Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
+        in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
+        help the model improve predictions on criticality when the theme labels are readily available. Second, to force
+        the criticality for "Couldn't be improved" to always be "3" in the training and test data, as well as in the
+        predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
+        be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
+        other than "3" that are attributed to human error.
     :return: A tuned `sklearn.pipeline.Pipeline
         <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/
         `imblearn.pipeline.Pipeline
@@ -142,6 +155,19 @@ def factory_pipeline(ordinal, x, y, tknz,
 
     # Make pipeline #
     if ordinal and theme is not None:
+        # This is for internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts that use theme
+        # labels ("Access", "Environment/ facilities" etc.). We want the criticality for "Couldn't be improved" to
+        # always be "3". The theme label is passed as a one-hot encoded set of columns, of which the first is for
+        # "Couldn't be improved". The one-hot encoded columns are actually the first columns of the whole sparse matrix
+        # that has the TF-IDFs, sentiment features etc. that is produced when fitting by the pipeline.
+        # When running the ordinal classification model, we want to find the records with "Couldn't be improved" (i.e.
+        # records with a value of 1) in the first, one-hot encoded, column and replace the predicted criticality values
+        # with "3".
+        # We want to pass all of the theme's one-hot encoded columns into the model, so we handle them separately from
+        # text predictor to avoid the feature selection step for them. We thus make a separate pipeline with the
+        # preprocessor and feature selection steps for the text predictor (pipe_all_but_theme) and one-hot encode the
+        # theme column in all_transforms. We want to place "Couldn't be improved" in position 0 (first column) of the
+        # thus produced sparse matrix so as to easily access it in the code for the ordinal model (OrdinalClassifier()).
         pipe_all_but_theme = Pipeline([
             ('preprocessor', preprocessor),
             ('featsel', FeatureSelectionSwitcher())
@@ -369,6 +395,6 @@ def factory_pipeline(ordinal, x, y, tknz,
     print("Stripping excess spaces, whitespaces and line breaks from text...")
 
     # Fit pipeline #
-    pipe_cv.fit(x_train, y_train)
+    pipe_cv.fit(x, y)
 
     return pipe_cv

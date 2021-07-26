@@ -4,11 +4,15 @@ from itertools import chain
 
 
 def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
-                                    preds_column=None, column_names='all_cols'):
+                                    preds_column=None, column_names='all_cols', theme=None):
     """
     Predict unlabelled text data using a fitted `sklearn.pipeline.Pipeline
     <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/`imblearn.pipeline.Pipeline
     <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_.
+
+    **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
+     Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
+     safely ignored.
 
     :param dataset: A ``pandas.DataFrame`` (or an object that can be converted into such) with the text data to predict
         classes for.
@@ -20,22 +24,41 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
     :param column_names:  A ``list``/``tuple`` of strings with the names of the columns of the supplied data frame (incl.
         ``predictor``) to be added to the returned ``pandas.DataFrame``.  If "preds_only", then the only column in
         the returned data frame will be ``preds_column``. Defaults to "all_cols".
+    :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+        that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
+        Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
+        in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
+        help the model improve predictions on criticality when the theme labels are readily available. Second, to force
+        the criticality for "Couldn't be improved" to always be "3" in the training and test data, as well as in the
+        predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
+        be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
+        other than "3" that are attributed to human error.
     :return: A ``pandas.DataFrame`` with the predictions and any other columns supplied in ``column_names``.
     """
 
     data_unlabelled = pd.DataFrame(dataset)
 
-    # Rename predictor column and replace NAs with empty string.
-    data_unlabelled = data_unlabelled.rename(columns={predictor: 'predictor'})
+    # Rename predictor column to names pipeline knows and replace NAs with empty string.
+    if theme is None:
+        data_unlabelled = data_unlabelled.rename(columns={predictor: 'predictor'})
+    else:
+        data_unlabelled = data_unlabelled.rename(columns={predictor: 'predictor', theme: 'theme'})
     data_unlabelled['predictor'] = data_unlabelled.predictor.fillna('')
 
     # Load pipeline and make predictions
     pipe = joblib.load(pipe_path)
-    predictions = pipe.predict(data_unlabelled[['predictor']])
+    if theme is None:
+        predictions = pipe.predict(data_unlabelled[['predictor']])
+    else:
+        predictions = pipe.predict(data_unlabelled[['predictor', 'theme']])
+
     if preds_column is None:
         preds_column = predictor + '_preds'
     data_unlabelled[preds_column] = predictions
+
+    # Rename back to original variable names
     data_unlabelled = data_unlabelled.rename(columns={'predictor': predictor})
+    data_unlabelled = data_unlabelled.rename(columns={'theme': theme})
 
     # Set column names of columns to return in final data frame
     if column_names == 'all_cols':
