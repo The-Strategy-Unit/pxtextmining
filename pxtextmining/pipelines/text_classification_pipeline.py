@@ -22,7 +22,9 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  save_objects_to_server=True,
                                  save_objects_to_disk=False,
                                  save_pipeline_as="default",
-                                 results_folder_name="results"):
+                                 results_folder_name="results",
+                                 reduce_criticality=True,
+                                 theme=None):
 
     """
     Fit and evaluate the pipeline and write the results. Writes between 1 to 7 files, depending on the value of argument
@@ -36,6 +38,10 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     - The row indices of the test data (CSV);
     - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
       the training set, for the best (hyper)parameter values for each learner (PNG);
+
+    **NOTE:** As described later, arguments `reduce_criticality` and `theme` are for internal use by Nottinghamshire
+    Healthcare NHS Foundation Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) and
+    criticality labels. They can otherwise be safely ignored.
 
     :param str filename: Dataset name (CSV), including the data type suffix. If None, data is read from the database.
     :param str target: Name of the response variable.
@@ -72,6 +78,19 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     :param str save_pipeline_as: Save the pipeline as ``save_pipeline_as + '.sav'``.
     :param str results_folder_name: Name of folder in which to save the results. It will create a new folder or
         overwrite an existing one that has the same name.
+    :param bool reduce_criticality: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+        that hold data on criticality. If `True`, then all records with a criticality of "-5" (respectively, "5") are
+        assigned a criticality of "-4" (respectively, "4"). This is to avoid situations where the pipeline breaks due to
+        a lack of sufficient data for "-5" and/or "5". Defaults to `False`.
+    :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+        that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
+        Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
+        in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
+        help the model improve predictions on criticality when the theme labels are readily available. Second, to force
+        the criticality for "Couldn't be improved" to always be "3" in the training and test data, as well as in the
+        predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
+        be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
+        other than "3" that are attributed to human error.
     :return: A ``tuple`` of length 7:
 
         - The fitted ``Scikit-learn``/``imblearn`` pipeline;
@@ -84,19 +103,29 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
         - The row indices of the test data;
     """
 
-    x_train, x_test, y_train, y_test = factory_data_load_and_split(filename, target, predictor, test_size)
+    x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
+        factory_data_load_and_split(filename, target, predictor, test_size, reduce_criticality, theme)
 
-    pipe = factory_pipeline(ordinal, x_train, y_train, tknz, metric, cv, n_iter, n_jobs, verbose, learners)
+    pipe = factory_pipeline(ordinal, x_train, y_train, tknz, metric, cv, n_iter, n_jobs, verbose, learners, theme)
 
     pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar = \
         factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric)
 
-    pred, index_training_data, index_test_data = factory_write_results(pipe, tuning_results, pred,
-                                                                       accuracy_per_class, p_compare_models_bar,
-                                                                       target, x_train, x_test, metric,
+    pred, index_training_data, index_test_data = factory_write_results(pipe,
+                                                                       tuning_results,
+                                                                       pred,
+                                                                       accuracy_per_class,
+                                                                       p_compare_models_bar,
+                                                                       target,
+                                                                       x_train,
+                                                                       x_test,
+                                                                       index_training_data,
+                                                                       index_test_data,
+                                                                       metric,
                                                                        objects_to_save,
                                                                        save_objects_to_server,
-                                                                       save_objects_to_disk, save_pipeline_as,
+                                                                       save_objects_to_disk,
+                                                                       save_pipeline_as,
                                                                        results_folder_name)
 
     return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_training_data, index_test_data

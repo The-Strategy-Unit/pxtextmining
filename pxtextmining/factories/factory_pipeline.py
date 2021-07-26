@@ -1,17 +1,14 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
 from imblearn import FunctionSampler
 from imblearn.pipeline import Pipeline
 # from sklearn.pipeline import Pipeline
 from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, StandardScaler
+from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, OneHotEncoder, StandardScaler
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectPercentile, chi2, f_classif
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.linear_model import RidgeClassifier
 from sklearn.svm import LinearSVC
-from sklearn.linear_model import SGDClassifier
-from sklearn.linear_model import Perceptron
-from sklearn.linear_model import PassiveAggressiveClassifier
+from sklearn.linear_model import PassiveAggressiveClassifier, Perceptron, RidgeClassifier, SGDClassifier
 from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
 from sklearn.ensemble import RandomForestClassifier
@@ -28,8 +25,7 @@ from pxtextmining.helpers.scaler_switcher import ScalerSwitcher
 from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwitcher
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
 
-
-def factory_pipeline(ordinal, x_train, y_train, tknz,
+def factory_pipeline(ordinal, x, y, tknz,
                      metric="class_balance_accuracy_score",
                      cv=5, n_iter=100, n_jobs=5, verbose=3,
                      learners=[
@@ -43,7 +39,8 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
                          # "KNeighborsClassifier",
                          # "NearestCentroid",
                          "RandomForestClassifier"
-                     ]):
+                     ],
+                     theme=None):
 
     """
     Prepare and fit a text classification pipeline.
@@ -72,7 +69,7 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
       fixed and cannot be user-defined.
     - Tokenization and lemmatization of the text feature: uses ``spaCy`` (default) or `NLTK <https://www.nltk.org/>`_.
       It also strips punctuation, excess spaces, and metacharacters "r" and "n" from the text. It converts emojis into
-      "__text__" (where "text" is the emoji name), and NA/NULL values into "__none__".
+      "__text__" (where "text" is the emoji name), and NA/NULL values into "__notext__".
     - Feature selection: Uses `sklearn.feature_selection.SelectPercentile
       <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html>`_
       with `sklearn.feature_selection.chi2
@@ -87,11 +84,15 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
     are based on the published literature (e.g. for Random Forest, see `Probst et al. 2019 <https://arxiv.org/abs/1802.09596>`_).
     Values may be replaced by appropriate distributions in a future release.
 
+     **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
+     Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
+     safely ignored.
+
     :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of
         `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>`_ that can use any
         standard classification model.
-    :param x_train: Training data (predictor).
-    :param y_train: Training data (response).
+    :param x: The text feature.
+    :param y: The response variable.
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
     :param str metric: Scorer to use during pipeline tuning ("accuracy_score", "balanced_accuracy_score",
         "matthews_corrcoef", "class_balance_accuracy_score").
@@ -103,6 +104,15 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
     :param list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
         "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier".
+    :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+        that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
+        Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
+        in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
+        help the model improve predictions on criticality when the theme labels are readily available. Second, to force
+        the criticality for "Couldn't be improved" to always be "3" in the training and test data, as well as in the
+        predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
+        be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
+        other than "3" that are attributed to human error.
     :return: A tuned `sklearn.pipeline.Pipeline
         <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/
         `imblearn.pipeline.Pipeline
@@ -110,9 +120,6 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
     """
 
     features_text = 'predictor'
-    # features_in_minus_1_to_1 = ['text_blob_polarity', 'vader_compound']
-    # features_in_0_to_1 = ['text_blob_subjectivity', 'vader_neg', 'vader_neu', 'vader_pos']
-    # features_positive_and_unbounded = ['text_length']
 
     # Define transformers for pipeline #
     # Transformer that calculates text length and transforms it.
@@ -147,16 +154,50 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
                                   validate=False)
 
     # Make pipeline #
-    if ordinal:
-        pipe = Pipeline(steps=[('sampling', oversampler),
-                               ('preprocessor', preprocessor),
-                               ('featsel', FeatureSelectionSwitcher()),
-                               ('clf', OrdinalClassifier())])
+    if ordinal and theme is not None:
+        # This is for internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts that use theme
+        # labels ("Access", "Environment/ facilities" etc.). We want the criticality for "Couldn't be improved" to
+        # always be "3". The theme label is passed as a one-hot encoded set of columns, of which the first is for
+        # "Couldn't be improved". The one-hot encoded columns are actually the first columns of the whole sparse matrix
+        # that has the TF-IDFs, sentiment features etc. that is produced when fitting by the pipeline.
+        # When running the ordinal classification model, we want to find the records with "Couldn't be improved" (i.e.
+        # records with a value of 1) in the first, one-hot encoded, column and replace the predicted criticality values
+        # with "3".
+        # We want to pass all of the theme's one-hot encoded columns into the model, so we handle them separately from
+        # text predictor to avoid the feature selection step for them. We thus make a separate pipeline with the
+        # preprocessor and feature selection steps for the text predictor (pipe_all_but_theme) and one-hot encode the
+        # theme column in all_transforms. We want to place "Couldn't be improved" in position 0 (first column) of the
+        # thus produced sparse matrix so as to easily access it in the code for the ordinal model (OrdinalClassifier()).
+        pipe_all_but_theme = Pipeline([
+            ('preprocessor', preprocessor),
+            ('featsel', FeatureSelectionSwitcher())
+        ])
+
+        onehot_categories = [["Couldn't be improved", 'Access', 'Care received', 'Communication', 'Dignity',
+                              'Environment/ facilities', 'Miscellaneous', 'Staff', 'Transition/coordination']]
+
+        all_transforms = ColumnTransformer([
+            ('theme', OneHotEncoder(categories=onehot_categories), ['theme']),
+            ('process', pipe_all_but_theme, [features_text])
+        ])
+
+        pipe = Pipeline([
+            ('sampling', oversampler),
+            ('alltrans', all_transforms),
+            ('clf', OrdinalClassifier(theme='theme', target_class_value='3', theme_class_value=1))
+        ])
+    elif ordinal and theme is None:
+        pipe = Pipeline([
+            ('sampling', oversampler),
+            ('preprocessor', preprocessor),
+            ('featsel', FeatureSelectionSwitcher()),
+            ('clf', OrdinalClassifier())])
     else:
-        pipe = Pipeline(steps=[('sampling', oversampler),
-                               ('preprocessor', preprocessor),
-                               ('featsel', FeatureSelectionSwitcher()),
-                               ('clf', ClfSwitcher())])
+        pipe = Pipeline([
+            ('sampling', oversampler),
+            ('preprocessor', preprocessor),
+            ('featsel', FeatureSelectionSwitcher()),
+            ('clf', ClfSwitcher())])
 
     # Define (hyper)parameter grid #
     # A few initial value ranges for some (hyper)parameters.
@@ -309,6 +350,32 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
 
     param_grid = [x for x in param_grid if x is not None]
 
+    ########################################
+    if theme is not None:
+        ordinal_with_theme_params = [
+            'featsel__selector',
+            'featsel__selector__percentile',
+            'featsel__selector__score_func',
+            'preprocessor__sentimenttr__scaler__scaler',
+            'preprocessor__sentimenttr__scaler__scaler__n_bins',
+            'preprocessor__lengthtr__scaler__scaler',
+            'preprocessor__texttr__text__transformer',
+            'preprocessor__texttr__text__transformer__tokenizer',
+            'preprocessor__texttr__text__transformer__preprocessor',
+            'preprocessor__texttr__text__transformer__norm',
+            'preprocessor__texttr__text__transformer__ngram_range',
+            'preprocessor__texttr__text__transformer__max_df',
+            'preprocessor__texttr__text__transformer__min_df',
+            'preprocessor__texttr__text__transformer__use_idf']
+
+        for i in range(len(param_grid)):
+            for j in ordinal_with_theme_params:
+                if j in param_grid[i].keys():
+                    old_key = j
+                    new_key = 'alltrans__process__' + old_key
+                    param_grid[i][new_key] = param_grid[i].pop(old_key)
+    #######################################
+
     # Define fitting metric (refit) and other useful performance metrics.
     refit = metric.replace('_', ' ').replace(' score', '').title()
     scoring = {'Accuracy': make_scorer(accuracy_score),
@@ -328,6 +395,6 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
     print("Stripping excess spaces, whitespaces and line breaks from text...")
 
     # Fit pipeline #
-    pipe_cv.fit(x_train, y_train)
+    pipe_cv.fit(x, y)
 
     return pipe_cv
