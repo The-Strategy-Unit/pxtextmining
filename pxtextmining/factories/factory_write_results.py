@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 
 
 def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar,
-                          target, x_train, x_test, metric,
+                          target, x_train, x_test, index_training_data, index_test_data, metric,
                           objects_to_save=[
                                      "pipeline",
                                      "tuning results",
@@ -76,8 +76,8 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
             - The row indices of the test data;
     """
 
-    index_training_data = pd.DataFrame(x_train.index, columns=["row_index"])
-    index_test_data = pd.DataFrame(x_test.index, columns=["row_index"])
+    index_training_data = pd.DataFrame(index_training_data, columns=["row_index"])
+    index_test_data = pd.DataFrame(index_test_data, columns=["row_index"])
     pred = pd.DataFrame(pred, columns=[target + "_pred"])
     pred["row_index"] = index_test_data
 
