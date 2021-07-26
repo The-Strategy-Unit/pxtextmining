@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pxtextmining.factories package &mdash; pxtextmining 0.2.6 documentation</title>
+  <title>pxtextmining.factories package &mdash; pxtextmining 0.3.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -169,10 +172,13 @@
 <div class="section" id="module-pxtextmining.factories.factory_data_load_and_split">
 <span id="pxtextmining-factories-factory-data-load-and-split-module"></span><h2>pxtextmining.factories.factory_data_load_and_split module<a class="headerlink" href="#module-pxtextmining.factories.factory_data_load_and_split" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="pxtextmining.factories.factory_data_load_and_split.factory_data_load_and_split">
-<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_data_load_and_split.</span></code><code class="sig-name descname"><span class="pre">factory_data_load_and_split</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.33</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_data_load_and_split.factory_data_load_and_split" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pxtextmining.factories.factory_data_load_and_split.factory_data_load_and_split">
+<span class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_data_load_and_split.</span></span><span class="sig-name descname"><span class="pre">factory_data_load_and_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.33</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduce_criticality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_data_load_and_split.factory_data_load_and_split" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function loads the dataset, renames the response and predictor as “target” and “predictor” respectively,
 and splits the dataset into training and test sets.</p>
+<p><strong>NOTE:</strong> As described later, arguments <cite>reduce_criticality</cite> and <cite>theme</cite> are for internal use by Nottinghamshire
+Healthcare NHS Foundation Trust or other trusts who use the theme (“Access”, “Environment/ facilities” etc.) and
+criticality labels. They can otherwise be safely ignored.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -193,6 +199,19 @@ relevant lines in the script. A “my.conf” file will need to be placed in the
 <li><p><strong>target</strong> (<em>str</em>) – Name of the response variable.</p></li>
 <li><p><strong>predictor</strong> (<em>str</em>) – Name of the predictor variable.</p></li>
 <li><p><strong>test_size</strong> (<em>float</em>) – Proportion of data that will form the test dataset.</p></li>
+<li><p><strong>reduce_criticality</strong> (<em>bool</em>) – For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+that hold data on criticality. If <cite>True</cite>, then all records with a criticality of “-5” (respectively, “5”) are
+assigned a criticality of “-4” (respectively, “4”). This is to avoid situations where the pipeline breaks due to
+a lack of sufficient data for “-5” and/or “5”. Defaults to <cite>False</cite>.</p></li>
+<li><p><strong>theme</strong> (<em>str</em>) – For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+that use theme labels (“Access”, “Environment/ facilities” etc.). The column name of the theme variable.
+Defaults to <cite>None</cite>. If supplied, the theme variable will be used as a predictor (along with the text predictor)
+in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
+help the model improve predictions on criticality when the theme labels are readily available. Second, to force
+the criticality for “Couldn’t be improved” to always be “3” in the training and test data, as well as in the
+predictions. This is the only criticality value that “Couldn’t be improved” can take, so by forcing it to always
+be “3”, we are improving model performance, but are also correcting possible erroneous assignments of values
+other than “3” that are attributed to human error.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -205,8 +224,8 @@ relevant lines in the script. A “my.conf” file will need to be placed in the
 <div class="section" id="module-pxtextmining.factories.factory_model_performance">
 <span id="pxtextmining-factories-factory-model-performance-module"></span><h2>pxtextmining.factories.factory_model_performance module<a class="headerlink" href="#module-pxtextmining.factories.factory_model_performance" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="pxtextmining.factories.factory_model_performance.factory_model_performance">
-<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_model_performance.</span></code><code class="sig-name descname"><span class="pre">factory_model_performance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_model_performance.factory_model_performance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pxtextmining.factories.factory_model_performance.factory_model_performance">
+<span class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_model_performance.</span></span><span class="sig-name descname"><span class="pre">factory_model_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_model_performance.factory_model_performance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the performance of a fitted pipeline.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -240,8 +259,8 @@ the training set, for the best (hyper)parameter values for each learner;</p></li
 <div class="section" id="module-pxtextmining.factories.factory_pipeline">
 <span id="pxtextmining-factories-factory-pipeline-module"></span><h2>pxtextmining.factories.factory_pipeline module<a class="headerlink" href="#module-pxtextmining.factories.factory_pipeline" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="pxtextmining.factories.factory_pipeline.factory_pipeline">
-<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_pipeline.</span></code><code class="sig-name descname"><span class="pre">factory_pipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ordinal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tknz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'class_balance_accuracy_score'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learners</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['SGDClassifier',</span> <span class="pre">'RidgeClassifier',</span> <span class="pre">'Perceptron',</span> <span class="pre">'PassiveAggressiveClassifier',</span> <span class="pre">'BernoulliNB',</span> <span class="pre">'ComplementNB',</span> <span class="pre">'MultinomialNB',</span> <span class="pre">'RandomForestClassifier']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_pipeline.factory_pipeline" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pxtextmining.factories.factory_pipeline.factory_pipeline">
+<span class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_pipeline.</span></span><span class="sig-name descname"><span class="pre">factory_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ordinal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tknz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'class_balance_accuracy_score'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learners</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['SGDClassifier',</span> <span class="pre">'RidgeClassifier',</span> <span class="pre">'Perceptron',</span> <span class="pre">'PassiveAggressiveClassifier',</span> <span class="pre">'BernoulliNB',</span> <span class="pre">'ComplementNB',</span> <span class="pre">'MultinomialNB',</span> <span class="pre">'RandomForestClassifier']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_pipeline.factory_pipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare and fit a text classification pipeline.</p>
 <p>The pipeline’s parameter grid switches between two approaches to text classification: Bag-of-Words and Embeddings.
 For the former, both TF-IDF and raw counts are tried out.</p>
@@ -265,7 +284,7 @@ to up-sample rare classes. Currently the threshold to consider a class as rare a
 fixed and cannot be user-defined.</p></li>
 <li><p>Tokenization and lemmatization of the text feature: uses <code class="docutils literal notranslate"><span class="pre">spaCy</span></code> (default) or <a class="reference external" href="https://www.nltk.org/">NLTK</a>.
 It also strips punctuation, excess spaces, and metacharacters “r” and “n” from the text. It converts emojis into
-“__text__” (where “text” is the emoji name), and NA/NULL values into “__none__”.</p></li>
+“__text__” (where “text” is the emoji name), and NA/NULL values into “__notext__”.</p></li>
 <li><p>Feature selection: Uses <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html">sklearn.feature_selection.SelectPercentile</a>
 with <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2">sklearn.feature_selection.chi2</a>
 for TF-IDFs or <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn-feature-selection-f-classif">sklearn.feature_selection.f_classif</a>
@@ -275,14 +294,17 @@ for embeddings.</p></li>
 <p>The numeric values in the grid are currently lists/tuples of values that are defined either empirically or
 are based on the published literature (e.g. for Random Forest, see <a class="reference external" href="https://arxiv.org/abs/1802.09596">Probst et al. 2019</a>).
 Values may be replaced by appropriate distributions in a future release.</p>
+<p><strong>NOTE:</strong> As described later, argument <cite>theme</cite> is for internal use by Nottinghamshire Healthcare NHS Foundation
+Trust or other trusts who use the theme (“Access”, “Environment/ facilities” etc.) labels. It can otherwise be
+safely ignored.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ordinal</strong> (<em>bool</em>) – Whether to fit an ordinal classification model. The ordinal model is the implementation of
 <a class="reference external" href="https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf">Frank and Hall (2001)</a> that can use any
 standard classification model.</p></li>
-<li><p><strong>x_train</strong> – Training data (predictor).</p></li>
-<li><p><strong>y_train</strong> – Training data (response).</p></li>
+<li><p><strong>x</strong> – The text feature.</p></li>
+<li><p><strong>y</strong> – The response variable.</p></li>
 <li><p><strong>tknz</strong> (<em>str</em>) – Tokenizer to use (“spacy” or “wordnet”).</p></li>
 <li><p><strong>metric</strong> (<em>str</em>) – Scorer to use during pipeline tuning (“accuracy_score”, “balanced_accuracy_score”,
 “matthews_corrcoef”, “class_balance_accuracy_score”).</p></li>
@@ -293,6 +315,15 @@ standard classification model.</p></li>
 <li><p><strong>learners</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – A list of <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code> names of the learners to tune. Must be one or more of
 “SGDClassifier”, “RidgeClassifier”, “Perceptron”, “PassiveAggressiveClassifier”, “BernoulliNB”, “ComplementNB”,
 “MultinomialNB”, “KNeighborsClassifier”, “NearestCentroid”, “RandomForestClassifier”.</p></li>
+<li><p><strong>theme</strong> (<em>str</em>) – For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+that use theme labels (“Access”, “Environment/ facilities” etc.). The column name of the theme variable.
+Defaults to <cite>None</cite>. If supplied, the theme variable will be used as a predictor (along with the text predictor)
+in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
+help the model improve predictions on criticality when the theme labels are readily available. Second, to force
+the criticality for “Couldn’t be improved” to always be “3” in the training and test data, as well as in the
+predictions. This is the only criticality value that “Couldn’t be improved” can take, so by forcing it to always
+be “3”, we are improving model performance, but are also correcting possible erroneous assignments of values
+other than “3” that are attributed to human error.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -307,9 +338,12 @@ standard classification model.</p></li>
 <div class="section" id="module-pxtextmining.factories.factory_predict_unlabelled_text">
 <span id="pxtextmining-factories-factory-predict-unlabelled-text-module"></span><h2>pxtextmining.factories.factory_predict_unlabelled_text module<a class="headerlink" href="#module-pxtextmining.factories.factory_predict_unlabelled_text" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text">
-<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_predict_unlabelled_text.</span></code><code class="sig-name descname"><span class="pre">factory_predict_unlabelled_text</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preds_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all_cols'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text">
+<span class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_predict_unlabelled_text.</span></span><span class="sig-name descname"><span class="pre">factory_predict_unlabelled_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preds_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all_cols'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict unlabelled text data using a fitted <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">sklearn.pipeline.Pipeline</a>/<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline">imblearn.pipeline.Pipeline</a>.</p>
+<p><strong>NOTE:</strong> As described later, argument <cite>theme</cite> is for internal use by Nottinghamshire Healthcare NHS Foundation
+Trust or other trusts who use the theme (“Access”, “Environment/ facilities” etc.) labels. It can otherwise be
+safely ignored.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -323,6 +357,15 @@ then the name will be <code class="docutils literal notranslate"><span class="pr
 <li><p><strong>column_names</strong> – A <code class="docutils literal notranslate"><span class="pre">list</span></code>/<code class="docutils literal notranslate"><span class="pre">tuple</span></code> of strings with the names of the columns of the supplied data frame (incl.
 <code class="docutils literal notranslate"><span class="pre">predictor</span></code>) to be added to the returned <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.  If “preds_only”, then the only column in
 the returned data frame will be <code class="docutils literal notranslate"><span class="pre">preds_column</span></code>. Defaults to “all_cols”.</p></li>
+<li><p><strong>theme</strong> (<em>str</em>) – For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+that use theme labels (“Access”, “Environment/ facilities” etc.). The column name of the theme variable.
+Defaults to <cite>None</cite>. If supplied, the theme variable will be used as a predictor (along with the text predictor)
+in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
+help the model improve predictions on criticality when the theme labels are readily available. Second, to force
+the criticality for “Couldn’t be improved” to always be “3” in the training and test data, as well as in the
+predictions. This is the only criticality value that “Couldn’t be improved” can take, so by forcing it to always
+be “3”, we are improving model performance, but are also correcting possible erroneous assignments of values
+other than “3” that are attributed to human error.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -335,8 +378,8 @@ the returned data frame will be <code class="docutils literal notranslate"><span
 <div class="section" id="module-pxtextmining.factories.factory_write_results">
 <span id="pxtextmining-factories-factory-write-results-module"></span><h2>pxtextmining.factories.factory_write_results module<a class="headerlink" href="#module-pxtextmining.factories.factory_write_results" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="pxtextmining.factories.factory_write_results.factory_write_results">
-<code class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_write_results.</span></code><code class="sig-name descname"><span class="pre">factory_write_results</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accuracy_per_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_compare_models_bar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objects_to_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['pipeline',</span> <span class="pre">'tuning</span> <span class="pre">results',</span> <span class="pre">'predictions',</span> <span class="pre">'accuracy</span> <span class="pre">per</span> <span class="pre">class',</span> <span class="pre">'index</span> <span class="pre">-</span> <span class="pre">training</span> <span class="pre">data',</span> <span class="pre">'index</span> <span class="pre">-</span> <span class="pre">test</span> <span class="pre">data',</span> <span class="pre">'bar</span> <span class="pre">plot']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_objects_to_server</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_objects_to_disk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_pipeline_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'results'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_write_results.factory_write_results" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pxtextmining.factories.factory_write_results.factory_write_results">
+<span class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_write_results.</span></span><span class="sig-name descname"><span class="pre">factory_write_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accuracy_per_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_compare_models_bar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_training_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_test_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objects_to_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['pipeline',</span> <span class="pre">'tuning</span> <span class="pre">results',</span> <span class="pre">'predictions',</span> <span class="pre">'accuracy</span> <span class="pre">per</span> <span class="pre">class',</span> <span class="pre">'index</span> <span class="pre">-</span> <span class="pre">training</span> <span class="pre">data',</span> <span class="pre">'index</span> <span class="pre">-</span> <span class="pre">test</span> <span class="pre">data',</span> <span class="pre">'bar</span> <span class="pre">plot']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_objects_to_server</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_objects_to_disk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_pipeline_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'results'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_write_results.factory_write_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the fitted pipeline and associated files. Writes between 1 to 7 files, depending on the value of argument
 <code class="docutils literal notranslate"><span class="pre">objects_to_save</span></code>:</p>
 <ul class="simple">

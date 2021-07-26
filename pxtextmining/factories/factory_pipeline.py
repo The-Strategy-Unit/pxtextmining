@@ -84,9 +84,9 @@ def factory_pipeline(ordinal, x, y, tknz,
     are based on the published literature (e.g. for Random Forest, see `Probst et al. 2019 <https://arxiv.org/abs/1802.09596>`_).
     Values may be replaced by appropriate distributions in a future release.
 
-     **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
-     Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
-     safely ignored.
+    **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
+    Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
+    safely ignored.
 
     :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of
         `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>`_ that can use any

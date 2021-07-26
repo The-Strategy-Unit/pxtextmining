@@ -44,6 +44,14 @@ pxtextmining.helpers.oversampling module
    :undoc-members:
    :show-inheritance:
 
+pxtextmining.helpers.passthrough module
+---------------------------------------
+
+.. automodule:: pxtextmining.helpers.passthrough
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pxtextmining.helpers.scaler\_switcher module
 --------------------------------------------
 
@@ -80,6 +88,14 @@ pxtextmining.helpers.text\_transformer\_switcher module
 -------------------------------------------------------
 
 .. automodule:: pxtextmining.helpers.text_transformer_switcher
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pxtextmining.helpers.theme\_binarization module
+-----------------------------------------------
+
+.. automodule:: pxtextmining.helpers.theme_binarization
    :members:
    :undoc-members:
    :show-inheritance:

@@ -14,10 +14,14 @@ class OrdinalClassifier(BaseEstimator):
     <https://towardsdatascience.com/simple-trick-to-train-an-ordinal-regression-with-any-classifier-6911183d2a3c>`_.
 
     **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
-     Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
-     safely ignored.
+    Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
+    safely ignored.
 
-
+    :param estimator: A Scikit-learn classifier.
+    :param dict clfs: Helper variable. Defined inside the class.
+    :param y_factorized: Helper variable. Defined inside the class.
+    :param unique_class: Helper variable. Defined inside the class.
+    :param dict class_dict: Helper variable. Defined inside the class.
     :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
         that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
         Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
@@ -27,6 +31,9 @@ class OrdinalClassifier(BaseEstimator):
         predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
         be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
         other than "3" that are attributed to human error.
+    :param str target_class_value: The criticality value to assign to "Couldn't be improved".
+    :param int theme_class_value: The value of "Couldn't be improved" in the transformed (e.g. one-hot encoded) theme
+        column.
     """
 
     def __init__(self, estimator=LogisticRegression(), clfs={}, y_factorized=None, unique_class=None, class_dict=None,
