@@ -25,7 +25,7 @@ from pxtextmining.helpers.scaler_switcher import ScalerSwitcher
 from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwitcher
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
 
-def factory_pipeline(ordinal, x_train, y_train, tknz,
+def factory_pipeline(ordinal, x, y, tknz,
                      metric="class_balance_accuracy_score",
                      cv=5, n_iter=100, n_jobs=5, verbose=3,
                      learners=[
