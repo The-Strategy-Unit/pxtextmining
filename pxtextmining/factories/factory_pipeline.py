@@ -24,8 +24,6 @@ from pxtextmining.helpers.ordinal_classification import OrdinalClassifier
 from pxtextmining.helpers.scaler_switcher import ScalerSwitcher
 from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwitcher
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
-from pxtextmining.helpers.theme_binarization import ThemeBinarizer
-
 
 def factory_pipeline(ordinal, x_train, y_train, tknz,
                      metric="class_balance_accuracy_score",
@@ -149,8 +147,11 @@ def factory_pipeline(ordinal, x_train, y_train, tknz,
             ('featsel', FeatureSelectionSwitcher())
         ])
 
+        onehot_categories = [["Couldn't be improved", 'Access', 'Care received', 'Communication', 'Dignity',
+                              'Environment/ facilities', 'Miscellaneous', 'Staff', 'Transition/coordination']]
+
         all_transforms = ColumnTransformer([
-            ('theme', ThemeBinarizer(), ['theme']),
+            ('theme', OneHotEncoder(categories=onehot_categories), ['theme']),
             ('process', pipe_all_but_theme, [features_text])
         ])
 
