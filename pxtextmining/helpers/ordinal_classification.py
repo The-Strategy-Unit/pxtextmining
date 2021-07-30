@@ -89,7 +89,10 @@ class OrdinalClassifier(BaseEstimator):
         # with "Couldn't be improved" (i.e. records with a value of 1) in the first, one-hot encoded, column and replace
         # the predicted criticality values with "3".
         if self.theme is not None:
-            theme_col = pd.DataFrame(X[:, 0].todense())
+            if isinstance(X[:, 0], np.ndarray):
+                theme_col = pd.DataFrame(X[:, 0])
+            else:
+                theme_col = pd.DataFrame(X[:, 0].todense())
             no_improvements_index = theme_col.loc[theme_col.iloc[:, 0] == self.theme_class_value].index
             re = pd.DataFrame(re, columns=['aux'], index=theme_col.index)
             re.loc[no_improvements_index] = self.target_class_value
