@@ -11,8 +11,8 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
     <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_.
 
     **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
-     Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
-     safely ignored.
+    Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
+    safely ignored.
 
     :param dataset: A ``pandas.DataFrame`` (or an object that can be converted into such) with the text data to predict
         classes for.
