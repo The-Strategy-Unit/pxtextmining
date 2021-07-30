@@ -350,8 +350,11 @@ def factory_pipeline(ordinal, x, y, tknz,
 
     param_grid = [x for x in param_grid if x is not None]
 
-    ########################################
-    if theme is not None:
+    # When a theme is supplied for the ordinal model, the pipeline steps are a little different. Step "alltrans"
+    # includes the steps for both the preprocessing of the text feature, and the one-hot encoding of the theme feature.
+    # So, a parameter such as "featsel__selector" in the pipeline without a theme feature would be
+    # "alltrans__process__featsel__selector" in this one. We need to pass these correct names to the tuning grid.
+    if ordinal and theme is not None:
         ordinal_with_theme_params = [
             'featsel__selector',
             'featsel__selector__percentile',
@@ -374,7 +377,6 @@ def factory_pipeline(ordinal, x, y, tknz,
                     old_key = j
                     new_key = 'alltrans__process__' + old_key
                     param_grid[i][new_key] = param_grid[i].pop(old_key)
-    #######################################
 
     # Define fitting metric (refit) and other useful performance metrics.
     refit = metric.replace('_', ' ').replace(' score', '').title()
