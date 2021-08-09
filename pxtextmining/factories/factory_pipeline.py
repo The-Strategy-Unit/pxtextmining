@@ -24,8 +24,11 @@ from pxtextmining.helpers.ordinal_classification import OrdinalClassifier
 from pxtextmining.helpers.scaler_switcher import ScalerSwitcher
 from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwitcher
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
+from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 
-def factory_pipeline(ordinal, x, y, tknz,
+
+def factory_pipeline(x, y, tknz="spacy",
+                     ordinal=False,
                      metric="class_balance_accuracy_score",
                      cv=5, n_iter=100, n_jobs=5, verbose=3,
                      learners=[
@@ -69,7 +72,8 @@ def factory_pipeline(ordinal, x, y, tknz,
       fixed and cannot be user-defined.
     - Tokenization and lemmatization of the text feature: uses ``spaCy`` (default) or `NLTK <https://www.nltk.org/>`_.
       It also strips punctuation, excess spaces, and metacharacters "r" and "n" from the text. It converts emojis into
-      "__text__" (where "text" is the emoji name), and NA/NULL values into "__notext__".
+      "__text__" (where "text" is the emoji name), and NA/NULL values into "__notext__" (the pipeline does get rid of
+      records with no text, but this conversion at least deals with any escaping ones).
     - Feature selection: Uses `sklearn.feature_selection.SelectPercentile
       <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html>`_
       with `sklearn.feature_selection.chi2
@@ -81,8 +85,8 @@ def factory_pipeline(ordinal, x, y, tknz,
       <https://scikit-learn.org/stable/modules/classes.html>`_.
 
     The numeric values in the grid are currently lists/tuples of values that are defined either empirically or
-    are based on the published literature (e.g. for Random Forest, see `Probst et al. 2019 <https://arxiv.org/abs/1802.09596>`_).
-    Values may be replaced by appropriate distributions in a future release.
+    are based on the published literature (e.g. for Random Forest, see `Probst et al. 2019
+    <https://arxiv.org/abs/1802.09596>`_). Values may be replaced by appropriate distributions in a future release.
 
     **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
     Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
@@ -90,7 +94,7 @@ def factory_pipeline(ordinal, x, y, tknz,
 
     :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of
         `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>`_ that can use any
-        standard classification model.
+        standard classification model that calculates probabilities.
     :param x: The text feature.
     :param y: The response variable.
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
@@ -101,9 +105,10 @@ def factory_pipeline(ordinal, x, y, tknz,
         <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html>`_).
     :param int n_jobs: Number of jobs to run in parallel (see ``sklearn.model_selection.RandomizedSearchCV``).
     :param int verbose: Controls the verbosity (see ``sklearn.model_selection.RandomizedSearchCV``).
-    :param list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
+    :param str, list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
-        "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier".
+        "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier". When a single model is
+        used, it can be passed as a string.
     :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
         that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
         Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
@@ -157,13 +162,14 @@ def factory_pipeline(ordinal, x, y, tknz,
     if ordinal and theme is not None:
         # This is for internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts that use theme
         # labels ("Access", "Environment/ facilities" etc.). We want the criticality for "Couldn't be improved" to
-        # always be "3". The theme label is passed as a one-hot encoded set of columns, of which the first is for
-        # "Couldn't be improved". The one-hot encoded columns are actually the first columns of the whole sparse matrix
-        # that has the TF-IDFs, sentiment features etc. that is produced when fitting by the pipeline.
-        # When running the ordinal classification model, we want to find the records with "Couldn't be improved" (i.e.
-        # records with a value of 1) in the first, one-hot encoded, column and replace the predicted criticality values
+        # always be "3". The theme label is passed as a one-hot encoded set of columns (or as a "binarized" column where
+        # 1 is for "Couldn't be improved" and 0 is for everything else) of which the first is for # "Couldn't be
+        # improved". The one-hot encoded columns (or the binarized column) are (is) actually the first column(s) of the
+        # whole sparse matrix that has the TF-IDFs, sentiment features etc. that is produced when fitting by the
+        # pipeline. When running the ordinal classification model, we want to find the records with "Couldn't be
+        # improved" (i.e. records with a value of 1) in the first column and replace the predicted criticality values
         # with "3".
-        # We want to pass all of the theme's one-hot encoded columns into the model, so we handle them separately from
+        # When one-hot encoded, we pass all of the theme's columns into the model, so we handle them separately from
         # text predictor to avoid the feature selection step for them. We thus make a separate pipeline with the
         # preprocessor and feature selection steps for the text predictor (pipe_all_but_theme) and one-hot encode the
         # theme column in all_transforms. We want to place "Couldn't be improved" in position 0 (first column) of the
@@ -173,11 +179,8 @@ def factory_pipeline(ordinal, x, y, tknz,
             ('featsel', FeatureSelectionSwitcher())
         ])
 
-        onehot_categories = [["Couldn't be improved", 'Access', 'Care received', 'Communication', 'Dignity',
-                              'Environment/ facilities', 'Miscellaneous', 'Staff', 'Transition/coordination']]
-
         all_transforms = ColumnTransformer([
-            ('theme', OneHotEncoder(categories=onehot_categories), ['theme']),
+            ('theme', ScalerSwitcher(), ['theme']), # Try out OneHotEncoder() or ThemeBinarizer().
             ('process', pipe_all_but_theme, [features_text])
         ])
 
@@ -212,11 +215,23 @@ def factory_pipeline(ordinal, x, y, tknz,
         'featsel__selector__percentile': [70, 85, 100]
     }
 
-    # Replace learner name with learner class in 'learners' function argument.
+    if ordinal and theme is not None:
+        param_grid_preproc['alltrans__theme__scaler'] = None
+
+
+    # If a single model is passed as a string, convert to list
+    if isinstance(learners, str):
+        learners = [learners]
+
+    # Just in case user has supplied the same learner more than once
+    learners = list(set(learners))
+
+    # For Frank and Hall's (2001) ordinal method to work, we need models that can calculate probs/scores.
     if ordinal:
         learners = [lrn for lrn in learners if lrn not in ["RidgeClassifier", "Perceptron",
                                                            "PassiveAggressiveClassifier", "NearestCentroid"]]
 
+    # Replace learner name with learner class in 'learners' function argument.
     for i in learners:
         if i in "SGDClassifier":
             learners[learners.index(i)] = SGDClassifier()
@@ -265,6 +280,12 @@ def factory_pipeline(ordinal, x, y, tknz,
             aux = param_grid_preproc.copy()
             aux['clf__estimator'] = [i]
             aux['preprocessor__texttr__text__transformer'] = [j]
+            if ordinal and theme is not None:
+                onehot_categories = [["Couldn't be improved", 'Access', 'Care received', 'Communication', 'Dignity',
+                                      'Environment/ facilities', 'Miscellaneous', 'Staff', 'Transition/coordination']]
+                aux['alltrans__theme__scaler'] = \
+                    [OneHotEncoder(categories=onehot_categories), ThemeBinarizer(class_col='theme',
+                                                                                 target_class="Couldn't be improved")]
 
             if i.__class__.__name__ == LinearSVC().__class__.__name__:
                 aux['clf__estimator__max_iter'] = [10000]
@@ -350,8 +371,11 @@ def factory_pipeline(ordinal, x, y, tknz,
 
     param_grid = [x for x in param_grid if x is not None]
 
-    ########################################
-    if theme is not None:
+    # When a theme is supplied for the ordinal model, the pipeline steps are a little different. Step "alltrans"
+    # includes the steps for both the preprocessing of the text feature, and the one-hot encoding of the theme feature.
+    # So, a parameter such as "featsel__selector" in the pipeline without a theme feature would be
+    # "alltrans__process__featsel__selector" in this one. We need to pass these correct names to the tuning grid.
+    if ordinal and theme is not None:
         ordinal_with_theme_params = [
             'featsel__selector',
             'featsel__selector__percentile',
@@ -374,7 +398,6 @@ def factory_pipeline(ordinal, x, y, tknz,
                     old_key = j
                     new_key = 'alltrans__process__' + old_key
                     param_grid[i][new_key] = param_grid[i].pop(old_key)
-    #######################################
 
     # Define fitting metric (refit) and other useful performance metrics.
     refit = metric.replace('_', ' ').replace(' score', '').title()

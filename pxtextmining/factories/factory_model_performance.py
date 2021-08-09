@@ -75,6 +75,7 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     tuning_results["learner"] = tuned_learners
     y_axis = "mean_test_" + refit
     tuning_results = tuning_results.sort_values(y_axis, ascending=False)
+    tuning_results.columns = tuning_results.columns.str.replace('alltrans__process__', '') # When using ordinal with theme='label', names are too long.
 
     # Convert non-numeric to strings. This is to ensure that writing to MySQL won't throw an error.
     # (There MUST be a better way of fixing this!)

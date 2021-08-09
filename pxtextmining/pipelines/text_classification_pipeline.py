@@ -106,7 +106,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
         factory_data_load_and_split(filename, target, predictor, test_size, reduce_criticality, theme)
 
-    pipe = factory_pipeline(ordinal, x_train, y_train, tknz, metric, cv, n_iter, n_jobs, verbose, learners, theme)
+    pipe = factory_pipeline(x_train, y_train, tknz, ordinal, metric, cv, n_iter, n_jobs, verbose, learners, theme)
 
     pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar = \
         factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric)
