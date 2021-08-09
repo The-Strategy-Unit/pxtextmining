@@ -162,13 +162,14 @@ def factory_pipeline(x, y, tknz="spacy",
     if ordinal and theme is not None:
         # This is for internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts that use theme
         # labels ("Access", "Environment/ facilities" etc.). We want the criticality for "Couldn't be improved" to
-        # always be "3". The theme label is passed as a one-hot encoded set of columns, of which the first is for
-        # "Couldn't be improved". The one-hot encoded columns are actually the first columns of the whole sparse matrix
-        # that has the TF-IDFs, sentiment features etc. that is produced when fitting by the pipeline.
-        # When running the ordinal classification model, we want to find the records with "Couldn't be improved" (i.e.
-        # records with a value of 1) in the first, one-hot encoded, column and replace the predicted criticality values
+        # always be "3". The theme label is passed as a one-hot encoded set of columns (or as a "binarized" column where
+        # 1 is for "Couldn't be improved" and 0 is for everything else) of which the first is for # "Couldn't be
+        # improved". The one-hot encoded columns (or the binarized column) are (is) actually the first column(s) of the
+        # whole sparse matrix that has the TF-IDFs, sentiment features etc. that is produced when fitting by the
+        # pipeline. When running the ordinal classification model, we want to find the records with "Couldn't be
+        # improved" (i.e. records with a value of 1) in the first column and replace the predicted criticality values
         # with "3".
-        # We want to pass all of the theme's one-hot encoded columns into the model, so we handle them separately from
+        # When one-hot encoded, we pass all of the theme's columns into the model, so we handle them separately from
         # text predictor to avoid the feature selection step for them. We thus make a separate pipeline with the
         # preprocessor and feature selection steps for the text predictor (pipe_all_but_theme) and one-hot encode the
         # theme column in all_transforms. We want to place "Couldn't be improved" in position 0 (first column) of the
@@ -178,12 +179,8 @@ def factory_pipeline(x, y, tknz="spacy",
             ('featsel', FeatureSelectionSwitcher())
         ])
 
-        onehot_categories = [["Couldn't be improved", 'Access', 'Care received', 'Communication', 'Dignity',
-                              'Environment/ facilities', 'Miscellaneous', 'Staff', 'Transition/coordination']]
-
         all_transforms = ColumnTransformer([
-            # ('theme', OneHotEncoder(categories=onehot_categories), ['theme']),
-            ('theme', ScalerSwitcher(), ['theme']),
+            ('theme', ScalerSwitcher(), ['theme']), # Try out OneHotEncoder() or ThemeBinarizer().
             ('process', pipe_all_but_theme, [features_text])
         ])
 
