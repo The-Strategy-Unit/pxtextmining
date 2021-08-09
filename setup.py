@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
 	name="pxtextmining",
-	version="0.3.0",
+	version="0.2.7",
 	author="Andreas D Soteriades",
 	author_email="andreas.soteriades@nottshc.nhs.uk",
 	description="Text Classification of Patient Experience feedback",
