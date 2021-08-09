@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
 	name="pxtextmining",
-	version="0.2.8",
+	version="0.2.9",
 	author="Andreas D Soteriades",
 	author_email="andreas.soteriades@nottshc.nhs.uk",
 	description="Text Classification of Patient Experience feedback",
@@ -27,7 +27,8 @@ setuptools.setup(
     "imbalanced-learn==0.7.0", 
     "joblib==1.0.1", 
     "kiwisolver==1.3.1", 
-    "matplotlib>=3.3.2",
+    # "matplotlib>=3.3.2",
+    "matplotlib",
     "murmurhash==1.0.5", 
     "mysql-connector-python==8.0.23", 
     "nltk==3.5", 
