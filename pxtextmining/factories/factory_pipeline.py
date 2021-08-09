@@ -72,7 +72,8 @@ def factory_pipeline(x, y, tknz="spacy",
       fixed and cannot be user-defined.
     - Tokenization and lemmatization of the text feature: uses ``spaCy`` (default) or `NLTK <https://www.nltk.org/>`_.
       It also strips punctuation, excess spaces, and metacharacters "r" and "n" from the text. It converts emojis into
-      "__text__" (where "text" is the emoji name), and NA/NULL values into "__notext__".
+      "__text__" (where "text" is the emoji name), and NA/NULL values into "__notext__" (the pipeline does get rid of
+      records with no text, but this conversion at least deals with any escaping ones).
     - Feature selection: Uses `sklearn.feature_selection.SelectPercentile
       <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html>`_
       with `sklearn.feature_selection.chi2
@@ -84,8 +85,8 @@ def factory_pipeline(x, y, tknz="spacy",
       <https://scikit-learn.org/stable/modules/classes.html>`_.
 
     The numeric values in the grid are currently lists/tuples of values that are defined either empirically or
-    are based on the published literature (e.g. for Random Forest, see `Probst et al. 2019 <https://arxiv.org/abs/1802.09596>`_).
-    Values may be replaced by appropriate distributions in a future release.
+    are based on the published literature (e.g. for Random Forest, see `Probst et al. 2019
+    <https://arxiv.org/abs/1802.09596>`_). Values may be replaced by appropriate distributions in a future release.
 
      **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
      Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
@@ -93,7 +94,7 @@ def factory_pipeline(x, y, tknz="spacy",
 
     :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of
         `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>`_ that can use any
-        standard classification model.
+        standard classification model that calculates probabilities.
     :param x: The text feature.
     :param y: The response variable.
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
@@ -104,9 +105,10 @@ def factory_pipeline(x, y, tknz="spacy",
         <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html>`_).
     :param int n_jobs: Number of jobs to run in parallel (see ``sklearn.model_selection.RandomizedSearchCV``).
     :param int verbose: Controls the verbosity (see ``sklearn.model_selection.RandomizedSearchCV``).
-    :param list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
+    :param str, list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
-        "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier".
+        "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier". When a single model is
+        used, it can be passed as a string.
     :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
         that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
         Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
