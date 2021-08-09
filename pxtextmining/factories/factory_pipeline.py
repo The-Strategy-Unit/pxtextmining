@@ -221,11 +221,20 @@ def factory_pipeline(x, y, tknz="spacy",
     if ordinal and theme is not None:
         param_grid_preproc['alltrans__theme__scaler'] = None
 
-    # Replace learner name with learner class in 'learners' function argument.
+
+    # If a single model is passed as a string, convert to list
+    if isinstance(learners, str):
+        learners = [learners]
+
+    # Just in case user has supplied the same learner more than once
+    learners = list(set(learners))
+
+    # For Frank and Hall's (2001) ordinal method to work, we need models that can calculate probs/scores.
     if ordinal:
         learners = [lrn for lrn in learners if lrn not in ["RidgeClassifier", "Perceptron",
                                                            "PassiveAggressiveClassifier", "NearestCentroid"]]
 
+    # Replace learner name with learner class in 'learners' function argument.
     for i in learners:
         if i in "SGDClassifier":
             learners[learners.index(i)] = SGDClassifier()
