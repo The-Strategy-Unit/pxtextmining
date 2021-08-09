@@ -94,5 +94,6 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
                          stratify=y,
                          shuffle=True
                          )
+    print("Done")
 
     return x_train, x_test, y_train, y_test, index_training_data, index_test_data
