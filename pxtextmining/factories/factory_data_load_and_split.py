@@ -13,8 +13,9 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     Healthcare NHS Foundation Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) and
     criticality labels. They can otherwise be safely ignored.
 
-    :param str filename: Dataset name (CSV), including full path to the data folder (if not in the project's working
-        directory), and the data type suffix (".csv"). If ``filename`` is ``None``, the data are read from the database.
+    :param str, pandas.DataFrame filename: A ``pandas.DataFrame`` with the data (class and text columns), otherwise the
+        dataset name (CSV), including full path to the data folder (if not in the project's working directory), and the
+        data type suffix (".csv"). If ``filename`` is ``None``, the data are read from the database.
         **NOTE:** The feature that reads data from the database is for internal use only. Experienced users who would
         like to pull their data from their own databases can, of course, achieve that by slightly modifying the
         relevant lines in the script. A "my.conf" file will need to be placed in the root, with five lines, as follows
@@ -48,7 +49,10 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
     # Choose to read CSV from folder or table directly from database
     if filename is not None:
-        text_data = pd.read_csv(filename, encoding='utf-8')
+        if isinstance(filename, str):
+            text_data = pd.read_csv(filename, encoding='utf-8')
+        else:
+            text_data = filename
     else:
         db = mysql.connector.connect(option_files="my.conf", use_pure=True)
         if theme is None:
