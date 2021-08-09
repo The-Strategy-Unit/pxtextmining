@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pxtextmining.factories package &mdash; pxtextmining 0.3.0 documentation</title>
+  <title>pxtextmining.factories package &mdash; pxtextmining 0.2.7 documentation</title>
   
 
   
@@ -182,8 +182,9 @@ criticality labels. They can otherwise be safely ignored.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – <p>Dataset name (CSV), including full path to the data folder (if not in the project’s working
-directory), and the data type suffix (“.csv”). If <code class="docutils literal notranslate"><span class="pre">filename</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the data are read from the database.
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>pandas.DataFrame</em>) – <p>A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with the data, otherwise the dataset name (CSV),
+including full path to the data folder (if not in the project’s working directory), and the data type suffix
+(“.csv”). If <code class="docutils literal notranslate"><span class="pre">filename</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the data are read from the database.
 <strong>NOTE:</strong> The feature that reads data from the database is for internal use only. Experienced users who would
 like to pull their data from their own databases can, of course, achieve that by slightly modifying the
 relevant lines in the script. A “my.conf” file will need to be placed in the root, with five lines, as follows
@@ -260,7 +261,7 @@ the training set, for the best (hyper)parameter values for each learner;</p></li
 <span id="pxtextmining-factories-factory-pipeline-module"></span><h2>pxtextmining.factories.factory_pipeline module<a class="headerlink" href="#module-pxtextmining.factories.factory_pipeline" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="pxtextmining.factories.factory_pipeline.factory_pipeline">
-<span class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_pipeline.</span></span><span class="sig-name descname"><span class="pre">factory_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ordinal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tknz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'class_balance_accuracy_score'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learners</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['SGDClassifier',</span> <span class="pre">'RidgeClassifier',</span> <span class="pre">'Perceptron',</span> <span class="pre">'PassiveAggressiveClassifier',</span> <span class="pre">'BernoulliNB',</span> <span class="pre">'ComplementNB',</span> <span class="pre">'MultinomialNB',</span> <span class="pre">'RandomForestClassifier']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_pipeline.factory_pipeline" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_pipeline.</span></span><span class="sig-name descname"><span class="pre">factory_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tknz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spacy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordinal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'class_balance_accuracy_score'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learners</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['SGDClassifier',</span> <span class="pre">'RidgeClassifier',</span> <span class="pre">'Perceptron',</span> <span class="pre">'PassiveAggressiveClassifier',</span> <span class="pre">'BernoulliNB',</span> <span class="pre">'ComplementNB',</span> <span class="pre">'MultinomialNB',</span> <span class="pre">'RandomForestClassifier']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_pipeline.factory_pipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare and fit a text classification pipeline.</p>
 <p>The pipeline’s parameter grid switches between two approaches to text classification: Bag-of-Words and Embeddings.
 For the former, both TF-IDF and raw counts are tried out.</p>
@@ -294,9 +295,11 @@ for embeddings.</p></li>
 <p>The numeric values in the grid are currently lists/tuples of values that are defined either empirically or
 are based on the published literature (e.g. for Random Forest, see <a class="reference external" href="https://arxiv.org/abs/1802.09596">Probst et al. 2019</a>).
 Values may be replaced by appropriate distributions in a future release.</p>
-<p><strong>NOTE:</strong> As described later, argument <cite>theme</cite> is for internal use by Nottinghamshire Healthcare NHS Foundation
+<blockquote>
+<div><p><strong>NOTE:</strong> As described later, argument <cite>theme</cite> is for internal use by Nottinghamshire Healthcare NHS Foundation
 Trust or other trusts who use the theme (“Access”, “Environment/ facilities” etc.) labels. It can otherwise be
 safely ignored.</p>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -312,9 +315,10 @@ standard classification model.</p></li>
 <li><p><strong>n_iter</strong> (<em>int</em>) – Number of parameter settings that are sampled (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html">sklearn.model_selection.RandomizedSearchCV</a>).</p></li>
 <li><p><strong>n_jobs</strong> (<em>int</em>) – Number of jobs to run in parallel (see <code class="docutils literal notranslate"><span class="pre">sklearn.model_selection.RandomizedSearchCV</span></code>).</p></li>
 <li><p><strong>verbose</strong> (<em>int</em>) – Controls the verbosity (see <code class="docutils literal notranslate"><span class="pre">sklearn.model_selection.RandomizedSearchCV</span></code>).</p></li>
-<li><p><strong>learners</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – A list of <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code> names of the learners to tune. Must be one or more of
+<li><p><strong>learners</strong> (<em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>]</em>) – A list of <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code> names of the learners to tune. Must be one or more of
 “SGDClassifier”, “RidgeClassifier”, “Perceptron”, “PassiveAggressiveClassifier”, “BernoulliNB”, “ComplementNB”,
-“MultinomialNB”, “KNeighborsClassifier”, “NearestCentroid”, “RandomForestClassifier”.</p></li>
+“MultinomialNB”, “KNeighborsClassifier”, “NearestCentroid”, “RandomForestClassifier”. When a single model is
+used, it can be passed as a string.</p></li>
 <li><p><strong>theme</strong> (<em>str</em>) – For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
 that use theme labels (“Access”, “Environment/ facilities” etc.). The column name of the theme variable.
 Defaults to <cite>None</cite>. If supplied, the theme variable will be used as a predictor (along with the text predictor)

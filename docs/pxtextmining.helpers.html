@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pxtextmining.helpers package &mdash; pxtextmining 0.3.0 documentation</title>
+  <title>pxtextmining.helpers package &mdash; pxtextmining 0.2.7 documentation</title>
   
 
   
@@ -494,9 +494,23 @@ If it is a dictionary (<code class="docutils literal notranslate"><span class="p
 <span id="pxtextmining-helpers-theme-binarization-module"></span><h2>pxtextmining.helpers.theme_binarization module<a class="headerlink" href="#module-pxtextmining.helpers.theme_binarization" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pxtextmining.helpers.theme_binarization.ThemeBinarizer">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.theme_binarization.</span></span><span class="sig-name descname"><span class="pre">ThemeBinarizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'target'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'theme'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_class_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&quot;Couldn't</span> <span class="pre">be</span> <span class="pre">improved&quot;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_class_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_rest_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.theme_binarization.ThemeBinarizer" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pxtextmining.helpers.theme_binarization.</span></span><span class="sig-name descname"><span class="pre">ThemeBinarizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_class_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_rest_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.theme_binarization.ThemeBinarizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
-<p>Class for passing through features that require no preprocessing.</p>
+<p>Class for binarizing categories.</p>
+<p>Sets a selected category to 1 and the rest to 0.</p>
+<p><strong>NOTE:</strong> As described later, argument <cite>theme</cite> is for internal use by Nottinghamshire Healthcare NHS Foundation
+Trust or other trusts who use the theme (“Access”, “Environment/ facilities” etc.) labels. It can otherwise be
+safely ignored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class_col</strong> (<em>str</em>) – The name of the column with the classes to binarize.</p></li>
+<li><p><strong>target_class</strong> – The name (if a string) or value (if numeric) of the class that will be set to <cite>set_class_to</cite>.</p></li>
+<li><p><strong>set_class_to</strong> (<em>int</em>) – The value to set the <cite>target_class</cite> to. Defaults to 1.</p></li>
+<li><p><strong>set_rest_to</strong> (<em>int</em>) – The value to set all classes but <cite>target_class</cite> to. Defaults to 0.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="pxtextmining.helpers.theme_binarization.ThemeBinarizer.fit">
 <span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.helpers.theme_binarization.ThemeBinarizer.fit" title="Permalink to this definition">¶</a></dt>
