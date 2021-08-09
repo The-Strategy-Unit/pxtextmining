@@ -26,7 +26,9 @@ from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwit
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
 from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 
-def factory_pipeline(ordinal, x, y, tknz,
+
+def factory_pipeline(x, y, tknz="spacy",
+                     ordinal=False,
                      metric="class_balance_accuracy_score",
                      cv=5, n_iter=100, n_jobs=5, verbose=3,
                      learners=[
