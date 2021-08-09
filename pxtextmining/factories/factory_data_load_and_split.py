@@ -71,8 +71,7 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
     if theme is not None:
         text_data = text_data.rename(columns={theme: 'theme'})
-    text_data = text_data.loc[text_data.target.notnull()].copy()
-    text_data = text_data.loc[text_data.target.notna()].copy()
+    text_data = text_data.dropna(subset=['target', 'predictor']).copy()
     text_data['predictor'] = text_data.predictor.fillna('__notext__')
 
     # This is specific to NHS patient feedback data labelled with "criticality" classes
