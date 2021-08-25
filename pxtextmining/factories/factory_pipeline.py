@@ -7,7 +7,7 @@ from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, OneHotE
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectPercentile, chi2, f_classif
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.svm import LinearSVC
+# from sklearn.svm import LinearSVC
 from sklearn.linear_model import PassiveAggressiveClassifier, Perceptron, RidgeClassifier, SGDClassifier
 from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
@@ -287,17 +287,17 @@ def factory_pipeline(x, y, tknz="spacy",
                     [OneHotEncoder(categories=onehot_categories), ThemeBinarizer(class_col='theme',
                                                                                  target_class="Couldn't be improved")]
 
-            if i.__class__.__name__ == LinearSVC().__class__.__name__:
-                aux['clf__estimator__max_iter'] = [10000]
-                aux['clf__estimator__class_weight'] = [None, 'balanced']
-                # aux['clf__estimator__dual'] = [True, False] # https://stackoverflow.com/questions/52670012/convergencewarning-liblinear-failed-to-converge-increase-the-number-of-iterati
+            # if i.__class__.__name__ == LinearSVC().__class__.__name__:
+            #     aux['clf__estimator__max_iter'] = [10000]
+            #     aux['clf__estimator__class_weight'] = [None, 'balanced']
+            #     # aux['clf__estimator__dual'] = [True, False] # https://stackoverflow.com/questions/52670012/convergencewarning-liblinear-failed-to-converge-increase-the-number-of-iterati
             if i.__class__.__name__ == BernoulliNB().__class__.__name__:
                 aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
             if i.__class__.__name__ == ComplementNB().__class__.__name__:
                 aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
             if i.__class__.__name__ == MultinomialNB().__class__.__name__:
                 aux['clf__estimator__alpha'] = (0.1, 0.5, 1)
-            if i.__class__.__name__ == SGDClassifier().__class__.__name__:  # Perhaps try out loss='log' at some point?
+            if i.__class__.__name__ == SGDClassifier().__class__.__name__:
                 aux['clf__estimator__max_iter'] = [10000]
                 aux['clf__estimator__class_weight'] = [None, 'balanced']
                 aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
