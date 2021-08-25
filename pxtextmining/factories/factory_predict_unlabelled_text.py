@@ -3,7 +3,7 @@ import joblib
 from itertools import chain
 
 
-def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
+def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
                                     preds_column=None, column_names='all_cols', theme=None):
     """
     Predict unlabelled text data using a fitted `sklearn.pipeline.Pipeline
@@ -17,8 +17,9 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
     :param dataset: A ``pandas.DataFrame`` (or an object that can be converted into such) with the text data to predict
         classes for.
     :param str predictor: The column name of the text variable.
-    :param str pipe_path: A string in the form "path_to_fitted_pipeline/pipeline.sav," where "pipeline" is the name of
-        the SAV file with the fitted ``Scikit-learn``/``imblearn.pipeline.Pipeline``.
+    :param str, sklearn.model_selection._search.RandomizedSearchCV pipe_path_or_object: A string in the form
+        path_to_fitted_pipeline/pipeline.sav," where "pipeline" is the name of the SAV file with the fitted
+        ``Scikit-learn``/``imblearn.pipeline.Pipeline`` or a ``sklearn.model_selection._search.RandomizedSearchCV``.
     :param str preds_column: The user-specified name of the column that will have the predictions. If ``None`` (default),
         then the name will be ``predictor + '_preds'``.
     :param column_names:  A ``list``/``tuple`` of strings with the names of the columns of the supplied data frame (incl.
@@ -45,8 +46,11 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path,
         data_unlabelled = data_unlabelled.rename(columns={predictor: 'predictor', theme: 'theme'})
     data_unlabelled['predictor'] = data_unlabelled.predictor.fillna('')
 
-    # Load pipeline and make predictions
-    pipe = joblib.load(pipe_path)
+    # Load pipeline (if not already supplied) and make predictions
+    if isinstance(pipe_path_or_object, str):
+        pipe = joblib.load(pipe_path_or_object)
+    else:
+        pipe = pipe_path_or_object
     if theme is None:
         predictions = pipe.predict(data_unlabelled[['predictor']])
     else:
