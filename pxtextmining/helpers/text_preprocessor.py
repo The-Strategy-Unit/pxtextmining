@@ -5,7 +5,7 @@ import emojis
 def text_preprocessor(text_string):
     """
     Strips punctuation, excess spaces, and metacharacters "r" and "n" from the text. Converts emojis into "__text__"
-    (where "text" is the emoji name) and any NAs resulting from text preprocessing into "__none__".
+    (where "text" is the emoji name) and any NAs resulting from text preprocessing into "__notext__".
 
     :param str text_string: Text string that is passed from
         `sklearn.feature_extraction.text.TfidfVectorizer <https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html>`_.
