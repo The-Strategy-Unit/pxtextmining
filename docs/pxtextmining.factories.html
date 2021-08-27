@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pxtextmining.factories package &mdash; pxtextmining 0.2.7 documentation</title>
+  <title>pxtextmining.factories package &mdash; pxtextmining 0.3.0 documentation</title>
   
 
   
@@ -285,7 +285,8 @@ to up-sample rare classes. Currently the threshold to consider a class as rare a
 fixed and cannot be user-defined.</p></li>
 <li><p>Tokenization and lemmatization of the text feature: uses <code class="docutils literal notranslate"><span class="pre">spaCy</span></code> (default) or <a class="reference external" href="https://www.nltk.org/">NLTK</a>.
 It also strips punctuation, excess spaces, and metacharacters “r” and “n” from the text. It converts emojis into
-“__text__” (where “text” is the emoji name), and NA/NULL values into “__notext__”.</p></li>
+“__text__” (where “text” is the emoji name), and NA/NULL values into “__notext__” (the pipeline does get rid of
+records with no text, but this conversion at least deals with any escaping ones).</p></li>
 <li><p>Feature selection: Uses <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html">sklearn.feature_selection.SelectPercentile</a>
 with <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2">sklearn.feature_selection.chi2</a>
 for TF-IDFs or <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn-feature-selection-f-classif">sklearn.feature_selection.f_classif</a>
@@ -293,8 +294,7 @@ for embeddings.</p></li>
 <li><p>Fitting and benchmarking of user-supplied <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code> <a class="reference external" href="https://scikit-learn.org/stable/modules/classes.html">estimators</a>.</p></li>
 </ul>
 <p>The numeric values in the grid are currently lists/tuples of values that are defined either empirically or
-are based on the published literature (e.g. for Random Forest, see <a class="reference external" href="https://arxiv.org/abs/1802.09596">Probst et al. 2019</a>).
-Values may be replaced by appropriate distributions in a future release.</p>
+are based on the published literature (e.g. for Random Forest, see <a class="reference external" href="https://arxiv.org/abs/1802.09596">Probst et al. 2019</a>). Values may be replaced by appropriate distributions in a future release.</p>
 <blockquote>
 <div><p><strong>NOTE:</strong> As described later, argument <cite>theme</cite> is for internal use by Nottinghamshire Healthcare NHS Foundation
 Trust or other trusts who use the theme (“Access”, “Environment/ facilities” etc.) labels. It can otherwise be
@@ -305,7 +305,7 @@ safely ignored.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ordinal</strong> (<em>bool</em>) – Whether to fit an ordinal classification model. The ordinal model is the implementation of
 <a class="reference external" href="https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf">Frank and Hall (2001)</a> that can use any
-standard classification model.</p></li>
+standard classification model that calculates probabilities.</p></li>
 <li><p><strong>x</strong> – The text feature.</p></li>
 <li><p><strong>y</strong> – The response variable.</p></li>
 <li><p><strong>tknz</strong> (<em>str</em>) – Tokenizer to use (“spacy” or “wordnet”).</p></li>
@@ -343,7 +343,7 @@ other than “3” that are attributed to human error.</p></li>
 <span id="pxtextmining-factories-factory-predict-unlabelled-text-module"></span><h2>pxtextmining.factories.factory_predict_unlabelled_text module<a class="headerlink" href="#module-pxtextmining.factories.factory_predict_unlabelled_text" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text">
-<span class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_predict_unlabelled_text.</span></span><span class="sig-name descname"><span class="pre">factory_predict_unlabelled_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preds_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all_cols'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pxtextmining.factories.factory_predict_unlabelled_text.</span></span><span class="sig-name descname"><span class="pre">factory_predict_unlabelled_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_path_or_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preds_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all_cols'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pxtextmining.factories.factory_predict_unlabelled_text.factory_predict_unlabelled_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict unlabelled text data using a fitted <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">sklearn.pipeline.Pipeline</a>/<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline">imblearn.pipeline.Pipeline</a>.</p>
 <p><strong>NOTE:</strong> As described later, argument <cite>theme</cite> is for internal use by Nottinghamshire Healthcare NHS Foundation
 Trust or other trusts who use the theme (“Access”, “Environment/ facilities” etc.) labels. It can otherwise be
@@ -354,8 +354,9 @@ safely ignored.</p>
 <li><p><strong>dataset</strong> – A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> (or an object that can be converted into such) with the text data to predict
 classes for.</p></li>
 <li><p><strong>predictor</strong> (<em>str</em>) – The column name of the text variable.</p></li>
-<li><p><strong>pipe_path</strong> (<em>str</em>) – A string in the form “path_to_fitted_pipeline/pipeline.sav,” where “pipeline” is the name of
-the SAV file with the fitted <code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code>/<code class="docutils literal notranslate"><span class="pre">imblearn.pipeline.Pipeline</span></code>.</p></li>
+<li><p><strong>pipe_path_or_object</strong> (<em>str</em><em>, </em><em>sklearn.model_selection._search.RandomizedSearchCV</em>) – A string in the form
+path_to_fitted_pipeline/pipeline.sav,” where “pipeline” is the name of the SAV file with the fitted
+<code class="docutils literal notranslate"><span class="pre">Scikit-learn</span></code>/<code class="docutils literal notranslate"><span class="pre">imblearn.pipeline.Pipeline</span></code> or a <code class="docutils literal notranslate"><span class="pre">sklearn.model_selection._search.RandomizedSearchCV</span></code>.</p></li>
 <li><p><strong>preds_column</strong> (<em>str</em>) – The user-specified name of the column that will have the predictions. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (default),
 then the name will be <code class="docutils literal notranslate"><span class="pre">predictor</span> <span class="pre">+</span> <span class="pre">'_preds'</span></code>.</p></li>
 <li><p><strong>column_names</strong> – A <code class="docutils literal notranslate"><span class="pre">list</span></code>/<code class="docutils literal notranslate"><span class="pre">tuple</span></code> of strings with the names of the columns of the supplied data frame (incl.
