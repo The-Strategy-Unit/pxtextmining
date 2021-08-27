@@ -22,7 +22,8 @@ __We are working openly by open-sourcing the analysis code and data where possib
 We will show how to install `pxtextmining` from both 
 [PyPI](https://pypi.org/project/pxtextmining/) or the [GitHub](https://github.com/CDU-data-science-team/pxtextmining) repo.
 
-**Before doing so, it is best to create a Python virtual environment in which 
+**Before doing so, it is best to create a Python Virtual Environment[^1] 
+in which 
 to install `pxtextmining` and its dependencies.** Let's call the virtual 
 environment `text_venv`:
 
@@ -208,3 +209,6 @@ Blondel M., Prettenhofer P., Weiss R., Dubourg V., Vanderplas J., Passos A.,
 Cournapeau D., Brucher M., Perrot M. & Duchesnay E. (2011), 
 [Scikit-learn: Machine Learning in Python](https://jmlr.csail.mit.edu/papers/v12/pedregosa11a.html). 
 _Journal of Machine Learning Research_ 12:2825--2830
+
+[^1]: A vritual environment can also be created using Conda, where the commands 
+for creating and activating it are a little different. See [this](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
