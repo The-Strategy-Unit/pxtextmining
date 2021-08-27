@@ -43,19 +43,18 @@ environment `text_venv`:
    - `pip install pxtextmining==0.3.0` (Windows);
 1. We also need to install a couple of 
    [`spaCy`](https://github.com/explosion/spacy-models) models. 
+   
    These are obtained from URL links and thus need to be installed separately:
-   - 
+   - **Linux & MacOS**
      ```
      pip3 install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
      pip3 install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.3.1/en_core_web_lg-2.3.1.tar.gz
      ```
-   (Linux & MacOS);
-   - 
+   - **Windows**
      ```
      pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
      pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.3.1/en_core_web_lg-2.3.1.tar.gz
      ```
-   (Windows);
    
    Note that the second model is pretty large, so the installation may take a 
    while.
