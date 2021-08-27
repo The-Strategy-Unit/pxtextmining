@@ -7,7 +7,7 @@ def sentiment_scores(X):
     """
     Calculate sentiment indicators from `TextBlob <https://textblob.readthedocs.io/en/dev/>`_ (polarity and
     subjectivity) and `vaderSentiment <https://pypi.org/project/vaderSentiment/>`_ (positive, negative and neutral
-    sentiments and compound score).
+    sentiments, and compound score).
 
     :param X: A dictionary, ``pandas.DataFrame``, tuple or list with the text strings. If it is a dictionary
         (``pandas.DataFrame``), it must have a single key (column).
