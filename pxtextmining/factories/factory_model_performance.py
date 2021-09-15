@@ -93,15 +93,16 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     # Note that SGDClassifier fits a logistic regression when loss is "log", but a Linear SVM when loss is "hinge".
     # Looking at column "learner" in "tuning results", one cannot tell which of the two models SGD is.
     # Let's make that clear.
-    learners = []
-    for i, j in zip(tuning_results["learner"], tuning_results["param_clf__estimator__loss"]):
-        if j == "log":
-            learners.append("Logistic")
-        elif j == "hinge":
-            learners.append("Linear SVM")
-        else:
-            learners.append(i)
-    tuning_results["learner"] = learners
+    if 'param_clf__estimator_loss' in tuning_results.columns: # Need statement as models other than SGD don't have loss.
+        learners = []
+        for i, j in zip(tuning_results["learner"], tuning_results["param_clf__estimator__loss"]):
+            if j == "log":
+                learners.append("Logistic")
+            elif j == "hinge":
+                learners.append("Linear SVM")
+            else:
+                learners.append(i)
+        tuning_results["learner"] = learners
 
     # Now, let's find the best tunings for each of the fitted models
     aux = tuning_results.filter(regex="mean_test|learner").groupby(["learner"]).max().reset_index()
