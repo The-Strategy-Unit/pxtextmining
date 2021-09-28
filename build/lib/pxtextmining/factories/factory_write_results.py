@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 
 
 def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar,
-                          target, x_train, x_test, metric,
+                          target, x_train, x_test, index_training_data, index_test_data, metric,
                           objects_to_save=[
                                      "pipeline",
                                      "tuning results",
@@ -68,7 +68,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     :param str save_pipeline_as: Name of saved pipeline. If "default", then it will be saved as
         ``'pipeline_' + target + '.sav'``.
     :param str results_folder_name: Name of the folder that will contain all saved results specified in
-        ``objects_to_save``.
+        ``objects_to_save``. If the folder already exists, it will be overwritten.
     :return: A ``tuple`` of length 3 with the following ``pandas.DataFrame`` objects:
 
             - The predictions on the test set;
@@ -76,8 +76,8 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
             - The row indices of the test data;
     """
 
-    index_training_data = pd.DataFrame(x_train.index, columns=["row_index"])
-    index_test_data = pd.DataFrame(x_test.index, columns=["row_index"])
+    index_training_data = pd.DataFrame(index_training_data, columns=["row_index"])
+    index_test_data = pd.DataFrame(index_test_data, columns=["row_index"])
     pred = pd.DataFrame(pred, columns=[target + "_pred"])
     pred["row_index"] = index_test_data
 
