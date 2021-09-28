@@ -39,8 +39,8 @@ environment `text_venv`:
 ### Install from PyPI
 
 1. Install `pxtextmining` and its PyPI dependencies:
-   - `pip3 install pxtextmining==0.3.2`  (Linux & MacOS);
-   - `pip install pxtextmining==0.3.2` (Windows);
+   - `pip3 install pxtextmining==0.3.4`  (Linux & MacOS);
+   - `pip install pxtextmining==0.3.4` (Windows);
 1. We also need to install a couple of 
    [`spaCy`](https://github.com/explosion/spacy-models) models. 
    
@@ -65,7 +65,7 @@ All steps in one go:
    ```
    python3 -m venv text_venv
    source text_venv/bin/activate
-   pip3 install pxtextmining==0.3.2
+   pip3 install pxtextmining==0.3.4
    pip3 install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
    pip3 install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.3.1/en_core_web_lg-2.3.1.tar.gz
    ```
@@ -73,7 +73,7 @@ All steps in one go:
    ```
    python -m venv text_venv
    text_venv\Scripts\activate
-   pip install pxtextmining==0.3.2
+   pip install pxtextmining==0.3.4
    pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
    pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.3.1/en_core_web_lg-2.3.1.tar.gz
    ```

@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
 	name="pxtextmining",
-	version="0.3.2",
+	version="0.3.4",
 	author="Andreas D Soteriades",
 	author_email="andreas.soteriades@nottshc.nhs.uk",
 	description="Text Classification of Patient Experience feedback",
@@ -35,7 +35,7 @@ setuptools.setup(
     "numpy>=1.20.2",
     "pandas==1.2.3", 
     "pickleshare==0.7.5", 
-    "Pillow==8.2.0", 
+    "Pillow>=8.3.2", 
     "plac==1.1.3", 
     "preshed==3.0.5", 
     "protobuf==3.17.2", 
