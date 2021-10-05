@@ -1,0 +1,1 @@
+Please note that the Care Opinion data is being shared under the [CC BY-NC-SA 4.0 licence](https://creativecommons.org/licenses/by-nc-sa/4.0/) and is generated from the [Care Opinion API](https://www.careopinion.org.uk/info/api-v2).
