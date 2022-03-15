@@ -16,7 +16,7 @@ matplotlib==3.3.2
 murmurhash==1.0.5
 mysql-connector-python==8.0.23
 nltk==3.6.6
-numpy==1.20.2
+numpy==1.21.0
 pandas==1.2.3
 pickleshare==0.7.5
 Pillow>=8.3.2
