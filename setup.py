@@ -31,7 +31,7 @@ setuptools.setup(
     "matplotlib",
     "murmurhash==1.0.5", 
     "mysql-connector-python==8.0.23", 
-    "nltk==3.5", 
+    "nltk==3.6.6", 
     "numpy>=1.20.2",
     "pandas==1.2.3", 
     "pickleshare==0.7.5", 
