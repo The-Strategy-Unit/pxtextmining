@@ -2,7 +2,7 @@
 name = "pxtextmining"
 version = "0.3.4"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["cdudatascience@nottshc.nhs.uk"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
