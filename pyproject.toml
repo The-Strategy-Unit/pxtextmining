@@ -49,6 +49,8 @@ tqdm = "4.61.0"
 urllib3 = "1.26.5"
 vaderSentiment = "3.3.2"
 wasabi = "0.8.2"
+jupyter = "^1.0.0"
+tensorflow = "^2.11.0"
 
 
 [build-system]
