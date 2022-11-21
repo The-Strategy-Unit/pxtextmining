@@ -51,6 +51,7 @@ vaderSentiment = "3.3.2"
 wasabi = "0.8.2"
 jupyter = "^1.0.0"
 tensorflow = "^2.11.0"
+transformers = "^4.24.0"
 
 
 [build-system]
