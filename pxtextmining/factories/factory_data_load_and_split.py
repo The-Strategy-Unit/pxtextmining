@@ -4,6 +4,14 @@ import mysql.connector
 from sklearn.model_selection import train_test_split
 
 
+def reduce_criticality(text_data, theme):
+    text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
+    text_data.loc[text_data.target == '-5', 'target'] = '-4'
+    text_data.loc[text_data.target == '5', 'target'] = '4'
+    if theme is not None:
+        text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
+    return text_data
+
 def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None):
     """
     Function loads the dataset, renames the response and predictor as "target" and "predictor" respectively,
@@ -80,11 +88,7 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
     # This is specific to NHS patient feedback data labelled with "criticality" classes
     if reduce_criticality:
-        text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
-        text_data.loc[text_data.target == '-5', 'target'] = '-4'
-        text_data.loc[text_data.target == '5', 'target'] = '4'
-        if theme is not None:
-            text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
+        text_data = reduce_criticality(text_data, theme)
 
     print('Preparing training and test sets...')
     x = text_data[['predictor']] # Needs to be an array of a data frame- can't be a pandas Series
