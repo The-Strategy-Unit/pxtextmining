@@ -4,7 +4,7 @@ import mysql.connector
 from sklearn.model_selection import train_test_split
 
 
-def reduce_criticality(text_data, theme):
+def reduce_crit(text_data, theme):
     text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
     text_data.loc[text_data.target == '-5', 'target'] = '-4'
     text_data.loc[text_data.target == '5', 'target'] = '4'
@@ -14,13 +14,13 @@ def reduce_criticality(text_data, theme):
 
 def load_data(filename, theme, target, predictor):
     print('Loading dataset...')
-
-    # Choose to read CSV from folder or table directly from database
+    # Read CSV if filename provided
     if filename is not None:
         if isinstance(filename, str):
             text_data = pd.read_csv(filename, encoding='utf-8')
         else:
             text_data = filename
+    # Else load from mysql database. For this to work set my.conf settings
     else:
         db = mysql.connector.connect(option_files="my.conf", use_pure=True)
         if theme is None:
@@ -44,6 +44,9 @@ def load_data(filename, theme, target, predictor):
     if theme is not None:
         text_data = text_data.rename(columns={theme: 'theme'})
     return text_data
+
+def clean_data():
+    pass
 
 def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None):
     """
@@ -94,8 +97,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     text_data['predictor'] = text_data.predictor.fillna('__notext__')
 
     # This is specific to NHS patient feedback data labelled with "criticality" classes
-    if reduce_criticality:
-        text_data = reduce_criticality(text_data, theme)
+    if reduce_criticality == True:
+        text_data = reduce_crit(text_data, theme)
 
     print('Preparing training and test sets...')
     x = text_data[['predictor']] # Needs to be an array of a data frame- can't be a pandas Series
@@ -111,3 +114,9 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     print("Done")
 
     return x_train, x_test, y_train, y_test, index_training_data, index_test_data
+
+
+if __name__ == '__main__':
+    text_data = load_data(filename='datasets/text_data.csv', target="label",
+                          predictor="feedback", theme=None)
+    print(text_data.head())
