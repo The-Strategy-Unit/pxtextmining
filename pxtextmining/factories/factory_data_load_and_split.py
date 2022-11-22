@@ -2,6 +2,81 @@ import pandas as pd
 from os import path
 import mysql.connector
 from sklearn.model_selection import train_test_split
+import re
+import string
+
+
+def load_data(filename, theme, target, predictor):
+    print('Loading dataset...')
+    # Read CSV if filename provided
+    if filename is not None:
+        if isinstance(filename, str):
+            text_data = pd.read_csv(filename, encoding='utf-8')
+        else:
+            text_data = filename
+    # Else load from mysql database. For this to work set my.conf settings
+    else:
+        db = mysql.connector.connect(option_files="my.conf", use_pure=True)
+        if theme is None:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    "SELECT  " + target + ", " + predictor + " FROM text_data"
+                )
+                text_data = cursor.fetchall()
+                text_data = pd.DataFrame(text_data)
+                text_data.columns = cursor.column_names
+        else:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    "SELECT  " + target + ", " + predictor + ", " + theme + " FROM text_data"
+                )
+                text_data = cursor.fetchall()
+                text_data = pd.DataFrame(text_data)
+                text_data.columns = cursor.column_names
+
+    text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
+    if theme is not None:
+        text_data = text_data.rename(columns={theme: 'theme'})
+    print(f'Shape of dataset is {text_data.shape}')
+    return text_data
+
+def remove_punc_and_nums(text):
+    # removes punctuation and numbers
+    text = re.sub('\\n', ' ', text)
+    text = re.sub('\\r', ' ', text)
+    text = ''.join(char for char in text if not char.isdigit())
+    punc_list = string.punctuation.replace('!', '')
+    punc_list = punc_list.replace("'", '')
+    for punctuation in punc_list:
+        text = text.replace(punctuation, ' ')
+    text_split = [word for word in text.split(' ') if word != '']
+    text_lower = []
+    for word in text_split:
+        if word.isupper():
+            text_lower.append(word)
+        else:
+            text_lower.append(word.lower())
+    cleaned_sentence = ' '.join(word for word in text_lower)
+    cleaned_sentence = cleaned_sentence.strip()
+    return cleaned_sentence
+
+def clean_data(text_data):
+    text_data = text_data.dropna(subset=['target', 'predictor']).copy()
+    # text_data['predictor'] = text_data.predictor.fillna('__notext__')
+    text_data_clean = text_data.copy()
+    for i in ['NULL', 'N/A', 'NA']:
+        text_data_clean = text_data_clean[text_data_clean['predictor'].str.strip() != i].copy()
+    text_data['predictor'] = text_data_clean['predictor'].apply(remove_punc_and_nums)
+    return text_data
+
+
+def reduce_crit(text_data, theme):
+    text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
+    text_data.loc[text_data.target == '-5', 'target'] = '-4'
+    text_data.loc[text_data.target == '5', 'target'] = '4'
+    if theme is not None:
+        text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
+    return text_data
 
 
 def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None):
@@ -45,46 +120,15 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     :return: A tuple of length 4: predictor-train, predictor-test, target-train and target-test datasets.
     """
 
-    print('Loading dataset...')
+    # Get data from CSV if filename provided. Else, load fom SQL server
+    text_data = load_data(filename, theme, target, predictor)
 
-    # Choose to read CSV from folder or table directly from database
-    if filename is not None:
-        if isinstance(filename, str):
-            text_data = pd.read_csv(filename, encoding='utf-8')
-        else:
-            text_data = filename
-    else:
-        db = mysql.connector.connect(option_files="my.conf", use_pure=True)
-        if theme is None:
-            with db.cursor() as cursor:
-                cursor.execute(
-                    "SELECT  " + target + ", " + predictor + " FROM text_data"
-                )
-                text_data = cursor.fetchall()
-                text_data = pd.DataFrame(text_data)
-                text_data.columns = cursor.column_names
-        else:
-            with db.cursor() as cursor:
-                cursor.execute(
-                    "SELECT  " + target + ", " + predictor + ", " + theme + " FROM text_data"
-                )
-                text_data = cursor.fetchall()
-                text_data = pd.DataFrame(text_data)
-                text_data.columns = cursor.column_names
-
-    text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
-    if theme is not None:
-        text_data = text_data.rename(columns={theme: 'theme'})
-    text_data = text_data.dropna(subset=['target', 'predictor']).copy()
-    text_data['predictor'] = text_data.predictor.fillna('__notext__')
+    # Clean data - basic preprocessing, removing punctuation, dropnas
+    text_data = clean_data(text_data)
 
     # This is specific to NHS patient feedback data labelled with "criticality" classes
-    if reduce_criticality:
-        text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
-        text_data.loc[text_data.target == '-5', 'target'] = '-4'
-        text_data.loc[text_data.target == '5', 'target'] = '4'
-        if theme is not None:
-            text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
+    if reduce_criticality == True:
+        text_data = reduce_crit(text_data, theme)
 
     print('Preparing training and test sets...')
     x = text_data[['predictor']] # Needs to be an array of a data frame- can't be a pandas Series
@@ -100,3 +144,10 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     print("Done")
 
     return x_train, x_test, y_train, y_test, index_training_data, index_test_data
+
+
+if __name__ == '__main__':
+    text_data = load_data(filename='datasets/text_data.csv', target="label",
+                          predictor="feedback", theme=None)
+    text_data_cleaned = clean_data(text_data)
+    print(text_data_cleaned['predictor'].head())
