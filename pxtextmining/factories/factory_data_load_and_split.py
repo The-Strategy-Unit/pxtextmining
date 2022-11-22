@@ -2,15 +2,9 @@ import pandas as pd
 from os import path
 import mysql.connector
 from sklearn.model_selection import train_test_split
+import re
+import string
 
-
-def reduce_crit(text_data, theme):
-    text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
-    text_data.loc[text_data.target == '-5', 'target'] = '-4'
-    text_data.loc[text_data.target == '5', 'target'] = '4'
-    if theme is not None:
-        text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
-    return text_data
 
 def load_data(filename, theme, target, predictor):
     print('Loading dataset...')
@@ -43,10 +37,47 @@ def load_data(filename, theme, target, predictor):
     text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
     if theme is not None:
         text_data = text_data.rename(columns={theme: 'theme'})
+    print(f'Shape of dataset is {text_data.shape}')
     return text_data
 
-def clean_data():
-    pass
+def remove_punc_and_nums(text):
+    # removes punctuation and numbers
+    text = re.sub('\\n', ' ', text)
+    text = re.sub('\\r', ' ', text)
+    text = ''.join(char for char in text if not char.isdigit())
+    punc_list = string.punctuation.replace('!', '')
+    punc_list = punc_list.replace("'", '')
+    for punctuation in punc_list:
+        text = text.replace(punctuation, ' ')
+    text_split = [word for word in text.split(' ') if word != '']
+    text_lower = []
+    for word in text_split:
+        if word.isupper():
+            text_lower.append(word)
+        else:
+            text_lower.append(word.lower())
+    cleaned_sentence = ' '.join(word for word in text_lower)
+    cleaned_sentence = cleaned_sentence.strip()
+    return cleaned_sentence
+
+def clean_data(text_data):
+    text_data = text_data.dropna(subset=['target', 'predictor']).copy()
+    # text_data['predictor'] = text_data.predictor.fillna('__notext__')
+    text_data_clean = text_data.copy()
+    for i in ['NULL', 'N/A', 'NA']:
+        text_data_clean = text_data_clean[text_data_clean['predictor'].str.strip() != i].copy()
+    text_data['predictor'] = text_data_clean['predictor'].apply(remove_punc_and_nums)
+    return text_data
+
+
+def reduce_crit(text_data, theme):
+    text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
+    text_data.loc[text_data.target == '-5', 'target'] = '-4'
+    text_data.loc[text_data.target == '5', 'target'] = '4'
+    if theme is not None:
+        text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
+    return text_data
+
 
 def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None):
     """
@@ -92,9 +123,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     # Get data from CSV if filename provided. Else, load fom SQL server
     text_data = load_data(filename, theme, target, predictor)
 
-    # Clean data - basic preprocessing
-    text_data = text_data.dropna(subset=['target', 'predictor']).copy()
-    text_data['predictor'] = text_data.predictor.fillna('__notext__')
+    # Clean data - basic preprocessing, removing punctuation, dropnas
+    text_data = clean_data(text_data)
 
     # This is specific to NHS patient feedback data labelled with "criticality" classes
     if reduce_criticality == True:
@@ -119,4 +149,5 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 if __name__ == '__main__':
     text_data = load_data(filename='datasets/text_data.csv', target="label",
                           predictor="feedback", theme=None)
-    print(text_data.head())
+    text_data_cleaned = clean_data(text_data)
+    print(text_data_cleaned['predictor'].head())
