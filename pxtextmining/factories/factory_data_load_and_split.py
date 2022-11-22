@@ -12,6 +12,39 @@ def reduce_criticality(text_data, theme):
         text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
     return text_data
 
+def load_data(filename, theme, target, predictor):
+    print('Loading dataset...')
+
+    # Choose to read CSV from folder or table directly from database
+    if filename is not None:
+        if isinstance(filename, str):
+            text_data = pd.read_csv(filename, encoding='utf-8')
+        else:
+            text_data = filename
+    else:
+        db = mysql.connector.connect(option_files="my.conf", use_pure=True)
+        if theme is None:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    "SELECT  " + target + ", " + predictor + " FROM text_data"
+                )
+                text_data = cursor.fetchall()
+                text_data = pd.DataFrame(text_data)
+                text_data.columns = cursor.column_names
+        else:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    "SELECT  " + target + ", " + predictor + ", " + theme + " FROM text_data"
+                )
+                text_data = cursor.fetchall()
+                text_data = pd.DataFrame(text_data)
+                text_data.columns = cursor.column_names
+
+    text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
+    if theme is not None:
+        text_data = text_data.rename(columns={theme: 'theme'})
+    return text_data
+
 def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None):
     """
     Function loads the dataset, renames the response and predictor as "target" and "predictor" respectively,
@@ -53,36 +86,10 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     :return: A tuple of length 4: predictor-train, predictor-test, target-train and target-test datasets.
     """
 
-    print('Loading dataset...')
+    # Get data from CSV if filename provided. Else, load fom SQL server
+    text_data = load_data(filename, theme, target, predictor)
 
-    # Choose to read CSV from folder or table directly from database
-    if filename is not None:
-        if isinstance(filename, str):
-            text_data = pd.read_csv(filename, encoding='utf-8')
-        else:
-            text_data = filename
-    else:
-        db = mysql.connector.connect(option_files="my.conf", use_pure=True)
-        if theme is None:
-            with db.cursor() as cursor:
-                cursor.execute(
-                    "SELECT  " + target + ", " + predictor + " FROM text_data"
-                )
-                text_data = cursor.fetchall()
-                text_data = pd.DataFrame(text_data)
-                text_data.columns = cursor.column_names
-        else:
-            with db.cursor() as cursor:
-                cursor.execute(
-                    "SELECT  " + target + ", " + predictor + ", " + theme + " FROM text_data"
-                )
-                text_data = cursor.fetchall()
-                text_data = pd.DataFrame(text_data)
-                text_data.columns = cursor.column_names
-
-    text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
-    if theme is not None:
-        text_data = text_data.rename(columns={theme: 'theme'})
+    # Clean data - basic preprocessing
     text_data = text_data.dropna(subset=['target', 'predictor']).copy()
     text_data['predictor'] = text_data.predictor.fillna('__notext__')
 
