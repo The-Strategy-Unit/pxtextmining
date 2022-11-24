@@ -19,16 +19,18 @@ def load_data(filename, theme, target, predictor):
         db = mysql.connector.connect(option_files="my.conf", use_pure=True)
         if theme is None:
             with db.cursor() as cursor:
+                query = "SELECT ? , ? FROM text_data"
                 cursor.execute(
-                    "SELECT  " + target + ", " + predictor + " FROM text_data"
+                    query, (target, predictor)
                 )
                 text_data = cursor.fetchall()
                 text_data = pd.DataFrame(text_data)
                 text_data.columns = cursor.column_names
         else:
             with db.cursor() as cursor:
+                query = "SELECT ? , ? , ? FROM text_data"
                 cursor.execute(
-                    "SELECT  " + target + ", " + predictor + ", " + theme + " FROM text_data"
+                    query, (target, predictor, theme)
                 )
                 text_data = cursor.fetchall()
                 text_data = pd.DataFrame(text_data)
