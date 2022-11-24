@@ -4,7 +4,7 @@ import mysql.connector
 from sklearn.model_selection import train_test_split
 import re
 import string
-
+import numpy as np
 
 def load_data(filename, theme, target, predictor):
     print('Loading dataset...')
@@ -19,19 +19,15 @@ def load_data(filename, theme, target, predictor):
         db = mysql.connector.connect(option_files="my.conf", use_pure=True)
         if theme is None:
             with db.cursor() as cursor:
-                query = "SELECT ? , ? FROM text_data"
-                cursor.execute(
-                    query, (target, predictor)
-                )
+                query = f"SELECT {target} , {predictor} FROM text_data"
+                cursor.execute(query)
                 text_data = cursor.fetchall()
                 text_data = pd.DataFrame(text_data)
                 text_data.columns = cursor.column_names
         else:
             with db.cursor() as cursor:
-                query = "SELECT ? , ? , ? FROM text_data"
-                cursor.execute(
-                    query, (target, predictor, theme)
-                )
+                query = f"SELECT {target} , {predictor} , {theme} FROM text_data"
+                cursor.execute(query)
                 text_data = cursor.fetchall()
                 text_data = pd.DataFrame(text_data)
                 text_data.columns = cursor.column_names
@@ -39,7 +35,7 @@ def load_data(filename, theme, target, predictor):
     text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
     if theme is not None:
         text_data = text_data.rename(columns={theme: 'theme'})
-    print(f'Shape of dataset is {text_data.shape}')
+    print(f'Shape of dataset before cleaning is {text_data.shape}')
     return text_data
 
 def remove_punc_and_nums(text):
@@ -63,12 +59,13 @@ def remove_punc_and_nums(text):
     return cleaned_sentence
 
 def clean_data(text_data):
-    text_data = text_data.dropna(subset=['target', 'predictor']).copy()
     # text_data['predictor'] = text_data.predictor.fillna('__notext__')
-    text_data_clean = text_data.copy()
-    for i in ['NULL', 'N/A', 'NA']:
-        text_data_clean = text_data_clean[text_data_clean['predictor'].str.strip() != i].copy()
+    text_data_clean = text_data.dropna(subset=['target', 'predictor']).copy()
+    for i in ['NULL', 'N/A', 'NA', 'NONE']:
+        text_data_clean = text_data_clean[text_data_clean['predictor'].str.upper() != i].copy()
     text_data['predictor'] = text_data_clean['predictor'].apply(remove_punc_and_nums)
+    text_data['predictor'] = text_data['predictor'].replace('', np.NaN)
+    text_data = text_data.dropna(subset=['target', 'predictor']).copy()
     return text_data
 
 
@@ -128,6 +125,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     # Clean data - basic preprocessing, removing punctuation, dropnas
     text_data = clean_data(text_data)
 
+    print(f'Shape of dataset after cleaning is {text_data.shape}')
+
     # This is specific to NHS patient feedback data labelled with "criticality" classes
     if reduce_criticality == True:
         text_data = reduce_crit(text_data, theme)
@@ -149,7 +148,7 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 
 if __name__ == '__main__':
-    text_data = load_data(filename='datasets/text_data.csv', target="label",
+    text_data = load_data(filename=None, target="label",
                           predictor="feedback", theme=None)
     text_data_cleaned = clean_data(text_data)
     print(text_data_cleaned['predictor'].head())
