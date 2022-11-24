@@ -14,24 +14,26 @@ def load_data(filename, theme, target, predictor):
             text_data = pd.read_csv(filename, encoding='utf-8')
         else:
             text_data = filename
-    # Else load from mysql database. For this to work set my.conf settings
+    # Else load from mysql database
+    # For this to work set my.conf settings to access mysql database
     else:
         db = mysql.connector.connect(option_files="my.conf", use_pure=True)
         if theme is None:
             with db.cursor() as cursor:
-                query = f"SELECT {target} , {predictor} FROM text_data"
+                query = f"SELECT id , {target} , {predictor} FROM text_data"
                 cursor.execute(query)
                 text_data = cursor.fetchall()
                 text_data = pd.DataFrame(text_data)
                 text_data.columns = cursor.column_names
+                text_data = text_data.set_index('id')
         else:
             with db.cursor() as cursor:
-                query = f"SELECT {target} , {predictor} , {theme} FROM text_data"
+                query = f"SELECT id , {target} , {predictor} , {theme} FROM text_data"
                 cursor.execute(query)
                 text_data = cursor.fetchall()
                 text_data = pd.DataFrame(text_data)
                 text_data.columns = cursor.column_names
-
+                text_data = text_data.set_index('id')
     text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
     if theme is not None:
         text_data = text_data.rename(columns={theme: 'theme'})
@@ -66,6 +68,7 @@ def clean_data(text_data):
     text_data['predictor'] = text_data_clean['predictor'].apply(remove_punc_and_nums)
     text_data['predictor'] = text_data['predictor'].replace('', np.NaN)
     text_data = text_data.dropna(subset=['target', 'predictor']).copy()
+    text_data = text_data.drop_duplicates().copy()
     return text_data
 
 
@@ -137,11 +140,11 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
         x['theme'] = text_data['theme'].copy()
     y = text_data['target'].to_numpy()
     x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
-        train_test_split(x, y, pd.DataFrame(x).index,
-                         test_size=test_size,
-                         stratify=y,
-                         shuffle=True
-                         )
+            train_test_split(x, y, pd.DataFrame(x).index,
+                            test_size=test_size,
+                            stratify=y,
+                            shuffle=True
+                            )
     print("Done")
 
     return x_train, x_test, y_train, y_test, index_training_data, index_test_data
@@ -151,4 +154,4 @@ if __name__ == '__main__':
     text_data = load_data(filename=None, target="label",
                           predictor="feedback", theme=None)
     text_data_cleaned = clean_data(text_data)
-    print(text_data_cleaned['predictor'].head())
+    print(text_data_cleaned.head())
