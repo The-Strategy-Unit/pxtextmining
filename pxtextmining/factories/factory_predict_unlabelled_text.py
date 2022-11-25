@@ -1,6 +1,7 @@
 import pandas as pd
 import joblib
 from itertools import chain
+from factory_data_load_and_split import process_data, load_data
 
 
 def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
@@ -38,13 +39,15 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
     """
 
     data_unlabelled = pd.DataFrame(dataset)
-
     # Rename predictor column to names pipeline knows and replace NAs with empty string.
     if theme is None:
         data_unlabelled = data_unlabelled.rename(columns={predictor: 'predictor'})
     else:
         data_unlabelled = data_unlabelled.rename(columns={predictor: 'predictor', theme: 'theme'})
-    data_unlabelled['predictor'] = data_unlabelled.predictor.fillna('')
+
+    data_unlabelled = process_data(data_unlabelled)
+
+    # data_unlabelled['predictor'] = data_unlabelled.predictor.fillna('')
 
     # Load pipeline (if not already supplied) and make predictions
     if isinstance(pipe_path_or_object, str):
@@ -78,3 +81,12 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
     returned_cols = list(chain.from_iterable(returned_cols))  # Unnest list of lists.
 
     return data_unlabelled[returned_cols]
+
+
+if __name__ == '__main__':
+    test_data = load_data(filename='datasets/text_data.csv', target="criticality", predictor="feedback",
+                                 theme="label")
+    data_unlabelled = pd.DataFrame(test_data)
+    # Rename predictor column to names pipeline knows and replace NAs with empty string.
+    data_unlabelled = process_data(data_unlabelled)
+    print(data_unlabelled.head())

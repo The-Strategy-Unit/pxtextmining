@@ -7,7 +7,7 @@ import string
 import numpy as np
 from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 
-def load_data(filename, theme, target, predictor):
+def load_data(filename, target, predictor, theme = None):
     print('Loading dataset...')
     # Read CSV if filename provided
     if filename is not None:
@@ -87,6 +87,16 @@ def reduce_crit(text_data, theme):
         text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
     return text_data
 
+def process_data(text_data):
+    # Add feature text_length
+    text_data['text_length'] = text_data['predictor'].apply(lambda x:
+                                len([word for word in str(x).split(' ') if word != '']))
+    # Clean data - basic preprocessing, removing punctuation, decode emojis, dropnas
+    text_data_cleaned = clean_data(text_data)
+    # Get sentiment scores
+    sentiment = sentiment_scores.sentiment_scores(text_data[['predictor']])
+    text_data = text_data_cleaned.join(sentiment).copy()
+    return text_data
 
 def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None):
     """
@@ -132,16 +142,7 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     # Get data from CSV if filename provided. Else, load fom SQL server
     text_data = load_data(filename, theme, target, predictor)
 
-    # Add feature text_length
-    text_data['text_length'] = text_data['predictor'].apply(lambda x:
-                                len([word for word in str(x).split(' ') if word != '']))
-
-    # Clean data - basic preprocessing, removing punctuation, dropnas
-    text_data_cleaned = clean_data(text_data)
-
-    sentiment = sentiment_scores.sentiment_scores(text_data[['predictor']])
-
-    text_data = text_data_cleaned.join(sentiment).copy()
+    text_data = process_data(text_data)
 
     print(f'Shape of dataset after cleaning is {text_data.shape}')
 
