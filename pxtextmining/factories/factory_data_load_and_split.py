@@ -38,6 +38,9 @@ def load_data(filename, theme, target, predictor):
     text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
     if theme is not None:
         text_data = text_data.rename(columns={theme: 'theme'})
+        text_data = text_data[['target', 'predictor', 'theme']]
+    else:
+        text_data = text_data[['target', 'predictor']]
     print(f'Shape of dataset before cleaning is {text_data.shape}')
     return text_data
 
@@ -79,6 +82,7 @@ def reduce_crit(text_data, theme):
     text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
     text_data.loc[text_data.target == '-5', 'target'] = '-4'
     text_data.loc[text_data.target == '5', 'target'] = '4'
+    print('error?')
     if theme is not None:
         text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
     return text_data
@@ -128,8 +132,16 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     # Get data from CSV if filename provided. Else, load fom SQL server
     text_data = load_data(filename, theme, target, predictor)
 
+    # Add feature text_length
+    text_data['text_length'] = text_data['predictor'].apply(lambda x:
+                                len([word for word in str(x).split(' ') if word != '']))
+
     # Clean data - basic preprocessing, removing punctuation, dropnas
-    text_data = clean_data(text_data)
+    text_data_cleaned = clean_data(text_data)
+
+    sentiment = sentiment_scores.sentiment_scores(text_data[['predictor']])
+
+    text_data = text_data_cleaned.join(sentiment).copy()
 
     print(f'Shape of dataset after cleaning is {text_data.shape}')
 
@@ -138,9 +150,9 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
         text_data = reduce_crit(text_data, theme)
 
     print('Preparing training and test sets...')
-    x = text_data[['predictor']] # Needs to be an array of a data frame- can't be a pandas Series
-    if theme is not None:
-        x['theme'] = text_data['theme'].copy()
+    x = text_data.drop(columns = 'target').copy() # Needs to be an array of a data frame- can't be a pandas Series
+    # if theme is not None:
+    #     x['theme'] = text_data['theme'].copy()
     y = text_data['target'].to_numpy()
     x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
             train_test_split(x, y, pd.DataFrame(x).index,
@@ -154,9 +166,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 
 if __name__ == '__main__':
-    text_data = pd.DataFrame({'predictor': ['Example     text',
-                                            'testing it out🐻🌻emoji decoder',
-                                            'None', 'Wonderful!!!!'],
-                   'target': [1,2,3,4]})
-    text_data_cleaned = clean_data(text_data)
-    print(text_data_cleaned.head())
+    x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
+        factory_data_load_and_split(filename='datasets/text_data.csv', target="criticality", predictor="feedback",
+                                 test_size=0.33, reduce_criticality=True,
+                                 theme="label")
+    print(x_train.head())
