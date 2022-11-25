@@ -12,7 +12,7 @@ from sklearn.linear_model import PassiveAggressiveClassifier, Perceptron, RidgeC
 from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
 from sklearn.ensemble import RandomForestClassifier
-from pxtextmining.helpers.text_preprocessor import text_preprocessor
+from pxtextmining.helpers.decode_emojis import text_preprocessor
 from pxtextmining.helpers.sentiment_scores import sentiment_scores
 from pxtextmining.helpers.text_length import text_length
 from pxtextmining.helpers.tokenization import LemmaTokenizer
@@ -144,7 +144,7 @@ def factory_pipeline(x, y, tknz="spacy",
         ('text', (TextTransformerSwitcher()))
     ])
 
-    # Gather transformers.
+    # Gather transformers.s
     preprocessor = ColumnTransformer(
         transformers=[
             ('sentimenttr', transformer_sentiment, features_text),

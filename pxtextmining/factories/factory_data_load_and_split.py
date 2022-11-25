@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 import re
 import string
 import numpy as np
+from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 
 def load_data(filename, theme, target, predictor):
     print('Loading dataset...')
@@ -42,6 +43,7 @@ def load_data(filename, theme, target, predictor):
 
 def remove_punc_and_nums(text):
     # removes punctuation and numbers
+    # converts emojis into text
     text = re.sub('\\n', ' ', text)
     text = re.sub('\\r', ' ', text)
     text = ''.join(char for char in text if not char.isdigit())
@@ -49,6 +51,7 @@ def remove_punc_and_nums(text):
     punc_list = punc_list.replace("'", '')
     for punctuation in punc_list:
         text = text.replace(punctuation, ' ')
+    text = decode_emojis.decode_emojis(text)
     text_split = [word for word in text.split(' ') if word != '']
     text_lower = []
     for word in text_split:
@@ -68,9 +71,9 @@ def clean_data(text_data):
     text_data['predictor'] = text_data_clean['predictor'].apply(remove_punc_and_nums)
     text_data['predictor'] = text_data['predictor'].replace('', np.NaN)
     text_data = text_data.dropna(subset=['target', 'predictor']).copy()
-    text_data = text_data.drop_duplicates().copy()
+    # have decided against dropping duplicates for now as this is a natural part of dataset
+    # text_data = text_data.drop_duplicates().copy()
     return text_data
-
 
 def reduce_crit(text_data, theme):
     text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
@@ -151,7 +154,9 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 
 if __name__ == '__main__':
-    text_data = load_data(filename=None, target="label",
-                          predictor="feedback", theme=None)
+    text_data = pd.DataFrame({'predictor': ['Example     text',
+                                            'testing it out🐻🌻emoji decoder',
+                                            'None', 'Wonderful!!!!'],
+                   'target': [1,2,3,4]})
     text_data_cleaned = clean_data(text_data)
     print(text_data_cleaned.head())
