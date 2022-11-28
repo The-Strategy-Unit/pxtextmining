@@ -89,13 +89,12 @@ def clean_data(text_data, target = False):
     return text_data
 
 def reduce_crit(text_data, theme):
-    text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
-    text_data.loc[text_data.target == '-5', 'target'] = '-4'
-    print('error?')
-    text_data.loc[text_data.target == '5', 'target'] = '4'
+    text_data_crit = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')").copy()
+    text_data_crit['target'] = text_data_crit['target'].copy().replace('-5', '-4')
+    text_data_crit['target'] = text_data_crit['target'].copy().replace('5', '4')
     if theme is not None:
-        text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
-    return text_data
+        text_data_crit.loc[text_data_crit['theme'] == "Couldn't be improved", 'target'] = '3'
+    return text_data_crit
 
 def process_data(text_data, target = False):
     """
@@ -141,7 +140,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     :param bool reduce_criticality: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
         that hold data on criticality. If `True`, then all records with a criticality of "-5" (respectively, "5") are
         assigned a criticality of "-4" (respectively, "4"). This is to avoid situations where the pipeline breaks due to
-        a lack of sufficient data for "-5" and/or "5". Defaults to `False`.
+        a lack of sufficient data for "-5" and/or "5". Defaults to `False`. This param is only relevant
+        when target = "criticality"
     :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
         that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
         Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
