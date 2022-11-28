@@ -39,6 +39,7 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
     """
 
     data_unlabelled = pd.DataFrame(dataset)
+    print(f"Shape of dataset before cleaning is {data_unlabelled.shape}")
     # Rename predictor column to names pipeline knows and replace NAs with empty string.
     if theme is None:
         data_unlabelled = data_unlabelled.rename(columns={predictor: 'predictor'})
@@ -48,6 +49,7 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
     data_unlabelled = process_data(data_unlabelled)
 
     # data_unlabelled['predictor'] = data_unlabelled.predictor.fillna('')
+    # Commented line above out as we are just dropping all NaNs. if there is no text what are we predicting?
 
     # Load pipeline (if not already supplied) and make predictions
     if isinstance(pipe_path_or_object, str):
@@ -84,9 +86,8 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
 
 
 if __name__ == '__main__':
-    test_data = load_data(filename='datasets/text_data.csv', target="criticality", predictor="feedback",
-                                 theme="label")
-    data_unlabelled = pd.DataFrame(test_data)
-    # Rename predictor column to names pipeline knows and replace NAs with empty string.
-    data_unlabelled = process_data(data_unlabelled)
-    print(data_unlabelled.head())
+    dataset = pd.read_csv('datasets/text_data.csv')
+    predictions = factory_predict_unlabelled_text(dataset=dataset, predictor="feedback",
+                                    pipe_path_or_object="results_criticality/pipeline_criticality.sav",
+                                    preds_column=None, column_names='preds_only', theme="label")
+    print(predictions.head())

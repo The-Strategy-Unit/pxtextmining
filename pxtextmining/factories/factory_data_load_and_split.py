@@ -66,14 +66,20 @@ def remove_punc_and_nums(text):
     cleaned_sentence = cleaned_sentence.strip()
     return cleaned_sentence
 
-def clean_data(text_data):
+def clean_data(text_data, target = None):
     # text_data['predictor'] = text_data.predictor.fillna('__notext__')
-    text_data_clean = text_data.dropna(subset=['target', 'predictor']).copy()
+    if target != None:
+        text_data_clean = text_data.dropna(subset=['target', 'predictor']).copy()
+    else:
+        text_data_clean = text_data.dropna(subset=['predictor']).copy()
     for i in ['NULL', 'N/A', 'NA', 'NONE']:
         text_data_clean = text_data_clean[text_data_clean['predictor'].str.upper() != i].copy()
     text_data['predictor'] = text_data_clean['predictor'].apply(remove_punc_and_nums)
     text_data['predictor'] = text_data['predictor'].replace('', np.NaN)
-    text_data = text_data.dropna(subset=['target', 'predictor']).copy()
+    if target != None:
+        text_data = text_data.dropna(subset=['target', 'predictor']).copy()
+    else:
+        text_data = text_data.dropna(subset=['predictor']).copy()
     # have decided against dropping duplicates for now as this is a natural part of dataset
     # text_data = text_data.drop_duplicates().copy()
     return text_data
@@ -87,15 +93,16 @@ def reduce_crit(text_data, theme):
         text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
     return text_data
 
-def process_data(text_data):
+def process_data(text_data, target = None):
     # Add feature text_length
     text_data['text_length'] = text_data['predictor'].apply(lambda x:
                                 len([word for word in str(x).split(' ') if word != '']))
     # Clean data - basic preprocessing, removing punctuation, decode emojis, dropnas
-    text_data_cleaned = clean_data(text_data)
+    text_data_cleaned = clean_data(text_data, target)
     # Get sentiment scores
     sentiment = sentiment_scores.sentiment_scores(text_data[['predictor']])
     text_data = text_data_cleaned.join(sentiment).copy()
+    print(f'Shape of dataset after cleaning and processing is {text_data.shape}')
     return text_data
 
 def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None):
@@ -142,9 +149,7 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     # Get data from CSV if filename provided. Else, load fom SQL server
     text_data = load_data(filename, theme, target, predictor)
 
-    text_data = process_data(text_data)
-
-    print(f'Shape of dataset after cleaning is {text_data.shape}')
+    text_data = process_data(text_data, target = target)
 
     # This is specific to NHS patient feedback data labelled with "criticality" classes
     if reduce_criticality == True:
