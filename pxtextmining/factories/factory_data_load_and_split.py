@@ -66,9 +66,13 @@ def remove_punc_and_nums(text):
     cleaned_sentence = cleaned_sentence.strip()
     return cleaned_sentence
 
-def clean_data(text_data, target = None):
+def clean_data(text_data, target = False):
+    """
+    Function to clean data. target = True if processing labelled data for training a model.
+    If processing dataset with no target, i.e. to make predictions using unlabelled data, then target = False.
+    """
     # text_data['predictor'] = text_data.predictor.fillna('__notext__')
-    if target != None:
+    if target == True:
         text_data_clean = text_data.dropna(subset=['target', 'predictor']).copy()
     else:
         text_data_clean = text_data.dropna(subset=['predictor']).copy()
@@ -76,7 +80,7 @@ def clean_data(text_data, target = None):
         text_data_clean = text_data_clean[text_data_clean['predictor'].str.upper() != i].copy()
     text_data['predictor'] = text_data_clean['predictor'].apply(remove_punc_and_nums)
     text_data['predictor'] = text_data['predictor'].replace('', np.NaN)
-    if target != None:
+    if target == True:
         text_data = text_data.dropna(subset=['target', 'predictor']).copy()
     else:
         text_data = text_data.dropna(subset=['predictor']).copy()
@@ -87,13 +91,17 @@ def clean_data(text_data, target = None):
 def reduce_crit(text_data, theme):
     text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
     text_data.loc[text_data.target == '-5', 'target'] = '-4'
-    text_data.loc[text_data.target == '5', 'target'] = '4'
     print('error?')
+    text_data.loc[text_data.target == '5', 'target'] = '4'
     if theme is not None:
         text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
     return text_data
 
-def process_data(text_data, target = None):
+def process_data(text_data, target = False):
+    """
+    Function to clean data. target = True if processing labelled data for training a model.
+    If processing dataset with no target, i.e. to make predictions using unlabelled data, then target = False.
+    """
     # Add feature text_length
     text_data['text_length'] = text_data['predictor'].apply(lambda x:
                                 len([word for word in str(x).split(' ') if word != '']))
@@ -147,9 +155,9 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     """
 
     # Get data from CSV if filename provided. Else, load fom SQL server
-    text_data = load_data(filename, theme, target, predictor)
+    text_data = load_data(filename=filename, theme=theme, target=target, predictor=predictor)
 
-    text_data = process_data(text_data, target = target)
+    text_data = process_data(text_data, target = True)
 
     # This is specific to NHS patient feedback data labelled with "criticality" classes
     if reduce_criticality == True:
@@ -176,4 +184,4 @@ if __name__ == '__main__':
         factory_data_load_and_split(filename='datasets/text_data.csv', target="criticality", predictor="feedback",
                                  test_size=0.33, reduce_criticality=True,
                                  theme="label")
-    print(x_train.head())
+    print(x_train.columns)
