@@ -9,15 +9,15 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                  cv=2, n_iter=1, n_jobs=5, verbose=1,
                                  learners=[
                                      "SGDClassifier",
-                                     # "RidgeClassifier",
-                                     # "Perceptron",
-                                     # "PassiveAggressiveClassifier",
-                                     # "BernoulliNB",
-                                     # "ComplementNB",
-                                     # "MultinomialNB",
-                                     # "KNeighborsClassifier",
-                                     # "NearestCentroid",
-                                     # "RandomForestClassifier"
+                                     "RidgeClassifier",
+                                     "Perceptron",
+                                     "PassiveAggressiveClassifier",
+                                     "BernoulliNB",
+                                     "ComplementNB",
+                                     "MultinomialNB",
+                                     "KNeighborsClassifier",
+                                     "NearestCentroid",
+                                     "RandomForestClassifier"
                                      ],
                                  objects_to_save=[
                                      "pipeline",
@@ -30,7 +30,7 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                  ],
                                  save_objects_to_server=False,
                                  save_objects_to_disk=True,
-                                 save_pipeline_as="pipeline_criticality_test",
-                                 results_folder_name="results_criticality_test",
+                                 save_pipeline_as="test_pipeline_criticality",
+                                 results_folder_name="test_results_criticality",
                                  reduce_criticality=True,
                                  theme="label")

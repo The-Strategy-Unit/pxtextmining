@@ -54,10 +54,6 @@ def factory_pipeline(x, y, tknz="spacy",
 
       * Converts text into TF-IDFs or `GloVe <https://nlp.stanford.edu/projects/glove/>`_ word vectors with
         `spaCy <https://spacy.io/>`_;
-      * Creates a new feature that is the length of the text in each record;
-      * Performs sentiment analysis on the text feature and creates new features that are all scores/indicators
-        produced by `TextBlob <https://textblob.readthedocs.io/en/dev/>`_
-        and `vaderSentiment <https://pypi.org/project/vaderSentiment/>`_.
       * Applies `sklearn.preprocessing.KBinsDiscretizer
         <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.KBinsDiscretizer.html>`_ to the text
         length and sentiment indicator features, and `sklearn.preprocessing.StandardScaler
@@ -120,7 +116,6 @@ def factory_pipeline(x, y, tknz="spacy",
         `imblearn.pipeline.Pipeline
         <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_.
     """
-    print(x.head())
 
     # Define transformers for pipeline #
     # Transformer for text_length column
@@ -312,9 +307,9 @@ def factory_pipeline(x, y, tknz="spacy",
                 aux['featsel__selector__score_func'] = [chi2]
                 aux['preprocessor__texttr__text__transformer__tokenizer'] = [LemmaTokenizer(tknz)]
                 aux['preprocessor__texttr__text__transformer__norm'] = ['l2']
-                aux['preprocessor__texttr__text__transformer__ngram_range'] = ((1, 3), (2, 3), (3, 3))
-                aux['preprocessor__texttr__text__transformer__max_df'] = [0.9, 0.95]
-                aux['preprocessor__texttr__text__transformer__min_df'] = [1]
+                aux['preprocessor__texttr__text__transformer__ngram_range'] = ((1, 3), (1, 2), (2, 3), (3, 3))
+                aux['preprocessor__texttr__text__transformer__max_df'] = [0.85, 0.9, 0.95]
+                aux['preprocessor__texttr__text__transformer__min_df'] = [1,2,3]
                 aux['preprocessor__texttr__text__transformer__use_idf'] = [True, False]
 
                 # The transformation is a k-means discretizer with 3 bins:
@@ -403,12 +398,6 @@ def factory_pipeline(x, y, tknz="spacy",
     pipe_cv = RandomizedSearchCV(pipe, param_grid, n_jobs=n_jobs, return_train_score=False,
                                  cv=cv, verbose=verbose,
                                  scoring=scoring, refit=refit, n_iter=n_iter)
-
-    # These messages are for function helpers.text_preprocessor which is used by
-    # TfidfVectorizer() and EmbeddingsTransformer(). Having them inside text_preprocessor() prints
-    # them in each iteration, which is redundant. Having the here prints them once.
-    print('Stripping punctuation from text...')
-    print("Stripping excess spaces, whitespaces and line breaks from text...")
 
     # Fit pipeline #
     pipe_cv.fit(x, y)
