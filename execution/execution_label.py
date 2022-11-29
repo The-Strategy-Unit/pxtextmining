@@ -4,7 +4,7 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
     text_classification_pipeline(filename='datasets/text_data.csv', target="label", predictor="feedback",
                                  test_size=0.33,
                                  ordinal=False,
-                                 tknz="spacy",
+                                 tknz="wordnet",
                                  metric="class_balance_accuracy",
                                  cv=5, n_iter=2, n_jobs=5, verbose=3,
                                  learners=[

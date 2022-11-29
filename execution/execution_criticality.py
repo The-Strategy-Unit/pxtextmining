@@ -6,7 +6,7 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                  ordinal=True,
                                  tknz="spacy",
                                  metric="class_balance_accuracy",
-                                 cv=2, n_iter=1, n_jobs=5, verbose=3,
+                                 cv=2, n_iter=1, n_jobs=5, verbose=1,
                                  learners=[
                                      "SGDClassifier",
                                      # "RidgeClassifier",
@@ -30,7 +30,7 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                  ],
                                  save_objects_to_server=False,
                                  save_objects_to_disk=True,
-                                 save_pipeline_as="pipeline_criticality_issue_26",
-                                 results_folder_name="results_criticality_issue_26",
+                                 save_pipeline_as="pipeline_criticality_test",
+                                 results_folder_name="results_criticality_test",
                                  reduce_criticality=True,
                                  theme="label")
