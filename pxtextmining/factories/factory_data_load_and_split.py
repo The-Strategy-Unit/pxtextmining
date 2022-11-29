@@ -5,8 +5,9 @@ from sklearn.model_selection import train_test_split
 import re
 import string
 import numpy as np
+from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 
-def load_data(filename, theme, target, predictor):
+def load_data(filename, target, predictor, theme = None):
     print('Loading dataset...')
     # Read CSV if filename provided
     if filename is not None:
@@ -37,11 +38,15 @@ def load_data(filename, theme, target, predictor):
     text_data = text_data.rename(columns={target: 'target', predictor: 'predictor'})
     if theme is not None:
         text_data = text_data.rename(columns={theme: 'theme'})
+        text_data = text_data[['target', 'predictor', 'theme']]
+    else:
+        text_data = text_data[['target', 'predictor']]
     print(f'Shape of dataset before cleaning is {text_data.shape}')
     return text_data
 
 def remove_punc_and_nums(text):
     # removes punctuation and numbers
+    # converts emojis into text
     text = re.sub('\\n', ' ', text)
     text = re.sub('\\r', ' ', text)
     text = ''.join(char for char in text if not char.isdigit())
@@ -49,6 +54,7 @@ def remove_punc_and_nums(text):
     punc_list = punc_list.replace("'", '')
     for punctuation in punc_list:
         text = text.replace(punctuation, ' ')
+    text = decode_emojis.decode_emojis(text)
     text_split = [word for word in text.split(' ') if word != '']
     text_lower = []
     for word in text_split:
@@ -60,26 +66,53 @@ def remove_punc_and_nums(text):
     cleaned_sentence = cleaned_sentence.strip()
     return cleaned_sentence
 
-def clean_data(text_data):
+def clean_data(text_data, target = False):
+    """
+    Function to clean data. target = True if processing labelled data for training a model.
+    If processing dataset with no target, i.e. to make predictions using unlabelled data, then target = False.
+    """
     # text_data['predictor'] = text_data.predictor.fillna('__notext__')
-    text_data_clean = text_data.dropna(subset=['target', 'predictor']).copy()
+    if target == True:
+        text_data_clean = text_data.dropna(subset=['target', 'predictor']).copy()
+    else:
+        text_data_clean = text_data.dropna(subset=['predictor']).copy()
     for i in ['NULL', 'N/A', 'NA', 'NONE']:
         text_data_clean = text_data_clean[text_data_clean['predictor'].str.upper() != i].copy()
-    text_data['predictor'] = text_data_clean['predictor'].apply(remove_punc_and_nums)
-    text_data['predictor'] = text_data['predictor'].replace('', np.NaN)
-    text_data = text_data.dropna(subset=['target', 'predictor']).copy()
-    text_data = text_data.drop_duplicates().copy()
-    return text_data
-
+    text_data_clean['original_text'] = text_data_clean['predictor'].copy()
+    text_data_clean['predictor'] = text_data_clean['predictor'].apply(remove_punc_and_nums)
+    text_data_clean['predictor'] = text_data_clean['predictor'].replace('', np.NaN)
+    if target == True:
+        text_data_clean = text_data_clean.dropna(subset=['target', 'predictor']).copy()
+    else:
+        text_data_clean = text_data_clean.dropna(subset=['predictor']).copy()
+    # have decided against dropping duplicates for now as this is a natural part of dataset
+    # text_data = text_data.drop_duplicates().copy()
+    return text_data_clean
 
 def reduce_crit(text_data, theme):
-    text_data = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')")
-    text_data.loc[text_data.target == '-5', 'target'] = '-4'
-    text_data.loc[text_data.target == '5', 'target'] = '4'
+    text_data_crit = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')").copy()
+    text_data_crit['target'] = text_data_crit['target'].copy().replace('-5', '-4')
+    text_data_crit['target'] = text_data_crit['target'].copy().replace('5', '4')
     if theme is not None:
-        text_data.loc[text_data['theme'] == "Couldn't be improved", 'target'] = '3'
-    return text_data
+        text_data_crit.loc[text_data_crit['theme'] == "Couldn't be improved", 'target'] = '3'
+    return text_data_crit
 
+def process_data(text_data, target = False):
+    """
+    Function to clean data. target = True if processing labelled data for training a model.
+    If processing dataset with no target, i.e. to make predictions using unlabelled data, then target = False.
+    """
+    # Add feature text_length
+    text_data['text_length'] = text_data['predictor'].apply(lambda x:
+                                len([word for word in str(x).split(' ') if word != '']))
+    # Clean data - basic preprocessing, removing punctuation, decode emojis, dropnas
+    text_data_cleaned = clean_data(text_data, target)
+    # Get sentiment scores
+    sentiment = sentiment_scores.sentiment_scores(text_data_cleaned[['original_text']])
+    sentiment = sentiment.copy().drop(columns=['vader_neg', 'vader_neu', 'vader_pos'])
+    text_data = text_data_cleaned.join(sentiment).drop(columns=['original_text']).copy()
+    print(f'Shape of dataset after cleaning and processing is {text_data.shape}')
+    return text_data
 
 def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None):
     """
@@ -109,7 +142,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     :param bool reduce_criticality: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
         that hold data on criticality. If `True`, then all records with a criticality of "-5" (respectively, "5") are
         assigned a criticality of "-4" (respectively, "4"). This is to avoid situations where the pipeline breaks due to
-        a lack of sufficient data for "-5" and/or "5". Defaults to `False`.
+        a lack of sufficient data for "-5" and/or "5". Defaults to `False`. This param is only relevant
+        when target = "criticality"
     :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
         that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
         Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
@@ -123,21 +157,18 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
     """
 
     # Get data from CSV if filename provided. Else, load fom SQL server
-    text_data = load_data(filename, theme, target, predictor)
+    text_data = load_data(filename=filename, theme=theme, target=target, predictor=predictor)
 
-    # Clean data - basic preprocessing, removing punctuation, dropnas
-    text_data = clean_data(text_data)
-
-    print(f'Shape of dataset after cleaning is {text_data.shape}')
+    text_data = process_data(text_data, target = True)
 
     # This is specific to NHS patient feedback data labelled with "criticality" classes
     if reduce_criticality == True:
         text_data = reduce_crit(text_data, theme)
 
     print('Preparing training and test sets...')
-    x = text_data[['predictor']] # Needs to be an array of a data frame- can't be a pandas Series
-    if theme is not None:
-        x['theme'] = text_data['theme'].copy()
+    x = text_data.drop(columns = 'target').copy() # Needs to be an array of a data frame- can't be a pandas Series
+    # if theme is not None:
+    #     x['theme'] = text_data['theme'].copy()
     y = text_data['target'].to_numpy()
     x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
             train_test_split(x, y, pd.DataFrame(x).index,
@@ -151,7 +182,8 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 
 if __name__ == '__main__':
-    text_data = load_data(filename=None, target="label",
-                          predictor="feedback", theme=None)
-    text_data_cleaned = clean_data(text_data)
-    print(text_data_cleaned.head())
+    x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
+        factory_data_load_and_split(filename='datasets/text_data.csv', target="criticality", predictor="feedback",
+                                 test_size=0.33, reduce_criticality=True,
+                                 theme="label")
+    print(x_train.columns)

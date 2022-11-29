@@ -12,9 +12,6 @@ from sklearn.linear_model import PassiveAggressiveClassifier, Perceptron, RidgeC
 from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
 from sklearn.ensemble import RandomForestClassifier
-from pxtextmining.helpers.text_preprocessor import text_preprocessor
-from pxtextmining.helpers.sentiment_scores import sentiment_scores
-from pxtextmining.helpers.text_length import text_length
 from pxtextmining.helpers.tokenization import LemmaTokenizer
 from pxtextmining.helpers.word_vectorization import EmbeddingsTransformer
 from pxtextmining.helpers.oversampling import random_over_sampler_data_generator
@@ -30,7 +27,7 @@ from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 def factory_pipeline(x, y, tknz="spacy",
                      ordinal=False,
                      metric="class_balance_accuracy_score",
-                     cv=5, n_iter=100, n_jobs=5, verbose=3,
+                     cv=5, n_iter=100, n_jobs=5, verbose=1,
                      learners=[
                          "SGDClassifier",
                          "RidgeClassifier",
@@ -57,10 +54,6 @@ def factory_pipeline(x, y, tknz="spacy",
 
       * Converts text into TF-IDFs or `GloVe <https://nlp.stanford.edu/projects/glove/>`_ word vectors with
         `spaCy <https://spacy.io/>`_;
-      * Creates a new feature that is the length of the text in each record;
-      * Performs sentiment analysis on the text feature and creates new features that are all scores/indicators
-        produced by `TextBlob <https://textblob.readthedocs.io/en/dev/>`_
-        and `vaderSentiment <https://pypi.org/project/vaderSentiment/>`_.
       * Applies `sklearn.preprocessing.KBinsDiscretizer
         <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.KBinsDiscretizer.html>`_ to the text
         length and sentiment indicator features, and `sklearn.preprocessing.StandardScaler
@@ -124,18 +117,14 @@ def factory_pipeline(x, y, tknz="spacy",
         <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_.
     """
 
-    features_text = 'predictor'
-
     # Define transformers for pipeline #
-    # Transformer that calculates text length and transforms it.
+    # Transformer for text_length column
     transformer_text_length = Pipeline(steps=[
-        ('length', (FunctionTransformer(text_length))),
         ('scaler', (ScalerSwitcher()))
     ])
 
-    # Transformer that calculates sentiment indicators (e.g. TextBlob, VADER) and transforms them.
+    # Transformer for sentiment scores (vader and textblob)
     transformer_sentiment = Pipeline(steps=[
-        ('sentiment', (FunctionTransformer(sentiment_scores))),
         ('scaler', (ScalerSwitcher()))
     ])
 
@@ -144,12 +133,11 @@ def factory_pipeline(x, y, tknz="spacy",
         ('text', (TextTransformerSwitcher()))
     ])
 
-    # Gather transformers.
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ('sentimenttr', transformer_sentiment, features_text),
-            ('lengthtr', transformer_text_length, features_text),
-            ('texttr', transformer_text, features_text)])
+    # Gather transformers
+    preprocessor = ColumnTransformer(transformers=[
+            ('sentimenttr', transformer_sentiment, ['text_blob_polarity', 'text_blob_subjectivity', 'vader_compound']),
+            ('lengthtr', transformer_text_length, ['text_length']),
+            ('texttr', transformer_text, 'predictor')])
 
     # Up-sampling step #
     oversampler = FunctionSampler(func=random_over_sampler_data_generator,
@@ -181,7 +169,8 @@ def factory_pipeline(x, y, tknz="spacy",
 
         all_transforms = ColumnTransformer([
             ('theme', ScalerSwitcher(), ['theme']), # Try out OneHotEncoder() or ThemeBinarizer().
-            ('process', pipe_all_but_theme, [features_text])
+            ('process', pipe_all_but_theme, ['predictor', 'text_length', 'text_blob_polarity',
+                                             'text_blob_subjectivity', 'vader_compound'])
         ])
 
         pipe = Pipeline([
@@ -212,7 +201,7 @@ def factory_pipeline(x, y, tknz="spacy",
         'preprocessor__lengthtr__scaler__scaler': None,
         'preprocessor__texttr__text__transformer': None,
         'featsel__selector': [SelectPercentile()],
-        'featsel__selector__percentile': [70, 85, 100]
+        'featsel__selector__percentile': [80, 90, 100]
     }
 
     if ordinal and theme is not None:
@@ -317,11 +306,10 @@ def factory_pipeline(x, y, tknz="spacy",
             if j.__class__.__name__ == TfidfVectorizer().__class__.__name__:
                 aux['featsel__selector__score_func'] = [chi2]
                 aux['preprocessor__texttr__text__transformer__tokenizer'] = [LemmaTokenizer(tknz)]
-                aux['preprocessor__texttr__text__transformer__preprocessor'] = [text_preprocessor]
                 aux['preprocessor__texttr__text__transformer__norm'] = ['l2']
-                aux['preprocessor__texttr__text__transformer__ngram_range'] = ((1, 3), (2, 3), (3, 3))
-                aux['preprocessor__texttr__text__transformer__max_df'] = [0.7, 0.95]
-                aux['preprocessor__texttr__text__transformer__min_df'] = [3, 1]
+                aux['preprocessor__texttr__text__transformer__ngram_range'] = ((1, 3), (1, 2), (2, 3), (3, 3))
+                aux['preprocessor__texttr__text__transformer__max_df'] = [0.85, 0.9, 0.95]
+                aux['preprocessor__texttr__text__transformer__min_df'] = [1,2,3]
                 aux['preprocessor__texttr__text__transformer__use_idf'] = [True, False]
 
                 # The transformation is a k-means discretizer with 3 bins:
@@ -410,12 +398,6 @@ def factory_pipeline(x, y, tknz="spacy",
     pipe_cv = RandomizedSearchCV(pipe, param_grid, n_jobs=n_jobs, return_train_score=False,
                                  cv=cv, verbose=verbose,
                                  scoring=scoring, refit=refit, n_iter=n_iter)
-
-    # These messages are for function helpers.text_preprocessor which is used by
-    # TfidfVectorizer() and EmbeddingsTransformer(). Having them inside text_preprocessor() prints
-    # them in each iteration, which is redundant. Having the here prints them once.
-    print('Stripping punctuation from text...')
-    print("Stripping excess spaces, whitespaces and line breaks from text...")
 
     # Fit pipeline #
     pipe_cv.fit(x, y)

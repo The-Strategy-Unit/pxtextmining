@@ -6,18 +6,18 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                  ordinal=True,
                                  tknz="spacy",
                                  metric="class_balance_accuracy",
-                                 cv=2, n_iter=1, n_jobs=5, verbose=3,
+                                 cv=5, n_iter=100, n_jobs=5, verbose=3,
                                  learners=[
                                      "SGDClassifier",
-                                     # "RidgeClassifier",
-                                     # "Perceptron",
-                                     # "PassiveAggressiveClassifier",
-                                     # "BernoulliNB",
-                                     # "ComplementNB",
-                                     # "MultinomialNB",
-                                     # "KNeighborsClassifier",
-                                     # "NearestCentroid",
-                                     # "RandomForestClassifier"
+                                     "RidgeClassifier",
+                                     "Perceptron",
+                                     "PassiveAggressiveClassifier",
+                                     "BernoulliNB",
+                                     "ComplementNB",
+                                     "MultinomialNB",
+                                    #  "KNeighborsClassifier",
+                                    #  "NearestCentroid",
+                                     "RandomForestClassifier"
                                      ],
                                  objects_to_save=[
                                      "pipeline",
@@ -30,7 +30,7 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                  ],
                                  save_objects_to_server=False,
                                  save_objects_to_disk=True,
-                                 save_pipeline_as="pipeline_criticality_issue_26",
-                                 results_folder_name="results_criticality_issue_26",
+                                 save_pipeline_as="test_pipeline_criticality",
+                                 results_folder_name="test_results_criticality",
                                  reduce_criticality=True,
                                  theme="label")
