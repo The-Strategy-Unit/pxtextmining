@@ -3,3 +3,4 @@
 notebooks/*/variables/*
 my.conf
 results_label_example/*
+results_criticality_test/*
