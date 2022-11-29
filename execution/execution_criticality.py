@@ -6,7 +6,7 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                  ordinal=True,
                                  tknz="spacy",
                                  metric="class_balance_accuracy",
-                                 cv=2, n_iter=1, n_jobs=5, verbose=1,
+                                 cv=5, n_iter=100, n_jobs=5, verbose=3,
                                  learners=[
                                      "SGDClassifier",
                                      "RidgeClassifier",
@@ -15,8 +15,8 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                      "BernoulliNB",
                                      "ComplementNB",
                                      "MultinomialNB",
-                                     "KNeighborsClassifier",
-                                     "NearestCentroid",
+                                    #  "KNeighborsClassifier",
+                                    #  "NearestCentroid",
                                      "RandomForestClassifier"
                                      ],
                                  objects_to_save=[
