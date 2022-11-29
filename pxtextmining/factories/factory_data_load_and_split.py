@@ -78,15 +78,16 @@ def clean_data(text_data, target = False):
         text_data_clean = text_data.dropna(subset=['predictor']).copy()
     for i in ['NULL', 'N/A', 'NA', 'NONE']:
         text_data_clean = text_data_clean[text_data_clean['predictor'].str.upper() != i].copy()
-    text_data['predictor'] = text_data_clean['predictor'].apply(remove_punc_and_nums)
-    text_data['predictor'] = text_data['predictor'].replace('', np.NaN)
+    text_data_clean['original_text'] = text_data_clean['predictor'].copy()
+    text_data_clean['predictor'] = text_data_clean['predictor'].apply(remove_punc_and_nums)
+    text_data_clean['predictor'] = text_data_clean['predictor'].replace('', np.NaN)
     if target == True:
-        text_data = text_data.dropna(subset=['target', 'predictor']).copy()
+        text_data_clean = text_data_clean.dropna(subset=['target', 'predictor']).copy()
     else:
-        text_data = text_data.dropna(subset=['predictor']).copy()
+        text_data_clean = text_data_clean.dropna(subset=['predictor']).copy()
     # have decided against dropping duplicates for now as this is a natural part of dataset
     # text_data = text_data.drop_duplicates().copy()
-    return text_data
+    return text_data_clean
 
 def reduce_crit(text_data, theme):
     text_data_crit = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')").copy()
@@ -107,8 +108,9 @@ def process_data(text_data, target = False):
     # Clean data - basic preprocessing, removing punctuation, decode emojis, dropnas
     text_data_cleaned = clean_data(text_data, target)
     # Get sentiment scores
-    sentiment = sentiment_scores.sentiment_scores(text_data[['predictor']])
-    text_data = text_data_cleaned.join(sentiment).copy()
+    sentiment = sentiment_scores.sentiment_scores(text_data_cleaned[['original_text']])
+    sentiment = sentiment.copy().drop(columns=['vader_neg', 'vader_neu', 'vader_pos'])
+    text_data = text_data_cleaned.join(sentiment).drop(columns=['original_text']).copy()
     print(f'Shape of dataset after cleaning and processing is {text_data.shape}')
     return text_data
 
