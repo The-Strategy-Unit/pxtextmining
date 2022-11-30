@@ -52,6 +52,7 @@ wasabi = "0.8.2"
 jupyter = "^1.0.0"
 tensorflow = "^2.11.0"
 transformers = "^4.24.0"
+mkdocs = "^1.4.2"
 
 
 [build-system]
