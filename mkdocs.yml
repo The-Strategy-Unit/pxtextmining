@@ -1,0 +1,6 @@
+site_name: pxtextmining
+site_url: https://cdu-data-science-team.github.io/pxtextmining/
+nav:
+    - Home: index.md
+    - About: about.md
+theme: readthedocs

@@ -4,3 +4,4 @@ notebooks/*/variables/*
 my.conf
 test_results_label/*
 test_results_criticality/*
+site/
