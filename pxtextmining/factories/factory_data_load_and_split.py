@@ -8,6 +8,25 @@ import numpy as np
 from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 
 def load_data(filename, target, predictor, theme = None):
+    """
+    This function loads the data from a csv, dataframe, or SQL database. It returns a pd.DataFrame with the data
+    required for training a machine learning model.
+
+    :param str, pandas.DataFrame filename: A ``pandas.DataFrame`` with the data (class and text columns), otherwise the
+        dataset name (CSV), including full path to the data folder (if not in the project's working directory), and the
+        data type suffix (".csv"). If ``filename`` is ``None``, the data are read from the database.
+        **NOTE:** The feature that reads data from the database is for internal use only. Experienced users who would
+        like to pull their data from their own databases can, of course, achieve that by slightly modifying the
+        relevant lines in the script. A "my.conf" file will need to be placed in the root, with five lines, as follows
+        (without the ";", "<" and ">"):
+        - [connector_python];
+        - host = <host_name>;
+        - database = <database_name>;
+        - user = <username>;
+        - password = <password>;
+    :param str target: Name of the response variable.
+    :param str predictor: Name of the predictor variable.
+    """
     print('Loading dataset...')
     # Read CSV if filename provided
     if filename is not None:
@@ -45,8 +64,12 @@ def load_data(filename, target, predictor, theme = None):
     return text_data
 
 def remove_punc_and_nums(text):
-    # removes punctuation and numbers
-    # converts emojis into text
+    """
+    This function removes excess punctuation and numbers from the text. Exclamation marks and apostrophes have been
+    left in, as have words in allcaps, as these may denote strong sentiment. Returns a string.
+
+    :param str, text: Text to be cleaned
+    """
     text = re.sub('\\n', ' ', text)
     text = re.sub('\\r', ' ', text)
     text = ''.join(char for char in text if not char.isdigit())
@@ -68,10 +91,16 @@ def remove_punc_and_nums(text):
 
 def clean_data(text_data, target = False):
     """
-    Function to clean data. target = True if processing labelled data for training a model.
+    Function to clean and preprocess data, for training a model or for making predictions using a trained model.
+    target = True if processing labelled data for training a model.
     If processing dataset with no target, i.e. to make predictions using unlabelled data, then target = False.
+
+    :param str, pd.DataFrame, text_data: A ``pandas.DataFrame`` with the data to be cleaned. Essential to have one
+    column labelled 'predictor', containing text for training or predictions.
+    :param str, target: A string. If present, then it denotes that the dataset is for training a model and the y 'target'
+    column is present in the dataframe. If set to False, then the function is able to clean text data in the 'predictor'
+    column for making new predictions using a trained model.
     """
-    # text_data['predictor'] = text_data.predictor.fillna('__notext__')
     if target == True:
         text_data_clean = text_data.dropna(subset=['target', 'predictor']).copy()
     else:
@@ -90,6 +119,15 @@ def clean_data(text_data, target = False):
     return text_data_clean
 
 def reduce_crit(text_data, theme):
+    """
+    'Criticality' is an indication of how strongly negative or positive a comment is. A comment with a criticality
+    value of '-5' is very strongly critical of the organisation. A comment with a criticality value of '3' is mildly
+    positive about the organisation. 'Criticality' labels are specific to data collected by Nottinghamshire
+    Healthcare NHS Foundation Trust.
+    This function manipulates the criticality levels to account for an imbalanced dataset. There are not enough samples
+    belonging to classes '-5' and '5' so these are set to '-4' and '4'. This function also sets the 'criticality'
+    value for all comments tagged as 'Couldn't be improved' to '3'.
+    """
     text_data_crit = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')").copy()
     text_data_crit['target'] = text_data_crit['target'].copy().replace('-5', '-4')
     text_data_crit['target'] = text_data_crit['target'].copy().replace('5', '4')
@@ -101,6 +139,8 @@ def process_data(text_data, target = False):
     """
     Function to clean data. target = True if processing labelled data for training a model.
     If processing dataset with no target, i.e. to make predictions using unlabelled data, then target = False.
+    :param str, pd.DataFrame, text_data: A ``pandas.DataFrame`` with the data to be cleaned. Essential to have one
+    column labelled 'predictor', containing text for training or predictions.
     """
     # Add feature text_length
     text_data['text_length'] = text_data['predictor'].apply(lambda x:
@@ -116,8 +156,8 @@ def process_data(text_data, target = False):
 
 def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None):
     """
-    Function loads the dataset, renames the response and predictor as "target" and "predictor" respectively,
-    and splits the dataset into training and test sets.
+    This function pulls together all the functions above. It loads the dataset, renames the response and predictor as
+    "target" and "predictor" respectively, conducts preprocessing, and splits the dataset into training and test sets.
 
     **NOTE:** As described later, arguments `reduce_criticality` and `theme` are for internal use by Nottinghamshire
     Healthcare NHS Foundation Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) and
