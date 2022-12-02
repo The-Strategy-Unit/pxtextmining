@@ -1,5 +1,11 @@
 from pxtextmining.pipelines.text_classification_pipeline import text_classification_pipeline
 
+"""
+This is an example of how to train a model that predicts 'label' categories using the labelled dataset
+'datasets/text_data.csv'.
+The trained model is saved in the folder results_label.
+"""
+
 pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_train, index_test = \
     text_classification_pipeline(filename='datasets/text_data.csv', target="label", predictor="feedback",
                                  test_size=0.33,
@@ -30,7 +36,7 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                  ],
                                  save_objects_to_server=False,
                                  save_objects_to_disk=True,
-                                 save_pipeline_as="test_pipeline_label",
-                                 results_folder_name="test_results_label",
+                                 save_pipeline_as="pipeline_label",
+                                 results_folder_name="results_label",
                                  reduce_criticality=False,
                                  theme=None)
