@@ -143,7 +143,8 @@ def factory_pipeline(x, y, tknz="spacy",
     oversampler = FunctionSampler(func=random_over_sampler_data_generator,
                                   kw_args={'threshold': 200,
                                            'up_balancing_counts': 300,
-                                           'random_state': 0},
+                                        #    'random_state': 0
+                                           },
                                   validate=False)
 
     # Make pipeline #
