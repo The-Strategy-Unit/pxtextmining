@@ -384,6 +384,20 @@ python-versions = "*"
 six = "*"
 
 [[package]]
+name = "griffe"
+version = "0.24.1"
+description = "Signatures for entire Python programs. Extract the structure, the frame, the skeleton of your project, to generate API documentation or find breaking changes in your API."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+colorama = ">=0.4"
+
+[package.extras]
+async = ["aiofiles (>=0.7,<1.0)"]
+
+[[package]]
 name = "grpcio"
 version = "1.50.0"
 description = "HTTP/2-based RPC framework"
@@ -896,6 +910,18 @@ pymdown-extensions = ">=6.3"
 crystal = ["mkdocstrings-crystal (>=0.3.4)"]
 python = ["mkdocstrings-python (>=0.5.2)"]
 python-legacy = ["mkdocstrings-python-legacy (>=0.2.1)"]
+
+[[package]]
+name = "mkdocstrings-python"
+version = "0.8.2"
+description = "A Python handler for mkdocstrings."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+griffe = ">=0.24"
+mkdocstrings = ">=0.19"
 
 [[package]]
 name = "murmurhash"
@@ -2144,7 +2170,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "0a82bf31e40338497c8ab8520b6f5f9a645c402af074fd95d40c82b02e692cce"
+content-hash = "37d91c27aa10cfdebcea522f7e99c54806870844f649eeebde4027a343fcb554"
 
 [metadata.files]
 absl-py = [
@@ -2406,6 +2432,10 @@ google-pasta = [
     {file = "google-pasta-0.2.0.tar.gz", hash = "sha256:c9f2c8dfc8f96d0d5808299920721be30c9eec37f2389f28904f454565c8a16e"},
     {file = "google_pasta-0.2.0-py2-none-any.whl", hash = "sha256:4612951da876b1a10fe3960d7226f0c7682cf901e16ac06e473b267a5afa8954"},
     {file = "google_pasta-0.2.0-py3-none-any.whl", hash = "sha256:b32482794a366b5366a32c92a9a9201b107821889935a02b3e51f6b432ea84ed"},
+]
+griffe = [
+    {file = "griffe-0.24.1-py3-none-any.whl", hash = "sha256:cfd17f61f3815be5a83f27303cd3db6e9fd9328d4070e4824cd5573763a28961"},
+    {file = "griffe-0.24.1.tar.gz", hash = "sha256:acc7e6aac2495ffbfd70b2cdd801fff1299ec3e5efaaad23ccd316b711f1d11d"},
 ]
 grpcio = [
     {file = "grpcio-1.50.0-cp310-cp310-linux_armv7l.whl", hash = "sha256:906f4d1beb83b3496be91684c47a5d870ee628715227d5d7c54b04a8de802974"},
@@ -2700,6 +2730,10 @@ mkdocs-autorefs = [
 mkdocstrings = [
     {file = "mkdocstrings-0.19.0-py3-none-any.whl", hash = "sha256:3217d510d385c961f69385a670b2677e68e07b5fea4a504d86bf54c006c87c7d"},
     {file = "mkdocstrings-0.19.0.tar.gz", hash = "sha256:efa34a67bad11229d532d89f6836a8a215937548623b64f3698a1df62e01cc3e"},
+]
+mkdocstrings-python = [
+    {file = "mkdocstrings-python-0.8.2.tar.gz", hash = "sha256:b22528b7a7a0589d007eced019d97ad14de4eba4b2b9ba6a013bb66edc74ab43"},
+    {file = "mkdocstrings_python-0.8.2-py3-none-any.whl", hash = "sha256:213d9592e66e084a9bd2fa4956d6294a3487c6dc9cc45164058d6317249b7b6e"},
 ]
 murmurhash = [
     {file = "murmurhash-1.0.5-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:ef8819d15973e0d6f69688bafc097a1fae081675c1de39807028869a1320b1a9"},
