@@ -1,3 +1,3 @@
 # About page
 
-Lorem ipsum
+Further background about pxtextmining, in future link to shared documentation
