@@ -9,8 +9,7 @@ The second part utilises the trained model to make predictions on unlabelled fee
 
 ```
 dataset = pd.read_csv('datasets/text_data.csv')
-predictions = factory_predict_unlabelled_text(dataset=dataset, predictor="feedback",
-                                    pipe_path_or_object="results_label/pipeline_label.sav")
+predictions = factory_predict_unlabelled_text(dataset=dataset, predictor="feedback", pipe_path_or_object="results_label/pipeline_label.sav")
 ```
 
 __We are working openly by open-sourcing the analysis code and data where possible to promote replication, reproducibility and further developments (pull requests are more than welcome!). We are also automating common steps in our workflow by shipping the pipeline as a [Python](https://www.python.org/) package broken down into sub-modules and helper functions to increase usability and documentation.__
