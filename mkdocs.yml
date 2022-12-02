@@ -1,6 +1,14 @@
 site_name: pxtextmining
 site_url: https://cdu-data-science-team.github.io/pxtextmining/
+
+plugins:
+  - mkdocstrings
 nav:
     - Home: index.md
     - About: about.md
+    - 'User Guide':
+        - 'Installation': 'install.md'
+        - 'Training a new model': 'training_new_model.md'
+        - 'Making predictions with a trained model': 'using_trained_model.md'
+    - reference.md
 theme: readthedocs
