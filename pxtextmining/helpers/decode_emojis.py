@@ -23,6 +23,6 @@ def decode_emojis(text_string):
     return text_string
 
 
-if __name__ == '__main__':
-    test_text = 'testing it out🐻🌻emoji decoder'
-    print(decode_emojis(test_text))
+# if __name__ == '__main__':
+#     test_text = 'testing it out🐻🌻emoji decoder'
+#     print(decode_emojis(test_text))

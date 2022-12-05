@@ -7,10 +7,12 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          rendering:
+          options:
+            docstring_style: sphinx
             show_root_heading: true
             show_root_toc_entry: false
             show_root_full_path: false
             show_source: false
             show_if_no_docstring: true
             heading_level: 4
+            members_order: source
