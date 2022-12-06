@@ -12,24 +12,23 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     """
     Evaluate the performance of a fitted pipeline.
 
-    :param pipe: Fitted `sklearn.pipeline.Pipeline
-        <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/
-        `imblearn.pipeline.Pipeline
-        <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_
-    :param x_train: Training data (predictor).
-    :param y_train: Training data (response).
-    :param x_test: Test data (predictor).
-    :param y_test: Test data (response).
-    :param str metric: Scorer that was used in pipeline tuning ("accuracy_score", "balanced_accuracy_score",
+    :param sklearn.pipeline.Pipeline pipe: Fitted [sklearn.pipeline.Pipeline]
+    (https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html)
+    :param pd.DataFrame x_train: Training data (predictor).
+    :param pd.Series y_train: Training data (target).
+    :param pd.DataFrame x_test: Test data (predictor).
+    :param pd.Series y_test: Test data (target).
+    :param str metric: Performance metrics ("accuracy_score", "balanced_accuracy_score",
         "matthews_corrcoef", "class_balance_accuracy_score").
-    :return: A ``tuple`` of length 5:
-
-            - The fitted ``Scikit-learn``/``imblearn`` pipeline;
-            - A ``pandas.DataFrame`` with all (hyper)parameter values and models tried during fitting;
-            - A ``pandas.DataFrame`` with the predictions on the test set;
-            - A ``pandas.DataFrame`` with accuracies per class;
-            - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
-              the training set, for the best (hyper)parameter values for each learner;
+    :return: A tuple containing the following objects, in order:
+            The fitted Scikit-learn/imblearn pipeline;
+            A pandas.DataFrame with all (hyper)parameter values and models tried during fitting;
+            A pandas.DataFrame with the predictions on the test set;
+            A pandas.DataFrame with accuracies per class;
+            A bar plot comparing the mean scores (of the user-supplied metric parameter)
+                from the cross-validation on the training set, for the best
+                (hyper)parameter values for each learner;
+    :rtype: tuple
     """
 
     refit = metric.replace("_", " ").replace(" score", "").title()
