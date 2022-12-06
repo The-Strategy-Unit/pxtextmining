@@ -5,12 +5,9 @@ from sklearn.linear_model import SGDClassifier
 class ClfSwitcher(BaseEstimator):
     """
     Class to add different learners as pipeline parameters in a
-    `sklearn.pipeline.Pipeline <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/
-    `imblearn.pipeline.Pipeline
-    <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_
-    pipeline.
-    Code taken from `this post
-    <https://stackoverflow.com/questions/48507651/multiple-classification-models-in-a-scikit-pipeline-python>`_.
+    [sklearn.pipeline.Pipeline](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) or
+    [imblearn.pipeline.Pipeline](https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline).
+    Code taken from [this post](https://stackoverflow.com/questions/48507651/multiple-classification-models-in-a-scikit-pipeline-python)
     """
 
     def __init__(self, estimator=SGDClassifier(max_iter=10000)):
