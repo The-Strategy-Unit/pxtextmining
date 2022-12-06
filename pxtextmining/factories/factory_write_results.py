@@ -38,14 +38,11 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
       the training set, for the best (hyper)parameter values for each learner (PNG);
 
-    :param pipe: Fitted `sklearn.pipeline.Pipeline
-        <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/
-        `imblearn.pipeline.Pipeline
-        <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_
+    :param estimator pipe: Fitted model or pipeline
     :param pandas.core.frame.DataFrame tuning_results: All (hyper)parameter values and models tried during fitting.
     :param pandas.core.frame.DataFrame pred: The predictions on the test set.
     :param pandas.core.frame.DataFrame accuracy_per_class: Accuracies per class.
-    :param p_compare_models_bar: A bar plot comparing the mean scores (of the user-supplied metric parameter) from the
+    :param png p_compare_models_bar: A bar plot comparing the mean scores (of the user-supplied metric parameter) from the
         cross-validation on the training set, for the best hyperparameter values for each learner.
     :param str target: Name of the response variable.
     :param pandas.core.frame.DataFrame x_train: The training dataset.
@@ -56,24 +53,19 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
         "predictions", "accuracy per class", "index - training data", "index - test data", "bar plot".
     :param bool save_objects_to_server: Whether to save the results to the server. **NOTE:** The feature that writes
         results to the database is for internal use only. Experienced users who would like to write the data to their
-        own databases can, of course, achieve that by slightly modifying the relevant lines in the script. A "my.conf"
-        file will need to be placed in the root, with five lines, as follows (without the ";", "<" and ">"):
-
-        - [connector_python];
-        - host = <host_name>;
-        - database = <database_name>;
-        - user = <username>;
-        - password = <password>;
+        own databases can, of course, achieve that by slightly modifying the relevant lines in the script.
     :param bool save_objects_to_disk: Whether to save the results to disk. See ``results_folder_name``.
     :param str save_pipeline_as: Name of saved pipeline. If "default", then it will be saved as
         ``'pipeline_' + target + '.sav'``.
     :param str results_folder_name: Name of the folder that will contain all saved results specified in
         ``objects_to_save``. If the folder already exists, it will be overwritten.
-    :return: A ``tuple`` of length 3 with the following ``pandas.DataFrame`` objects:
-
-            - The predictions on the test set;
-            - The row indices of the training data;
-            - The row indices of the test data;
+    :return: A ``tuple`` of length 1 to 7, depending on the value of argument ``objects_to_save``:
+        The fitted pipeline (SAV); All (hyper)parameters tried during fitting and the associated pipeline performance
+        metrics (CSV); The predictions on the test set (CSV); Accuracies per class (CSV);
+        The row indices of the training data (CSV); The row indices of the test data (CSV);
+        A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
+        the training set, for the best (hyper)parameter values for each learner (PNG)
+    :rtype: tuple
     """
 
     index_training_data = pd.DataFrame(index_training_data, columns=["row_index"])
