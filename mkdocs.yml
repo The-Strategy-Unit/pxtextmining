@@ -2,6 +2,9 @@ site_name: pxtextmining
 site_url: https://cdu-data-science-team.github.io/pxtextmining/
 theme: readthedocs
 
+extra_css:
+  - main.css
+
 plugins:
   - search
   - mkdocstrings:
