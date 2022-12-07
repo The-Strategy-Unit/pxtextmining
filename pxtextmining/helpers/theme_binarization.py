@@ -4,16 +4,14 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 class ThemeBinarizer(BaseEstimator, TransformerMixin):
     """
-    Class for binarizing categories.
-
-    Sets a selected category to 1 and the rest to 0.
+    Class for binarizing categories. Sets a selected category to 1 and the rest to 0.
 
     **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
     Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
     safely ignored.
 
     :param str class_col: The name of the column with the classes to binarize.
-    :param target_class: The name (if a string) or value (if numeric) of the class that will be set to `set_class_to`.
+    :param str_or_int target_class: The name (if a string) or value (if numeric) of the class that will be set to `set_class_to`.
     :param int set_class_to: The value to set the `target_class` to. Defaults to 1.
     :param int set_rest_to: The value to set all classes but `target_class` to. Defaults to 0.
     """
