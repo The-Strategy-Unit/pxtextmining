@@ -19,4 +19,9 @@ for folder in modules:
                 py_name = os.path.basename(py)[:-3]
                 print(py_name)
                 with open(f'docs/reference/{module_name}/{py_name}.md', 'w') as f:
-                    f.write(f'::: pxtextmining.{module_name}.{py_name}')
+                    if module_name == 'helpers':
+                        f.write(f"""::: pxtextmining.{module_name}.{py_name}
+    options:
+        show_source: true""")
+                    else:
+                        f.write(f'::: pxtextmining.{module_name}.{py_name}')
