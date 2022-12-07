@@ -27,7 +27,8 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  theme=None):
 
     """
-    Fit and evaluate the pipeline and write the results. Writes between 1 to 7 files, depending on the value of argument
+    Function that gathers together all steps in Factories module to train a new model
+    pipeline and write the results. Writes between 1 to 7 files, depending on the value of argument
     ``objects_to_save``:
 
     - The fitted pipeline (SAV);
@@ -91,8 +92,8 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
         predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
         be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
         other than "3" that are attributed to human error.
-    :return: A ``tuple`` of length 7:
-
+    :return: A ``tuple`` of variable length depending on 'objects_to_save' parameter. It can contain
+        any of the following objects, in order:
         - The fitted ``Scikit-learn``/``imblearn`` pipeline;
         - A ``pandas.DataFrame`` with all (hyper)parameter values and models tried during fitting;
         - A ``pandas.DataFrame`` with the predictions on the test set;
@@ -100,7 +101,8 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
         - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
           the training set, for the best (hyper)parameter values for each learner.
         - The row indices of the training data;
-        - The row indices of the test data;
+        - The row indices of the test data
+    :rtype: tuple
     """
 
     x_train, x_test, y_train, y_test, index_training_data, index_test_data = \

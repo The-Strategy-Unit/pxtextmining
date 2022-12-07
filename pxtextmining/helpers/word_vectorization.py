@@ -7,9 +7,9 @@ nlp = spacy.load("en_core_web_lg") # Don't put this inside the function- loading
 
 class EmbeddingsTransformer(TransformerMixin, BaseEstimator):
     """
-    Class for converting text into `GloVe <https://nlp.stanford.edu/projects/glove/>`_ word vectors with
-    `spaCy <https://spacy.io/>`_. Helpful resource `here
-    <https://lvngd.com/blog/spacy-word-vectors-as-features-in-scikit-learn/>`_.
+    Class for converting text into [GloVe](https://nlp.stanford.edu/projects/glove/)
+    word vectors with [spaCy](https://spacy.io/). Helpful resource
+    [here](https://lvngd.com/blog/spacy-word-vectors-as-features-in-scikit-learn/).
     """
 
     def __init__(self, model=None):

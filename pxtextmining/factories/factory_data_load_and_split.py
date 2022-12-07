@@ -8,6 +8,28 @@ import numpy as np
 from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 
 def load_data(filename, target, predictor, theme = None):
+    """
+    This function loads the data from a csv, dataframe, or SQL database. It returns a pd.DataFrame with the data
+    required for training a machine learning model.
+
+    :param filename: A ``pandas.DataFrame`` with the data (class and text columns), otherwise the
+            dataset name (CSV), including full path to the data folder (if not in the project's working directory), and the
+            data type suffix (".csv"). If ``filename`` is ``None``, the data is read from the SQL database.
+            **NOTE:** The feature that reads data from the database is for internal use only. Experienced users who would
+            like to pull their data from their own databases can, of course, achieve that by slightly modifying the
+            relevant lines in the script and setting up the connection to the SQL server.
+    :type filename: pd.DataFrame
+    :param target: Name of the column containing the target to be predicted.
+    :type target: str
+    :param str predictor: Name of the column containing the text to be used to train the model or make predictions.
+    :param theme: Name of the column containing the 'theme' data which can be used to train a model predicting
+            'criticality'
+    :type theme: str, optional
+
+    :return: a pandas.DataFrame with the columns named in a way that works for the rest of the pipeline
+    :rtype: pandas.DataFrame
+
+    """
     print('Loading dataset...')
     # Read CSV if filename provided
     if filename is not None:
@@ -45,8 +67,15 @@ def load_data(filename, target, predictor, theme = None):
     return text_data
 
 def remove_punc_and_nums(text):
-    # removes punctuation and numbers
-    # converts emojis into text
+    """
+    This function removes excess punctuation and numbers from the text. Exclamation marks and apostrophes have been
+    left in, as have words in allcaps, as these may denote strong sentiment. Returns a string.
+
+    :param str text: Text to be cleaned
+
+    :return: the cleaned text as a str
+    :rtype: str
+    """
     text = re.sub('\\n', ' ', text)
     text = re.sub('\\r', ' ', text)
     text = ''.join(char for char in text if not char.isdigit())
@@ -68,10 +97,21 @@ def remove_punc_and_nums(text):
 
 def clean_data(text_data, target = False):
     """
-    Function to clean data. target = True if processing labelled data for training a model.
-    If processing dataset with no target, i.e. to make predictions using unlabelled data, then target = False.
+    Function to clean and preprocess data, for training a model or for making predictions using a trained model.
+    target = True if processing labelled data for training a model. The DataFrame should contain a column named
+    'predictor' containing the text to be processed. If processing dataset with no target, i.e. to make predictions
+    using unlabelled data, then target = False. This function also drops NaNs.
+
+    :param pd.DataFrame text_data: A ``pandas.DataFrame`` with the data to be cleaned. Essential to have one
+    column labelled 'predictor', containing text for training or predictions.
+    :param target: A string. If present, then it denotes that the dataset is for training a model and the y 'target'
+    column is present in the dataframe. If set to False, then the function is able to clean text data in the 'predictor'
+    column for making new predictions using a trained model.
+    :type target: str, optional
+
+    :return: a pandas.DataFrame with the 'predictor' column cleaned
+    :rtype: pandas.DataFrame
     """
-    # text_data['predictor'] = text_data.predictor.fillna('__notext__')
     if target == True:
         text_data_clean = text_data.dropna(subset=['target', 'predictor']).copy()
     else:
@@ -90,6 +130,25 @@ def clean_data(text_data, target = False):
     return text_data_clean
 
 def reduce_crit(text_data, theme):
+    """
+    'Criticality' is an indication of how strongly negative or positive a comment is. A comment with a criticality
+    value of '-5' is very strongly critical of the organisation. A comment with a criticality value of '3' is mildly
+    positive about the organisation. 'Criticality' labels are specific to data collected by Nottinghamshire
+    Healthcare NHS Foundation Trust.
+    This function manipulates the criticality levels to account for an imbalanced dataset. There are not enough samples
+    belonging to classes '-5' and '5' so these are set to '-4' and '4'. This function also sets the 'criticality'
+    value for all comments tagged as 'Couldn't be improved' to '3'.
+
+    :param pd.DataFrame text_data: A ``pandas.DataFrame`` with the data to be cleaned. Essential to have one
+        column labelled 'predictor', containing text for training or predictions.
+    :param theme: Name of the column containing the 'theme' data which can be used to train a model predicting
+        'criticality'
+    :type theme: str, optional
+
+    :return: a pandas.DataFrame with the ordinal values in the 'target' column changed from 5 to 4, or -5 to -4.
+    :rtype: pandas.DataFrame
+
+    """
     text_data_crit = text_data.query("target in ('-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5')").copy()
     text_data_crit['target'] = text_data_crit['target'].copy().replace('-5', '-4')
     text_data_crit['target'] = text_data_crit['target'].copy().replace('5', '4')
@@ -99,8 +158,19 @@ def reduce_crit(text_data, theme):
 
 def process_data(text_data, target = False):
     """
-    Function to clean data. target = True if processing labelled data for training a model.
-    If processing dataset with no target, i.e. to make predictions using unlabelled data, then target = False.
+    Function to clean data and add feature engineering including sentiment scores and text length.
+    target = True if processing labelled data for training a model. If processing dataset with no target,
+    i.e. to make predictions using unlabelled data, then target = False.
+
+    :param pd.DataFrame, text_data: A ``pandas.DataFrame`` with the data to be cleaned. Essential to have one
+    column labelled 'predictor', containing text for training or predictions.
+    :param target: Name of the column containing the target to be predicted.
+    :type target: str, optional
+
+    :return: a pandas.DataFrame with the ordinal values in the 'target' column changed from 5 to 4, or -5 to -4.
+    :rtype: pandas.DataFrame
+
+
     """
     # Add feature text_length
     text_data['text_length'] = text_data['predictor'].apply(lambda x:
@@ -116,44 +186,49 @@ def process_data(text_data, target = False):
 
 def factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None):
     """
-    Function loads the dataset, renames the response and predictor as "target" and "predictor" respectively,
-    and splits the dataset into training and test sets.
+    This function pulls together all the functions above. It loads the dataset, renames the response and predictor as
+    "target" and "predictor" respectively, conducts preprocessing, and splits the dataset into training and test sets.
 
     **NOTE:** As described later, arguments `reduce_criticality` and `theme` are for internal use by Nottinghamshire
     Healthcare NHS Foundation Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) and
     criticality labels. They can otherwise be safely ignored.
 
-    :param str, pandas.DataFrame filename: A ``pandas.DataFrame`` with the data (class and text columns), otherwise the
-        dataset name (CSV), including full path to the data folder (if not in the project's working directory), and the
-        data type suffix (".csv"). If ``filename`` is ``None``, the data are read from the database.
-        **NOTE:** The feature that reads data from the database is for internal use only. Experienced users who would
-        like to pull their data from their own databases can, of course, achieve that by slightly modifying the
-        relevant lines in the script. A "my.conf" file will need to be placed in the root, with five lines, as follows
-        (without the ";", "<" and ">"):
-
-        - [connector_python];
-        - host = <host_name>;
-        - database = <database_name>;
-        - user = <username>;
-        - password = <password>;
-    :param str target: Name of the response variable.
-    :param str predictor: Name of the predictor variable.
-    :param float test_size: Proportion of data that will form the test dataset.
-    :param bool reduce_criticality: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+    :param filename: A ``pandas.DataFrame`` with the data (class and text columns), otherwise the
+            dataset name (CSV), including full path to the data folder (if not in the project's working directory), and the
+            data type suffix (".csv"). If ``filename`` is ``None``, the data is read from the SQL database.
+            **NOTE:** The feature that reads data from the database is for internal use only. Experienced users who would
+            like to pull their data from their own databases can, of course, achieve that by slightly modifying the
+            relevant lines in the script and setting up the connection to the SQL server.
+    :type filename: pd.DataFrame
+    :param target: Name of the column containing the target to be predicted.
+    :type target: str
+    :param str predictor: Name of the column containing the text to be used to train the model or make predictions.
+    :param test_size: Proportion of data that will form the test dataset.
+    :type test_size: float, optional
+    :param reduce_criticality: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
         that hold data on criticality. If `True`, then all records with a criticality of "-5" (respectively, "5") are
         assigned a criticality of "-4" (respectively, "4"). This is to avoid situations where the pipeline breaks due to
-        a lack of sufficient data for "-5" and/or "5". Defaults to `False`. This param is only relevant
-        when target = "criticality"
-    :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
-        that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
-        Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
+        a lack of sufficient data for "-5" and/or "5". This param is only relevant when target = "criticality"
+    :type reduce_criticality: bool, optional
+    :param theme: Name of the column containing the 'theme' data which can be used to train a model predicting
+            'criticality'. If supplied, the theme variable will be used as a predictor (along with the text predictor)
         in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
         help the model improve predictions on criticality when the theme labels are readily available. Second, to force
         the criticality for "Couldn't be improved" to always be "3" in the training and test data, as well as in the
         predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
         be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
         other than "3" that are attributed to human error.
-    :return: A tuple of length 4: predictor-train, predictor-test, target-train and target-test datasets.
+    :type theme: str, optional
+
+    :return: A tuple containing the following objects in order:
+        x_train, a pd.DataFrame containing the training data;
+        x_test, a pd.DataFrame containing the test data;
+        y_train, a pd.Series containing the targets for the training data;
+        y_test, a pd.Series containing the targets for the test data;
+        index_training_data, a pd.Series of the indices of the data used in the train set;
+        index_test_data, a pd.Series of the indices of the data used in the test set
+    :rtype: tuple
+
     """
 
     # Get data from CSV if filename provided. Else, load fom SQL server

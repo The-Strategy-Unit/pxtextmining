@@ -7,22 +7,18 @@ from factory_data_load_and_split import process_data, load_data
 def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
                                     columns_to_return='all_cols', theme=None):
     """
-    Predict unlabelled text data using a fitted `sklearn.pipeline.Pipeline
-    <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/`imblearn.pipeline.Pipeline
-    <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_.
+    Predict unlabelled text data using a fitted model or pipeline.
 
     **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
     Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
     safely ignored.
 
-    :param dataset: A ``pandas.DataFrame`` (or an object that can be converted into such) with the text data to predict
+    :param pd.DataFrame dataset: A ``pandas.DataFrame`` (or an objsect that can be converted into such) with the text data to predict
         classes for.
     :param str predictor: The column name in the dataset containing the text to be processed and used for generating
         predictions.
-    :param str, sklearn.model_selection._search.RandomizedSearchCV pipe_path_or_object: A string in the form
-        path_to_fitted_pipeline/pipeline.sav," where "pipeline" is the name of the SAV file with the fitted
-        ``Scikit-learn``/``imblearn.pipeline.Pipeline`` or a ``sklearn.model_selection._search.RandomizedSearchCV``.
-    :param str / list columns_to_return:  Determines which columns to return once predictions are made. Str options are
+    :param estimator pipe_path_or_object: A fitted model or pipeline.
+    :param str_or_list columns_to_return:  Determines which columns to return once predictions are made. Str options are
         'all_cols' which returns all columns (default) or 'preds_only' which returns only the predictions.
         If a specific selection of columns is required please provide the column names as strings inside a list, e.g.
         ['feedback', 'organization']. The 'predictions' column will always be included in the returned dataframe.
@@ -37,6 +33,7 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
         other than "3" that are attributed to human error.
     :return: A ``pandas.DataFrame`` with the predictions in a column named 'predictions' and any other columns supplied
         in ``columns_to_return``.
+    :rtype: pd.DataFrame
     """
 
     data_unlabelled = pd.DataFrame(dataset)
@@ -77,9 +74,9 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
     return data_with_predictions[columns_to_return]
 
 
-if __name__ == '__main__':
-    dataset = pd.read_csv('datasets/text_data.csv')
-    predictions = factory_predict_unlabelled_text(dataset=dataset, predictor="feedback",
-                                    pipe_path_or_object="results_label/pipeline_label.sav",
-                                    columns_to_return=['feedback', 'organization', 'question'])
-    print(predictions.head())
+# if __name__ == '__main__':
+#     dataset = pd.read_csv('datasets/text_data.csv')
+#     predictions = factory_predict_unlabelled_text(dataset=dataset, predictor="feedback",
+#                                     pipe_path_or_object="results_label/pipeline_label.sav",
+#                                     columns_to_return=['feedback', 'organization', 'question'])
+#     print(predictions.head())

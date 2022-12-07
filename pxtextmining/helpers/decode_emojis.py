@@ -7,7 +7,8 @@ def decode_emojis(text_string):
     Converts emojis into " __text__ " (where "text" is the emoji name)
 
     :param str text_string: Text string
-    :return: text_string (str): Text string with decoded emojis
+    :return: text_string : Text string with decoded emojis
+    :rtype: str
     """
     text_string = str(text_string)
     text_string = emojis.decode(text_string)
@@ -23,6 +24,6 @@ def decode_emojis(text_string):
     return text_string
 
 
-if __name__ == '__main__':
-    test_text = 'testing it out🐻🌻emoji decoder'
-    print(decode_emojis(test_text))
+# if __name__ == '__main__':
+#     test_text = 'testing it out🐻🌻emoji decoder'
+#     print(decode_emojis(test_text))

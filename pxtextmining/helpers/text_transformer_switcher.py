@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 class TextTransformerSwitcher(BaseEstimator, TransformerMixin):
     """
-    Class for choosing between Bag-of-Words and embeddings transformers.
+    Class for choosing between Bag-of-Words and embeddings transformers in Randomized Search.
     """
 
     def __init__(self, transformer=TfidfVectorizer()):

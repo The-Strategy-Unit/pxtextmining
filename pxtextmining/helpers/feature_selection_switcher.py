@@ -4,10 +4,9 @@ from sklearn.feature_selection import SelectPercentile
 
 class FeatureSelectionSwitcher(BaseEstimator, TransformerMixin):
     """
-    Class for choosing between ``Scikit-learn`` `feature selection tests
-    <https://scikit-learn.org/stable/modules/feature_selection.html#>`_ for use with
-    `sklearn.feature_selection.SelectPercentile
-    <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html>`_.
+    Class for choosing between Scikit-learn
+    [feature selection tests](https://scikit-learn.org/stable/modules/feature_selection.html#) for use with
+    [sklearn.feature_selection.SelectPercentile](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html).
     """
 
     def __init__(self, selector=SelectPercentile()):

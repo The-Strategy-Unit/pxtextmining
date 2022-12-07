@@ -43,62 +43,47 @@ def factory_pipeline(x, y, tknz="spacy",
                      theme=None):
 
     """
-    Prepare and fit a text classification pipeline.
-
-    The pipeline's parameter grid switches between two approaches to text classification: Bag-of-Words and Embeddings.
-    For the former, both TF-IDF and raw counts are tried out.
-
-    The pipeline does the following:
+    Prepare and fit a text classification pipeline. The pipeline is then fitted using Randomized Search to identify the
+    best performing model and hyperparameters.
 
     - Feature engineering:
-
-      * Converts text into TF-IDFs or `GloVe <https://nlp.stanford.edu/projects/glove/>`_ word vectors with
-        `spaCy <https://spacy.io/>`_;
-      * Applies `sklearn.preprocessing.KBinsDiscretizer
-        <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.KBinsDiscretizer.html>`_ to the text
-        length and sentiment indicator features, and `sklearn.preprocessing.StandardScaler
-        <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html>`_ to the
-        embeddings (word vectors);
-    - Up-sampling of rare classes: uses `imblearn.over_sampling.RandomOverSampler
-      <https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.RandomOverSampler.html#imblearn.over_sampling.RandomOverSampler>`_
-      to up-sample rare classes. Currently the threshold to consider a class as rare and the up-balancing values are
-      fixed and cannot be user-defined.
-    - Tokenization and lemmatization of the text feature: uses ``spaCy`` (default) or `NLTK <https://www.nltk.org/>`_.
-      It also strips punctuation, excess spaces, and metacharacters "r" and "n" from the text. It converts emojis into
-      "__text__" (where "text" is the emoji name), and NA/NULL values into "__notext__" (the pipeline does get rid of
-      records with no text, but this conversion at least deals with any escaping ones).
-    - Feature selection: Uses `sklearn.feature_selection.SelectPercentile
-      <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html>`_
-      with `sklearn.feature_selection.chi2
-      <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2>`_
-      for TF-IDFs or `sklearn.feature_selection.f_classif
-      <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn-feature-selection-f-classif>`_
+        * Converts text into TF-IDFs or [GloVe](https://nlp.stanford.edu/projects/glove/) word vectors with
+            [spaCy](https://spacy.io/);
+        * Applies [sklearn.preprocessing.KBinsDiscretizer](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.KBinsDiscretizer.html)
+            to the text length and sentiment indicator features, and
+            [sklearn.preprocessing.StandardScaler](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html)
+            to the embeddings (word vectors);
+    - Up-sampling of rare classes: uses [imblearn.over_sampling.RandomOverSampler](https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.RandomOverSampler.html)
+      to up-sample rare classes
+    - Tokenization and lemmatization of the text feature: uses spaCy (default) or [NLTK](https://www.nltk.org/)
+    - Feature selection: Uses [sklearn.feature_selection.SelectPercentile](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html)
+      with [sklearn.feature_selection.chi2](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2)
+      for TF-IDFs or [sklearn.feature_selection.f_classif](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn-feature-selection-f-classif)
       for embeddings.
-    - Fitting and benchmarking of user-supplied ``Scikit-learn`` `estimators
-      <https://scikit-learn.org/stable/modules/classes.html>`_.
+    - Fitting and benchmarking of user-supplied [Scikit-learn classifiers](https://scikit-learn.org/stable/modules/classes.html)
 
-    The numeric values in the grid are currently lists/tuples of values that are defined either empirically or
-    are based on the published literature (e.g. for Random Forest, see `Probst et al. 2019
-    <https://arxiv.org/abs/1802.09596>`_). Values may be replaced by appropriate distributions in a future release.
+    A param_grid containing a range of hyperparameters to test is created depending on the tokenizer and the learners chosen.
+    The values in the grid are currently lists/tuples of values that are defined either empirically or
+    are based on the published literature (e.g. for Random Forest, see [Probst et al. 2019](https://arxiv.org/abs/1802.09596).
+    Values may be replaced by appropriate distributions in a future release.
 
      **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
      Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
      safely ignored.
 
     :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of
-        `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>`_ that can use any
+        [Frank and Hall (2001)](https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf) that can use any
         standard classification model that calculates probabilities.
-    :param x: The text feature.
-    :param y: The response variable.
+    :param pd.DataFrame x: The text feature.
+    :param pd.Series y: The response variable (target).
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
     :param str metric: Scorer to use during pipeline tuning ("accuracy_score", "balanced_accuracy_score",
         "matthews_corrcoef", "class_balance_accuracy_score").
     :param int cv: Number of cross-validation folds.
-    :param int n_iter: Number of parameter settings that are sampled (see `sklearn.model_selection.RandomizedSearchCV
-        <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html>`_).
-    :param int n_jobs: Number of jobs to run in parallel (see ``sklearn.model_selection.RandomizedSearchCV``).
-    :param int verbose: Controls the verbosity (see ``sklearn.model_selection.RandomizedSearchCV``).
-    :param str, list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
+    :param int n_iter: Number of parameter settings that are sampled in the RandomizedSearch.
+    :param int n_jobs: Number of jobs to run in parallel in the RandomizedSearch.
+    :param int verbose: Controls the verbosity in the RandomizedSearch.
+    :param list learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
         "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier". When a single model is
         used, it can be passed as a string.
@@ -111,10 +96,8 @@ def factory_pipeline(x, y, tknz="spacy",
         predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
         be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
         other than "3" that are attributed to human error.
-    :return: A tuned `sklearn.pipeline.Pipeline
-        <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/
-        `imblearn.pipeline.Pipeline
-        <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_.
+    :return: A tuned sklearn.pipeline.Pipeline
+    :rtype: sklearn.pipeline.Pipeline
     """
 
     # Define transformers for pipeline #
@@ -143,7 +126,8 @@ def factory_pipeline(x, y, tknz="spacy",
     oversampler = FunctionSampler(func=random_over_sampler_data_generator,
                                   kw_args={'threshold': 200,
                                            'up_balancing_counts': 300,
-                                           'random_state': 0},
+                                        #    'random_state': 0
+                                           },
                                   validate=False)
 
     # Make pipeline #

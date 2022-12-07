@@ -2,5 +2,6 @@
 *__pycache__*
 notebooks/*/variables/*
 my.conf
-test_results_*/*
-test_results_*/*
+test_results_label/*
+test_results_criticality/*
+site/
