@@ -9,9 +9,10 @@ def sentiment_scores(X):
     subjectivity) and `vaderSentiment <https://pypi.org/project/vaderSentiment/>`_ (positive, negative and neutral
     sentiments and compound score).
 
-    :param X: A dictionary, ``pandas.DataFrame``, tuple or list with the text strings. If it is a dictionary
-        (``pandas.DataFrame``), it must have a single key (column).
+    :param pd.DataFrame X: A dictionary, ``pandas.DataFrame``, tuple or list with the text strings. If it is a
+        dictionary, it must have a single key (column).
     :return: A ``pandas.DataFrame`` with the sentiment scores for each text record. Shape [n_samples, 6].
+    :rtype: pd.DataFrame
     """
 
     vader_analyser = SentimentIntensityAnalyzer()
