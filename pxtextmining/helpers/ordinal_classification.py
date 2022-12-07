@@ -9,18 +9,18 @@ class OrdinalClassifier(BaseEstimator):
 
     """
     Estimator class for building an ordinal classification model using the method of
-    `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>`_ The code in this class is
-    based on code published online in `this post
-    <https://towardsdatascience.com/simple-trick-to-train-an-ordinal-regression-with-any-classifier-6911183d2a3c>`_.
+    [Frank and Hall (2001)](https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf)
+    based on code published online in [this post](https://towardsdatascience.com/simple-trick-to-train-an-ordinal-regression-with-any-classifier-6911183d2a3c).
 
-    **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
-    Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
+    **NOTE:** As described later, the argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
+    Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels,
+    and is only relevant for models predicting 'criticality'. It can otherwise be
     safely ignored.
 
-    :param estimator: A Scikit-learn classifier.
+    :param estimator estimator: A Scikit-learn classifier.
     :param dict clfs: Helper variable. Defined inside the class.
-    :param y_factorized: Helper variable. Defined inside the class.
-    :param unique_class: Helper variable. Defined inside the class.
+    :param pd.Series y_factorized: Helper variable. Defined inside the class.
+    :param int unique_class: Helper variable. Defined inside the class.
     :param dict class_dict: Helper variable. Defined inside the class.
     :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
         that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
@@ -108,4 +108,3 @@ class OrdinalClassifier(BaseEstimator):
 
     def score(self, X, y):
         return self.estimator.score(X, y)
-
