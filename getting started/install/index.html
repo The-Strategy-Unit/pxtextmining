@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/getting%20started/install/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Install - pxtextmining</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../main.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Install";
+        var mkdocs_page_input_path = "getting started/install.md";
+        var mkdocs_page_url = "/pxtextmining/getting%20started/install/";
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> pxtextmining
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../about/">Project background</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Install</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#optional-create-a-python-virtual-environment-in-which-to-install-pxtextmining-and-its-dependencies">Optional: create a Python Virtual Environment in which to install pxtextmining and its dependencies.</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#option-1-install-from-pypi">Option 1: Install from PyPI</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#option-2-install-from-github">Option 2: Install from GitHub</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../training_new_model/">Training a new model</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../using_trained_model/">Using a trained model</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Factories</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/factories/factory_data_load_and_split/">Factory data load and split</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/factories/factory_model_performance/">Factory model performance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/factories/factory_pipeline/">Factory pipeline</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/factories/factory_predict_unlabelled_text/">Factory predict unlabelled text</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/factories/factory_write_results/">Factory write results</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Helpers</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/decode_emojis/">Decode emojis</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/estimator_switcher/">Estimator switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/feature_selection_switcher/">Feature selection switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/metrics/">Metrics</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/ordinal_classification/">Ordinal classification</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/oversampling/">Oversampling</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/passthrough/">Passthrough</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/scaler_switcher/">Scaler switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/sentiment_scores/">Sentiment scores</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/text_length/">Text length</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/text_preprocessor/">Text preprocessor</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/text_transformer_switcher/">Text transformer switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/theme_binarization/">Theme binarization</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/tokenization/">Tokenization</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/word_vectorization/">Word vectorization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Pipelines</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/pipelines/text_classification_pipeline/">Text classification pipeline</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">pxtextmining</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Getting started &raquo;</li>
+      <li>Install</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="installation">Installation</h2>
+<p>You can install <code>pxtextmining</code> from either <a href="https://pypi.org/project/pxtextmining/">PyPI</a> or <a href="https://github.com/CDU-data-science-team/pxtextmining">GitHub</a>.</p>
+<h3 id="optional-create-a-python-virtual-environment-in-which-to-install-pxtextmining-and-its-dependencies">Optional: create a Python Virtual Environment in which to install <code>pxtextmining</code> and its dependencies.</h3>
+<p>This will allow you to keep the package versions required by the package separate from any others that you may have installed. Let's call the virtual environment <code>text_venv</code>:</p>
+<ol>
+<li>Open a terminal, navigate to the folder where you want to put the virtual
+   environment and run:<ul>
+<li><code>python3 -m venv text_venv</code> (Linux &amp; MacOS);</li>
+<li><code>python -m venv text_venv</code> (Windows);</li>
+</ul>
+</li>
+<li>Activate the virtual environment. In the folder containing folder <code>text_venv</code>
+   run:<ul>
+<li><code>source text_venv/bin/activate</code> (Linux &amp; MacOS);</li>
+<li><code>text_venv\Scripts\activate</code> (Windows);</li>
+</ul>
+</li>
+</ol>
+<h3 id="option-1-install-from-pypi">Option 1: Install from PyPI</h3>
+<ol>
+<li>Install <code>pxtextmining</code> and its PyPI dependencies:<ul>
+<li><code>pip3 install pxtextmining</code>  (Linux &amp; MacOS);</li>
+<li><code>pip install pxtextmining</code> (Windows);</li>
+</ul>
+</li>
+<li>We also need to install a couple of
+   <a href="https://github.com/explosion/spacy-models"><code>spaCy</code></a> models.<ul>
+<li><code>python -m spacy download en_core_web_sm</code></li>
+<li><code>python -m spacy download en_core_web_lg</code></li>
+</ul>
+</li>
+</ol>
+<p>Note that the second model is pretty large, so the installation may take a
+   while.</p>
+<h3 id="option-2-install-from-github">Option 2: Install from GitHub</h3>
+<ol>
+<li>
+<p>To begin with, clone the repository from github.</p>
+</li>
+<li>
+<p>Install wheel, this helps with sorting the different packages and their dependencies:</p>
+<ul>
+<li><code>pip3 install wheel</code>  (Linux &amp; MacOS);</li>
+<li><code>pip install wheel</code> (Windows);</li>
+</ul>
+</li>
+<li>
+<p>Install all the dependencies of <code>pxtextmining</code>. Inside the repo's folder, run:</p>
+<ul>
+<li><code>pip3 install -r requirements.txt</code> (Linux &amp; MacOS);</li>
+<li><code>pip install -r requirements.txt</code> (Windows);</li>
+</ul>
+</li>
+<li>
+<p>Install <code>pxtextmining</code> as a Python package. Inside the repo's folder, run:</p>
+<ul>
+<li><code>python3 setup.py install</code> (Linux &amp; MacOS);</li>
+<li><code>python setup.py install</code> (Windows);</li>
+</ul>
+</li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../about/" class="btn btn-neutral float-left" title="Project background"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../training_new_model/" class="btn btn-neutral float-right" title="Training a new model">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../about/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../training_new_model/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

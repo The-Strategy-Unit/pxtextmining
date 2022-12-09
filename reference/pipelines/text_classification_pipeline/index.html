@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pipelines/text_classification_pipeline/" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Text classification pipeline - pxtextmining</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../../main.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Text classification pipeline";
+        var mkdocs_page_input_path = "reference/pipelines/text_classification_pipeline.md";
+        var mkdocs_page_url = "/pxtextmining/reference/pipelines/text_classification_pipeline/";
+      </script>
+    
+    <script src="../../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> pxtextmining
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../about/">Project background</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting%20started/install/">Install</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting%20started/training_new_model/">Training a new model</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting%20started/using_trained_model/">Using a trained model</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reference</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="#">Factories</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../factories/factory_data_load_and_split/">Factory data load and split</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../factories/factory_model_performance/">Factory model performance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../factories/factory_pipeline/">Factory pipeline</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../factories/factory_predict_unlabelled_text/">Factory predict unlabelled text</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../factories/factory_write_results/">Factory write results</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Helpers</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/decode_emojis/">Decode emojis</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/estimator_switcher/">Estimator switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/feature_selection_switcher/">Feature selection switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/metrics/">Metrics</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/ordinal_classification/">Ordinal classification</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/oversampling/">Oversampling</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/passthrough/">Passthrough</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/scaler_switcher/">Scaler switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/sentiment_scores/">Sentiment scores</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/text_length/">Text length</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/text_preprocessor/">Text preprocessor</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/text_transformer_switcher/">Text transformer switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/theme_binarization/">Theme binarization</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/tokenization/">Tokenization</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../helpers/word_vectorization/">Word vectorization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Pipelines</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="./">Text classification pipeline</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#pxtextmining.pipelines.text_classification_pipeline.text_classification_pipeline">text_classification_pipeline()</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">pxtextmining</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Reference &raquo;</li>
+          <li>Pipelines &raquo;</li>
+      <li>Text classification pipeline</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <div class="doc doc-object doc-module">
+
+
+
+<h4 id="pxtextmining.pipelines.text_classification_pipeline" class="doc doc-heading">
+          <code>text_classification_pipeline</code>
+
+
+</h4>
+
+  <div class="doc doc-contents first">
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.pipelines.text_classification_pipeline.text_classification_pipeline" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">text_classification_pipeline</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">predictor</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.33</span><span class="p">,</span> <span class="n">ordinal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tknz</span><span class="o">=</span><span class="s1">&#39;spacy&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;class_balance_accuracy_score&#39;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">learners</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;SGDClassifier&#39;</span><span class="p">],</span> <span class="n">objects_to_save</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pipeline&#39;</span><span class="p">,</span> <span class="s1">&#39;tuning results&#39;</span><span class="p">,</span> <span class="s1">&#39;predictions&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy per class&#39;</span><span class="p">,</span> <span class="s1">&#39;index - training data&#39;</span><span class="p">,</span> <span class="s1">&#39;index - test data&#39;</span><span class="p">,</span> <span class="s1">&#39;bar plot&#39;</span><span class="p">],</span> <span class="n">save_objects_to_server</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_objects_to_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_pipeline_as</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">results_folder_name</span><span class="o">=</span><span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="n">reduce_criticality</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Function that gathers together all steps in Factories module to train a new model
+pipeline and write the results. Writes between 1 to 7 files, depending on the value of argument
+<code>objects_to_save</code>:</p>
+<ul>
+<li>The fitted pipeline (SAV);</li>
+<li>All (hyper)parameters tried during fitting and the associated pipeline performance metrics (CSV);</li>
+<li>The predictions on the test set (CSV);</li>
+<li>Accuracies per class (CSV);</li>
+<li>The row indices of the training data (CSV);</li>
+<li>The row indices of the test data (CSV);</li>
+<li>A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
+  the training set, for the best (hyper)parameter values for each learner (PNG);</li>
+</ul>
+<p><strong>NOTE:</strong> As described later, arguments <code>reduce_criticality</code> and <code>theme</code> are for internal use by Nottinghamshire
+Healthcare NHS Foundation Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) and
+criticality labels. They can otherwise be safely ignored.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>filename</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Dataset name (CSV), including the data type suffix. If None, data is read from the database.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>target</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Name of the response variable.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>predictor</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Name of the predictor variable.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>test_size</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td><p>Proportion of data that will form the test dataset.</p></td>
+          <td>
+                <code>0.33</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>ordinal</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether to fit an ordinal classification model. The ordinal model is the implementation of <code>Frank and Hall (2001) &lt;https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf&gt;</code>_ that can use any standard classification model.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>tknz</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Tokenizer to use ("spacy" or "wordnet").</p></td>
+          <td>
+                <code>&#39;spacy&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>metric</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Scorer to use during pipeline tuning ("accuracy_score", "balanced_accuracy_score", "matthews_corrcoef", "class_balance_accuracy_score").</p></td>
+          <td>
+                <code>&#39;class_balance_accuracy_score&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>cv</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td><p>Number of cross-validation folds.</p></td>
+          <td>
+                <code>5</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>n_iter</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td><p>Number of parameter settings that are sampled (see <code>sklearn.model_selection.RandomizedSearchCV &lt;https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html&gt;</code>_).</p></td>
+          <td>
+                <code>100</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>n_jobs</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td><p>Number of jobs to run in parallel (see <code>sklearn.model_selection.RandomizedSearchCV</code>).</p></td>
+          <td>
+                <code>5</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>verbose</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td><p>Controls the verbosity (see <code>sklearn.model_selection.RandomizedSearchCV</code>).</p></td>
+          <td>
+                <code>3</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>learners</code></td>
+          <td>
+                <code>list[str]</code>
+          </td>
+          <td><p>A list of <code>Scikit-learn</code> names of the learners to tune. Must be one or more of "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB", "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier".</p></td>
+          <td>
+                <code>[&#39;SGDClassifier&#39;]</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>objects_to_save</code></td>
+          <td>
+                <code>list[str]</code>
+          </td>
+          <td><p>Objects to save following pipeline fitting and assessment. These are:  - the pipeline (SAV file); - table with all (hyper)parameter values tried out and performance indicators on the cross-validation data; - table with predictions on the test set; - table with accuracy and counts per class; - row indices for the training set; - row indices for the test set; - bar plot with the best-performing models- plotted values are the mean scores from a k-fold CV on the training set, for the best (hyper)parameter values for each learner;</p></td>
+          <td>
+                <code>[&#39;pipeline&#39;, &#39;tuning results&#39;, &#39;predictions&#39;, &#39;accuracy per class&#39;, &#39;index - training data&#39;, &#39;index - test data&#39;, &#39;bar plot&#39;]</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>save_objects_to_server</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether to save the results to the server. <strong>NOTE:</strong> The feature that writes results to the database is for internal use only. It will be removed when a proper API is developed for this function.</p></td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>save_objects_to_disk</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether to save the results to disk. See <code>results_folder_name</code>.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>save_pipeline_as</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Save the pipeline as <code>save_pipeline_as + '.sav'</code>.</p></td>
+          <td>
+                <code>&#39;default&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>results_folder_name</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Name of folder in which to save the results. It will create a new folder or overwrite an existing one that has the same name.</p></td>
+          <td>
+                <code>&#39;results&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>reduce_criticality</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts that hold data on criticality. If <code>True</code>, then all records with a criticality of "-5" (respectively, "5") are assigned a criticality of "-4" (respectively, "4"). This is to avoid situations where the pipeline breaks due to a lack of sufficient data for "-5" and/or "5". Defaults to <code>False</code>.</p></td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>theme</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable. Defaults to <code>None</code>. If supplied, the theme variable will be used as a predictor (along with the text predictor) in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to help the model improve predictions on criticality when the theme labels are readily available. Second, to force the criticality for "Couldn't be improved" to always be "3" in the training and test data, as well as in the predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always be "3", we are improving model performance, but are also correcting possible erroneous assignments of values other than "3" that are attributed to human error.</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>tuple</code>
+          </td>
+          <td><p>A <code>tuple</code> of variable length depending on 'objects_to_save' parameter. It can contain any of the following objects, in order: - The fitted <code>Scikit-learn</code>/<code>imblearn</code> pipeline; - A <code>pandas.DataFrame</code> with all (hyper)parameter values and models tried during fitting; - A <code>pandas.DataFrame</code> with the predictions on the test set; - A <code>pandas.DataFrame</code> with accuracies per class; - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on the training set, for the best (hyper)parameter values for each learner. - The row indices of the training data; - The row indices of the test data</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../helpers/word_vectorization/" class="btn btn-neutral float-left" title="Word vectorization"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../helpers/word_vectorization/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme_extra.js" defer></script>
+    <script src="../../../js/theme.js" defer></script>
+      <script src="../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

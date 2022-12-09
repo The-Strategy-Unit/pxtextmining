@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/getting%20started/training_new_model/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Training a new model - pxtextmining</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../main.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Training a new model";
+        var mkdocs_page_input_path = "getting started/training_new_model.md";
+        var mkdocs_page_url = "/pxtextmining/getting%20started/training_new_model/";
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> pxtextmining
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../about/">Project background</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../install/">Install</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Training a new model</a>
+    <ul class="current">
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../using_trained_model/">Using a trained model</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Factories</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/factories/factory_data_load_and_split/">Factory data load and split</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/factories/factory_model_performance/">Factory model performance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/factories/factory_pipeline/">Factory pipeline</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/factories/factory_predict_unlabelled_text/">Factory predict unlabelled text</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/factories/factory_write_results/">Factory write results</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Helpers</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/decode_emojis/">Decode emojis</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/estimator_switcher/">Estimator switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/feature_selection_switcher/">Feature selection switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/metrics/">Metrics</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/ordinal_classification/">Ordinal classification</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/oversampling/">Oversampling</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/passthrough/">Passthrough</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/scaler_switcher/">Scaler switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/sentiment_scores/">Sentiment scores</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/text_length/">Text length</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/text_preprocessor/">Text preprocessor</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/text_transformer_switcher/">Text transformer switcher</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/theme_binarization/">Theme binarization</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/tokenization/">Tokenization</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/helpers/word_vectorization/">Word vectorization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Pipelines</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/pipelines/text_classification_pipeline/">Text classification pipeline</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">pxtextmining</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Getting started &raquo;</li>
+      <li>Training a new model</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="training-a-new-model">Training a new model</h1>
+<p>To train a new model to categorise patient feedback text, labelled data is required.</p>
+<p>Data from phase 1 of the project is available in the folder <a href="https://github.com/CDU-data-science-team/pxtextmining/blob/main/datasets/text_data.csv"><code>datasets</code></a>, or it can also be loaded from an SQL database. If you have your own labelled patient experience feedback, you can use this instead to train your own model.</p>
+<p>The <a href="../../reference/pipelines/text_classification_pipeline">text_classification_pipeline</a> contains the function required to output a fully trained model. Two types of models can be trained using this pipeline, one that can predict the categorical 'label' for the text, or one that can predict the positive or negative 'criticality' score for the text. Examples of the pipeline being used to output each type of model can be seen in <a href="https://github.com/CDU-data-science-team/pxtextmining/blob/main/execution/execution_criticality.py">execution_criticality</a> and <a href="https://github.com/CDU-data-science-team/pxtextmining/blob/main/execution/execution_label.py">execution_label</a>.</p>
+<p>The steps involved in training a model are as follows:</p>
+<ol>
+<li>
+<p>The data is loaded and split into training and test sets by the function <code>factory_data_load_and_split</code>. This also conducts some basic text preprocessing, such as removing special characters, whitespaces and linebreaks. It produces additional features through the creation of 'text_length' and sentiment scores using <a href="https://pypi.org/project/vaderSentiment/">vaderSentiment</a> and <a href="https://pypi.org/project/textblob/">textblob</a>. Any invalid lines (e.g. empty strings, NULL values) are removed from the data.</p>
+</li>
+<li>
+<p>The function in <code>factory_pipeline</code> creates an sklearn pipeline. This pipeline is comprised of the following steps: first, the preprocessed text input is upsampled to help compensate for the unbalanced dataset. The text is then tokenized and vectorised (turned into numbers that can be processed by the model) using either <a href="https://spacy.io/">spacy</a> or <a href="https://wordnet.princeton.edu/">wordnet</a>. Feature selection is then conducted to select only the most important features to train the model. A hyperparameter grid is constructed with potential hyperparameter values, depending on the learners/classification models to be tested in the Randomized Search. A Randomized Search is then used to identify the best performing model and its optimal hyperparameters.</p>
+</li>
+<li>
+<p>The fitted pipeline is then evaluated on the test set in <code>factory_model_performance</code>. The evaluation metrics used are: (<a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html">Accuracy</a>, <a href="https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&amp;context=etd">Class Balance Accuracy</a> (Mosley, 2013), <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.balanced_accuracy_score.html">Balanced Accuracy</a> (Guyon et al., 2015, Kelleher et al., 2015) and <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.matthews_corrcoef.html">Matthews Correlation Coefficient</a> (Baldi et al., 2000, Matthews, 1975)). A visual representation of the performance evaluation is output in the form of a barchart.</p>
+</li>
+<li>
+<p>Writing the results: The fitted pipeline, tuning results, predictions, accuracy
+per class, model comparison barchart, training data index, and test data index are output by <code>factory_write_results</code>.</p>
+</li>
+</ol>
+<p>The four steps above are all pulled together in <a href="https://github.com/CDU-data-science-team/pxtextmining/tree/main/pxtextmining/pipelines"><code>pxtextmining.pipelines.text_classification_pipeline</code></a>.</p>
+<p>Here is a visual display of the process:
+<img alt="" src="https://raw.githubusercontent.com/CDU-data-science-team/pxtextmining/main/text_classification_package_structure.png" /></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../install/" class="btn btn-neutral float-left" title="Install"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../using_trained_model/" class="btn btn-neutral float-right" title="Using a trained model">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../install/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../using_trained_model/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
