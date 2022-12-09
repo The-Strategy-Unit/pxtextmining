@@ -12,9 +12,6 @@ from sklearn.linear_model import PassiveAggressiveClassifier, Perceptron, RidgeC
 from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
 from sklearn.ensemble import RandomForestClassifier
-from pxtextmining.helpers.text_preprocessor import text_preprocessor
-from pxtextmining.helpers.sentiment_scores import sentiment_scores
-from pxtextmining.helpers.text_length import text_length
 from pxtextmining.helpers.tokenization import LemmaTokenizer
 from pxtextmining.helpers.word_vectorization import EmbeddingsTransformer
 from pxtextmining.helpers.oversampling import random_over_sampler_data_generator
@@ -30,7 +27,7 @@ from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 def factory_pipeline(x, y, tknz="spacy",
                      ordinal=False,
                      metric="class_balance_accuracy_score",
-                     cv=5, n_iter=100, n_jobs=5, verbose=3,
+                     cv=5, n_iter=100, n_jobs=5, verbose=1,
                      learners=[
                          "SGDClassifier",
                          "RidgeClassifier",
@@ -46,66 +43,47 @@ def factory_pipeline(x, y, tknz="spacy",
                      theme=None):
 
     """
-    Prepare and fit a text classification pipeline.
-
-    The pipeline's parameter grid switches between two approaches to text classification: Bag-of-Words and Embeddings.
-    For the former, both TF-IDF and raw counts are tried out.
-
-    The pipeline does the following:
+    Prepare and fit a text classification pipeline. The pipeline is then fitted using Randomized Search to identify the
+    best performing model and hyperparameters.
 
     - Feature engineering:
-
-      * Converts text into TF-IDFs or `GloVe <https://nlp.stanford.edu/projects/glove/>`_ word vectors with
-        `spaCy <https://spacy.io/>`_;
-      * Creates a new feature that is the length of the text in each record;
-      * Performs sentiment analysis on the text feature and creates new features that are all scores/indicators
-        produced by `TextBlob <https://textblob.readthedocs.io/en/dev/>`_
-        and `vaderSentiment <https://pypi.org/project/vaderSentiment/>`_.
-      * Applies `sklearn.preprocessing.KBinsDiscretizer
-        <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.KBinsDiscretizer.html>`_ to the text
-        length and sentiment indicator features, and `sklearn.preprocessing.StandardScaler
-        <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html>`_ to the
-        embeddings (word vectors);
-    - Up-sampling of rare classes: uses `imblearn.over_sampling.RandomOverSampler
-      <https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.RandomOverSampler.html#imblearn.over_sampling.RandomOverSampler>`_
-      to up-sample rare classes. Currently the threshold to consider a class as rare and the up-balancing values are
-      fixed and cannot be user-defined.
-    - Tokenization and lemmatization of the text feature: uses ``spaCy`` (default) or `NLTK <https://www.nltk.org/>`_.
-      It also strips punctuation, excess spaces, and metacharacters "r" and "n" from the text. It converts emojis into
-      "__text__" (where "text" is the emoji name), and NA/NULL values into "__notext__" (the pipeline does get rid of
-      records with no text, but this conversion at least deals with any escaping ones).
-    - Feature selection: Uses `sklearn.feature_selection.SelectPercentile
-      <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html>`_
-      with `sklearn.feature_selection.chi2
-      <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2>`_
-      for TF-IDFs or `sklearn.feature_selection.f_classif
-      <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn-feature-selection-f-classif>`_
+        * Converts text into TF-IDFs or [GloVe](https://nlp.stanford.edu/projects/glove/) word vectors with
+            [spaCy](https://spacy.io/);
+        * Applies [sklearn.preprocessing.KBinsDiscretizer](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.KBinsDiscretizer.html)
+            to the text length and sentiment indicator features, and
+            [sklearn.preprocessing.StandardScaler](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html)
+            to the embeddings (word vectors);
+    - Up-sampling of rare classes: uses [imblearn.over_sampling.RandomOverSampler](https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.RandomOverSampler.html)
+      to up-sample rare classes
+    - Tokenization and lemmatization of the text feature: uses spaCy (default) or [NLTK](https://www.nltk.org/)
+    - Feature selection: Uses [sklearn.feature_selection.SelectPercentile](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html)
+      with [sklearn.feature_selection.chi2](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2)
+      for TF-IDFs or [sklearn.feature_selection.f_classif](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn-feature-selection-f-classif)
       for embeddings.
-    - Fitting and benchmarking of user-supplied ``Scikit-learn`` `estimators
-      <https://scikit-learn.org/stable/modules/classes.html>`_.
+    - Fitting and benchmarking of user-supplied [Scikit-learn classifiers](https://scikit-learn.org/stable/modules/classes.html)
 
-    The numeric values in the grid are currently lists/tuples of values that are defined either empirically or
-    are based on the published literature (e.g. for Random Forest, see `Probst et al. 2019
-    <https://arxiv.org/abs/1802.09596>`_). Values may be replaced by appropriate distributions in a future release.
+    A param_grid containing a range of hyperparameters to test is created depending on the tokenizer and the learners chosen.
+    The values in the grid are currently lists/tuples of values that are defined either empirically or
+    are based on the published literature (e.g. for Random Forest, see [Probst et al. 2019](https://arxiv.org/abs/1802.09596).
+    Values may be replaced by appropriate distributions in a future release.
 
      **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
      Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
      safely ignored.
 
     :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of
-        `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>`_ that can use any
+        [Frank and Hall (2001)](https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf) that can use any
         standard classification model that calculates probabilities.
-    :param x: The text feature.
-    :param y: The response variable.
+    :param pd.DataFrame x: The text feature.
+    :param pd.Series y: The response variable (target).
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
     :param str metric: Scorer to use during pipeline tuning ("accuracy_score", "balanced_accuracy_score",
         "matthews_corrcoef", "class_balance_accuracy_score").
     :param int cv: Number of cross-validation folds.
-    :param int n_iter: Number of parameter settings that are sampled (see `sklearn.model_selection.RandomizedSearchCV
-        <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html>`_).
-    :param int n_jobs: Number of jobs to run in parallel (see ``sklearn.model_selection.RandomizedSearchCV``).
-    :param int verbose: Controls the verbosity (see ``sklearn.model_selection.RandomizedSearchCV``).
-    :param str, list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
+    :param int n_iter: Number of parameter settings that are sampled in the RandomizedSearch.
+    :param int n_jobs: Number of jobs to run in parallel in the RandomizedSearch.
+    :param int verbose: Controls the verbosity in the RandomizedSearch.
+    :param list learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
         "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier". When a single model is
         used, it can be passed as a string.
@@ -118,24 +96,18 @@ def factory_pipeline(x, y, tknz="spacy",
         predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
         be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
         other than "3" that are attributed to human error.
-    :return: A tuned `sklearn.pipeline.Pipeline
-        <https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html>`_/
-        `imblearn.pipeline.Pipeline
-        <https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline>`_.
+    :return: A tuned sklearn.pipeline.Pipeline
+    :rtype: sklearn.pipeline.Pipeline
     """
 
-    features_text = 'predictor'
-
     # Define transformers for pipeline #
-    # Transformer that calculates text length and transforms it.
+    # Transformer for text_length column
     transformer_text_length = Pipeline(steps=[
-        ('length', (FunctionTransformer(text_length))),
         ('scaler', (ScalerSwitcher()))
     ])
 
-    # Transformer that calculates sentiment indicators (e.g. TextBlob, VADER) and transforms them.
+    # Transformer for sentiment scores (vader and textblob)
     transformer_sentiment = Pipeline(steps=[
-        ('sentiment', (FunctionTransformer(sentiment_scores))),
         ('scaler', (ScalerSwitcher()))
     ])
 
@@ -144,18 +116,18 @@ def factory_pipeline(x, y, tknz="spacy",
         ('text', (TextTransformerSwitcher()))
     ])
 
-    # Gather transformers.
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ('sentimenttr', transformer_sentiment, features_text),
-            ('lengthtr', transformer_text_length, features_text),
-            ('texttr', transformer_text, features_text)])
+    # Gather transformers
+    preprocessor = ColumnTransformer(transformers=[
+            ('sentimenttr', transformer_sentiment, ['text_blob_polarity', 'text_blob_subjectivity', 'vader_compound']),
+            ('lengthtr', transformer_text_length, ['text_length']),
+            ('texttr', transformer_text, 'predictor')])
 
     # Up-sampling step #
     oversampler = FunctionSampler(func=random_over_sampler_data_generator,
                                   kw_args={'threshold': 200,
                                            'up_balancing_counts': 300,
-                                           'random_state': 0},
+                                        #    'random_state': 0
+                                           },
                                   validate=False)
 
     # Make pipeline #
@@ -181,7 +153,8 @@ def factory_pipeline(x, y, tknz="spacy",
 
         all_transforms = ColumnTransformer([
             ('theme', ScalerSwitcher(), ['theme']), # Try out OneHotEncoder() or ThemeBinarizer().
-            ('process', pipe_all_but_theme, [features_text])
+            ('process', pipe_all_but_theme, ['predictor', 'text_length', 'text_blob_polarity',
+                                             'text_blob_subjectivity', 'vader_compound'])
         ])
 
         pipe = Pipeline([
@@ -212,7 +185,7 @@ def factory_pipeline(x, y, tknz="spacy",
         'preprocessor__lengthtr__scaler__scaler': None,
         'preprocessor__texttr__text__transformer': None,
         'featsel__selector': [SelectPercentile()],
-        'featsel__selector__percentile': [70, 85, 100]
+        'featsel__selector__percentile': [80, 90, 100]
     }
 
     if ordinal and theme is not None:
@@ -317,11 +290,10 @@ def factory_pipeline(x, y, tknz="spacy",
             if j.__class__.__name__ == TfidfVectorizer().__class__.__name__:
                 aux['featsel__selector__score_func'] = [chi2]
                 aux['preprocessor__texttr__text__transformer__tokenizer'] = [LemmaTokenizer(tknz)]
-                aux['preprocessor__texttr__text__transformer__preprocessor'] = [text_preprocessor]
                 aux['preprocessor__texttr__text__transformer__norm'] = ['l2']
-                aux['preprocessor__texttr__text__transformer__ngram_range'] = ((1, 3), (2, 3), (3, 3))
-                aux['preprocessor__texttr__text__transformer__max_df'] = [0.7, 0.95]
-                aux['preprocessor__texttr__text__transformer__min_df'] = [3, 1]
+                aux['preprocessor__texttr__text__transformer__ngram_range'] = ((1, 3), (1, 2), (2, 3), (3, 3))
+                aux['preprocessor__texttr__text__transformer__max_df'] = [0.85, 0.9, 0.95]
+                aux['preprocessor__texttr__text__transformer__min_df'] = [1,2,3]
                 aux['preprocessor__texttr__text__transformer__use_idf'] = [True, False]
 
                 # The transformation is a k-means discretizer with 3 bins:
@@ -410,12 +382,6 @@ def factory_pipeline(x, y, tknz="spacy",
     pipe_cv = RandomizedSearchCV(pipe, param_grid, n_jobs=n_jobs, return_train_score=False,
                                  cv=cv, verbose=verbose,
                                  scoring=scoring, refit=refit, n_iter=n_iter)
-
-    # These messages are for function helpers.text_preprocessor which is used by
-    # TfidfVectorizer() and EmbeddingsTransformer(). Having them inside text_preprocessor() prints
-    # them in each iteration, which is redundant. Having the here prints them once.
-    print('Stripping punctuation from text...')
-    print("Stripping excess spaces, whitespaces and line breaks from text...")
 
     # Fit pipeline #
     pipe_cv.fit(x, y)

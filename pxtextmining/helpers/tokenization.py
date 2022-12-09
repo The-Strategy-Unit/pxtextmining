@@ -6,11 +6,10 @@ nlp = spacy.load("en_core_web_sm") # Don't put this inside the function- loading
 
 class LemmaTokenizer:
     """
-    Class for custom lemmatization in `sklearn.feature_extraction.text.TfidfVectorizer
-    <https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html>`_
-    (see `this <https://scikit-learn.org/stable/modules/feature_extraction.html?highlight=stemming>`_). Uses `spaCy
-    <https://spacy.io/>`_ (``tknz == 'spacy'``) or `NLTK <https://www.nltk.org/>`_ (``tknz == 'wordnet'``).
-
+    Class for custom lemmatization in
+    [sklearn.feature_extraction.text.TfidfVectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html)
+    (see [this](https://scikit-learn.org/stable/modules/feature_extraction.html?highlight=stemming)).
+    Uses [spaCy](https://spacy.io/) (``tknz == 'spacy'``) or [NLTK](https://www.nltk.org/) (``tknz == 'wordnet'``).
     """
 
     def __init__(self, tknz='wordnet'):

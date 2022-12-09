@@ -5,7 +5,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 class Passthrough(BaseEstimator, TransformerMixin):
     """
     Class for passing through features that require no preprocessing.
-    https://stackoverflow.com/questions/54592115/appending-the-columntransformer-result-to-the-original-data-within-a-pipeline
+    Taken from [this guide](https://stackoverflow.com/questions/54592115/appending-the-columntransformer-result-to-the-original-data-within-a-pipeline)
     """
 
     def fit(self, X, y=None):
