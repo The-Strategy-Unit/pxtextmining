@@ -1,9 +1,8 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI
 from pxtextmining.factories.factory_predict_unlabelled_text import factory_predict_unlabelled_text
-from pxtextmining.factories.factory_data_load_and_split import process_data
 import pandas as pd
 import mysql.connector
-from fastapi.encoders import jsonable_encoder
+
 
 app = FastAPI()
 
@@ -32,7 +31,7 @@ def predict(ids: str,
         text_data.columns = cursor.column_names
     if target == 'label':
         predictions = factory_predict_unlabelled_text(dataset=text_data, predictor="feedback",
-                                    pipe_path_or_object=model)
+                                    pipe_path_or_object=model, columns_to_return=['id', 'predictions'])
     elif target == 'criticality':
         # text_data = text_data.rename(columns = {'feedback': 'predictor'})
         # data_processed = process_data(text_data)

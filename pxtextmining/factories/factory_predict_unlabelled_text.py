@@ -1,7 +1,7 @@
 import pandas as pd
 import joblib
 from itertools import chain
-from factory_data_load_and_split import process_data, load_data
+from pxtextmining.factories.factory_data_load_and_split import process_data, load_data
 
 
 def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
