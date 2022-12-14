@@ -21,8 +21,8 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                      "BernoulliNB",
                                      "ComplementNB",
                                      "MultinomialNB",
-                                    #  "KNeighborsClassifier",
-                                    #  "NearestCentroid",
+                                     "KNeighborsClassifier",
+                                     "NearestCentroid",
                                      "RandomForestClassifier"
                                      ],
                                  objects_to_save=[
