@@ -178,9 +178,13 @@ def process_data(text_data, target = False):
     # Clean data - basic preprocessing, removing punctuation, decode emojis, dropnas
     text_data_cleaned = clean_data(text_data, target)
     # Get sentiment scores
-    sentiment = sentiment_scores.sentiment_scores(text_data_cleaned[['original_text']])
-    sentiment = sentiment.copy().drop(columns=['vader_neg', 'vader_neu', 'vader_pos'])
-    text_data = text_data_cleaned.join(sentiment).drop(columns=['original_text']).copy()
+    if 'original_text' in list(text_data_cleaned.columns):
+        sentiment = sentiment_scores.sentiment_scores(text_data_cleaned[['original_text']])
+        sentiment = sentiment.copy().drop(columns=['vader_neg', 'vader_neu', 'vader_pos'])
+        text_data = text_data_cleaned.join(sentiment).drop(columns=['original_text']).copy()
+    else:
+        sentiment = sentiment_scores.sentiment_scores(text_data_cleaned[['predictor']])
+
     print(f'Shape of dataset after cleaning and processing is {text_data.shape}')
     return text_data
 
