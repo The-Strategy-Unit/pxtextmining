@@ -7,19 +7,27 @@ from pxtextmining.helpers.metrics import class_balance_accuracy_score
 from sklearn.dummy import DummyClassifier
 
 
-def get_baseline_metrics(x_train, x_test, y_train, y_test):
-    dummy = DummyClassifier(strategy = 'stratified')
-    dummy.fit(x_train, y_train)
-    y_pred = dummy.predict(x_test)
-    baseline_metrics = {}
-    baseline_metrics['accuracy'] = round (accuracy_score(y_test, y_pred),2)
-    baseline_metrics['balanced accuracy'] = round (balanced_accuracy_score(y_test, y_pred),2)
-    baseline_metrics['class balance accuracy'] = round (class_balance_accuracy_score(y_test, y_pred),2)
-    baseline_metrics['matthews correlation'] = round(matthews_corrcoef(y_test, y_pred),2)
-    return baseline_metrics
+def get_metrics(x_train, x_test, y_train, y_test, model='dummy'):
+    if model == 'dummy':
+        model = DummyClassifier(strategy = 'stratified')
+    model.fit(x_train, y_train)
+    y_pred = model.predict(x_test)
+    metrics = {}
+    metrics['accuracy'] = round (accuracy_score(y_test, y_pred),2)
+    metrics['balanced accuracy'] = round (balanced_accuracy_score(y_test, y_pred),2)
+    metrics['class balance accuracy'] = round (class_balance_accuracy_score(y_test, y_pred),2)
+    metrics['matthews correlation'] = round(matthews_corrcoef(y_test, y_pred),2)
+    return metrics
 
-def get_model_metrics(pipe, x_train, y_train, x_test, y_test):
-    pass
+def get_accuracy_per_class(y_test, pred):
+    cm = confusion_matrix(y_test, pred)
+    accuracy_per_class = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
+    accuracy_per_class = pd.DataFrame(accuracy_per_class.diagonal())
+    accuracy_per_class.columns = ["accuracy"]
+    unique, frequency = np.unique(y_test, return_counts=True)
+    accuracy_per_class["class"], accuracy_per_class["counts"] = unique, frequency
+    accuracy_per_class = accuracy_per_class[["class", "counts", "accuracy"]]
+    return accuracy_per_class
 
 def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
                               metric):
@@ -62,25 +70,6 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     print("The best score from the cross-validation for \n the supplied scorer (" +
           refit + ") is %s"
           % (round(pipe.best_score_, 2)))
-
-    pred = pipe.best_estimator_.predict(x_test)
-    cm = confusion_matrix(y_test, pred)
-
-    print("Model accuracy on the test set is %s percent"
-          % (int(pipe.best_estimator_.score(x_test, y_test) * 100)))
-    print("Balanced accuracy on the test set is %s percent"
-          % (int(balanced_accuracy_score(y_test, pred) * 100)))
-    print("Class balance accuracy on the test set is %s percent"
-          % (int(class_balance_accuracy_score(y_test, pred) * 100)))
-    print("Matthews correlation on the test set is %s "
-          % (round(matthews_corrcoef(y_test, pred), 2)))
-
-    accuracy_per_class = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
-    accuracy_per_class = pd.DataFrame(accuracy_per_class.diagonal())
-    accuracy_per_class.columns = ["accuracy"]
-    unique, frequency = np.unique(y_test, return_counts=True)
-    accuracy_per_class["class"], accuracy_per_class["counts"] = unique, frequency
-    accuracy_per_class = accuracy_per_class[["class", "counts", "accuracy"]]
 
     tuning_results = pd.DataFrame(pipe.cv_results_)
     tuned_learners = []
