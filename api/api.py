@@ -14,6 +14,20 @@ def index():
 @app.get('/predict_from_sql')
 def predict(ids: str,
             target: str):
+    """
+    This function creates an SQL query string based on the 'ids' param. It then obtains the text data from the SQL
+    database using an SQL connector. This will need to be configured in a my.conf file. The text data is then converted
+    to a pandas dataframe and this is used to formulate the prediction using the model of choice. The model used to generate
+    predictions is dependent on the 'target' parameter.
+
+    Args:
+        ids (str): ids of the text data to be used for predictions, in the format '1,2,3,4,5,6'. Can take up to 5000 ids
+        target (str): type of prediction to be chosen. Can either be 'label' or 'criticality'.
+
+    Returns:
+        list: List of the predictions, each in dictionary format, containing 'id' and 'predictions'. e.g.
+        [{'id': 1, 'predictions': '3'}, {'id': 2, 'predictions': '1'}]. This is converted to JSON by FastAPI.
+    """
     q = ids.split(',')
     placeholders= ', '.join(['%s']*len(q))  # "%s, %s, %s, ... %s"
     if target == 'label':
