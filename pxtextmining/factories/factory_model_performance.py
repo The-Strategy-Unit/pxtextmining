@@ -2,9 +2,24 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.metrics import balanced_accuracy_score, confusion_matrix, matthews_corrcoef
+from sklearn.metrics import balanced_accuracy_score, confusion_matrix, matthews_corrcoef, accuracy_score
 from pxtextmining.helpers.metrics import class_balance_accuracy_score
+from sklearn.dummy import DummyClassifier
 
+
+def get_baseline_metrics(x_train, x_test, y_train, y_test):
+    dummy = DummyClassifier(strategy = 'stratified')
+    dummy.fit(x_train, y_train)
+    y_pred = dummy.predict(x_test)
+    baseline_metrics = {}
+    baseline_metrics['accuracy'] = round (accuracy_score(y_test, y_pred),2)
+    baseline_metrics['balanced accuracy'] = round (balanced_accuracy_score(y_test, y_pred),2)
+    baseline_metrics['class balance accuracy'] = round (class_balance_accuracy_score(y_test, y_pred),2)
+    baseline_metrics['matthews correlation'] = round(matthews_corrcoef(y_test, y_pred),2)
+    return baseline_metrics
+
+def get_model_metrics(pipe, x_train, y_train, x_test, y_test):
+    pass
 
 def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
                               metric):
@@ -123,3 +138,11 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     pipe.best_estimator_.fit(pd.concat([x_train, x_test]), np.concatenate([y_train, y_test]))
 
     return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar
+
+
+if __name__ == '__main__':
+    from factory_data_load_and_split import factory_data_load_and_split
+    x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
+        factory_data_load_and_split(filename='datasets/text_data.csv', target="label", predictor="feedback",
+                                 test_size=0.33)
+    print(get_baseline_metrics(x_train, x_test, y_train, y_test))
