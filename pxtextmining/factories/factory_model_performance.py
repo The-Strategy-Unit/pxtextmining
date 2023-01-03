@@ -134,4 +134,4 @@ if __name__ == '__main__':
     x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
         factory_data_load_and_split(filename='datasets/text_data.csv', target="label", predictor="feedback",
                                  test_size=0.33)
-    print(get_baseline_metrics(x_train, x_test, y_train, y_test))
+    print(get_metrics(x_train, x_test, y_train, y_test))
