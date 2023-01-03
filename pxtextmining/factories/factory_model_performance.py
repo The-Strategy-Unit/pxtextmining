@@ -10,14 +10,14 @@ from sklearn.dummy import DummyClassifier
 def get_metrics(x_train, x_test, y_train, y_test, model='dummy'):
     if model == 'dummy':
         model = DummyClassifier(strategy = 'stratified')
-    model.fit(x_train, y_train)
+        model.fit(x_train, y_train)
     y_pred = model.predict(x_test)
     metrics = {}
     metrics['accuracy'] = round (accuracy_score(y_test, y_pred),2)
     metrics['balanced accuracy'] = round (balanced_accuracy_score(y_test, y_pred),2)
     metrics['class balance accuracy'] = round (class_balance_accuracy_score(y_test, y_pred),2)
     metrics['matthews correlation'] = round(matthews_corrcoef(y_test, y_pred),2)
-    return metrics
+    return metrics, y_pred
 
 def get_accuracy_per_class(y_test, pred):
     cm = confusion_matrix(y_test, pred)
@@ -30,7 +30,7 @@ def get_accuracy_per_class(y_test, pred):
     return accuracy_per_class
 
 def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
-                              metric):
+                              metric="class_balance_accuracy_score"):
 
     """
     Evaluate the performance of a fitted pipeline.
@@ -62,6 +62,11 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     pipe.best_estimator_.steps.pop(estimator_position)
     pipe.best_estimator_.steps.append(("clf", best_estimator))
     pipe.best_estimator_.fit(x_train, y_train)
+
+
+    perf_metrics, pred = get_metrics(x_train, x_test, y_train, y_test, model=pipe.best_estimator_)
+    baseline_metrics, baseline_preds = get_metrics(x_train, x_test, y_train, y_test, model = 'dummy')
+    accuracy_per_class = get_accuracy_per_class(y_test, pred)
 
     print("The best estimator is %s" % (pipe.best_estimator_.named_steps["clf"]))
     print("The best parameters are:")
@@ -126,12 +131,18 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     print("Fitting optimal pipeline on whole dataset...")
     pipe.best_estimator_.fit(pd.concat([x_train, x_test]), np.concatenate([y_train, y_test]))
 
-    return pipe, tuning_results, accuracy_per_class, p_compare_models_bar
+    return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, perf_metrics, baseline_metrics
 
 
 if __name__ == '__main__':
     from factory_data_load_and_split import factory_data_load_and_split
+    from factory_pipeline import factory_pipeline
     x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
         factory_data_load_and_split(filename='datasets/text_data.csv', target="label", predictor="feedback",
                                  test_size=0.33)
-    print(get_metrics(x_train, x_test, y_train, y_test))
+    pipe = factory_pipeline(x_train, y_train, learners=[
+                         "ComplementNB",
+                         "MultinomialNB",
+                     ], n_iter=10)
+    pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, perf_metrics, baseline_metrics = \
+        factory_model_performance(pipe, x_train, y_train, x_test, y_test)

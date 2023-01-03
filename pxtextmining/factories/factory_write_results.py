@@ -7,11 +7,11 @@ import shutil
 import pickle
 # import feather
 from sqlalchemy import create_engine
+from factory_model_performance import get_metrics
 
-
-def factory_write_results(pipe, tuning_results, accuracy_per_class, p_compare_models_bar,
-                          target, x_train, x_test, index_training_data, index_test_data, metric,
-                          objects_to_save=[
+def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar,
+                          target, index_training_data, index_test_data, metric, perf_metrics,
+                          baseline_metrics, objects_to_save=[
                                      "pipeline",
                                      "tuning results",
                                      "predictions",
@@ -71,8 +71,7 @@ def factory_write_results(pipe, tuning_results, accuracy_per_class, p_compare_mo
     index_training_data = pd.DataFrame(index_training_data, columns=["row_index"])
     index_test_data = pd.DataFrame(index_test_data, columns=["row_index"])
 
-    preds = pipe.best_estimator_.predict(x_test)
-    pred = pd.DataFrame(preds, columns=[target + "_pred"])
+    pred = pd.DataFrame(pred, columns=[target + "_pred"])
     pred["row_index"] = index_test_data
 
     # ====== Write results to database ====== #
@@ -161,6 +160,13 @@ def factory_write_results(pipe, tuning_results, accuracy_per_class, p_compare_mo
     if "bar plot" in objects_to_save:
         aux = path.join(results_file, "p_compare_models_bar_" + metric + "_" + target + ".png")
         p_compare_models_bar.figure.savefig(aux)
+
+    # Write performance metrics
+    metrics_file = path.join(results_file, "model_summary.txt")
+    with open(metrics_file, 'w') as f:
+        f.write(perf_metrics)
+        f.write('\n')
+        f.write(baseline_metrics)
 
     # db = mysql.connector.connect(option_files="my.conf", use_pure=True)
     # sql_query = [
