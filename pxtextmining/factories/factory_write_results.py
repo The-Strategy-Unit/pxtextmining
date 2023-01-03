@@ -9,7 +9,7 @@ import pickle
 from sqlalchemy import create_engine
 
 
-def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar,
+def factory_write_results(pipe, tuning_results, accuracy_per_class, p_compare_models_bar,
                           target, x_train, x_test, index_training_data, index_test_data, metric,
                           objects_to_save=[
                                      "pipeline",
@@ -70,7 +70,9 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
 
     index_training_data = pd.DataFrame(index_training_data, columns=["row_index"])
     index_test_data = pd.DataFrame(index_test_data, columns=["row_index"])
-    pred = pd.DataFrame(pred, columns=[target + "_pred"])
+
+    preds = pipe.best_estimator_.predict(x_test)
+    pred = pd.DataFrame(preds, columns=[target + "_pred"])
     pred["row_index"] = index_test_data
 
     # ====== Write results to database ====== #

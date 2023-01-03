@@ -126,7 +126,7 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     print("Fitting optimal pipeline on whole dataset...")
     pipe.best_estimator_.fit(pd.concat([x_train, x_test]), np.concatenate([y_train, y_test]))
 
-    return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar
+    return pipe, tuning_results, accuracy_per_class, p_compare_models_bar
 
 
 if __name__ == '__main__':
