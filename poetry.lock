@@ -854,7 +854,7 @@ requests = "*"
 
 [[package]]
 name = "wasabi"
-version = "0.8.2"
+version = "0.10.1"
 description = "A lightweight console printing and formatting toolkit"
 category = "main"
 optional = false
@@ -886,7 +886,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "f98e97365dc04e06c17ea668a2aa0d4943af9570784bd922be2d4ec28f957a35"
+content-hash = "1ff245013321c4ab33f36fe639dc2f813a6b993acbecae5bd627dfe6f8509e1f"
 
 [metadata.files]
 anyio = [
@@ -1811,8 +1811,8 @@ vadersentiment = [
     {file = "vaderSentiment-3.3.2.tar.gz", hash = "sha256:5d7c06e027fc8b99238edb0d53d970cf97066ef97654009890b83703849632f9"},
 ]
 wasabi = [
-    {file = "wasabi-0.8.2-py3-none-any.whl", hash = "sha256:a493e09d86109ec6d9e70d040472f9facc44634d4ae6327182f94091ca73a490"},
-    {file = "wasabi-0.8.2.tar.gz", hash = "sha256:b4a36aaa9ca3a151f0c558f269d442afbb3526f0160fd541acd8a0d5e5712054"},
+    {file = "wasabi-0.10.1-py3-none-any.whl", hash = "sha256:fe862cc24034fbc9f04717cd312ab884f71f51a8ecabebc3449b751c2a649d83"},
+    {file = "wasabi-0.10.1.tar.gz", hash = "sha256:c8e372781be19272942382b14d99314d175518d7822057cb7a97010c4259d249"},
 ]
 watchdog = [
     {file = "watchdog-2.2.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:a09483249d25cbdb4c268e020cb861c51baab2d1affd9a6affc68ffe6a231260"},
