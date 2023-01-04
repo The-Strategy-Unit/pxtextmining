@@ -110,7 +110,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
 
     pipe = factory_pipeline(x_train, y_train, tknz, ordinal, metric, cv, n_iter, n_jobs, verbose, learners, theme)
 
-    pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar = \
+    pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, model_summary = \
         factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric)
 
     pred, index_training_data, index_test_data = factory_write_results(pipe,
@@ -119,11 +119,10 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                                                        accuracy_per_class,
                                                                        p_compare_models_bar,
                                                                        target,
-                                                                       x_train,
-                                                                       x_test,
                                                                        index_training_data,
                                                                        index_test_data,
                                                                        metric,
+                                                                       model_summary,
                                                                        objects_to_save,
                                                                        save_objects_to_server,
                                                                        save_objects_to_disk,
