@@ -107,7 +107,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "cymem"
-version = "2.0.5"
+version = "2.0.7"
 description = "Manage calls to calloc/free through Cython"
 category = "main"
 optional = false
@@ -1223,7 +1223,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "88e70af3c4673c44e78fe871a98956ac2a97ad0e0059449aaa75c2a02f5ac320"
+content-hash = "248a78428288237b9e6e79db73522c57ce739ee25bb368e845fd99ad20895dbc"
 
 [metadata.files]
 absl-py = [
@@ -1297,19 +1297,34 @@ cycler = [
     {file = "cycler-0.11.0.tar.gz", hash = "sha256:9c87405839a19696e837b3b818fed3f5f69f16f1eec1a1ad77e043dcea9c772f"},
 ]
 cymem = [
-    {file = "cymem-2.0.5-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:9d72d69f7a62a280199c3aa7bc550685c47d6d0689b2d299e6492253b86d2437"},
-    {file = "cymem-2.0.5-cp36-cp36m-manylinux2014_x86_64.whl", hash = "sha256:8ea57e6923f40eb51012352161bb5707c14a5a5ce901ff72021e59df06221655"},
-    {file = "cymem-2.0.5-cp36-cp36m-win_amd64.whl", hash = "sha256:4bd023c2477198b39b660c2a6b0242880649765ecee8461688a57fd4afd2bfc0"},
-    {file = "cymem-2.0.5-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:1f0eb9b3d03623dcfc746cf8bff0663b0e347f4aea759965c8932087a0307ee9"},
-    {file = "cymem-2.0.5-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:a440d63577fcdc9c528c9cc026b7b4f8648193bac462bc0596c9eac10f9fba62"},
-    {file = "cymem-2.0.5-cp37-cp37m-win_amd64.whl", hash = "sha256:3d48902d7441645835fefc7832df49feb5362c7300d182475b63a01d25ae44ef"},
-    {file = "cymem-2.0.5-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:f2167c9959fcd639b95d51fa5efaa7c61eef8d686cb75a25412a914f428ce980"},
-    {file = "cymem-2.0.5-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:734d82d0d03c2ceb929bc1744c04dbe0a105e68a4947c8406056a36f86c41830"},
-    {file = "cymem-2.0.5-cp38-cp38-win_amd64.whl", hash = "sha256:01d3ea159f7a3f3192b1e800ed8207dac7586794d903a153198b9ea317f144bc"},
-    {file = "cymem-2.0.5-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:d307f7f6230d861a938837cae4b855226b6845a21c010242a15e9ce6853856cd"},
-    {file = "cymem-2.0.5-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:ce1e81c1d031f56b67bac2136e73b4512cbc794706cd570178972d54ba6115d8"},
-    {file = "cymem-2.0.5-cp39-cp39-win_amd64.whl", hash = "sha256:d19f68b90411e02ab33b1654118337f96f41c13a3cd00c4f44f7abed2bc712e7"},
-    {file = "cymem-2.0.5.tar.gz", hash = "sha256:190e15d9cf2c3bde60ae37bddbae6568a36044dc4a326d84081a5fa08818eee0"},
+    {file = "cymem-2.0.7-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:4981fc9182cc1fe54bfedf5f73bfec3ce0c27582d9be71e130c46e35958beef0"},
+    {file = "cymem-2.0.7-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:42aedfd2e77aa0518a24a2a60a2147308903abc8b13c84504af58539c39e52a3"},
+    {file = "cymem-2.0.7-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c183257dc5ab237b664f64156c743e788f562417c74ea58c5a3939fe2d48d6f6"},
+    {file = "cymem-2.0.7-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d18250f97eeb13af2e8b19d3cefe4bf743b963d93320b0a2e729771410fd8cf4"},
+    {file = "cymem-2.0.7-cp310-cp310-win_amd64.whl", hash = "sha256:864701e626b65eb2256060564ed8eb034ebb0a8f14ce3fbef337e88352cdee9f"},
+    {file = "cymem-2.0.7-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:314273be1f143da674388e0a125d409e2721fbf669c380ae27c5cbae4011e26d"},
+    {file = "cymem-2.0.7-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:df543a36e7000808fe0a03d92fd6cd8bf23fa8737c3f7ae791a5386de797bf79"},
+    {file = "cymem-2.0.7-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9e5e1b7de7952d89508d07601b9e95b2244e70d7ef60fbc161b3ad68f22815f8"},
+    {file = "cymem-2.0.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2aa33f1dbd7ceda37970e174c38fd1cf106817a261aa58521ba9918156868231"},
+    {file = "cymem-2.0.7-cp311-cp311-win_amd64.whl", hash = "sha256:10178e402bb512b2686b8c2f41f930111e597237ca8f85cb583ea93822ef798d"},
+    {file = "cymem-2.0.7-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a2971b7da5aa2e65d8fbbe9f2acfc19ff8e73f1896e3d6e1223cc9bf275a0207"},
+    {file = "cymem-2.0.7-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:85359ab7b490e6c897c04863704481600bd45188a0e2ca7375eb5db193e13cb7"},
+    {file = "cymem-2.0.7-cp36-cp36m-win_amd64.whl", hash = "sha256:0ac45088abffbae9b7db2c597f098de51b7e3c1023cb314e55c0f7f08440cf66"},
+    {file = "cymem-2.0.7-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:26e5d5c6958855d2fe3d5629afe85a6aae5531abaa76f4bc21b9abf9caaccdfe"},
+    {file = "cymem-2.0.7-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:011039e12d3144ac1bf3a6b38f5722b817f0d6487c8184e88c891b360b69f533"},
+    {file = "cymem-2.0.7-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6f9e63e5ad4ed6ffa21fd8db1c03b05be3fea2f32e32fdace67a840ea2702c3d"},
+    {file = "cymem-2.0.7-cp37-cp37m-win_amd64.whl", hash = "sha256:5ea6b027fdad0c3e9a4f1b94d28d213be08c466a60c72c633eb9db76cf30e53a"},
+    {file = "cymem-2.0.7-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:4302df5793a320c4f4a263c7785d2fa7f29928d72cb83ebeb34d64a610f8d819"},
+    {file = "cymem-2.0.7-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:24b779046484674c054af1e779c68cb224dc9694200ac13b22129d7fb7e99e6d"},
+    {file = "cymem-2.0.7-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6c50794c612801ed8b599cd4af1ed810a0d39011711c8224f93e1153c00e08d1"},
+    {file = "cymem-2.0.7-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a9525ad563b36dc1e30889d0087a0daa67dd7bb7d3e1530c4b61cd65cc756a5b"},
+    {file = "cymem-2.0.7-cp38-cp38-win_amd64.whl", hash = "sha256:48b98da6b906fe976865263e27734ebc64f972a978a999d447ad6c83334e3f90"},
+    {file = "cymem-2.0.7-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:e156788d32ad8f7141330913c5d5d2aa67182fca8f15ae22645e9f379abe8a4c"},
+    {file = "cymem-2.0.7-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:3da89464021fe669932fce1578343fcaf701e47e3206f50d320f4f21e6683ca5"},
+    {file = "cymem-2.0.7-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4f359cab9f16e25b3098f816c40acbf1697a3b614a8d02c56e6ebcb9c89a06b3"},
+    {file = "cymem-2.0.7-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f165d7bce55d6730930e29d8294569788aa127f1be8d1642d9550ed96223cb37"},
+    {file = "cymem-2.0.7-cp39-cp39-win_amd64.whl", hash = "sha256:59a09cf0e71b1b88bfa0de544b801585d81d06ea123c1725e7c5da05b7ca0d20"},
+    {file = "cymem-2.0.7.tar.gz", hash = "sha256:e6034badb5dd4e10344211c81f16505a55553a7164adc314c75bd80cf07e57a8"},
 ]
 deptry = [
     {file = "deptry-0.7.0-py3-none-any.whl", hash = "sha256:7363f67c100543036ed06d05781de93edc1230f639d4ac8faedd89a67c33a444"},
