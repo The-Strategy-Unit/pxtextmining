@@ -67,14 +67,20 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     perf_metrics, pred = get_metrics(x_train, x_test, y_train, y_test, model=pipe.best_estimator_)
     baseline_metrics, baseline_preds = get_metrics(x_train, x_test, y_train, y_test, model = 'dummy')
     accuracy_per_class = get_accuracy_per_class(y_test, pred)
+    best_params = {k:v for (k,v) in pipe.best_params_.items()}
 
-    print("The best estimator is %s" % (pipe.best_estimator_.named_steps["clf"]))
-    print("The best parameters are:")
-    for param, value in pipe.best_params_.items():
-        print("{}: {}".format(param, value))
-    print("The best score from the cross-validation for \n the supplied scorer (" +
-          refit + ") is %s"
-          % (round(pipe.best_score_, 2)))
+    model_summary = { 'Dummy model performance metrics': baseline_metrics,
+                      'Trained model performance metrics': perf_metrics,
+                      'Best estimator': pipe.best_estimator_.named_steps["clf"],
+                      'Best parameters': best_params
+    }
+    # print("The best estimator is %s" % (pipe.best_estimator_.named_steps["clf"]))
+    # print("The best parameters are:")
+    # for param, value in pipe.best_params_.items():
+    #     print("{}: {}".format(param, value))
+    # print("The best score from the cross-validation for \n the supplied scorer (" +
+    #       refit + ") is %s"
+    #       % (round(pipe.best_score_, 2)))
 
     tuning_results = pd.DataFrame(pipe.cv_results_)
     tuned_learners = []
@@ -131,18 +137,4 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     print("Fitting optimal pipeline on whole dataset...")
     pipe.best_estimator_.fit(pd.concat([x_train, x_test]), np.concatenate([y_train, y_test]))
 
-    return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, perf_metrics, baseline_metrics
-
-
-if __name__ == '__main__':
-    from factory_data_load_and_split import factory_data_load_and_split
-    from factory_pipeline import factory_pipeline
-    x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
-        factory_data_load_and_split(filename='datasets/text_data.csv', target="label", predictor="feedback",
-                                 test_size=0.33)
-    pipe = factory_pipeline(x_train, y_train, learners=[
-                         "ComplementNB",
-                         "MultinomialNB",
-                     ], n_iter=10)
-    pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, perf_metrics, baseline_metrics = \
-        factory_model_performance(pipe, x_train, y_train, x_test, y_test)
+    return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, model_summary

@@ -7,11 +7,17 @@ import shutil
 import pickle
 # import feather
 from sqlalchemy import create_engine
-from factory_model_performance import get_metrics
+
+
+def write_model_summary(results_file, model_summary):
+    model_summary_file = path.join(results_file, "model_summary.txt")
+    with open(model_summary_file, 'w') as f:
+        for k, v in model_summary.items():
+            f.write(f'{k}: \n {v} \n\n')
 
 def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar,
-                          target, index_training_data, index_test_data, metric, perf_metrics,
-                          baseline_metrics, objects_to_save=[
+                          target, index_training_data, index_test_data, metric, model_summary,
+                          objects_to_save=[
                                      "pipeline",
                                      "tuning results",
                                      "predictions",
@@ -162,11 +168,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
         p_compare_models_bar.figure.savefig(aux)
 
     # Write performance metrics
-    metrics_file = path.join(results_file, "model_summary.txt")
-    with open(metrics_file, 'w') as f:
-        f.write(perf_metrics)
-        f.write('\n')
-        f.write(baseline_metrics)
+    write_model_summary(results_file, model_summary)
 
     # db = mysql.connector.connect(option_files="my.conf", use_pure=True)
     # sql_query = [
