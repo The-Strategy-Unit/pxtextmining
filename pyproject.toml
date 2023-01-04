@@ -54,15 +54,21 @@ tqdm = "4.61.0"
 urllib3 = "1.26.5"
 vaderSentiment = "3.3.2"
 wasabi = "0.8.2"
-jupyter = "^1.0.0"
 tensorflow = "^2.11.0"
 transformers = "^4.24.0"
-mkdocs = "^1.4.2"
-mkdocstrings = "^0.19.0"
-mkdocstrings-python = "^0.8.2"
 uvicorn = "^0.20.0"
 fastapi = "^0.88.0"
 
+
+[tool.poetry.group.dev.dependencies]
+deptry = "^0.7.0"
+
+
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.4.2"
+mkdocstrings-python = "^0.8.2"
+mkdocstrings = "^0.19.1"
 
 [build-system]
 requires = ["poetry-core"]
