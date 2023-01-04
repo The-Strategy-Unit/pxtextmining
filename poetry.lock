@@ -482,11 +482,11 @@ mkdocstrings = ">=0.19"
 
 [[package]]
 name = "murmurhash"
-version = "1.0.5"
+version = "1.0.9"
 description = "Cython bindings for MurmurHash"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 
 [[package]]
 name = "mysql-connector-python"
@@ -1223,7 +1223,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "7f2d1033999fa53ffef20c6d997611f469863f539062577fdaf8714125101b21"
+content-hash = "3975b6eb639530f8faee57bb40a27e53668759f6174c8b0722d07473fb2bcc96"
 
 [metadata.files]
 absl-py = [
@@ -1632,23 +1632,34 @@ mkdocstrings-python = [
     {file = "mkdocstrings_python-0.8.2-py3-none-any.whl", hash = "sha256:213d9592e66e084a9bd2fa4956d6294a3487c6dc9cc45164058d6317249b7b6e"},
 ]
 murmurhash = [
-    {file = "murmurhash-1.0.5-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:ef8819d15973e0d6f69688bafc097a1fae081675c1de39807028869a1320b1a9"},
-    {file = "murmurhash-1.0.5-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:76251513a2acad6c2e4b7aeffc5fcb807ee97a66cad5c2990557556555a6b7e9"},
-    {file = "murmurhash-1.0.5-cp36-cp36m-manylinux2014_x86_64.whl", hash = "sha256:d58315961dc5a5e740f41f2ac5c3a0ebc61ef472f8afeb4db7eeb3b863243105"},
-    {file = "murmurhash-1.0.5-cp36-cp36m-win_amd64.whl", hash = "sha256:23c56182822a1ed88e2a098ac56958dfec380696a9a943df203b9b41e4bcf5e4"},
-    {file = "murmurhash-1.0.5-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:023391cfefe584ac544c1ea0936976c0119b17dd27bb8280652cef1704f76428"},
-    {file = "murmurhash-1.0.5-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:f00321998f0a6bad3fd068babf448a296d4b0b1f4dd424cab863ebe5ed54182f"},
-    {file = "murmurhash-1.0.5-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:8381172e03c5f6f947005fb146a53c5e5a9e0d630be4a40cbf8838e9324bfe1c"},
-    {file = "murmurhash-1.0.5-cp37-cp37m-win_amd64.whl", hash = "sha256:fed7578fbaa6c301f27ed80834c1f7494ea7d335e269e98b9aee477cf0b3b487"},
-    {file = "murmurhash-1.0.5-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:d4c3a0242014cf4c84e9ea0ba3f13b48f02a3992de3da7b1116d11b816451195"},
-    {file = "murmurhash-1.0.5-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:99e55488476a5f70e8d305fd31258f140e52f724f788bcc50c31ec846a2b3766"},
-    {file = "murmurhash-1.0.5-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:b9292c532538cf47846ca81056cfeab08b877c35fe7521d6524aa92ddcd833e2"},
-    {file = "murmurhash-1.0.5-cp38-cp38-win_amd64.whl", hash = "sha256:fd17973fd4554715efd8d86b3e9200358e49e437fdb92a897ca127aced48b61c"},
-    {file = "murmurhash-1.0.5-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:81474a45c4074637a6dfc8fea4cdebf091ab5aa781c2cfcb94c43b16030badd7"},
-    {file = "murmurhash-1.0.5-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:a9bd2312996e6e47605af305a1e5f091eba1bdd637cdd9986aec4885cb4c5530"},
-    {file = "murmurhash-1.0.5-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:892749023da26420d194f37bfa30df1368aaac0149cfa3b2105db36b66549e37"},
-    {file = "murmurhash-1.0.5-cp39-cp39-win_amd64.whl", hash = "sha256:add366944eb8ec73013a4f36e166c5a4f0f7628ffe1746bc5fe031347489e5e8"},
-    {file = "murmurhash-1.0.5.tar.gz", hash = "sha256:98ec9d727bd998a35385abd56b062cf0cca216725ea7ec5068604ab566f7e97f"},
+    {file = "murmurhash-1.0.9-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:697ed01454d92681c7ae26eb1adcdc654b54062bcc59db38ed03cad71b23d449"},
+    {file = "murmurhash-1.0.9-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:5ef31b5c11be2c064dbbdd0e22ab3effa9ceb5b11ae735295c717c120087dd94"},
+    {file = "murmurhash-1.0.9-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d7a2bd203377a31bbb2d83fe3f968756d6c9bbfa36c64c6ebfc3c6494fc680bc"},
+    {file = "murmurhash-1.0.9-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0eb0f8e652431ea238c11bcb671fef5c03aff0544bf7e098df81ea4b6d495405"},
+    {file = "murmurhash-1.0.9-cp310-cp310-win_amd64.whl", hash = "sha256:cf0b3fe54dca598f5b18c9951e70812e070ecb4c0672ad2cc32efde8a33b3df6"},
+    {file = "murmurhash-1.0.9-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:5dc41be79ba4d09aab7e9110a8a4d4b37b184b63767b1b247411667cdb1057a3"},
+    {file = "murmurhash-1.0.9-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:c0f84ecdf37c06eda0222f2f9e81c0974e1a7659c35b755ab2fdc642ebd366db"},
+    {file = "murmurhash-1.0.9-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:241693c1c819148eac29d7882739b1099c891f1f7431127b2652c23f81722cec"},
+    {file = "murmurhash-1.0.9-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:47f5ca56c430230d3b581dfdbc54eb3ad8b0406dcc9afdd978da2e662c71d370"},
+    {file = "murmurhash-1.0.9-cp311-cp311-win_amd64.whl", hash = "sha256:660ae41fc6609abc05130543011a45b33ca5d8318ae5c70e66bbd351ca936063"},
+    {file = "murmurhash-1.0.9-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:01137d688a6b259bde642513506b062364ea4e1609f886d9bd095c3ae6da0b94"},
+    {file = "murmurhash-1.0.9-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1b70bbf55d89713873a35bd4002bc231d38e530e1051d57ca5d15f96c01fd778"},
+    {file = "murmurhash-1.0.9-cp36-cp36m-win_amd64.whl", hash = "sha256:3e802fa5b0e618ee99e8c114ce99fc91677f14e9de6e18b945d91323a93c84e8"},
+    {file = "murmurhash-1.0.9-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:213d0248e586082e1cab6157d9945b846fd2b6be34357ad5ea0d03a1931d82ba"},
+    {file = "murmurhash-1.0.9-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:94b89d02aeab5e6bad5056f9d08df03ac7cfe06e61ff4b6340feb227fda80ce8"},
+    {file = "murmurhash-1.0.9-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0c2e2ee2d91a87952fe0f80212e86119aa1fd7681f03e6c99b279e50790dc2b3"},
+    {file = "murmurhash-1.0.9-cp37-cp37m-win_amd64.whl", hash = "sha256:8c3d69fb649c77c74a55624ebf7a0df3c81629e6ea6e80048134f015da57b2ea"},
+    {file = "murmurhash-1.0.9-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:ab78675510f83e7a3c6bd0abdc448a9a2b0b385b0d7ee766cbbfc5cc278a3042"},
+    {file = "murmurhash-1.0.9-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:0ac5530c250d2b0073ed058555847c8d88d2d00229e483d45658c13b32398523"},
+    {file = "murmurhash-1.0.9-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:69157e8fa6b25c4383645227069f6a1f8738d32ed2a83558961019ca3ebef56a"},
+    {file = "murmurhash-1.0.9-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2aebe2ae016525a662ff772b72a2c9244a673e3215fcd49897f494258b96f3e7"},
+    {file = "murmurhash-1.0.9-cp38-cp38-win_amd64.whl", hash = "sha256:a5952f9c18a717fa17579e27f57bfa619299546011a8378a8f73e14eece332f6"},
+    {file = "murmurhash-1.0.9-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:ef79202feeac68e83971239169a05fa6514ecc2815ce04c8302076d267870f6e"},
+    {file = "murmurhash-1.0.9-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:799fcbca5693ad6a40f565ae6b8e9718e5875a63deddf343825c0f31c32348fa"},
+    {file = "murmurhash-1.0.9-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f9b995bc82eaf9223e045210207b8878fdfe099a788dd8abd708d9ee58459a9d"},
+    {file = "murmurhash-1.0.9-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b129e1c5ebd772e6ff5ef925bcce695df13169bd885337e6074b923ab6edcfc8"},
+    {file = "murmurhash-1.0.9-cp39-cp39-win_amd64.whl", hash = "sha256:379bf6b414bd27dd36772dd1570565a7d69918e980457370838bd514df0d91e9"},
+    {file = "murmurhash-1.0.9.tar.gz", hash = "sha256:fe7a38cb0d3d87c14ec9dddc4932ffe2dbc77d75469ab80fd5014689b0e07b58"},
 ]
 mysql-connector-python = [
     {file = "mysql-connector-python-8.0.23.tar.gz", hash = "sha256:5e84dcc25d4b505118e0c28f07de496a41bc0ab121232a2aba83d0248cd49257"},
