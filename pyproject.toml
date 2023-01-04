@@ -32,7 +32,6 @@ tqdm = "4.61.0"
 urllib3 = "1.26.5"
 vaderSentiment = "3.3.2"
 wasabi = "0.8.2"
-tensorflow = "^2.11.0"
 uvicorn = "^0.20.0"
 fastapi = "^0.88.0"
 
