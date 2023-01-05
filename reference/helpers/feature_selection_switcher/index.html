@@ -201,38 +201,22 @@
 
         <details class="quote">
           <summary>Source code in <code>pxtextmining/helpers/feature_selection_switcher.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">FeatureSelectionSwitcher</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class for choosing between Scikit-learn</span>
-<span class="sd">    [feature selection tests](https://scikit-learn.org/stable/modules/feature_selection.html#) for use with</span>
-<span class="sd">    [sklearn.feature_selection.SelectPercentile](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+          <pre class="highlight"><code class="language-python">class FeatureSelectionSwitcher(BaseEstimator, TransformerMixin):
+    """
+    Class for choosing between Scikit-learn
+    [feature selection tests](https://scikit-learn.org/stable/modules/feature_selection.html#) for use with
+    [sklearn.feature_selection.SelectPercentile](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectPercentile.html).
+    """
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="n">SelectPercentile</span><span class="p">()):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selector</span> <span class="o">=</span> <span class="n">selector</span>
+    def __init__(self, selector=SelectPercentile()):
+        self.selector = selector
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span>
+    def fit(self, X, y, **kwargs):
+        self.selector.fit(X, y)
+        return self
 
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+    def transform(self, X, y=None, **kwargs):
+        return self.selector.transform(X)</code></pre>
         </details>
 
   
@@ -250,7 +234,7 @@
 
 
 <h6 id="pxtextmining.helpers.feature_selection_switcher.FeatureSelectionSwitcher.selector" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">selector</span> <span class="o">=</span> <span class="n">selector</span></code>
+<code class="highlight language-python">selector = selector</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -271,7 +255,7 @@
 
 
 <h6 id="pxtextmining.helpers.feature_selection_switcher.FeatureSelectionSwitcher.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">selector</span><span class="o">=</span><span class="n">SelectPercentile</span><span class="p">())</span></code>
+<code class="highlight language-python">__init__(selector=SelectPercentile())</code>
 
 </h6>
 
@@ -280,10 +264,8 @@
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/feature_selection_switcher.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
-<span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="n">SelectPercentile</span><span class="p">()):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">selector</span> <span class="o">=</span> <span class="n">selector</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def __init__(self, selector=SelectPercentile()):
+    self.selector = selector</code></pre>
       </details>
   </div>
 
@@ -294,7 +276,7 @@
 
 
 <h6 id="pxtextmining.helpers.feature_selection_switcher.FeatureSelectionSwitcher.fit" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python">fit(X, y, **kwargs)</code>
 
 </h6>
 
@@ -303,12 +285,9 @@
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/feature_selection_switcher.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def fit(self, X, y, **kwargs):
+    self.selector.fit(X, y)
+    return self</code></pre>
       </details>
   </div>
 
@@ -319,7 +298,7 @@
 
 
 <h6 id="pxtextmining.helpers.feature_selection_switcher.FeatureSelectionSwitcher.transform" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python">transform(X, y=None, **kwargs)</code>
 
 </h6>
 
@@ -328,10 +307,8 @@
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/feature_selection_switcher.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def transform(self, X, y=None, **kwargs):
+    return self.selector.transform(X)</code></pre>
       </details>
   </div>
 

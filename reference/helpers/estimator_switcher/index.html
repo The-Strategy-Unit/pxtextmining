@@ -206,52 +206,29 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
         <details class="quote">
           <summary>Source code in <code>pxtextmining/helpers/estimator_switcher.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ClfSwitcher</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class to add different learners as pipeline parameters in a</span>
-<span class="sd">    [sklearn.pipeline.Pipeline](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) or</span>
-<span class="sd">    [imblearn.pipeline.Pipeline](https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline).</span>
-<span class="sd">    Code taken from [this post](https://stackoverflow.com/questions/48507651/multiple-classification-models-in-a-scikit-pipeline-python)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+          <pre class="highlight"><code class="language-python">class ClfSwitcher(BaseEstimator):
+    """
+    Class to add different learners as pipeline parameters in a
+    [sklearn.pipeline.Pipeline](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) or
+    [imblearn.pipeline.Pipeline](https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html#imblearn.pipeline.Pipeline).
+    Code taken from [this post](https://stackoverflow.com/questions/48507651/multiple-classification-models-in-a-scikit-pipeline-python)
+    """
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SGDClassifier</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">)):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
+    def __init__(self, estimator=SGDClassifier(max_iter=10000)):
+        self.estimator = estimator
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span>
+    def fit(self, X, y=None, **kwargs):
+        self.estimator.fit(X, y)
+        return self
 
-    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    def predict(self, X, y=None):
+        return self.estimator.predict(X)
 
-    <span class="k">def</span> <span class="nf">predict_proba</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    def predict_proba(self, X):
+        return self.estimator.predict_proba(X)
 
-    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+    def score(self, X, y):
+        return self.estimator.score(X, y)</code></pre>
         </details>
 
   
@@ -269,7 +246,7 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
 
 <h6 id="pxtextmining.helpers.estimator_switcher.ClfSwitcher.estimator" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span></code>
+<code class="highlight language-python">estimator = estimator</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -290,7 +267,7 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
 
 <h6 id="pxtextmining.helpers.estimator_switcher.ClfSwitcher.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">SGDClassifier</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">))</span></code>
+<code class="highlight language-python">__init__(estimator=SGDClassifier(max_iter=10000))</code>
 
 </h6>
 
@@ -299,10 +276,8 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/estimator_switcher.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SGDClassifier</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">)):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def __init__(self, estimator=SGDClassifier(max_iter=10000)):
+    self.estimator = estimator</code></pre>
       </details>
   </div>
 
@@ -313,7 +288,7 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
 
 <h6 id="pxtextmining.helpers.estimator_switcher.ClfSwitcher.fit" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python">fit(X, y=None, **kwargs)</code>
 
 </h6>
 
@@ -322,12 +297,9 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/estimator_switcher.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def fit(self, X, y=None, **kwargs):
+    self.estimator.fit(X, y)
+    return self</code></pre>
       </details>
   </div>
 
@@ -338,7 +310,7 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
 
 <h6 id="pxtextmining.helpers.estimator_switcher.ClfSwitcher.predict" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python">predict(X, y=None)</code>
 
 </h6>
 
@@ -347,10 +319,8 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/estimator_switcher.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def predict(self, X, y=None):
+    return self.estimator.predict(X)</code></pre>
       </details>
   </div>
 
@@ -361,7 +331,7 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
 
 <h6 id="pxtextmining.helpers.estimator_switcher.ClfSwitcher.predict_proba" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></code>
+<code class="highlight language-python">predict_proba(X)</code>
 
 </h6>
 
@@ -370,10 +340,8 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/estimator_switcher.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">predict_proba</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def predict_proba(self, X):
+    return self.estimator.predict_proba(X)</code></pre>
       </details>
   </div>
 
@@ -384,7 +352,7 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
 
 <h6 id="pxtextmining.helpers.estimator_switcher.ClfSwitcher.score" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code>
+<code class="highlight language-python">score(X, y)</code>
 
 </h6>
 
@@ -393,10 +361,8 @@ Code taken from <a href="https://stackoverflow.com/questions/48507651/multiple-c
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/estimator_switcher.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def score(self, X, y):
+    return self.estimator.score(X, y)</code></pre>
       </details>
   </div>
 

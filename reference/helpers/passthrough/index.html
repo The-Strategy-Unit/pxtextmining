@@ -196,34 +196,20 @@ Taken from <a href="https://stackoverflow.com/questions/54592115/appending-the-c
 
         <details class="quote">
           <summary>Source code in <code>pxtextmining/helpers/passthrough.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Passthrough</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class for passing through features that require no preprocessing.</span>
-<span class="sd">    Taken from [this guide](https://stackoverflow.com/questions/54592115/appending-the-columntransformer-result-to-the-original-data-within-a-pipeline)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+          <pre class="highlight"><code class="language-python">class Passthrough(BaseEstimator, TransformerMixin):
+    """
+    Class for passing through features that require no preprocessing.
+    Taken from [this guide](https://stackoverflow.com/questions/54592115/appending-the-columntransformer-result-to-the-original-data-within-a-pipeline)
+    """
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span>
+    def fit(self, X, y=None):
+        return self
 
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="c1"># Single-column data frames are Pandas series, which Scikit-learn doesn&#39;t know how to deal with. Make sure that</span>
-        <span class="c1"># result is always a data frame.</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">X</span>
-</code></pre></div></td></tr></table></div>
+    def transform(self, X):
+        # Single-column data frames are Pandas series, which Scikit-learn doesn't know how to deal with. Make sure that
+        # result is always a data frame.
+        X = pd.DataFrame(X)
+        return X</code></pre>
         </details>
 
   
@@ -243,7 +229,7 @@ Taken from <a href="https://stackoverflow.com/questions/54592115/appending-the-c
 
 
 <h6 id="pxtextmining.helpers.passthrough.Passthrough.fit" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python">fit(X, y=None)</code>
 
 </h6>
 
@@ -252,10 +238,8 @@ Taken from <a href="https://stackoverflow.com/questions/54592115/appending-the-c
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/passthrough.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def fit(self, X, y=None):
+    return self</code></pre>
       </details>
   </div>
 
@@ -266,7 +250,7 @@ Taken from <a href="https://stackoverflow.com/questions/54592115/appending-the-c
 
 
 <h6 id="pxtextmining.helpers.passthrough.Passthrough.transform" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></code>
+<code class="highlight language-python">transform(X)</code>
 
 </h6>
 
@@ -275,16 +259,11 @@ Taken from <a href="https://stackoverflow.com/questions/54592115/appending-the-c
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/passthrough.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-    <span class="c1"># Single-column data frames are Pandas series, which Scikit-learn doesn&#39;t know how to deal with. Make sure that</span>
-    <span class="c1"># result is always a data frame.</span>
-    <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">X</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def transform(self, X):
+    # Single-column data frames are Pandas series, which Scikit-learn doesn't know how to deal with. Make sure that
+    # result is always a data frame.
+    X = pd.DataFrame(X)
+    return X</code></pre>
       </details>
   </div>
 

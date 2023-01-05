@@ -201,36 +201,21 @@ in the randomized search.</p>
 
         <details class="quote">
           <summary>Source code in <code>pxtextmining/helpers/scaler_switcher.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ScalerSwitcher</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class for switching between ``Scikit-learn``</span>
-<span class="sd">    [scalers and preprocessors](https://scikit-learn.org/stable/modules/preprocessing.html#)</span>
-<span class="sd">    in the randomized search.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+          <pre class="highlight"><code class="language-python">class ScalerSwitcher(BaseEstimator, TransformerMixin):
+    """
+    Class for switching between ``Scikit-learn``
+    [scalers and preprocessors](https://scikit-learn.org/stable/modules/preprocessing.html#)
+    in the randomized search.
+    """
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scaler</span><span class="o">=</span><span class="n">MinMaxScaler</span><span class="p">()):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span> <span class="o">=</span> <span class="n">scaler</span>
+    def __init__(self, scaler=MinMaxScaler()):
+        self.scaler = scaler
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span>
+    def fit(self, X, y=None):
+        return self
 
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+    def transform(self, X, y=None):
+        return self.scaler.fit_transform(X)</code></pre>
         </details>
 
   
@@ -248,7 +233,7 @@ in the randomized search.</p>
 
 
 <h6 id="pxtextmining.helpers.scaler_switcher.ScalerSwitcher.scaler" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">scaler</span> <span class="o">=</span> <span class="n">scaler</span></code>
+<code class="highlight language-python">scaler = scaler</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -269,7 +254,7 @@ in the randomized search.</p>
 
 
 <h6 id="pxtextmining.helpers.scaler_switcher.ScalerSwitcher.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">scaler</span><span class="o">=</span><span class="n">MinMaxScaler</span><span class="p">())</span></code>
+<code class="highlight language-python">__init__(scaler=MinMaxScaler())</code>
 
 </h6>
 
@@ -278,10 +263,8 @@ in the randomized search.</p>
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/scaler_switcher.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scaler</span><span class="o">=</span><span class="n">MinMaxScaler</span><span class="p">()):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span> <span class="o">=</span> <span class="n">scaler</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def __init__(self, scaler=MinMaxScaler()):
+    self.scaler = scaler</code></pre>
       </details>
   </div>
 
@@ -292,7 +275,7 @@ in the randomized search.</p>
 
 
 <h6 id="pxtextmining.helpers.scaler_switcher.ScalerSwitcher.fit" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python">fit(X, y=None)</code>
 
 </h6>
 
@@ -301,10 +284,8 @@ in the randomized search.</p>
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/scaler_switcher.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
-<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def fit(self, X, y=None):
+    return self</code></pre>
       </details>
   </div>
 
@@ -315,7 +296,7 @@ in the randomized search.</p>
 
 
 <h6 id="pxtextmining.helpers.scaler_switcher.ScalerSwitcher.transform" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python">transform(X, y=None)</code>
 
 </h6>
 
@@ -324,10 +305,8 @@ in the randomized search.</p>
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/scaler_switcher.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def transform(self, X, y=None):
+    return self.scaler.fit_transform(X)</code></pre>
       </details>
   </div>
 

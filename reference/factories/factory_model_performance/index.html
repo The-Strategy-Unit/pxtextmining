@@ -67,6 +67,10 @@
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="./">Factory model performance</a>
     <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#pxtextmining.factories.factory_model_performance.get_metrics">get_metrics()</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pxtextmining.factories.factory_model_performance.get_accuracy_per_class">get_accuracy_per_class()</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#pxtextmining.factories.factory_model_performance.factory_model_performance">factory_model_performance()</a>
     </li>
     </ul>
@@ -173,8 +177,178 @@
 
 
 
+<h5 id="pxtextmining.factories.factory_model_performance.get_metrics" class="doc doc-heading">
+<code class="highlight language-python">get_metrics(x_train, x_test, y_train, y_test, model=None)</code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Function to produce performance metrics for a specific machine learning model.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>x_train</code></td>
+          <td>
+                <code>pd.DataFrame</code>
+          </td>
+          <td><p>Training data (predictor).</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>y_train</code></td>
+          <td>
+                <code>pd.Series</code>
+          </td>
+          <td><p>Training data (target).</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>x_test</code></td>
+          <td>
+                <code>pd.DataFrame</code>
+          </td>
+          <td><p>Test data (predictor).</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>y_test</code></td>
+          <td>
+                <code>pd.Series</code>
+          </td>
+          <td><p>Test data (target).</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>model</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Trained classifier. Defaults to 'dummy' which instantiates dummy classifier for baseline metrics.</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>tuple</code>
+          </td>
+          <td><p>A tuple containing the following objects, in order: A python dict containing the performance metrics 'accuracy', 'balanced accuracy', 'class balance accuracy', and 'matthews correlation coefficient'; A pd.Series containing the predicted values for x_test, produced by the model.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_model_performance.get_accuracy_per_class" class="doc doc-heading">
+<code class="highlight language-python">get_accuracy_per_class(y_test, pred)</code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Function to produce accuracy per class for the predicted categories, compared against real values.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>y_test</code></td>
+          <td>
+                <code>pd.Series</code>
+          </td>
+          <td><p>Test data (real target values).</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>pred</code></td>
+          <td>
+                <code>pd.Series</code>
+          </td>
+          <td><p>Predicted target values.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>pd.DataFrame</code>
+          </td>
+          <td><p>The computed accuracy per class metrics for the model.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
 <h5 id="pxtextmining.factories.factory_model_performance.factory_model_performance" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">factory_model_performance</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span></code>
+<code class="highlight language-python">factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric='class_balance_accuracy_score')</code>
 
 </h5>
 
@@ -251,7 +425,7 @@
           </td>
           <td><p>Performance metrics ("accuracy_score", "balanced_accuracy_score", "matthews_corrcoef", "class_balance_accuracy_score").</p></td>
           <td>
-              <em>required</em>
+                <code>&#39;class_balance_accuracy_score&#39;</code>
           </td>
         </tr>
     </tbody>
@@ -270,7 +444,7 @@
           <td>
                 <code>tuple</code>
           </td>
-          <td><p>A tuple containing the following objects, in order: The fitted Scikit-learn/imblearn pipeline; A pandas.DataFrame with all (hyper)parameter values and models tried during fitting; A pandas.DataFrame with the predictions on the test set; A pandas.DataFrame with accuracies per class; A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on the training set, for the best (hyper)parameter values for each learner;</p></td>
+          <td><p>A tuple containing the following objects, in order: The fitted Scikit-learn/imblearn pipeline; A pandas.DataFrame with all (hyper)parameter values and models tried during fitting; A pandas.DataFrame with the predictions on the test set; A pandas.DataFrame with accuracies per class; A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on the training set, for the best (hyper)parameter values for each learner; A dict containing performance metrics and model metadata.</p></td>
         </tr>
     </tbody>
   </table>

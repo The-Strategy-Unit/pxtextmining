@@ -174,7 +174,7 @@
 
 
 <h5 id="pxtextmining.helpers.sentiment_scores.sentiment_scores" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">sentiment_scores</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></code>
+<code class="highlight language-python">sentiment_scores(X)</code>
 
 </h5>
 
@@ -229,74 +229,40 @@ sentiments and compound score).</p>
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/sentiment_scores.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sentiment_scores</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate sentiment indicators from `TextBlob &lt;https://textblob.readthedocs.io/en/dev/&gt;`_ (polarity and</span>
-<span class="sd">    subjectivity) and `vaderSentiment &lt;https://pypi.org/project/vaderSentiment/&gt;`_ (positive, negative and neutral</span>
-<span class="sd">    sentiments and compound score).</span>
+        <pre class="highlight"><code class="language-python">def sentiment_scores(X):
+    """
+    Calculate sentiment indicators from `TextBlob &lt;https://textblob.readthedocs.io/en/dev/&gt;`_ (polarity and
+    subjectivity) and `vaderSentiment &lt;https://pypi.org/project/vaderSentiment/&gt;`_ (positive, negative and neutral
+    sentiments and compound score).
 
-<span class="sd">    :param pd.DataFrame X: A dictionary, ``pandas.DataFrame``, tuple or list with the text strings. If it is a</span>
-<span class="sd">        dictionary, it must have a single key (column).</span>
-<span class="sd">    :return: A ``pandas.DataFrame`` with the sentiment scores for each text record. Shape [n_samples, 6].</span>
-<span class="sd">    :rtype: pd.DataFrame</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    :param pd.DataFrame X: A dictionary, ``pandas.DataFrame``, tuple or list with the text strings. If it is a
+        dictionary, it must have a single key (column).
+    :return: A ``pandas.DataFrame`` with the sentiment scores for each text record. Shape [n_samples, 6].
+    :rtype: pd.DataFrame
+    """
 
-    <span class="n">vader_analyser</span> <span class="o">=</span> <span class="n">SentimentIntensityAnalyzer</span><span class="p">()</span>
-    <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;predictor&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>
-    <span class="n">text_blob_scores</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">vader_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    vader_analyser = SentimentIntensityAnalyzer()
+    X = pd.DataFrame(X).copy().rename(lambda x: 'predictor', axis='columns')
+    text_blob_scores = []
+    vader_scores = []
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;predictor&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;nan&#39;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="n">text_blob_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TextBlob</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">sentiment</span><span class="p">)</span>
-        <span class="n">vader_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vader_analyser</span><span class="o">.</span><span class="n">polarity_scores</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+    for i in X.index:
+        text = X.loc[i, 'predictor']
+        if text is None or str(text) == 'nan':
+            text = ''
+        text_blob_scores.append(TextBlob(text).sentiment)
+        vader_scores.append(vader_analyser.polarity_scores(text))
 
-    <span class="n">text_blob_scores_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">text_blob_scores</span><span class="p">)</span>
-    <span class="n">text_blob_scores_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;text_blob_&#39;</span> <span class="o">+</span> <span class="n">text_blob_scores_df</span><span class="o">.</span><span class="n">columns</span>
-    <span class="n">text_blob_scores_df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">index</span>
+    text_blob_scores_df = pd.DataFrame(text_blob_scores)
+    text_blob_scores_df.columns = 'text_blob_' + text_blob_scores_df.columns
+    text_blob_scores_df.index = X.index
 
-    <span class="n">vader_scores_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">vader_scores</span><span class="p">)</span>
-    <span class="n">vader_scores_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;vader_&#39;</span> <span class="o">+</span> <span class="n">vader_scores_df</span><span class="o">.</span><span class="n">columns</span>
-    <span class="n">vader_scores_df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">index</span>
+    vader_scores_df = pd.DataFrame.from_dict(vader_scores)
+    vader_scores_df.columns = 'vader_' + vader_scores_df.columns
+    vader_scores_df.index = X.index
 
-    <span class="n">all_scores</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">text_blob_scores_df</span><span class="p">,</span> <span class="n">vader_scores_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">all_scores</span>
-</code></pre></div></td></tr></table></div>
+    all_scores = pd.concat([text_blob_scores_df, vader_scores_df], axis=1, ignore_index=False)
+    return all_scores</code></pre>
       </details>
   </div>
 

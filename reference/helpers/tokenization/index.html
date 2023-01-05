@@ -182,7 +182,7 @@
 
 
 <h5 id="pxtextmining.helpers.tokenization.nlp" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_core_web_sm&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python">nlp = spacy.load('en_core_web_sm')</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
@@ -219,42 +219,24 @@ Uses <a href="https://spacy.io/">spaCy</a> (<code>tknz == 'spacy'</code>) or <a 
 
         <details class="quote">
           <summary>Source code in <code>pxtextmining/helpers/tokenization.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">LemmaTokenizer</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class for custom lemmatization in</span>
-<span class="sd">    [sklearn.feature_extraction.text.TfidfVectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html)</span>
-<span class="sd">    (see [this](https://scikit-learn.org/stable/modules/feature_extraction.html?highlight=stemming)).</span>
-<span class="sd">    Uses [spaCy](https://spacy.io/) (``tknz == &#39;spacy&#39;``) or [NLTK](https://www.nltk.org/) (``tknz == &#39;wordnet&#39;``).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+          <pre class="highlight"><code class="language-python">class LemmaTokenizer:
+    """
+    Class for custom lemmatization in
+    [sklearn.feature_extraction.text.TfidfVectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html)
+    (see [this](https://scikit-learn.org/stable/modules/feature_extraction.html?highlight=stemming)).
+    Uses [spaCy](https://spacy.io/) (``tknz == 'spacy'``) or [NLTK](https://www.nltk.org/) (``tknz == 'wordnet'``).
+    """
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tknz</span><span class="o">=</span><span class="s1">&#39;wordnet&#39;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tknz</span> <span class="o">=</span> <span class="n">tknz</span>
+    def __init__(self, tknz='wordnet'):
+        self.tknz = tknz
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tknz</span> <span class="o">==</span> <span class="s1">&#39;wordnet&#39;</span><span class="p">:</span>
-            <span class="n">wln</span> <span class="o">=</span> <span class="n">WordNetLemmatizer</span><span class="p">()</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">wln</span><span class="o">.</span><span class="n">lemmatize</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">word_tokenize</span><span class="p">(</span><span class="n">doc</span><span class="p">)]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tknz</span> <span class="o">==</span> <span class="s1">&#39;spacy&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">lemma_</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">nlp</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span>
-                                          <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tagger&quot;</span><span class="p">,</span> <span class="s2">&quot;parser&quot;</span><span class="p">,</span> <span class="s2">&quot;ner&quot;</span><span class="p">])]</span>
-</code></pre></div></td></tr></table></div>
+    def __call__(self, doc):
+        if self.tknz == 'wordnet':
+            wln = WordNetLemmatizer()
+            return [wln.lemmatize(t) for t in word_tokenize(doc)]
+        if self.tknz == 'spacy':
+            return [t.lemma_ for t in nlp(doc,
+                                          disable=["tagger", "parser", "ner"])]</code></pre>
         </details>
 
   
@@ -272,7 +254,7 @@ Uses <a href="https://spacy.io/">spaCy</a> (<code>tknz == 'spacy'</code>) or <a 
 
 
 <h6 id="pxtextmining.helpers.tokenization.LemmaTokenizer.tknz" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">tknz</span> <span class="o">=</span> <span class="n">tknz</span></code>
+<code class="highlight language-python">tknz = tknz</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -293,7 +275,7 @@ Uses <a href="https://spacy.io/">spaCy</a> (<code>tknz == 'spacy'</code>) or <a 
 
 
 <h6 id="pxtextmining.helpers.tokenization.LemmaTokenizer.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">tknz</span><span class="o">=</span><span class="s1">&#39;wordnet&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python">__init__(tknz='wordnet')</code>
 
 </h6>
 
@@ -302,10 +284,8 @@ Uses <a href="https://spacy.io/">spaCy</a> (<code>tknz == 'spacy'</code>) or <a 
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/tokenization.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tknz</span><span class="o">=</span><span class="s1">&#39;wordnet&#39;</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tknz</span> <span class="o">=</span> <span class="n">tknz</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def __init__(self, tknz='wordnet'):
+    self.tknz = tknz</code></pre>
       </details>
   </div>
 
@@ -316,7 +296,7 @@ Uses <a href="https://spacy.io/">spaCy</a> (<code>tknz == 'spacy'</code>) or <a 
 
 
 <h6 id="pxtextmining.helpers.tokenization.LemmaTokenizer.__call__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__call__</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></code>
+<code class="highlight language-python">__call__(doc)</code>
 
 </h6>
 
@@ -325,20 +305,13 @@ Uses <a href="https://spacy.io/">spaCy</a> (<code>tknz == 'spacy'</code>) or <a 
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/tokenization.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tknz</span> <span class="o">==</span> <span class="s1">&#39;wordnet&#39;</span><span class="p">:</span>
-        <span class="n">wln</span> <span class="o">=</span> <span class="n">WordNetLemmatizer</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">wln</span><span class="o">.</span><span class="n">lemmatize</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">word_tokenize</span><span class="p">(</span><span class="n">doc</span><span class="p">)]</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tknz</span> <span class="o">==</span> <span class="s1">&#39;spacy&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">lemma_</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">nlp</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span>
-                                      <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tagger&quot;</span><span class="p">,</span> <span class="s2">&quot;parser&quot;</span><span class="p">,</span> <span class="s2">&quot;ner&quot;</span><span class="p">])]</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def __call__(self, doc):
+    if self.tknz == 'wordnet':
+        wln = WordNetLemmatizer()
+        return [wln.lemmatize(t) for t in word_tokenize(doc)]
+    if self.tknz == 'spacy':
+        return [t.lemma_ for t in nlp(doc,
+                                      disable=["tagger", "parser", "ner"])]</code></pre>
       </details>
   </div>
 

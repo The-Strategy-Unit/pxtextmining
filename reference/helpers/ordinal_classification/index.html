@@ -319,212 +319,109 @@ safely ignored.</p>
 
         <details class="quote">
           <summary>Source code in <code>pxtextmining/helpers/ordinal_classification.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  8</span>
-<span class="normal">  9</span>
-<span class="normal"> 10</span>
-<span class="normal"> 11</span>
-<span class="normal"> 12</span>
-<span class="normal"> 13</span>
-<span class="normal"> 14</span>
-<span class="normal"> 15</span>
-<span class="normal"> 16</span>
-<span class="normal"> 17</span>
-<span class="normal"> 18</span>
-<span class="normal"> 19</span>
-<span class="normal"> 20</span>
-<span class="normal"> 21</span>
-<span class="normal"> 22</span>
-<span class="normal"> 23</span>
-<span class="normal"> 24</span>
-<span class="normal"> 25</span>
-<span class="normal"> 26</span>
-<span class="normal"> 27</span>
-<span class="normal"> 28</span>
-<span class="normal"> 29</span>
-<span class="normal"> 30</span>
-<span class="normal"> 31</span>
-<span class="normal"> 32</span>
-<span class="normal"> 33</span>
-<span class="normal"> 34</span>
-<span class="normal"> 35</span>
-<span class="normal"> 36</span>
-<span class="normal"> 37</span>
-<span class="normal"> 38</span>
-<span class="normal"> 39</span>
-<span class="normal"> 40</span>
-<span class="normal"> 41</span>
-<span class="normal"> 42</span>
-<span class="normal"> 43</span>
-<span class="normal"> 44</span>
-<span class="normal"> 45</span>
-<span class="normal"> 46</span>
-<span class="normal"> 47</span>
-<span class="normal"> 48</span>
-<span class="normal"> 49</span>
-<span class="normal"> 50</span>
-<span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">OrdinalClassifier</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
+          <pre class="highlight"><code class="language-python">class OrdinalClassifier(BaseEstimator):
 
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Estimator class for building an ordinal classification model using the method of</span>
-<span class="sd">    [Frank and Hall (2001)](https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf)</span>
-<span class="sd">    based on code published online in [this post](https://towardsdatascience.com/simple-trick-to-train-an-ordinal-regression-with-any-classifier-6911183d2a3c).</span>
+    """
+    Estimator class for building an ordinal classification model using the method of
+    [Frank and Hall (2001)](https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf)
+    based on code published online in [this post](https://towardsdatascience.com/simple-trick-to-train-an-ordinal-regression-with-any-classifier-6911183d2a3c).
 
-<span class="sd">    **NOTE:** As described later, the argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation</span>
-<span class="sd">    Trust or other trusts who use the theme (&quot;Access&quot;, &quot;Environment/ facilities&quot; etc.) labels,</span>
-<span class="sd">    and is only relevant for models predicting &#39;criticality&#39;. It can otherwise be</span>
-<span class="sd">    safely ignored.</span>
+    **NOTE:** As described later, the argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
+    Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels,
+    and is only relevant for models predicting 'criticality'. It can otherwise be
+    safely ignored.
 
-<span class="sd">    :param estimator estimator: A Scikit-learn classifier.</span>
-<span class="sd">    :param dict clfs: Helper variable. Defined inside the class.</span>
-<span class="sd">    :param pd.Series y_factorized: Helper variable. Defined inside the class.</span>
-<span class="sd">    :param int unique_class: Helper variable. Defined inside the class.</span>
-<span class="sd">    :param dict class_dict: Helper variable. Defined inside the class.</span>
-<span class="sd">    :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts</span>
-<span class="sd">        that use theme labels (&quot;Access&quot;, &quot;Environment/ facilities&quot; etc.). The column name of the theme variable.</span>
-<span class="sd">        Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)</span>
-<span class="sd">        in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to</span>
-<span class="sd">        help the model improve predictions on criticality when the theme labels are readily available. Second, to force</span>
-<span class="sd">        the criticality for &quot;Couldn&#39;t be improved&quot; to always be &quot;3&quot; in the training and test data, as well as in the</span>
-<span class="sd">        predictions. This is the only criticality value that &quot;Couldn&#39;t be improved&quot; can take, so by forcing it to always</span>
-<span class="sd">        be &quot;3&quot;, we are improving model performance, but are also correcting possible erroneous assignments of values</span>
-<span class="sd">        other than &quot;3&quot; that are attributed to human error.</span>
-<span class="sd">    :param str target_class_value: The criticality value to assign to &quot;Couldn&#39;t be improved&quot;.</span>
-<span class="sd">    :param int theme_class_value: The value of &quot;Couldn&#39;t be improved&quot; in the transformed (e.g. one-hot encoded) theme</span>
-<span class="sd">        column.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    :param estimator estimator: A Scikit-learn classifier.
+    :param dict clfs: Helper variable. Defined inside the class.
+    :param pd.Series y_factorized: Helper variable. Defined inside the class.
+    :param int unique_class: Helper variable. Defined inside the class.
+    :param dict class_dict: Helper variable. Defined inside the class.
+    :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
+        that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
+        Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
+        in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
+        help the model improve predictions on criticality when the theme labels are readily available. Second, to force
+        the criticality for "Couldn't be improved" to always be "3" in the training and test data, as well as in the
+        predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
+        be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
+        other than "3" that are attributed to human error.
+    :param str target_class_value: The criticality value to assign to "Couldn't be improved".
+    :param int theme_class_value: The value of "Couldn't be improved" in the transformed (e.g. one-hot encoded) theme
+        column.
+    """
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">(),</span> <span class="n">clfs</span><span class="o">=</span><span class="p">{},</span> <span class="n">y_factorized</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">class_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">theme</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_class_value</span><span class="o">=</span><span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="n">theme_class_value</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">clfs</span> <span class="o">=</span> <span class="n">clfs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y_factorized</span> <span class="o">=</span> <span class="n">y_factorized</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span> <span class="o">=</span> <span class="n">unique_class</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">class_dict</span> <span class="o">=</span> <span class="n">class_dict</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">theme</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">target_class_value</span> <span class="o">=</span> <span class="n">target_class_value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">theme_class_value</span> <span class="o">=</span> <span class="n">theme_class_value</span>
+    def __init__(self, estimator=LogisticRegression(), clfs={}, y_factorized=None, unique_class=None, class_dict=None,
+                 theme=None, target_class_value='3', theme_class_value=1):
+        self.estimator = estimator
+        self.clfs = clfs
+        self.y_factorized = y_factorized
+        self.unique_class = unique_class
+        self.class_dict = class_dict
+        self.theme = theme
+        self.target_class_value = target_class_value
+        self.theme_class_value = theme_class_value
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y_factorized</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">factorize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_factorized</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">class_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_factorized</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+    def fit(self, X, y=None, **kwargs):
+        self.y_factorized = pd.Series(y.astype('int64')).factorize(sort=True)[0]
+        self.unique_class = np.sort(np.unique(self.y_factorized))
+        self.class_dict = dict(zip(self.y_factorized, y))
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="c1"># for each k - 1 ordinal value we fit a binary classification problem</span>
-                <span class="n">y_binary</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_factorized</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
-                <span class="n">estimator</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">)</span>
-                <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y_binary</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">clfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">estimator</span>
-        <span class="k">return</span> <span class="bp">self</span>
+        if self.unique_class.shape[0] &gt; 2:
+            for i in range(self.unique_class.shape[0] - 1):
+                # for each k - 1 ordinal value we fit a binary classification problem
+                y_binary = (self.y_factorized &gt; self.unique_class[i]).astype(np.uint8)
+                estimator = clone(self.estimator)
+                estimator.fit(X, y_binary)
+                self.clfs[i] = estimator
+        return self
 
-    <span class="k">def</span> <span class="nf">predict_proba_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="n">clfs_predict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">clfs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clfs</span><span class="p">}</span>
-        <span class="n">predicted</span> <span class="o">=</span> <span class="p">[]</span>
+    def predict_proba_all(self, X):
+        clfs_predict = {k: self.clfs[k].predict_proba(X) for k in self.clfs}
+        predicted = []
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># V1 = 1 - Pr(y &gt; V1)</span>
-                    <span class="n">predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">clfs_predict</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">])</span>
-                <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">clfs_predict</span><span class="p">:</span>
-                    <span class="c1"># Vi = Pr(y &gt; Vi-1) - Pr(y &gt; Vi)</span>
-                    <span class="n">predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clfs_predict</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">clfs_predict</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">])</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># Vk = Pr(y &gt; Vk-1)</span>
-                    <span class="n">predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clfs_predict</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">predicted</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        if self.unique_class.shape[0] &gt; 2:
+            for i in self.unique_class:
+                if i == 0:
+                    # V1 = 1 - Pr(y &gt; V1)
+                    predicted.append(1 - clfs_predict[i][:, 1])
+                elif i in clfs_predict:
+                    # Vi = Pr(y &gt; Vi-1) - Pr(y &gt; Vi)
+                    predicted.append(clfs_predict[i - 1][:, 1] - clfs_predict[i][:, 1])
+                else:
+                    # Vk = Pr(y &gt; Vk-1)
+                    predicted.append(clfs_predict[i - 1][:, 1])
+        return np.vstack(predicted).T
 
-    <span class="k">def</span> <span class="nf">predict_proba</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_proba_all</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    def predict_proba(self, X):
+        return np.max(self.predict_proba_all(X), axis=1)
 
-    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_proba_all</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">y_pred_orig_class_names</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">y_pred</span><span class="p">:</span>
-            <span class="n">y_pred_orig_class_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_dict</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">re</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_pred_orig_class_names</span><span class="p">)</span>
+    def predict(self, X):
+        y_pred = np.argmax(self.predict_proba_all(X), axis=1)
+        y_pred_orig_class_names = []
+        for i in y_pred:
+            y_pred_orig_class_names.append(self.class_dict[i])
+        re = np.array(y_pred_orig_class_names)
 
-        <span class="c1"># This is for internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts that use theme</span>
-        <span class="c1"># labels (&quot;Access&quot;, &quot;Environment/ facilities&quot; etc.). We want the criticality for &quot;Couldn&#39;t be improved&quot; to</span>
-        <span class="c1"># always be &quot;3&quot; (or theme_class_value). The theme label is passed as a one-hot encoded set of columns, of</span>
-        <span class="c1"># which the first is for &quot;Couldn&#39;t be improved&quot;. The one-hot encoded columns are actually the first columns of</span>
-        <span class="c1"># the whole sparse matrix that has the TF-IDFs, sentiment features etc. So we want to find the records</span>
-        <span class="c1"># with &quot;Couldn&#39;t be improved&quot; (i.e. records with a value of 1) in the first, one-hot encoded, column and replace</span>
-        <span class="c1"># the predicted criticality values with &quot;3&quot;.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-                <span class="n">theme_col</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">theme_col</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span>
-            <span class="n">no_improvements_index</span> <span class="o">=</span> <span class="n">theme_col</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">theme_col</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_class_value</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
-            <span class="n">re</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">re</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;aux&#39;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">theme_col</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">no_improvements_index</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_class_value</span>
-            <span class="n">re</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">aux</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">re</span>
+        # This is for internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts that use theme
+        # labels ("Access", "Environment/ facilities" etc.). We want the criticality for "Couldn't be improved" to
+        # always be "3" (or theme_class_value). The theme label is passed as a one-hot encoded set of columns, of
+        # which the first is for "Couldn't be improved". The one-hot encoded columns are actually the first columns of
+        # the whole sparse matrix that has the TF-IDFs, sentiment features etc. So we want to find the records
+        # with "Couldn't be improved" (i.e. records with a value of 1) in the first, one-hot encoded, column and replace
+        # the predicted criticality values with "3".
+        if self.theme is not None:
+            if isinstance(X[:, 0], np.ndarray):
+                theme_col = pd.DataFrame(X[:, 0])
+            else:
+                theme_col = pd.DataFrame(X[:, 0].todense())
+            no_improvements_index = theme_col.loc[theme_col.iloc[:, 0] == self.theme_class_value].index
+            re = pd.DataFrame(re, columns=['aux'], index=theme_col.index)
+            re.loc[no_improvements_index] = self.target_class_value
+            re = np.array(re.aux)
+        return re
 
-    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+    def score(self, X, y):
+        return self.estimator.score(X, y)</code></pre>
         </details>
 
   
@@ -542,7 +439,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.estimator" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span></code>
+<code class="highlight language-python">estimator = estimator</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -561,7 +458,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.clfs" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">clfs</span> <span class="o">=</span> <span class="n">clfs</span></code>
+<code class="highlight language-python">clfs = clfs</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -580,7 +477,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.y_factorized" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">y_factorized</span> <span class="o">=</span> <span class="n">y_factorized</span></code>
+<code class="highlight language-python">y_factorized = y_factorized</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -599,7 +496,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.unique_class" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">unique_class</span> <span class="o">=</span> <span class="n">unique_class</span></code>
+<code class="highlight language-python">unique_class = unique_class</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -618,7 +515,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.class_dict" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">class_dict</span> <span class="o">=</span> <span class="n">class_dict</span></code>
+<code class="highlight language-python">class_dict = class_dict</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -637,7 +534,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.theme" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">theme</span> <span class="o">=</span> <span class="n">theme</span></code>
+<code class="highlight language-python">theme = theme</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -656,7 +553,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.target_class_value" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">target_class_value</span> <span class="o">=</span> <span class="n">target_class_value</span></code>
+<code class="highlight language-python">target_class_value = target_class_value</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -675,7 +572,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.theme_class_value" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">theme_class_value</span> <span class="o">=</span> <span class="n">theme_class_value</span></code>
+<code class="highlight language-python">theme_class_value = theme_class_value</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
@@ -696,7 +593,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">(),</span> <span class="n">clfs</span><span class="o">=</span><span class="p">{},</span> <span class="n">y_factorized</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">class_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_class_value</span><span class="o">=</span><span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="n">theme_class_value</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+<code class="highlight language-python">__init__(estimator=LogisticRegression(), clfs={}, y_factorized=None, unique_class=None, class_dict=None, theme=None, target_class_value='3', theme_class_value=1)</code>
 
 </h6>
 
@@ -705,26 +602,16 @@ safely ignored.</p>
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/ordinal_classification.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">(),</span> <span class="n">clfs</span><span class="o">=</span><span class="p">{},</span> <span class="n">y_factorized</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">class_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">theme</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_class_value</span><span class="o">=</span><span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="n">theme_class_value</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">clfs</span> <span class="o">=</span> <span class="n">clfs</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">y_factorized</span> <span class="o">=</span> <span class="n">y_factorized</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span> <span class="o">=</span> <span class="n">unique_class</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">class_dict</span> <span class="o">=</span> <span class="n">class_dict</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">theme</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">target_class_value</span> <span class="o">=</span> <span class="n">target_class_value</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">theme_class_value</span> <span class="o">=</span> <span class="n">theme_class_value</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def __init__(self, estimator=LogisticRegression(), clfs={}, y_factorized=None, unique_class=None, class_dict=None,
+             theme=None, target_class_value='3', theme_class_value=1):
+    self.estimator = estimator
+    self.clfs = clfs
+    self.y_factorized = y_factorized
+    self.unique_class = unique_class
+    self.class_dict = class_dict
+    self.theme = theme
+    self.target_class_value = target_class_value
+    self.theme_class_value = theme_class_value</code></pre>
       </details>
   </div>
 
@@ -735,7 +622,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.fit" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python">fit(X, y=None, **kwargs)</code>
 
 </h6>
 
@@ -744,32 +631,19 @@ safely ignored.</p>
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/ordinal_classification.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">y_factorized</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">factorize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_factorized</span><span class="p">))</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">class_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_factorized</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+        <pre class="highlight"><code class="language-python">def fit(self, X, y=None, **kwargs):
+    self.y_factorized = pd.Series(y.astype('int64')).factorize(sort=True)[0]
+    self.unique_class = np.sort(np.unique(self.y_factorized))
+    self.class_dict = dict(zip(self.y_factorized, y))
 
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="c1"># for each k - 1 ordinal value we fit a binary classification problem</span>
-            <span class="n">y_binary</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_factorized</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
-            <span class="n">estimator</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">)</span>
-            <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y_binary</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">clfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">estimator</span>
-    <span class="k">return</span> <span class="bp">self</span>
-</code></pre></div></td></tr></table></div>
+    if self.unique_class.shape[0] &gt; 2:
+        for i in range(self.unique_class.shape[0] - 1):
+            # for each k - 1 ordinal value we fit a binary classification problem
+            y_binary = (self.y_factorized &gt; self.unique_class[i]).astype(np.uint8)
+            estimator = clone(self.estimator)
+            estimator.fit(X, y_binary)
+            self.clfs[i] = estimator
+    return self</code></pre>
       </details>
   </div>
 
@@ -780,7 +654,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.predict_proba_all" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_proba_all</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></code>
+<code class="highlight language-python">predict_proba_all(X)</code>
 
 </h6>
 
@@ -789,38 +663,22 @@ safely ignored.</p>
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/ordinal_classification.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">predict_proba_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-    <span class="n">clfs_predict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">clfs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clfs</span><span class="p">}</span>
-    <span class="n">predicted</span> <span class="o">=</span> <span class="p">[]</span>
+        <pre class="highlight"><code class="language-python">def predict_proba_all(self, X):
+    clfs_predict = {k: self.clfs[k].predict_proba(X) for k in self.clfs}
+    predicted = []
 
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_class</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># V1 = 1 - Pr(y &gt; V1)</span>
-                <span class="n">predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">clfs_predict</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">])</span>
-            <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">clfs_predict</span><span class="p">:</span>
-                <span class="c1"># Vi = Pr(y &gt; Vi-1) - Pr(y &gt; Vi)</span>
-                <span class="n">predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clfs_predict</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">clfs_predict</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Vk = Pr(y &gt; Vk-1)</span>
-                <span class="n">predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clfs_predict</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">predicted</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-</code></pre></div></td></tr></table></div>
+    if self.unique_class.shape[0] &gt; 2:
+        for i in self.unique_class:
+            if i == 0:
+                # V1 = 1 - Pr(y &gt; V1)
+                predicted.append(1 - clfs_predict[i][:, 1])
+            elif i in clfs_predict:
+                # Vi = Pr(y &gt; Vi-1) - Pr(y &gt; Vi)
+                predicted.append(clfs_predict[i - 1][:, 1] - clfs_predict[i][:, 1])
+            else:
+                # Vk = Pr(y &gt; Vk-1)
+                predicted.append(clfs_predict[i - 1][:, 1])
+    return np.vstack(predicted).T</code></pre>
       </details>
   </div>
 
@@ -831,7 +689,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.predict_proba" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></code>
+<code class="highlight language-python">predict_proba(X)</code>
 
 </h6>
 
@@ -840,10 +698,8 @@ safely ignored.</p>
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/ordinal_classification.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">81</span>
-<span class="normal">82</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">predict_proba</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_proba_all</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def predict_proba(self, X):
+    return np.max(self.predict_proba_all(X), axis=1)</code></pre>
       </details>
   </div>
 
@@ -854,7 +710,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.predict" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></code>
+<code class="highlight language-python">predict(X)</code>
 
 </h6>
 
@@ -863,54 +719,30 @@ safely ignored.</p>
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/ordinal_classification.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_proba_all</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">y_pred_orig_class_names</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">y_pred</span><span class="p">:</span>
-        <span class="n">y_pred_orig_class_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_dict</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-    <span class="n">re</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_pred_orig_class_names</span><span class="p">)</span>
+        <pre class="highlight"><code class="language-python">def predict(self, X):
+    y_pred = np.argmax(self.predict_proba_all(X), axis=1)
+    y_pred_orig_class_names = []
+    for i in y_pred:
+        y_pred_orig_class_names.append(self.class_dict[i])
+    re = np.array(y_pred_orig_class_names)
 
-    <span class="c1"># This is for internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts that use theme</span>
-    <span class="c1"># labels (&quot;Access&quot;, &quot;Environment/ facilities&quot; etc.). We want the criticality for &quot;Couldn&#39;t be improved&quot; to</span>
-    <span class="c1"># always be &quot;3&quot; (or theme_class_value). The theme label is passed as a one-hot encoded set of columns, of</span>
-    <span class="c1"># which the first is for &quot;Couldn&#39;t be improved&quot;. The one-hot encoded columns are actually the first columns of</span>
-    <span class="c1"># the whole sparse matrix that has the TF-IDFs, sentiment features etc. So we want to find the records</span>
-    <span class="c1"># with &quot;Couldn&#39;t be improved&quot; (i.e. records with a value of 1) in the first, one-hot encoded, column and replace</span>
-    <span class="c1"># the predicted criticality values with &quot;3&quot;.</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">theme_col</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">theme_col</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span>
-        <span class="n">no_improvements_index</span> <span class="o">=</span> <span class="n">theme_col</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">theme_col</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_class_value</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
-        <span class="n">re</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">re</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;aux&#39;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">theme_col</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-        <span class="n">re</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">no_improvements_index</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_class_value</span>
-        <span class="n">re</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">aux</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">re</span>
-</code></pre></div></td></tr></table></div>
+    # This is for internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts that use theme
+    # labels ("Access", "Environment/ facilities" etc.). We want the criticality for "Couldn't be improved" to
+    # always be "3" (or theme_class_value). The theme label is passed as a one-hot encoded set of columns, of
+    # which the first is for "Couldn't be improved". The one-hot encoded columns are actually the first columns of
+    # the whole sparse matrix that has the TF-IDFs, sentiment features etc. So we want to find the records
+    # with "Couldn't be improved" (i.e. records with a value of 1) in the first, one-hot encoded, column and replace
+    # the predicted criticality values with "3".
+    if self.theme is not None:
+        if isinstance(X[:, 0], np.ndarray):
+            theme_col = pd.DataFrame(X[:, 0])
+        else:
+            theme_col = pd.DataFrame(X[:, 0].todense())
+        no_improvements_index = theme_col.loc[theme_col.iloc[:, 0] == self.theme_class_value].index
+        re = pd.DataFrame(re, columns=['aux'], index=theme_col.index)
+        re.loc[no_improvements_index] = self.target_class_value
+        re = np.array(re.aux)
+    return re</code></pre>
       </details>
   </div>
 
@@ -921,7 +753,7 @@ safely ignored.</p>
 
 
 <h6 id="pxtextmining.helpers.ordinal_classification.OrdinalClassifier.score" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code>
+<code class="highlight language-python">score(X, y)</code>
 
 </h6>
 
@@ -930,10 +762,8 @@ safely ignored.</p>
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/ordinal_classification.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
-<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+        <pre class="highlight"><code class="language-python">def score(self, X, y):
+    return self.estimator.score(X, y)</code></pre>
       </details>
   </div>
 

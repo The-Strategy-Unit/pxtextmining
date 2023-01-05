@@ -73,6 +73,8 @@
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="./">Factory write results</a>
     <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#pxtextmining.factories.factory_write_results.write_model_summary">write_model_summary()</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#pxtextmining.factories.factory_write_results.factory_write_results">factory_write_results()</a>
     </li>
     </ul>
@@ -173,8 +175,29 @@
 
 
 
+<h5 id="pxtextmining.factories.factory_write_results.write_model_summary" class="doc doc-heading">
+<code class="highlight language-python">write_model_summary(results_file, model_summary)</code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Function to write a .txt file containing the model summary information.</p>
+<p>Args:
+    results_file (str): Filepath for the output of the pipeline to be saved.
+    model_summary (dict): Model metadata to be written.</p>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
 <h5 id="pxtextmining.factories.factory_write_results.factory_write_results" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">factory_write_results</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">tuning_results</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">accuracy_per_class</span><span class="p">,</span> <span class="n">p_compare_models_bar</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">index_training_data</span><span class="p">,</span> <span class="n">index_test_data</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">objects_to_save</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pipeline&#39;</span><span class="p">,</span> <span class="s1">&#39;tuning results&#39;</span><span class="p">,</span> <span class="s1">&#39;predictions&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy per class&#39;</span><span class="p">,</span> <span class="s1">&#39;index - training data&#39;</span><span class="p">,</span> <span class="s1">&#39;index - test data&#39;</span><span class="p">,</span> <span class="s1">&#39;bar plot&#39;</span><span class="p">],</span> <span class="n">save_objects_to_server</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_objects_to_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_pipeline_as</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">results_folder_name</span><span class="o">=</span><span class="s1">&#39;results&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python">factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, target, index_training_data, index_test_data, metric, model_summary, objects_to_save=['pipeline', 'tuning results', 'predictions', 'accuracy per class', 'index - training data', 'index - test data', 'bar plot'], save_objects_to_server=False, save_objects_to_disk=True, save_pipeline_as='default', results_folder_name='results')</code>
 
 </h5>
 
@@ -192,6 +215,7 @@
 <li>The row indices of the test data (CSV);</li>
 <li>A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
   the training set, for the best (hyper)parameter values for each learner (PNG);</li>
+<li>The model summary (txt)</li>
 </ul>
 
   <p><strong>Parameters:</strong></p>

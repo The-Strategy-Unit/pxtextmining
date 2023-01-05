@@ -174,7 +174,7 @@
 
 
 <h5 id="pxtextmining.helpers.metrics.class_balance_accuracy_score" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">class_balance_accuracy_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span></code>
+<code class="highlight language-python">class_balance_accuracy_score(y_true, y_pred)</code>
 
 </h5>
 
@@ -238,44 +238,25 @@
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/metrics.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">class_balance_accuracy_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Function for Class Balance Accuracy scorer</span>
-<span class="sd">    (p. 40 in [Mosley 2013](https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&amp;context=etd)).</span>
+        <pre class="highlight"><code class="language-python">def class_balance_accuracy_score(y_true, y_pred):
+    """
+    Function for Class Balance Accuracy scorer
+    (p. 40 in [Mosley 2013](https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&amp;context=etd)).
 
-<span class="sd">    :param array y_true: True classes, shape = [n_samples].</span>
-<span class="sd">    :param array y_pred: Predicted classes, shape = [n_samples].</span>
-<span class="sd">    :return: The Class Balance Accuracy score.</span>
-<span class="sd">    :rtype: float</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    :param array y_true: True classes, shape = [n_samples].
+    :param array y_pred: Predicted classes, shape = [n_samples].
+    :return: The Class Balance Accuracy score.
+    :rtype: float
+    """
 
-    <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-    <span class="n">c_i_dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">c_dot_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">cba</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c_dot_i</span><span class="p">)):</span>
-        <span class="n">cba</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">c_i_dot</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">c_dot_i</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-    <span class="n">cba</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">cba</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">cba</span>
-</code></pre></div></td></tr></table></div>
+    cm = confusion_matrix(y_true, y_pred)
+    c_i_dot = np.sum(cm, axis=1)
+    c_dot_i = np.sum(cm, axis=0)
+    cba = []
+    for i in range(len(c_dot_i)):
+        cba.append(cm[i][i] / max(c_i_dot[i], c_dot_i[i]))
+    cba = sum(cba) / (i + 1)
+    return cba</code></pre>
       </details>
   </div>
 

@@ -184,7 +184,7 @@
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.load_data" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">load_data</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">predictor</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python">load_data(filename, target, predictor, theme=None)</code>
 
 </h5>
 
@@ -275,7 +275,7 @@ required for training a machine learning model.</p>
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.remove_punc_and_nums" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">remove_punc_and_nums</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></code>
+<code class="highlight language-python">remove_punc_and_nums(text)</code>
 
 </h5>
 
@@ -336,7 +336,7 @@ left in, as have words in allcaps, as these may denote strong sentiment. Returns
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.clean_data" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">clean_data</span><span class="p">(</span><span class="n">text_data</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python">clean_data(text_data, target=False)</code>
 
 </h5>
 
@@ -409,7 +409,7 @@ using unlabelled data, then target = False. This function also drops NaNs.</p>
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.reduce_crit" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">reduce_crit</span><span class="p">(</span><span class="n">text_data</span><span class="p">,</span> <span class="n">theme</span><span class="p">)</span></code>
+<code class="highlight language-python">reduce_crit(text_data, theme)</code>
 
 </h5>
 
@@ -485,7 +485,7 @@ value for all comments tagged as 'Couldn't be improved' to '3'.</p>
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.process_data" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">process_data</span><span class="p">(</span><span class="n">text_data</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python">process_data(text_data, target=False)</code>
 
 </h5>
 
@@ -557,7 +557,7 @@ i.e. to make predictions using unlabelled data, then target = False.</p>
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.factory_data_load_and_split" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">factory_data_load_and_split</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">predictor</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.33</span><span class="p">,</span> <span class="n">reduce_criticality</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python">factory_data_load_and_split(filename, target, predictor, test_size=0.33, reduce_criticality=False, theme=None)</code>
 
 </h5>
 
