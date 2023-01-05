@@ -6,3 +6,4 @@ test_results_label/*
 test_results_criticality/*
 site/
 dist/
+.vscode/

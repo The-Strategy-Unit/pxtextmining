@@ -9,8 +9,20 @@ import pickle
 from sqlalchemy import create_engine
 
 
+def write_model_summary(results_file, model_summary):
+    """Function to write a .txt file containing the model summary information.
+
+    Args:
+        results_file (str): Filepath for the output of the pipeline to be saved.
+        model_summary (dict): Model metadata to be written.
+    """
+    model_summary_file = path.join(results_file, "model_summary.txt")
+    with open(model_summary_file, 'w') as f:
+        for k, v in model_summary.items():
+            f.write(f'{k}: \n {v} \n\n')
+
 def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar,
-                          target, x_train, x_test, index_training_data, index_test_data, metric,
+                          target, index_training_data, index_test_data, metric, model_summary,
                           objects_to_save=[
                                      "pipeline",
                                      "tuning results",
@@ -37,6 +49,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     - The row indices of the test data (CSV);
     - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
       the training set, for the best (hyper)parameter values for each learner (PNG);
+    - The model summary (txt)
 
     :param estimator pipe: Fitted model or pipeline
     :param pandas.core.frame.DataFrame tuning_results: All (hyper)parameter values and models tried during fitting.
@@ -70,6 +83,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
 
     index_training_data = pd.DataFrame(index_training_data, columns=["row_index"])
     index_test_data = pd.DataFrame(index_test_data, columns=["row_index"])
+
     pred = pd.DataFrame(pred, columns=[target + "_pred"])
     pred["row_index"] = index_test_data
 
@@ -159,6 +173,9 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     if "bar plot" in objects_to_save:
         aux = path.join(results_file, "p_compare_models_bar_" + metric + "_" + target + ".png")
         p_compare_models_bar.figure.savefig(aux)
+
+    # Write performance metrics
+    write_model_summary(results_file, model_summary)
 
     # db = mysql.connector.connect(option_files="my.conf", use_pure=True)
     # sql_query = [
