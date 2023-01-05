@@ -87,7 +87,7 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
 
 
     perf_metrics, pred = get_metrics(x_train, x_test, y_train, y_test, model=pipe.best_estimator_)
-    baseline_metrics, baseline_preds = get_metrics(x_train, x_test, y_train, y_test, model = 'dummy')
+    baseline_metrics, baseline_preds = get_metrics(x_train, x_test, y_train, y_test, model = None)
     accuracy_per_class = get_accuracy_per_class(y_test, pred)
     best_params = {k:v for (k,v) in pipe.best_params_.items()}
 
