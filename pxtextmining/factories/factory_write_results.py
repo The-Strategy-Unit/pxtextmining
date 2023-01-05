@@ -49,6 +49,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     - The row indices of the test data (CSV);
     - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
       the training set, for the best (hyper)parameter values for each learner (PNG);
+    - The model summary (txt)
 
     :param estimator pipe: Fitted model or pipeline
     :param pandas.core.frame.DataFrame tuning_results: All (hyper)parameter values and models tried during fitting.
