@@ -73,6 +73,7 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
             A bar plot comparing the mean scores (of the user-supplied metric parameter)
                 from the cross-validation on the training set, for the best
                 (hyper)parameter values for each learner;
+            A dict containing performance metrics and model metadata.
     :rtype: tuple
     """
 

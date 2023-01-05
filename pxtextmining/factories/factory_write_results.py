@@ -10,6 +10,12 @@ from sqlalchemy import create_engine
 
 
 def write_model_summary(results_file, model_summary):
+    """Function to write a .txt file containing the model summary information.
+
+    Args:
+        results_file (str): Filepath for the output of the pipeline to be saved.
+        model_summary (dict): Model metadata to be written.
+    """
     model_summary_file = path.join(results_file, "model_summary.txt")
     with open(model_summary_file, 'w') as f:
         for k, v in model_summary.items():
