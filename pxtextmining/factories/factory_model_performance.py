@@ -7,8 +7,22 @@ from pxtextmining.helpers.metrics import class_balance_accuracy_score
 from sklearn.dummy import DummyClassifier
 
 
-def get_metrics(x_train, x_test, y_train, y_test, model='dummy'):
-    if model == 'dummy':
+def get_metrics(x_train, x_test, y_train, y_test, model=None):
+    """Function to produce performance metrics for a specific machine learning model.
+
+    :param pd.DataFrame x_train: Training data (predictor).
+    :param pd.Series y_train: Training data (target).
+    :param pd.DataFrame x_test: Test data (predictor).
+    :param pd.Series y_test: Test data (target).
+    :param str model: Trained classifier. Defaults to 'dummy' which instantiates dummy classifier for baseline metrics.
+
+    :return: A tuple containing the following objects, in order:
+            A python dict containing the performance metrics 'accuracy', 'balanced accuracy', 'class balance accuracy',
+            and 'matthews correlation coefficient';
+            A pd.Series containing the predicted values for x_test, produced by the model.
+    :rtype: tuple
+    """
+    if model == None:
         model = DummyClassifier(strategy = 'stratified')
         model.fit(x_train, y_train)
     y_pred = model.predict(x_test)
@@ -20,6 +34,14 @@ def get_metrics(x_train, x_test, y_train, y_test, model='dummy'):
     return metrics, y_pred
 
 def get_accuracy_per_class(y_test, pred):
+    """Function to produce accuracy per class for the predicted categories, compared against real values.
+
+    :param pd.Series y_test: Test data (real target values).
+    :param pd.Series pred: Predicted target values.
+
+    :return: The computed accuracy per class metrics for the model.
+    :rtype: pd.DataFrame
+    """
     cm = confusion_matrix(y_test, pred)
     accuracy_per_class = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
     accuracy_per_class = pd.DataFrame(accuracy_per_class.diagonal())
