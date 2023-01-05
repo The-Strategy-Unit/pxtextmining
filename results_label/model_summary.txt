@@ -1,0 +1,14 @@
+Dummy model performance metrics: 
+ {'accuracy': 0.23, 'balanced accuracy': 0.11, 'class balance accuracy': 0.11, 'matthews correlation': 0.01} 
+
+Trained model performance metrics: 
+ {'accuracy': 0.7, 'balanced accuracy': 0.58, 'class balance accuracy': 0.55, 'matthews correlation': 0.62} 
+
+Best estimator: 
+ SGDClassifier(class_weight='balanced', loss='log', max_iter=10000) 
+
+Best parameters: 
+ {'sampling__kw_args': {'up_balancing_counts': 800}, 'preprocessor__texttr__text__transformer__use_idf': False, 'preprocessor__texttr__text__transformer__tokenizer': <pxtextmining.helpers.tokenization.LemmaTokenizer object at 0x7faa7da01e20>, 'preprocessor__texttr__text__transformer__norm': None, 'preprocessor__texttr__text__transformer__ngram_range': (1, 2), 'preprocessor__texttr__text__transformer__min_df': 2, 'preprocessor__texttr__text__transformer__max_df': 0.85, 'preprocessor__texttr__text__transformer': TfidfVectorizer(max_df=0.85, min_df=2, ngram_range=(1, 2), norm=None,
+                tokenizer=<pxtextmining.helpers.tokenization.LemmaTokenizer object at 0x7faa7da01e20>,
+                use_idf=False), 'preprocessor__sentimenttr__scaler__scaler__n_bins': 8, 'preprocessor__sentimenttr__scaler__scaler': KBinsDiscretizer(n_bins=8, strategy='kmeans'), 'preprocessor__lengthtr__scaler__scaler': KBinsDiscretizer(n_bins=3, strategy='kmeans'), 'featsel__selector__score_func': <function chi2 at 0x7faacce4f8b0>, 'featsel__selector__percentile': 100, 'featsel__selector': SelectPercentile(percentile=100, score_func=<function chi2 at 0x7faacce4f8b0>), 'clf__estimator__penalty': 'l2', 'clf__estimator__max_iter': 10000, 'clf__estimator__loss': 'log', 'clf__estimator__class_weight': 'balanced', 'clf__estimator': SGDClassifier(class_weight='balanced', loss='log', max_iter=10000)} 
+
