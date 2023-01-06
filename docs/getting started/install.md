@@ -15,6 +15,7 @@ This will allow you to keep the package versions required by the package separat
       - `text_venv\Scripts\activate` (Windows);
 
 ### Option 1: Install from PyPI
+This option allows you to use the functions coded in pxtextmining.
 
 1. Install `pxtextmining` and its PyPI dependencies:
       - `pip3 install pxtextmining`  (Linux & MacOS);
@@ -28,9 +29,18 @@ This will allow you to keep the package versions required by the package separat
    while.
 
 ### Option 2: Install from GitHub
+This option is recommended as it gives you access to the full datasets and already trained models.
 
 1. To begin with, clone the repository from github.
 
 2. Ensure you have poetry installed by running `pip install poetry`
 
 3. Run `poetry install`
+
+4. We also need to install a couple of
+   [`spaCy`](https://github.com/explosion/spacy-models) models.
+      - `python -m spacy download en_core_web_sm`
+      - `python -m spacy download en_core_web_lg`
+
+   Note that the second model is pretty large, so the installation may take a
+   while.
