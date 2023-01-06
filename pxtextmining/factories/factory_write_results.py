@@ -10,6 +10,12 @@ from sqlalchemy import create_engine
 
 
 def write_model_summary(results_file, model_summary):
+    """Function to write a .txt file containing the model summary information.
+
+    Args:
+        results_file (str): Filepath for the output of the pipeline to be saved.
+        model_summary (dict): Model metadata to be written.
+    """
     model_summary_file = path.join(results_file, "model_summary.txt")
     with open(model_summary_file, 'w') as f:
         for k, v in model_summary.items():
@@ -43,6 +49,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     - The row indices of the test data (CSV);
     - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
       the training set, for the best (hyper)parameter values for each learner (PNG);
+    - The model summary (txt)
 
     :param estimator pipe: Fitted model or pipeline
     :param pandas.core.frame.DataFrame tuning_results: All (hyper)parameter values and models tried during fitting.
