@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pxtextmining"
-version = "0.4.1"
+version = "0.4.2"
 description = "Text classification of patient experience feedback."
 authors = ['CDU Data Science <cdudatascience@nottshc.nhs.uk>',
 'Andreas D Soteriades <andreas.soteriades@nottshc.nhs.uk>',
