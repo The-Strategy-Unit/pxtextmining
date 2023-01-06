@@ -33,11 +33,9 @@ This option is recommended as it gives you access to the full datasets and alrea
 
 1. To begin with, clone the repository from github.
 
-2. Ensure you have poetry installed by running `pip install poetry`
+2. Navigate to the repository folder on your computer. run `pip install .`
 
-3. Run `poetry install`
-
-4. We also need to install a couple of
+3. We also need to install a couple of
    [`spaCy`](https://github.com/explosion/spacy-models) models.
       - `python -m spacy download en_core_web_sm`
       - `python -m spacy download en_core_web_lg`
