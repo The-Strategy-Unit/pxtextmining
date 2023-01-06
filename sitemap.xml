@@ -2,132 +2,132 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/about/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/getting%20started/install/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/getting%20started/training_new_model/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/getting%20started/using_trained_model/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/factories/factory_data_load_and_split/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/factories/factory_model_performance/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/factories/factory_pipeline/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/factories/factory_predict_unlabelled_text/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/factories/factory_write_results/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/decode_emojis/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/estimator_switcher/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/feature_selection_switcher/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/metrics/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/ordinal_classification/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/oversampling/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/passthrough/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/scaler_switcher/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/sentiment_scores/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/text_length/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/text_preprocessor/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/text_transformer_switcher/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/theme_binarization/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/tokenization/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/helpers/word_vectorization/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cdu-data-science-team.github.io/pxtextmining/reference/pipelines/text_classification_pipeline/</loc>
-         <lastmod>2023-01-05</lastmod>
+         <lastmod>2023-01-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

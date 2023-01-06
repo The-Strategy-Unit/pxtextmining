@@ -152,21 +152,23 @@
 <p>You can install <code>pxtextmining</code> from either <a href="https://pypi.org/project/pxtextmining/">PyPI</a> or <a href="https://github.com/CDU-data-science-team/pxtextmining">GitHub</a>.</p>
 <h3 id="optional-create-a-python-virtual-environment-in-which-to-install-pxtextmining-and-its-dependencies">Optional: create a Python Virtual Environment in which to install <code>pxtextmining</code> and its dependencies.</h3>
 <p>This will allow you to keep the package versions required by the package separate from any others that you may have installed. Let's call the virtual environment <code>text_venv</code>:</p>
+<p><em>Manually creating virtual environment</em>
+1. Open a terminal, navigate to the folder where you want to put the virtual
+   environment and run:
+      - <code>python3 -m venv text_venv</code> (Linux &amp; MacOS);
+      - <code>python -m venv text_venv</code> (Windows);
+2. Activate the virtual environment. In the folder containing folder <code>text_venv</code>
+   run:
+      - <code>source text_venv/bin/activate</code> (Linux &amp; MacOS);
+      - <code>text_venv\Scripts\activate</code> (Windows);</p>
+<p><em>Using pyenv to create the virtual environment</em>
+If you have pyenv installed:</p>
 <ol>
-<li>Open a terminal, navigate to the folder where you want to put the virtual
-   environment and run:<ul>
-<li><code>python3 -m venv text_venv</code> (Linux &amp; MacOS);</li>
-<li><code>python -m venv text_venv</code> (Windows);</li>
-</ul>
-</li>
-<li>Activate the virtual environment. In the folder containing folder <code>text_venv</code>
-   run:<ul>
-<li><code>source text_venv/bin/activate</code> (Linux &amp; MacOS);</li>
-<li><code>text_venv\Scripts\activate</code> (Windows);</li>
-</ul>
-</li>
+<li>Run <code>pyenv virtualenv text_venv</code> to create the new virtual environment.</li>
+<li>Activate it with <code>pyenv activate text_venv</code></li>
 </ol>
 <h3 id="option-1-install-from-pypi">Option 1: Install from PyPI</h3>
+<p>This option allows you to use the functions coded in pxtextmining.</p>
 <ol>
 <li>Install <code>pxtextmining</code> and its PyPI dependencies:<ul>
 <li><code>pip3 install pxtextmining</code>  (Linux &amp; MacOS);</li>
@@ -183,32 +185,25 @@
 <p>Note that the second model is pretty large, so the installation may take a
    while.</p>
 <h3 id="option-2-install-from-github">Option 2: Install from GitHub</h3>
+<p>This option is recommended as it gives you access to the full datasets and already trained models.</p>
 <ol>
 <li>
 <p>To begin with, clone the repository from github.</p>
 </li>
 <li>
-<p>Install wheel, this helps with sorting the different packages and their dependencies:</p>
-<ul>
-<li><code>pip3 install wheel</code>  (Linux &amp; MacOS);</li>
-<li><code>pip install wheel</code> (Windows);</li>
-</ul>
+<p>Navigate to the repository folder on your computer. run <code>pip install .</code></p>
 </li>
 <li>
-<p>Install all the dependencies of <code>pxtextmining</code>. Inside the repo's folder, run:</p>
+<p>We also need to install a couple of
+   <a href="https://github.com/explosion/spacy-models"><code>spaCy</code></a> models.</p>
 <ul>
-<li><code>pip3 install -r requirements.txt</code> (Linux &amp; MacOS);</li>
-<li><code>pip install -r requirements.txt</code> (Windows);</li>
-</ul>
-</li>
-<li>
-<p>Install <code>pxtextmining</code> as a Python package. Inside the repo's folder, run:</p>
-<ul>
-<li><code>python3 setup.py install</code> (Linux &amp; MacOS);</li>
-<li><code>python setup.py install</code> (Windows);</li>
+<li><code>python -m spacy download en_core_web_sm</code></li>
+<li><code>python -m spacy download en_core_web_lg</code></li>
 </ul>
 </li>
 </ol>
+<p>Note that the second model is pretty large, so the installation may take a
+   while.</p>
               
             </div>
           </div><footer>
