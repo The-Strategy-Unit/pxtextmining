@@ -2,7 +2,10 @@ from sklearn.base import BaseEstimator, TransformerMixin
 import numpy as np
 import spacy
 from pxtextmining.helpers.text_preprocessor import text_preprocessor
-nlp = spacy.load("en_core_web_lg") # Don't put this inside the function- loading it in every CV iteration would tremendously slow down the pipeline.
+try:
+    nlp = spacy.load("en_core_web_lg") # Don't put this inside the function- loading it in every CV iteration would tremendously slow down the pipeline.
+except OSError:
+    print('Have you downloaded the spacy models? Run " python -m spacy download en_core_web_lg " in your terminal')
 
 
 class EmbeddingsTransformer(TransformerMixin, BaseEstimator):
