@@ -5,7 +5,7 @@ from pxtextmining.helpers.text_preprocessor import text_preprocessor
 try:
     nlp = spacy.load("en_core_web_lg") # Don't put this inside the function- loading it in every CV iteration would tremendously slow down the pipeline.
 except OSError:
-    print('Have you downloaded the spacy models? Run " python -m spacy download en_core_web_lg " in your terminal')
+    print('Warning! Have you downloaded the spacy models? Run " python -m spacy download en_core_web_lg " in your terminal')
 
 
 class EmbeddingsTransformer(TransformerMixin, BaseEstimator):

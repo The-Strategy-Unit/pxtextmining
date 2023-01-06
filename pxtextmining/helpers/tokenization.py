@@ -5,7 +5,7 @@ import spacy
 try:
     nlp = spacy.load("en_core_web_sm") # Don't put this inside the function- loading it in every CV iteration would tremendously slow down the pipeline.
 except OSError:
-    print('Have you downloaded the spacy models? Run " python -m spacy download en_core_web_sm " in your terminal')
+    print('Warning! Have you downloaded the spacy models? Run " python -m spacy download en_core_web_sm " in your terminal')
 
 
 class LemmaTokenizer:
