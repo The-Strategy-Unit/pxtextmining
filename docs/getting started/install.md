@@ -31,13 +31,6 @@ This will allow you to keep the package versions required by the package separat
 
 1. To begin with, clone the repository from github.
 
-2. Install wheel, this helps with sorting the different packages and their dependencies:
-      - `pip3 install wheel`  (Linux & MacOS);
-      - `pip install wheel` (Windows);
-3. Install all the dependencies of `pxtextmining`. Inside the repo's folder, run:
-      - `pip3 install -r requirements.txt` (Linux & MacOS);
-      - `pip install -r requirements.txt` (Windows);
+2. Ensure you have poetry installed by running `pip install poetry`
 
-4. Install `pxtextmining` as a Python package. Inside the repo's folder, run:
-      - `python3 setup.py install` (Linux & MacOS);
-      - `python setup.py install` (Windows);
+3. Run `poetry install`
