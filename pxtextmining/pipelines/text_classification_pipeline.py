@@ -1,5 +1,5 @@
 from pxtextmining.factories.factory_data_load_and_split import factory_data_load_and_split
-from pxtextmining.factories.factory_pipeline import factory_pipeline
+from pxtextmining.factories.factory_pipeline import factory_categorical_pipeline
 from pxtextmining.factories.factory_model_performance import factory_model_performance
 from pxtextmining.factories.factory_write_results import factory_write_results
 
@@ -106,7 +106,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
         factory_data_load_and_split(filename, target, predictor, test_size, reduce_criticality, theme)
 
-    pipe = factory_pipeline(x_train, y_train, tknz, ordinal, metric, cv, n_iter, n_jobs, verbose, learners, theme)
+    pipe = factory_categorical_pipeline(x_train, y_train, tknz, ordinal, metric, cv, n_iter, n_jobs, verbose, learners, theme)
 
     pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, model_summary = \
         factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric)

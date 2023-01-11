@@ -24,7 +24,7 @@ from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitch
 from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 
 
-def factory_ordinal_pipeline(x, y, tknz="spacy",
+def factory_categorical_pipeline(x, y, tknz="spacy",
                      ordinal=False,
                      metric="class_balance_accuracy_score",
                      cv=5, n_iter=100, n_jobs=5, verbose=1,
