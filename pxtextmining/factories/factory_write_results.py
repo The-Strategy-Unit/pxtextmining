@@ -23,22 +23,12 @@ def write_model_summary(results_file, model_summary):
 
 def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar,
                           target, index_training_data, index_test_data, metric, model_summary,
-                          objects_to_save=[
-                                     "pipeline",
-                                     "tuning results",
-                                     "predictions",
-                                     "accuracy per class",
-                                     "index - training data",
-                                     "index - test data",
-                                     "bar plot"
-                                 ],
                           save_objects_to_server=False,
                           save_objects_to_disk=True,
                           results_folder_name="results"):
 
     """
-    Write the fitted pipeline and associated files. Writes between 1 to 7 files, depending on the value of argument
-    ``objects_to_save``:
+    Write the fitted pipeline and associated files. Writes 7 files:
 
     - The fitted pipeline (SAV);
     - All (hyper)parameters tried during fitting and the associated pipeline performance metrics (CSV);
@@ -61,15 +51,12 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     :param pandas.core.frame.DataFrame x_test: The test dataset.
     :param str metric: Scorer that was used in pipeline tuning ("accuracy_score",
         "balanced_accuracy_score", "matthews_corrcoef" or "class_balance_accuracy_score").
-    :param list[str] objects_to_save: The objects to save. Should be one or more of "pipeline", "tuning results",
-        "predictions", "accuracy per class", "index - training data", "index - test data", "bar plot".
     :param bool save_objects_to_server: Whether to save the results to the server. **NOTE:** The feature that writes
         results to the database is for internal use only. Experienced users who would like to write the data to their
         own databases can, of course, achieve that by slightly modifying the relevant lines in the script.
     :param bool save_objects_to_disk: Whether to save the results to disk. See ``results_folder_name``.
-    :param str results_folder_name: Name of the folder that will contain all saved results specified in
-        ``objects_to_save``. If the folder already exists, it will be overwritten.
-    :return: A ``tuple`` of length 1 to 7, depending on the value of argument ``objects_to_save``:
+    :param str results_folder_name: Name of the folder that will contain all saved results. If the folder already exists, it will be overwritten.
+    :return: A ``tuple`` of length 3, containing:
         The fitted pipeline (SAV); All (hyper)parameters tried during fitting and the associated pipeline performance
         metrics (CSV); The predictions on the test set (CSV); Accuracies per class (CSV);
         The row indices of the training data (CSV); The row indices of the test data (CSV);
@@ -101,69 +88,47 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
         # Write results to database
         print("Writing to database...")
 
-        if "tuning results" in objects_to_save:
-            tuning_results.to_sql(name="tuning_results_" + target, con=engine, if_exists="replace", index=False)
+        tuning_results.to_sql(name="tuning_results_" + target, con=engine, if_exists="replace", index=False)
 
-        if "index - training data" in objects_to_save:
-            index_training_data.to_sql(name="index_training_data_" + target, con=engine, if_exists="replace",
+        index_training_data.to_sql(name="index_training_data_" + target, con=engine, if_exists="replace",
                                        index=False)
 
-        if "index - test data" in objects_to_save:
-            index_test_data.to_sql(name="index_test_data_" + target, con=engine, if_exists="replace", index=False)
+        index_test_data.to_sql(name="index_test_data_" + target, con=engine, if_exists="replace", index=False)
 
         # aux = pd.DataFrame(index_training_data, columns=["row_index"])
         # pred = pd.concat([pred.reset_index(drop=True), aux], axis=0)
-        if "predictions" in objects_to_save:
-            pred.to_sql(name="predictions_test_" + target, con=engine, if_exists="replace", index=False)
+        pred.to_sql(name="predictions_test_" + target, con=engine, if_exists="replace", index=False)
 
-        if "accuracy per class" in objects_to_save:
-            accuracy_per_class.to_sql(name="accuracy_per_class_" + target, con=engine, if_exists="replace", index=False)
+        accuracy_per_class.to_sql(name="accuracy_per_class_" + target, con=engine, if_exists="replace", index=False)
 
     # ====== Write results to disk ====== #
-    if objects_to_save:
+    if save_objects_to_disk:
         print("Writing to disk...")
 
-    results_file = results_folder_name
-    if os.path.exists(results_file):
-        shutil.rmtree(results_file)
-    os.makedirs(results_file)
+        results_file = results_folder_name
+        if os.path.exists(results_file):
+            shutil.rmtree(results_file)
+        os.makedirs(results_file)
 
-    if "pipeline" in objects_to_save:
         aux = "pipeline_" + target + ".sav"
         save_pipeline_as = path.join(results_file, aux)
         pickle.dump(pipe, open(save_pipeline_as, "wb"))
 
-    if "tuning results" in objects_to_save and save_objects_to_disk:
         aux = path.join(results_file, "tuning_results_" + target + ".csv")
         tuning_results.to_csv(aux, index=False)
-        # aux = path.join(results_file, "tuning_results")
-        # feather.write_dataframe(tuning_results, aux)
 
-    if "predictions" in objects_to_save and save_objects_to_disk:
         aux = path.join(results_file, "predictions_" + target + ".csv")
         pd.DataFrame(pred).to_csv(aux, index=False)
-        # aux = path.join(results_file, "predictions")
-        # feather.write_dataframe(pd.DataFrame(pred), aux)
 
-    if "accuracy per class" in objects_to_save and save_objects_to_disk:
         aux = path.join(results_file, "accuracy_per_class_" + target + ".csv")
         accuracy_per_class.to_csv(aux, index=False)
-        # aux = path.join(results_file, "accuracy_per_class")
-        # feather.write_dataframe(accuracy_per_class, aux)
 
-    if "index - training data" in objects_to_save and save_objects_to_disk:
         aux = path.join(results_file, "index_training_data_" + target + ".csv")
         index_training_data.to_csv(aux, index=False)
-        # aux = path.join(results_file, "index_training_data")
-        # feather.write_dataframe(pd.DataFrame(index_training_data), aux)
 
-    if "index - test data" in objects_to_save and save_objects_to_disk:
         aux = path.join(results_file, "index_test_data_" + target + ".csv")
         index_test_data.to_csv(aux, index=False)
-        # aux = path.join(results_file, "index_test_data")
-        # feather.write_dataframe(pd.DataFrame(index_test_data), aux)
 
-    if "bar plot" in objects_to_save:
         aux = path.join(results_file, "p_compare_models_bar_" + metric + "_" + target + ".png")
         p_compare_models_bar.figure.savefig(aux)
 
