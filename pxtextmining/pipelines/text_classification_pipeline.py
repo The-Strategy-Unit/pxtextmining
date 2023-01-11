@@ -10,15 +10,6 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  metric="class_balance_accuracy_score",
                                  cv=5, n_iter=100, n_jobs=5, verbose=3,
                                  learners=["SGDClassifier"],
-                                 objects_to_save=[
-                                     "pipeline",
-                                     "tuning results",
-                                     "predictions",
-                                     "accuracy per class",
-                                     "index - training data",
-                                     "index - test data",
-                                     "bar plot"
-                                 ],
                                  save_objects_to_server=True,
                                  save_objects_to_disk=False,
                                  results_folder_name="results",
@@ -27,8 +18,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
 
     """
     Function that gathers together all steps in Factories module to train a new model
-    pipeline and write the results. Writes between 1 to 7 files, depending on the value of argument
-    ``objects_to_save``:
+    pipeline and write the results. Writes 7 files:
 
     - The fitted pipeline (SAV);
     - All (hyper)parameters tried during fitting and the associated pipeline performance metrics (CSV);
@@ -61,16 +51,6 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     :param list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
         "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier".
-    :param list[str] objects_to_save: Objects to save following pipeline fitting and assessment. These are:
-
-        - the pipeline (SAV file);
-        - table with all (hyper)parameter values tried out and performance indicators on the cross-validation data;
-        - table with predictions on the test set;
-        - table with accuracy and counts per class;
-        - row indices for the training set;
-        - row indices for the test set;
-        - bar plot with the best-performing models- plotted values are the mean scores from a k-fold CV on the training
-          set, for the best (hyper)parameter values for each learner;
     :param bool save_objects_to_server: Whether to save the results to the server. **NOTE:** The feature that writes
         results to the database is for internal use only. It will be removed when a proper API is developed for this
         function.
@@ -90,8 +70,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
         predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
         be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
         other than "3" that are attributed to human error.
-    :return: A ``tuple`` of variable length depending on 'objects_to_save' parameter. It can contain
-        any of the following objects, in order:
+    :return: A ``tuple`` of length 7 containing the following objects, in order:
         - The fitted ``Scikit-learn``/``imblearn`` pipeline;
         - A ``pandas.DataFrame`` with all (hyper)parameter values and models tried during fitting;
         - A ``pandas.DataFrame`` with the predictions on the test set;
@@ -111,19 +90,18 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, model_summary = \
         factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric)
 
-    pred, index_training_data, index_test_data = factory_write_results(pipe,
-                                                                       tuning_results,
-                                                                       pred,
-                                                                       accuracy_per_class,
-                                                                       p_compare_models_bar,
-                                                                       target,
-                                                                       index_training_data,
-                                                                       index_test_data,
-                                                                       metric,
-                                                                       model_summary,
-                                                                       objects_to_save,
-                                                                       save_objects_to_server,
-                                                                       save_objects_to_disk,
-                                                                       results_folder_name)
+    factory_write_results(pipe,
+                        tuning_results,
+                        pred,
+                        accuracy_per_class,
+                        p_compare_models_bar,
+                        target,
+                        index_training_data,
+                        index_test_data,
+                        metric,
+                        model_summary,
+                        save_objects_to_server,
+                        save_objects_to_disk,
+                        results_folder_name)
 
     return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_training_data, index_test_data
