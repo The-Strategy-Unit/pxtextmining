@@ -90,18 +90,18 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, model_summary = \
         factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric)
 
-    factory_write_results(pipe,
-                        tuning_results,
-                        pred,
-                        accuracy_per_class,
-                        p_compare_models_bar,
-                        target,
-                        index_training_data,
-                        index_test_data,
-                        metric,
-                        model_summary,
-                        save_objects_to_server,
-                        save_objects_to_disk,
-                        results_folder_name)
+    pred, index_training_data, index_test_data = factory_write_results(pipe,
+                                                                        tuning_results,
+                                                                        pred,
+                                                                        accuracy_per_class,
+                                                                        p_compare_models_bar,
+                                                                        target,
+                                                                        index_training_data,
+                                                                        index_test_data,
+                                                                        metric,
+                                                                        model_summary,
+                                                                        save_objects_to_server,
+                                                                        save_objects_to_disk,
+                                                                        results_folder_name)
 
     return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_training_data, index_test_data
