@@ -34,7 +34,6 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
                                  ],
                           save_objects_to_server=False,
                           save_objects_to_disk=True,
-                          save_pipeline_as="default",
                           results_folder_name="results"):
 
     """
@@ -68,8 +67,6 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
         results to the database is for internal use only. Experienced users who would like to write the data to their
         own databases can, of course, achieve that by slightly modifying the relevant lines in the script.
     :param bool save_objects_to_disk: Whether to save the results to disk. See ``results_folder_name``.
-    :param str save_pipeline_as: Name of saved pipeline. If "default", then it will be saved as
-        ``'pipeline_' + target + '.sav'``.
     :param str results_folder_name: Name of the folder that will contain all saved results specified in
         ``objects_to_save``. If the folder already exists, it will be overwritten.
     :return: A ``tuple`` of length 1 to 7, depending on the value of argument ``objects_to_save``:
@@ -132,12 +129,8 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     os.makedirs(results_file)
 
     if "pipeline" in objects_to_save:
-        if save_pipeline_as == "default":
-            aux = "pipeline_" + target + ".sav"
-            save_pipeline_as = path.join(results_file, aux)
-        else:
-            aux = save_pipeline_as + ".sav"
-            save_pipeline_as = path.join(results_file, aux)
+        aux = "pipeline_" + target + ".sav"
+        save_pipeline_as = path.join(results_file, aux)
         pickle.dump(pipe, open(save_pipeline_as, "wb"))
 
     if "tuning results" in objects_to_save and save_objects_to_disk:

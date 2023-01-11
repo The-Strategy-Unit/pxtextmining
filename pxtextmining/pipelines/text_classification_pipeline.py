@@ -21,7 +21,6 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  ],
                                  save_objects_to_server=True,
                                  save_objects_to_disk=False,
-                                 save_pipeline_as="default",
                                  results_folder_name="results",
                                  reduce_criticality=True,
                                  theme=None):
@@ -76,7 +75,6 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
         results to the database is for internal use only. It will be removed when a proper API is developed for this
         function.
     :param bool save_objects_to_disk:  Whether to save the results to disk. See ``results_folder_name``.
-    :param str save_pipeline_as: Save the pipeline as ``save_pipeline_as + '.sav'``.
     :param str results_folder_name: Name of folder in which to save the results. It will create a new folder or
         overwrite an existing one that has the same name.
     :param bool reduce_criticality: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
@@ -126,7 +124,6 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                                                        objects_to_save,
                                                                        save_objects_to_server,
                                                                        save_objects_to_disk,
-                                                                       save_pipeline_as,
                                                                        results_folder_name)
 
     return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_training_data, index_test_data
