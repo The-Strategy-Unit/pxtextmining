@@ -1,6 +1,6 @@
 .python-version
 *__pycache__*
-notebooks/*/variables/*
+notebooks/*
 my.conf
 test_results_label/*
 test_results_criticality/*
