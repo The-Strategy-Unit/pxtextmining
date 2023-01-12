@@ -24,11 +24,14 @@ from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitch
 from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 
 def create_learners(learners, ordinal=False):
-    """_summary_
+    """Creates list of learner models which is then fed into pipeline, based on user selection.
 
     Args:
-        learners (_list_): List of estimator types to be tried in pipeline.
+        learners (list): List of estimator types to be tried in pipeline.
         ordinal (bool, optional): Whether model is ordinal or not. Defaults to False.
+
+    Returns:
+        list
     """
 
     # If a single model is passed as a string, convert to list
@@ -37,7 +40,7 @@ def create_learners(learners, ordinal=False):
 
     # Just in case user has supplied the same learner more than once
     learners = list(set(learners))
-
+    learners.sort()
     # For Frank and Hall's (2001) ordinal method to work, we need models that can calculate probs/scores.
     if ordinal is True:
         learners = [lrn for lrn in learners if lrn not in ["RidgeClassifier", "Perceptron",
@@ -45,30 +48,23 @@ def create_learners(learners, ordinal=False):
     new_learners = []
 
     # Replace learner name with learner class in 'learners' function argument.
-    for i in learners:
-        if i == "SGDClassifier":
-            new_learners.append(SGDClassifier())
-        if i == "RidgeClassifier":
-            new_learners.append(RidgeClassifier())
-        if i == "Perceptron":
-            new_learners.append(Perceptron())
-        if i == "PassiveAggressiveClassifier":
-            new_learners.append(PassiveAggressiveClassifier())
-        if i == "BernoulliNB":
-            new_learners.append(BernoulliNB())
-        if i == "ComplementNB":
-            new_learners.append(ComplementNB())
-        if i == "MultinomialNB":
-            new_learners.append(MultinomialNB())
-        if i == "KNeighborsClassifier":
-            new_learners.append(KNeighborsClassifier())
-        if i == "NearestCentroid":
-            new_learners.append(NearestCentroid())
-        if i == "RandomForestClassifier":
-            new_learners.append(RandomForestClassifier())
-        else:
-            raise ValueError('Unrecognised learner provided')
+    learner_dict = {"SGDClassifier": SGDClassifier(),
+                    "RidgeClassifier": RidgeClassifier(),
+                    "Perceptron": Perceptron(),
+                    "PassiveAggressiveClassifier": PassiveAggressiveClassifier(),
+                    "BernoulliNB": BernoulliNB(),
+                    "ComplementNB": ComplementNB(),
+                    "MultinomialNB": MultinomialNB(),
+                    "KNeighborsClassifier": KNeighborsClassifier(),
+                    "NearestCentroid": NearestCentroid(),
+                    "RandomForestClassifier": RandomForestClassifier()}
 
+    for i in learners:
+        try:
+            new_learners.append(learner_dict[i])
+        except:
+            print(i)
+            raise ValueError('Unrecognised learner provided')
     return new_learners
 
 def factory_categorical_pipeline(x, y, tknz="spacy",
