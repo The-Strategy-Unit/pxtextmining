@@ -7,7 +7,6 @@ from pxtextmining.factories.factory_write_results import factory_write_results
 def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  ordinal=False,
                                  tknz="spacy",
-                                 metric="class_balance_accuracy_score",
                                  cv=5, n_iter=100, n_jobs=5, verbose=3,
                                  learners=["SGDClassifier"],
                                  save_objects_to_server=True,
@@ -40,8 +39,6 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of
         `Frank and Hall (2001) <https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf>`_ that can use any standard classification model.
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
-    :param str metric: Scorer to use during pipeline tuning ("accuracy_score", "balanced_accuracy_score",
-        "matthews_corrcoef", "class_balance_accuracy_score").
     :param int cv: Number of cross-validation folds.
     :param int n_iter: Number of parameter settings that are sampled
         (see `sklearn.model_selection.RandomizedSearchCV
@@ -85,10 +82,10 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
         factory_data_load_and_split(filename, target, predictor, test_size, reduce_criticality, theme)
 
-    pipe = factory_categorical_pipeline(x_train, y_train, tknz, ordinal, metric, cv, n_iter, n_jobs, verbose, learners, theme)
+    pipe = factory_categorical_pipeline(x_train, y_train, tknz, ordinal, cv, n_iter, n_jobs, verbose, learners, theme)
 
     pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, model_summary = \
-        factory_model_performance(pipe, x_train, y_train, x_test, y_test, metric)
+        factory_model_performance(pipe, x_train, y_train, x_test, y_test)
 
     pred, index_training_data, index_test_data = factory_write_results(pipe,
                                                                         tuning_results,
@@ -98,7 +95,6 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                                                         target,
                                                                         index_training_data,
                                                                         index_test_data,
-                                                                        metric,
                                                                         model_summary,
                                                                         save_objects_to_server,
                                                                         save_objects_to_disk,
