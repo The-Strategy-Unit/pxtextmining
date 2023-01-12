@@ -296,7 +296,6 @@ def factory_categorical_pipeline(x, y, tknz="spacy",
     return pipe_cv
 
 def factory_ordinal_pipeline(x, y, tknz="spacy",
-                     ordinal=True,
                      cv=5, n_iter=100, n_jobs=5, verbose=1,
                      learners=[
                          "SGDClassifier",
@@ -309,7 +308,7 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
                          # "KNeighborsClassifier",
                          # "NearestCentroid",
                          "RandomForestClassifier"
-                     ],
+                     ], ordinal = True,
                      theme=True):
 
     """

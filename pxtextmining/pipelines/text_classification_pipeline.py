@@ -1,11 +1,10 @@
 from pxtextmining.factories.factory_data_load_and_split import factory_data_load_and_split
-from pxtextmining.factories.factory_pipeline import factory_categorical_pipeline
+from pxtextmining.factories.factory_pipeline import factory_categorical_pipeline, factory_ordinal_pipeline
 from pxtextmining.factories.factory_model_performance import factory_model_performance
 from pxtextmining.factories.factory_write_results import factory_write_results
 import time
 
 def text_classification_pipeline(filename, target, predictor, test_size=0.33,
-                                 ordinal=False,
                                  tknz="spacy",
                                  cv=5, n_iter=100, n_jobs=5, verbose=3,
                                  learners=["SGDClassifier"],
@@ -13,6 +12,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  save_objects_to_disk=False,
                                  results_folder_name="results",
                                  reduce_criticality=True,
+                                 ordinal=False,
                                  theme=None):
 
     """
@@ -84,7 +84,10 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
         factory_data_load_and_split(filename, target, predictor, test_size, reduce_criticality, theme)
 
-    pipe = factory_categorical_pipeline(x_train, y_train, tknz, ordinal, cv, n_iter, n_jobs, verbose, learners, theme)
+    if ordinal == False:
+        pipe = factory_categorical_pipeline(x_train, y_train, tknz, cv, n_iter, n_jobs, verbose, learners)
+    if ordinal == True:
+        pipe = factory_ordinal_pipeline(x_train, y_train, tknz, cv, n_iter, n_jobs, verbose, learners, theme = theme)
 
     pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, model_summary = \
         factory_model_performance(pipe, x_train, y_train, x_test, y_test)
