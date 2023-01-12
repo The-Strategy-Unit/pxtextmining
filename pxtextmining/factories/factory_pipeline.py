@@ -23,6 +23,53 @@ from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwit
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
 from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 
+def create_learners(learners, ordinal=False):
+    """_summary_
+
+    Args:
+        learners (_list_): List of estimator types to be tried in pipeline.
+        ordinal (bool, optional): Whether model is ordinal or not. Defaults to False.
+    """
+
+    # If a single model is passed as a string, convert to list
+    if isinstance(learners, str):
+        learners = [learners]
+
+    # Just in case user has supplied the same learner more than once
+    learners = list(set(learners))
+
+    # For Frank and Hall's (2001) ordinal method to work, we need models that can calculate probs/scores.
+    if ordinal is True:
+        learners = [lrn for lrn in learners if lrn not in ["RidgeClassifier", "Perceptron",
+                                                           "PassiveAggressiveClassifier", "NearestCentroid"]]
+    new_learners = []
+
+    # Replace learner name with learner class in 'learners' function argument.
+    for i in learners:
+        if i == "SGDClassifier":
+            new_learners.append(SGDClassifier())
+        if i == "RidgeClassifier":
+            new_learners.append(RidgeClassifier())
+        if i == "Perceptron":
+            new_learners.append(Perceptron())
+        if i == "PassiveAggressiveClassifier":
+            new_learners.append(PassiveAggressiveClassifier())
+        if i == "BernoulliNB":
+            new_learners.append(BernoulliNB())
+        if i == "ComplementNB":
+            new_learners.append(ComplementNB())
+        if i == "MultinomialNB":
+            new_learners.append(MultinomialNB())
+        if i == "KNeighborsClassifier":
+            new_learners.append(KNeighborsClassifier())
+        if i == "NearestCentroid":
+            new_learners.append(NearestCentroid())
+        if i == "RandomForestClassifier":
+            new_learners.append(RandomForestClassifier())
+        else:
+            raise ValueError('Unrecognised learner provided')
+
+    return new_learners
 
 def factory_categorical_pipeline(x, y, tknz="spacy",
                      cv=5, n_iter=100, n_jobs=5, verbose=1,
@@ -130,35 +177,7 @@ def factory_categorical_pipeline(x, y, tknz="spacy",
         'featsel__selector__percentile': [80, 90, 100]
     }
 
-    # If a single model is passed as a string, convert to list
-    if isinstance(learners, str):
-        learners = [learners]
-
-    # Just in case user has supplied the same learner more than once
-    learners = list(set(learners))
-
-    # Replace learner name with learner class in 'learners' function argument.
-    for i in learners:
-        if i in "SGDClassifier":
-            learners[learners.index(i)] = SGDClassifier()
-        if i in "RidgeClassifier":
-            learners[learners.index(i)] = RidgeClassifier()
-        if i in "Perceptron":
-            learners[learners.index(i)] = Perceptron()
-        if i in "PassiveAggressiveClassifier":
-            learners[learners.index(i)] = PassiveAggressiveClassifier()
-        if i in "BernoulliNB":
-            learners[learners.index(i)] = BernoulliNB()
-        if i in "ComplementNB":
-            learners[learners.index(i)] = ComplementNB()
-        if i in "MultinomialNB":
-            learners[learners.index(i)] = MultinomialNB()
-        if i in "KNeighborsClassifier":
-            learners[learners.index(i)] = KNeighborsClassifier()
-        if i in "NearestCentroid":
-            learners[learners.index(i)] = NearestCentroid()
-        if i in "RandomForestClassifier":
-            learners[learners.index(i)] = RandomForestClassifier()
+    learners = create_learners(learners)
 
     # Further populate (hyper)parameter grid.
     # NOTE ABOUT PROCESS BELOW:
@@ -296,8 +315,7 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
                          # "KNeighborsClassifier",
                          # "NearestCentroid",
                          "RandomForestClassifier"
-                     ], ordinal = True,
-                     theme=False):
+                     ], theme=False):
 
     """
     Prepare and fit a text classification pipeline. The pipeline is then fitted using Randomized Search to identify the
@@ -437,40 +455,7 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
     if theme is not None:
         param_grid_preproc['alltrans__theme__scaler'] = None
 
-    # If a single model is passed as a string, convert to list
-    if isinstance(learners, str):
-        learners = [learners]
-
-    # Just in case user has supplied the same learner more than once
-    learners = list(set(learners))
-
-    # For Frank and Hall's (2001) ordinal method to work, we need models that can calculate probs/scores.
-    if ordinal:
-        learners = [lrn for lrn in learners if lrn not in ["RidgeClassifier", "Perceptron",
-                                                           "PassiveAggressiveClassifier", "NearestCentroid"]]
-
-    # Replace learner name with learner class in 'learners' function argument.
-    for i in learners:
-        if i in "SGDClassifier":
-            learners[learners.index(i)] = SGDClassifier()
-        if i in "RidgeClassifier":
-            learners[learners.index(i)] = RidgeClassifier()
-        if i in "Perceptron":
-            learners[learners.index(i)] = Perceptron()
-        if i in "PassiveAggressiveClassifier":
-            learners[learners.index(i)] = PassiveAggressiveClassifier()
-        if i in "BernoulliNB":
-            learners[learners.index(i)] = BernoulliNB()
-        if i in "ComplementNB":
-            learners[learners.index(i)] = ComplementNB()
-        if i in "MultinomialNB":
-            learners[learners.index(i)] = MultinomialNB()
-        if i in "KNeighborsClassifier":
-            learners[learners.index(i)] = KNeighborsClassifier()
-        if i in "NearestCentroid":
-            learners[learners.index(i)] = NearestCentroid()
-        if i in "RandomForestClassifier":
-            learners[learners.index(i)] = RandomForestClassifier()
+    learners = create_learners(learners, ordinal = True)
 
     # Further populate (hyper)parameter grid.
     # NOTE ABOUT PROCESS BELOW:
