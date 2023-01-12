@@ -2,7 +2,7 @@ from pxtextmining.factories.factory_data_load_and_split import factory_data_load
 from pxtextmining.factories.factory_pipeline import factory_categorical_pipeline
 from pxtextmining.factories.factory_model_performance import factory_model_performance
 from pxtextmining.factories.factory_write_results import factory_write_results
-
+import time
 
 def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  ordinal=False,
@@ -79,6 +79,8 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
     :rtype: tuple
     """
 
+    start_time = time.time()
+
     x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
         factory_data_load_and_split(filename, target, predictor, test_size, reduce_criticality, theme)
 
@@ -99,5 +101,7 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                                                         save_objects_to_server,
                                                                         save_objects_to_disk,
                                                                         results_folder_name)
+
+    print("--- Time for pipeline completion: %s seconds ---" % (time.time() - start_time))
 
     return pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_training_data, index_test_data

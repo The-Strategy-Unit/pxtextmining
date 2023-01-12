@@ -1,7 +1,7 @@
 from imblearn import FunctionSampler
 from imblearn.pipeline import Pipeline
 # from sklearn.pipeline import Pipeline
-from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef, f1_score
+from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, OneHotEncoder, StandardScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -372,7 +372,6 @@ def factory_categorical_pipeline(x, y, tknz="spacy",
     scoring = {'Accuracy': make_scorer(accuracy_score),
                'Balanced Accuracy': make_scorer(balanced_accuracy_score),
                'Matthews Correlation Coefficient': make_scorer(matthews_corrcoef),
-               'F1 Score': make_scorer(f1_score),
                'Class Balance Accuracy': make_scorer(class_balance_accuracy_score)}
 
     # Define pipeline #

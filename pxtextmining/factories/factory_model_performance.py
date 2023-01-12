@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.metrics import balanced_accuracy_score, confusion_matrix, matthews_corrcoef, accuracy_score, f1_score
+from sklearn.metrics import balanced_accuracy_score, confusion_matrix, matthews_corrcoef, accuracy_score
 from pxtextmining.helpers.metrics import class_balance_accuracy_score
 from sklearn.dummy import DummyClassifier
 
@@ -30,7 +30,6 @@ def get_metrics(x_train, x_test, y_train, y_test, model=None):
     metrics['accuracy'] = round (accuracy_score(y_test, y_pred),2)
     metrics['balanced accuracy'] = round (balanced_accuracy_score(y_test, y_pred),2)
     metrics['class balance accuracy'] = round (class_balance_accuracy_score(y_test, y_pred),2)
-    metrics['f1 score'] = round (f1_score(y_test, y_pred),2)
     metrics['matthews correlation'] = round(matthews_corrcoef(y_test, y_pred),2)
     return metrics, y_pred
 
@@ -93,7 +92,7 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test):
                       'Best parameters': best_params
     }
 
-    for k,v in model_summary:
+    for k,v in model_summary.items():
         print(f'{k}: {v}')
 
     tuning_results = pd.DataFrame(pipe.cv_results_)
