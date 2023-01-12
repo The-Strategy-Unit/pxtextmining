@@ -1,7 +1,7 @@
 from imblearn import FunctionSampler
 from imblearn.pipeline import Pipeline
 # from sklearn.pipeline import Pipeline
-from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef
+from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef, f1_score
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, OneHotEncoder, StandardScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -26,7 +26,6 @@ from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 
 def factory_categorical_pipeline(x, y, tknz="spacy",
                      ordinal=False,
-                     metric="class_balance_accuracy_score",
                      cv=5, n_iter=100, n_jobs=5, verbose=1,
                      learners=[
                          "SGDClassifier",
@@ -77,8 +76,6 @@ def factory_categorical_pipeline(x, y, tknz="spacy",
     :param pd.DataFrame x: The text feature.
     :param pd.Series y: The response variable (target).
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
-    :param str metric: Scorer to use during pipeline tuning ("accuracy_score", "balanced_accuracy_score",
-        "matthews_corrcoef", "class_balance_accuracy_score").
     :param int cv: Number of cross-validation folds.
     :param int n_iter: Number of parameter settings that are sampled in the RandomizedSearch.
     :param int n_jobs: Number of jobs to run in parallel in the RandomizedSearch.
@@ -371,17 +368,17 @@ def factory_categorical_pipeline(x, y, tknz="spacy",
                     new_key = 'alltrans__process__' + old_key
                     param_grid[i][new_key] = param_grid[i].pop(old_key)
 
-    # Define fitting metric (refit) and other useful performance metrics.
-    refit = metric.replace('_', ' ').replace(' score', '').title()
+    # Performance metrics
     scoring = {'Accuracy': make_scorer(accuracy_score),
                'Balanced Accuracy': make_scorer(balanced_accuracy_score),
                'Matthews Correlation Coefficient': make_scorer(matthews_corrcoef),
+               'F1 Score': make_scorer(f1_score),
                'Class Balance Accuracy': make_scorer(class_balance_accuracy_score)}
 
     # Define pipeline #
     pipe_cv = RandomizedSearchCV(pipe, param_grid, n_jobs=n_jobs, return_train_score=False,
                                  cv=cv, verbose=verbose,
-                                 scoring=scoring, refit=refit, n_iter=n_iter)
+                                 scoring=scoring, refit='Class Balance Accuracy', n_iter=n_iter)
 
     # Fit pipeline #
     pipe_cv.fit(x, y)
