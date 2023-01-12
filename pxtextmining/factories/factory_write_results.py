@@ -22,7 +22,7 @@ def write_model_summary(results_file, model_summary):
             f.write(f'{k}: \n {v} \n\n')
 
 def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar,
-                          target, index_training_data, index_test_data, metric, model_summary,
+                          target, index_training_data, index_test_data, model_summary,
                           save_objects_to_server=False,
                           save_objects_to_disk=True,
                           results_folder_name="results"):
@@ -36,7 +36,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     - Accuracies per class (CSV);
     - The row indices of the training data (CSV);
     - The row indices of the test data (CSV);
-    - A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
+    - A bar plot comparing the mean scores of performance metrics from the cross-validation on
       the training set, for the best (hyper)parameter values for each learner (PNG);
     - The model summary (txt)
 
@@ -44,13 +44,11 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
     :param pandas.core.frame.DataFrame tuning_results: All (hyper)parameter values and models tried during fitting.
     :param pandas.core.frame.DataFrame pred: The predictions on the test set.
     :param pandas.core.frame.DataFrame accuracy_per_class: Accuracies per class.
-    :param png p_compare_models_bar: A bar plot comparing the mean scores (of the user-supplied metric parameter) from the
+    :param png p_compare_models_bar: A bar plot comparing the mean scores of performance metrics from the
         cross-validation on the training set, for the best hyperparameter values for each learner.
     :param str target: Name of the response variable.
     :param pandas.core.frame.DataFrame x_train: The training dataset.
     :param pandas.core.frame.DataFrame x_test: The test dataset.
-    :param str metric: Scorer that was used in pipeline tuning ("accuracy_score",
-        "balanced_accuracy_score", "matthews_corrcoef" or "class_balance_accuracy_score").
     :param bool save_objects_to_server: Whether to save the results to the server. **NOTE:** The feature that writes
         results to the database is for internal use only. Experienced users who would like to write the data to their
         own databases can, of course, achieve that by slightly modifying the relevant lines in the script.
@@ -60,7 +58,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
         The fitted pipeline (SAV); All (hyper)parameters tried during fitting and the associated pipeline performance
         metrics (CSV); The predictions on the test set (CSV); Accuracies per class (CSV);
         The row indices of the training data (CSV); The row indices of the test data (CSV);
-        A bar plot comparing the mean scores (of the user-supplied metric parameter) from the cross-validation on
+        A bar plot comparing the mean scores of performance metrics from the cross-validation on
         the training set, for the best (hyper)parameter values for each learner (PNG)
     :rtype: tuple
     """
@@ -129,7 +127,7 @@ def factory_write_results(pipe, tuning_results, pred, accuracy_per_class, p_comp
         aux = path.join(results_file, "index_test_data_" + target + ".csv")
         index_test_data.to_csv(aux, index=False)
 
-        aux = path.join(results_file, "p_compare_models_bar_" + metric + "_" + target + ".png")
+        aux = path.join(results_file, "p_compare_models_bar.png")
         p_compare_models_bar.figure.savefig(aux)
 
     # Write performance metrics
