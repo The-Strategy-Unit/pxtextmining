@@ -64,10 +64,6 @@ def factory_categorical_pipeline(x, y, tknz="spacy",
     are based on the published literature (e.g. for Random Forest, see [Probst et al. 2019](https://arxiv.org/abs/1802.09596).
     Values may be replaced by appropriate distributions in a future release.
 
-     **NOTE:** As described later, argument `theme` is for internal use by Nottinghamshire Healthcare NHS Foundation
-     Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
-     safely ignored.
-
     :param pd.DataFrame x: The text feature.
     :param pd.Series y: The response variable (target).
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
@@ -79,15 +75,7 @@ def factory_categorical_pipeline(x, y, tknz="spacy",
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
         "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier". When a single model is
         used, it can be passed as a string.
-    :param str theme: For internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts
-        that use theme labels ("Access", "Environment/ facilities" etc.). The column name of the theme variable.
-        Defaults to `None`. If supplied, the theme variable will be used as a predictor (along with the text predictor)
-        in the model that is fitted with criticality as the response variable. The rationale is two-fold. First, to
-        help the model improve predictions on criticality when the theme labels are readily available. Second, to force
-        the criticality for "Couldn't be improved" to always be "3" in the training and test data, as well as in the
-        predictions. This is the only criticality value that "Couldn't be improved" can take, so by forcing it to always
-        be "3", we are improving model performance, but are also correcting possible erroneous assignments of values
-        other than "3" that are attributed to human error.
+
     :return: A tuned sklearn.pipeline.Pipeline
     :rtype: sklearn.pipeline.Pipeline
     """
@@ -309,7 +297,7 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
                          # "NearestCentroid",
                          "RandomForestClassifier"
                      ], ordinal = True,
-                     theme=True):
+                     theme=False):
 
     """
     Prepare and fit a text classification pipeline. The pipeline is then fitted using Randomized Search to identify the
@@ -340,9 +328,6 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
      Trust or other trusts who use the theme ("Access", "Environment/ facilities" etc.) labels. It can otherwise be
      safely ignored.
 
-    :param bool ordinal: Whether to fit an ordinal classification model. The ordinal model is the implementation of
-        [Frank and Hall (2001)](https://www.cs.waikato.ac.nz/~eibe/pubs/ordinal_tech_report.pdf) that can use any
-        standard classification model that calculates probabilities.
     :param pd.DataFrame x: The text feature.
     :param pd.Series y: The response variable (target).
     :param str tknz: Tokenizer to use ("spacy" or "wordnet").
@@ -398,7 +383,7 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
                                   validate=False)
 
     # Make pipeline #
-    if ordinal and theme is not None:
+    if theme is not None:
         # This is for internal use by Nottinghamshire Healthcare NHS Foundation Trust or other trusts that use theme
         # labels ("Access", "Environment/ facilities" etc.). We want the criticality for "Couldn't be improved" to
         # always be "3". The theme label is passed as a one-hot encoded set of columns (or as a "binarized" column where
@@ -429,18 +414,12 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
             ('alltrans', all_transforms),
             ('clf', OrdinalClassifier(theme='theme', target_class_value='3', theme_class_value=1))
         ])
-    elif ordinal and theme is None:
+    elif theme is None:
         pipe = Pipeline([
             ('sampling', oversampler),
             ('preprocessor', preprocessor),
             ('featsel', FeatureSelectionSwitcher()),
             ('clf', OrdinalClassifier())])
-    else:
-        pipe = Pipeline([
-            ('sampling', oversampler),
-            ('preprocessor', preprocessor),
-            ('featsel', FeatureSelectionSwitcher()),
-            ('clf', ClfSwitcher())])
 
     # Define (hyper)parameter grid #
     # A few initial value ranges for some (hyper)parameters.
@@ -455,9 +434,8 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
         'featsel__selector__percentile': [80, 90, 100]
     }
 
-    if ordinal and theme is not None:
+    if theme is not None:
         param_grid_preproc['alltrans__theme__scaler'] = None
-
 
     # If a single model is passed as a string, convert to list
     if isinstance(learners, str):
@@ -520,7 +498,7 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
             aux = param_grid_preproc.copy()
             aux['clf__estimator'] = [i]
             aux['preprocessor__texttr__text__transformer'] = [j]
-            if ordinal and theme is not None:
+            if theme is not None:
                 onehot_categories = [["Couldn't be improved", 'Access', 'Care received', 'Communication', 'Dignity',
                                       'Environment/ facilities', 'Miscellaneous', 'Staff', 'Transition/coordination']]
                 aux['alltrans__theme__scaler'] = \
@@ -541,10 +519,7 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
                 aux['clf__estimator__max_iter'] = [10000]
                 aux['clf__estimator__class_weight'] = [None, 'balanced']
                 aux['clf__estimator__penalty'] = ('l2', 'elasticnet')
-                if ordinal:
-                    aux['clf__estimator__loss'] = ['log']
-                else:
-                    aux['clf__estimator__loss'] = ['hinge', 'log']
+                aux['clf__estimator__loss'] = ['log']
             if i.__class__.__name__ == RidgeClassifier().__class__.__name__:
                 aux['clf__estimator__class_weight'] = [None, 'balanced']
                 aux['clf__estimator__alpha'] = (0.1, 1.0, 10.0)
@@ -600,7 +575,7 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
                 aux['preprocessor__lengthtr__scaler__scaler'] = [StandardScaler()]
                 aux['preprocessor__sentimenttr__scaler__scaler'] = [StandardScaler()]
 
-                # We don't want learners than can't handle negative data in the embeddings.
+                # We don't want learners that can't handle negative data in the embeddings.
                 if (i.__class__.__name__ == BernoulliNB().__class__.__name__) or \
                         (i.__class__.__name__ == ComplementNB().__class__.__name__) or \
                         (i.__class__.__name__ == MultinomialNB().__class__.__name__):
@@ -614,7 +589,7 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
     # includes the steps for both the preprocessing of the text feature, and the one-hot encoding of the theme feature.
     # So, a parameter such as "featsel__selector" in the pipeline without a theme feature would be
     # "alltrans__process__featsel__selector" in this one. We need to pass these correct names to the tuning grid.
-    if ordinal and theme is not None:
+    if theme is not None:
         ordinal_with_theme_params = [
             'featsel__selector',
             'featsel__selector__percentile',
