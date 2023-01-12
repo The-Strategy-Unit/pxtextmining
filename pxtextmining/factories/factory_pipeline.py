@@ -68,7 +68,7 @@ def create_learners(learners, ordinal=False):
     return new_learners
 
 def factory_categorical_pipeline(x, y, tknz="spacy",
-                     cv=5, n_iter=100, n_jobs=5, verbose=1,
+                     cv=5, n_iter=100, n_jobs=5,
                      learners=[
                          "SGDClassifier",
                          "RidgeClassifier",
@@ -113,7 +113,6 @@ def factory_categorical_pipeline(x, y, tknz="spacy",
     :param int cv: Number of cross-validation folds.
     :param int n_iter: Number of parameter settings that are sampled in the RandomizedSearch.
     :param int n_jobs: Number of jobs to run in parallel in the RandomizedSearch.
-    :param int verbose: Controls the verbosity in the RandomizedSearch.
     :param list learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
         "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier". When a single model is
@@ -290,7 +289,7 @@ def factory_categorical_pipeline(x, y, tknz="spacy",
 
     # Define pipeline #
     pipe_cv = RandomizedSearchCV(pipe, param_grid, n_jobs=n_jobs, return_train_score=False,
-                                 cv=cv, verbose=verbose,
+                                 cv=cv, verbose=1,
                                  scoring=scoring, refit='Class Balance Accuracy', n_iter=n_iter)
 
     # Fit pipeline #
@@ -299,7 +298,7 @@ def factory_categorical_pipeline(x, y, tknz="spacy",
     return pipe_cv
 
 def factory_ordinal_pipeline(x, y, tknz="spacy",
-                     cv=5, n_iter=100, n_jobs=5, verbose=1,
+                     cv=5, n_iter=100, n_jobs=5,
                      learners=[
                          "SGDClassifier",
                          "RidgeClassifier",
@@ -348,7 +347,6 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
     :param int cv: Number of cross-validation folds.
     :param int n_iter: Number of parameter settings that are sampled in the RandomizedSearch.
     :param int n_jobs: Number of jobs to run in parallel in the RandomizedSearch.
-    :param int verbose: Controls the verbosity in the RandomizedSearch.
     :param list learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
         "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier". When a single model is
@@ -602,7 +600,7 @@ def factory_ordinal_pipeline(x, y, tknz="spacy",
 
     # Define pipeline #
     pipe_cv = RandomizedSearchCV(pipe, param_grid, n_jobs=n_jobs, return_train_score=False,
-                                 cv=cv, verbose=verbose,
+                                 cv=cv, verbose=1,
                                  scoring=scoring, refit='Class Balance Accuracy', n_iter=n_iter)
 
     # Fit pipeline #

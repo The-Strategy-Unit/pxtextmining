@@ -6,7 +6,7 @@ import time
 
 def text_classification_pipeline(filename, target, predictor, test_size=0.33,
                                  tknz="spacy",
-                                 cv=5, n_iter=100, n_jobs=5, verbose=3,
+                                 cv=5, n_iter=100, n_jobs=5,
                                  learners=["SGDClassifier"],
                                  save_objects_to_server=True,
                                  save_objects_to_disk=False,
@@ -44,7 +44,6 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
         (see `sklearn.model_selection.RandomizedSearchCV
         <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html>`_).
     :param int n_jobs: Number of jobs to run in parallel (see ``sklearn.model_selection.RandomizedSearchCV``).
-    :param int verbose: Controls the verbosity (see ``sklearn.model_selection.RandomizedSearchCV``).
     :param list[str] learners: A list of ``Scikit-learn`` names of the learners to tune. Must be one or more of
         "SGDClassifier", "RidgeClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB", "ComplementNB",
         "MultinomialNB", "KNeighborsClassifier", "NearestCentroid", "RandomForestClassifier".
@@ -85,9 +84,9 @@ def text_classification_pipeline(filename, target, predictor, test_size=0.33,
         factory_data_load_and_split(filename, target, predictor, test_size, reduce_criticality, theme)
 
     if ordinal == False:
-        pipe = factory_categorical_pipeline(x_train, y_train, tknz, cv, n_iter, n_jobs, verbose, learners)
+        pipe = factory_categorical_pipeline(x_train, y_train, tknz, cv, n_iter, n_jobs, learners)
     if ordinal == True:
-        pipe = factory_ordinal_pipeline(x_train, y_train, tknz, cv, n_iter, n_jobs, verbose, learners, theme = theme)
+        pipe = factory_ordinal_pipeline(x_train, y_train, tknz, cv, n_iter, n_jobs, learners, theme = theme)
 
     pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, model_summary = \
         factory_model_performance(pipe, x_train, y_train, x_test, y_test)
