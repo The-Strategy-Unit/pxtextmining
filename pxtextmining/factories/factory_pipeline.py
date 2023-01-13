@@ -26,12 +26,12 @@ from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 def create_learners(learners, ordinal=False):
     """Creates list of learner models which is then fed into pipeline, based on user selection.
 
-    Args:
-        learners (list): List of estimator types to be tried in pipeline.
-        ordinal (bool, optional): Whether model is ordinal or not. Defaults to False.
+    :param list learners: Estimator types to be tried in pipeline
+    :param bool ordinal: Whether model is ordinal or not. Defaults to False.
 
-    Returns:
-        list
+    :return: List containing the sklearn estimator model instances.
+    :rtype: list
+
     """
 
     # If a single model is passed as a string, convert to list
@@ -64,7 +64,7 @@ def create_learners(learners, ordinal=False):
             new_learners.append(learner_dict[i])
         except:
             print(i)
-            raise ValueError('Unrecognised learner provided')
+            raise ValueError('Unrecognised learner provided. See documentation for permitted values')
     return new_learners
 
 def factory_categorical_pipeline(x, y, tknz="spacy",
