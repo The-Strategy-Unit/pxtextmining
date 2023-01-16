@@ -25,4 +25,4 @@ class LemmaTokenizer:
             return [wln.lemmatize(t) for t in word_tokenize(doc)]
         if self.tknz == 'spacy':
             return [t.lemma_ for t in nlp(doc,
-                                          disable=["tagger", "parser", "ner"])]
+                                          disable=["parser", "ner"])]
