@@ -7,6 +7,52 @@ import string
 import numpy as np
 from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 
+
+
+def load_multilabel_data(filename):
+    print('Loading multilabel dataset...')
+    text_data = pd.read_csv(filename)
+    text_data.columns = text_data.columns.str.strip()
+    text_data = text_data.set_index('Comment ID').copy()
+    features = ['FFT categorical answer', 'FFT question', 'FFT answer']
+    #For now the labels are hardcoded, these are subject to change as framework is in progress
+    labels = ['Gratitude/ good experience', 'Negative experience', 'Not assigned',
+       'Organisation & efficiency', 'Funding & use of financial resources',
+       'Non-specific praise for staff',
+       'Non-specific dissatisfaction with staff',
+       'Staff manner & personal attributes', 'Number & deployment of staff',
+       'Staff responsiveness', 'Staff continuity', 'Competence & training',
+       'Unspecified communication',
+       'Staff listening, understanding & involving patients',
+       'Information directly from staff during care',
+       'Information provision & guidance',
+       'Being kept informed, clarity & consistency of information',
+       'Service involvement with family/ carers',
+       'Patient contact with family/ carers', 'Contacting services',
+       'Appointment arrangements', 'Appointment method', 'Timeliness of care',
+       'Supplying medication', 'Understanding medication', 'Pain management',
+       'Diagnosis', 'Referals & continuity of care',
+       'Length of stay/ duration of care', 'Discharge', 'Care plans',
+       'Patient records', 'Impact of treatment/ care - physical health',
+       'Impact of treatment/ care - mental health',
+       'Impact of treatment/ care - general',
+       'Links with non-NHS organisations',
+       'Cleanliness, tidiness & infection control',
+       'Noise & restful environment', 'Temperature', 'Lighting', 'Decoration',
+       'Smell', 'Comfort of environment', 'Atmosphere of ward/ environment',
+       'Access to outside/ fresh air', 'Privacy', 'Safety & security',
+       'Provision of medical  equipment', 'Food & drink provision',
+       'Food preparation facilities for patients & visitors',
+       'Service location', 'Transport to/ from services', 'Parking',
+       'Provision & range of activities', 'Electronic entertainment',
+       'Feeling safe', 'Patient appearance & grooming', 'Mental Health Act',
+       'Psychological therapy arrangements', 'Existence of services',
+       'Choice of services', 'Respect for diversity', 'Admission',
+       'Out of hours support (community services)', 'Learning organisation',
+       'Collecting patients feedback']
+    filtered_dataframe = text_data[features + labels].copy()
+    return filtered_dataframe
+
 def load_data(filename, target, predictor, theme = None):
     """
     This function loads the data from a csv, dataframe, or SQL database. It returns a pd.DataFrame with the data
@@ -261,8 +307,6 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 
 if __name__ == '__main__':
-    x_train, x_test, y_train, y_test, index_training_data, index_test_data = \
-        factory_data_load_and_split(filename='datasets/text_data.csv', target="criticality", predictor="feedback",
-                                 test_size=0.33, reduce_criticality=True,
-                                 theme="label")
-    print(x_train.columns)
+    df = load_multilabel_data(filename = 'datasets/phase_2_test.csv')
+    print(df.shape)
+    print(df.head())
