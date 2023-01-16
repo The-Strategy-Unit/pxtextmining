@@ -51,8 +51,7 @@ def get_accuracy_per_class(y_test, pred):
     accuracy_per_class = accuracy_per_class[["class", "counts", "accuracy"]]
     return accuracy_per_class
 
-def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
-                              metric="class_balance_accuracy_score"):
+def factory_model_performance(pipe, x_train, y_train, x_test, y_test):
 
     """
     Evaluate the performance of a fitted pipeline.
@@ -63,21 +62,16 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
     :param pd.Series y_train: Training data (target).
     :param pd.DataFrame x_test: Test data (predictor).
     :param pd.Series y_test: Test data (target).
-    :param str metric: Performance metrics ("accuracy_score", "balanced_accuracy_score",
-        "matthews_corrcoef", "class_balance_accuracy_score").
     :return: A tuple containing the following objects, in order:
             The fitted Scikit-learn/imblearn pipeline;
             A pandas.DataFrame with all (hyper)parameter values and models tried during fitting;
             A pandas.DataFrame with the predictions on the test set;
             A pandas.DataFrame with accuracies per class;
-            A bar plot comparing the mean scores (of the user-supplied metric parameter)
-                from the cross-validation on the training set, for the best
-                (hyper)parameter values for each learner;
+            A bar plot comparing the mean performance metric scores from the cross-validation on
+            the training set, for the best (hyper)parameter values for each learner;
             A dict containing performance metrics and model metadata.
     :rtype: tuple
     """
-
-    refit = metric.replace("_", " ").replace(" score", "").title()
 
     aux = pd.DataFrame(pipe.best_params_.items())
     best_estimator = aux[aux[0] == "clf__estimator"].reset_index()[1][0]
@@ -88,7 +82,7 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
 
 
     perf_metrics, pred = get_metrics(x_train, x_test, y_train, y_test, model=pipe.best_estimator_)
-    baseline_metrics, baseline_preds = get_metrics(x_train, x_test, y_train, y_test, model = None)
+    baseline_metrics, _ = get_metrics(x_train, x_test, y_train, y_test, model = None)
     accuracy_per_class = get_accuracy_per_class(y_test, pred)
     best_params = {k:v for (k,v) in pipe.best_params_.items()}
 
@@ -97,20 +91,16 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
                       'Best estimator': pipe.best_estimator_.named_steps["clf"],
                       'Best parameters': best_params
     }
-    # print("The best estimator is %s" % (pipe.best_estimator_.named_steps["clf"]))
-    # print("The best parameters are:")
-    # for param, value in pipe.best_params_.items():
-    #     print("{}: {}".format(param, value))
-    # print("The best score from the cross-validation for \n the supplied scorer (" +
-    #       refit + ") is %s"
-    #       % (round(pipe.best_score_, 2)))
+
+    for k,v in model_summary.items():
+        print(f'{k}: {v}')
 
     tuning_results = pd.DataFrame(pipe.cv_results_)
     tuned_learners = []
     for i in tuning_results["param_clf__estimator"]:
         tuned_learners.append(i.__class__.__name__)
     tuning_results["learner"] = tuned_learners
-    y_axis = "mean_test_" + refit
+    y_axis = "mean_test_Class Balance Accuracy"
     tuning_results = tuning_results.sort_values(y_axis, ascending=False)
     tuning_results.columns = tuning_results.columns.str.replace('alltrans__process__', '') # When using ordinal with theme='label', names are too long.
 
@@ -155,7 +145,7 @@ def factory_model_performance(pipe, x_train, y_train, x_test, y_test,
                                          rotation=90)
     plt.legend(bbox_to_anchor=(1.01, 1), borderaxespad=0)
     p_compare_models_bar.set(xlabel=None, ylabel=None,
-                             title="Learner performance ordered by " + refit)
+                             title="Learner performance ordered by Class Balance Accuracy")
 
     print("Fitting optimal pipeline on whole dataset...")
     pipe.best_estimator_.fit(pd.concat([x_train, x_test]), np.concatenate([y_train, y_test]))

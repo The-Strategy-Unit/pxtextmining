@@ -11,8 +11,7 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                  test_size=0.33,
                                  ordinal=True,
                                  tknz="spacy",
-                                 metric="class_balance_accuracy",
-                                 cv=5, n_iter=100, n_jobs=5, verbose=3,
+                                 cv=5, n_iter=100, n_jobs=5,
                                  learners=[
                                      "SGDClassifier",
                                      "RidgeClassifier",
@@ -25,18 +24,8 @@ pipe, tuning_results, pred, accuracy_per_class, p_compare_models_bar, index_trai
                                      "NearestCentroid",
                                      "RandomForestClassifier"
                                      ],
-                                 objects_to_save=[
-                                     "pipeline",
-                                     "tuning results",
-                                     "predictions",
-                                     "accuracy per class",
-                                     "index - training data",
-                                     "index - test data",
-                                     "bar plot"
-                                 ],
                                  save_objects_to_server=False,
                                  save_objects_to_disk=True,
-                                 save_pipeline_as="pipeline_criticality_no_theme",
                                  results_folder_name="results_criticality_no_theme",
                                  reduce_criticality=True,
                                  theme=None)
