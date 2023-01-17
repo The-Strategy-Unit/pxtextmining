@@ -9,54 +9,65 @@ from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 
 
 
-def load_multilabel_data(filename):
+def load_multilabel_data(filename, target = 'labels'):
     print('Loading multilabel dataset...')
     text_data = pd.read_csv(filename)
     text_data.columns = text_data.columns.str.strip()
     text_data = text_data.set_index('Comment ID').copy()
     features = ['FFT categorical answer', 'FFT question', 'FFT answer']
-    #Note not including 'Comment sentiment' column for now
     #For now the labels are hardcoded, these are subject to change as framework is in progress
-    labels = ['Gratitude/ good experience', 'Negative experience', 'Not assigned',
-       'Organisation & efficiency', 'Funding & use of financial resources',
-       'Non-specific praise for staff',
-       'Non-specific dissatisfaction with staff',
-       'Staff manner & personal attributes', 'Number & deployment of staff',
-       'Staff responsiveness', 'Staff continuity', 'Competence & training',
-       'Unspecified communication',
-       'Staff listening, understanding & involving patients',
-       'Information directly from staff during care',
-       'Information provision & guidance',
-       'Being kept informed, clarity & consistency of information',
-       'Service involvement with family/ carers',
-       'Patient contact with family/ carers', 'Contacting services',
-       'Appointment arrangements', 'Appointment method', 'Timeliness of care',
-       'Supplying medication', 'Understanding medication', 'Pain management',
-       'Diagnosis', 'Referals & continuity of care',
-       'Length of stay/ duration of care', 'Discharge', 'Care plans',
-       'Patient records', 'Impact of treatment/ care - physical health',
-       'Impact of treatment/ care - mental health',
-       'Impact of treatment/ care - general',
-       'Links with non-NHS organisations',
-       'Cleanliness, tidiness & infection control',
-       'Noise & restful environment', 'Temperature', 'Lighting', 'Decoration',
-       'Smell', 'Comfort of environment', 'Atmosphere of ward/ environment',
-       'Access to outside/ fresh air', 'Privacy', 'Safety & security',
-       'Provision of medical  equipment', 'Food & drink provision',
-       'Food preparation facilities for patients & visitors',
-       'Service location', 'Transport to/ from services', 'Parking',
-       'Provision & range of activities', 'Electronic entertainment',
-       'Feeling safe', 'Patient appearance & grooming', 'Mental Health Act',
-       'Psychological therapy arrangements', 'Existence of services',
-       'Choice of services', 'Respect for diversity', 'Admission',
-       'Out of hours support (community services)', 'Learning organisation',
-       'Collecting patients feedback']
-    filtered_dataframe = text_data[features + labels].copy()
+    if target == 'labels':
+        cols = ['Gratitude/ good experience', 'Negative experience', 'Not assigned',
+        'Organisation & efficiency', 'Funding & use of financial resources',
+        'Non-specific praise for staff',
+        'Non-specific dissatisfaction with staff',
+        'Staff manner & personal attributes', 'Number & deployment of staff',
+        'Staff responsiveness', 'Staff continuity', 'Competence & training',
+        'Unspecified communication',
+        'Staff listening, understanding & involving patients',
+        'Information directly from staff during care',
+        'Information provision & guidance',
+        'Being kept informed, clarity & consistency of information',
+        'Service involvement with family/ carers',
+        'Patient contact with family/ carers', 'Contacting services',
+        'Appointment arrangements', 'Appointment method', 'Timeliness of care',
+        'Supplying medication', 'Understanding medication', 'Pain management',
+        'Diagnosis', 'Referals & continuity of care',
+        'Length of stay/ duration of care', 'Discharge', 'Care plans',
+        'Patient records', 'Impact of treatment/ care - physical health',
+        'Impact of treatment/ care - mental health',
+        'Impact of treatment/ care - general',
+        'Links with non-NHS organisations',
+        'Cleanliness, tidiness & infection control',
+        'Noise & restful environment', 'Temperature', 'Lighting', 'Decoration',
+        'Smell', 'Comfort of environment', 'Atmosphere of ward/ environment',
+        'Access to outside/ fresh air', 'Privacy', 'Safety & security',
+        'Provision of medical  equipment', 'Food & drink provision',
+        'Food preparation facilities for patients & visitors',
+        'Service location', 'Transport to/ from services', 'Parking',
+        'Provision & range of activities', 'Electronic entertainment',
+        'Feeling safe', 'Patient appearance & grooming', 'Mental Health Act',
+        'Psychological therapy arrangements', 'Existence of services',
+        'Choice of services', 'Respect for diversity', 'Admission',
+        'Out of hours support (community services)', 'Learning organisation',
+        'Collecting patients feedback']
+    elif target == 'sentiment':
+        cols = ['Comment sentiment']
+    filtered_dataframe = text_data[features + cols].copy()
     print(f'Shape of raw data is {filtered_dataframe.shape}')
     clean_dataframe = filtered_dataframe.dropna(subset=features)
 
-    clean_dataframe.loc[:,'num_labels'] = clean_dataframe.loc[:,labels].sum(axis = 1)
+    clean_dataframe.loc[:,'num_labels'] = clean_dataframe.loc[:,cols].sum(axis = 1)
     clean_dataframe = clean_dataframe[clean_dataframe['num_labels'] != 0]
+    # Standardize FFT qs
+    q_map = {'Please tells us why you gave this answer?': 'nonspecific',
+        'FFT Why?': 'nonspecific',
+        'What was good?': 'what_good',
+        'How could we improve?': 'could_improve',
+        'What could we do better?': 'could_improve',
+        'Please describe any things about the 111 service that \nyou were particularly satisfied and/or dissatisfied with': 'nonspecific'}
+    clean_dataframe.loc[:,'FFT_q_standardised'] = clean_dataframe['FFT question'].map(q_map)
+    # Could probably do more text cleaning in here before doing text_length
     clean_dataframe['text_length'] = clean_dataframe['FFT answer'].apply(lambda x:
                                     len([word for word in str(x).split(' ') if word != '']))
     print(f'Shape of cleaned data is {clean_dataframe.shape}')
@@ -317,3 +328,4 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 if __name__ == '__main__':
     df = load_multilabel_data(filename = 'datasets/phase_2_test.csv')
+    print(df.head())
