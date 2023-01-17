@@ -15,6 +15,7 @@ def load_multilabel_data(filename):
     text_data.columns = text_data.columns.str.strip()
     text_data = text_data.set_index('Comment ID').copy()
     features = ['FFT categorical answer', 'FFT question', 'FFT answer']
+    #Note not including 'Comment sentiment' column for now
     #For now the labels are hardcoded, these are subject to change as framework is in progress
     labels = ['Gratitude/ good experience', 'Negative experience', 'Not assigned',
        'Organisation & efficiency', 'Funding & use of financial resources',
@@ -51,7 +52,15 @@ def load_multilabel_data(filename):
        'Out of hours support (community services)', 'Learning organisation',
        'Collecting patients feedback']
     filtered_dataframe = text_data[features + labels].copy()
-    return filtered_dataframe
+    print(f'Shape of raw data is {filtered_dataframe.shape}')
+    clean_dataframe = filtered_dataframe.dropna(subset=features)
+
+    clean_dataframe.loc[:,'num_labels'] = clean_dataframe.loc[:,labels].sum(axis = 1)
+    clean_dataframe = clean_dataframe[clean_dataframe['num_labels'] != 0]
+    clean_dataframe['text_length'] = clean_dataframe['FFT answer'].apply(lambda x:
+                                    len([word for word in str(x).split(' ') if word != '']))
+    print(f'Shape of cleaned data is {clean_dataframe.shape}')
+    return clean_dataframe
 
 def load_data(filename, target, predictor, theme = None):
     """
@@ -308,5 +317,3 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 if __name__ == '__main__':
     df = load_multilabel_data(filename = 'datasets/phase_2_test.csv')
-    print(df.shape)
-    print(df.head())
