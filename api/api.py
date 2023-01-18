@@ -7,16 +7,11 @@ from pydantic import BaseModel
 
 class ItemIn(BaseModel):
     id: str
-    feedback: str
+    comment_text: str
 
 class TestJson(BaseModel):
     id: str
     feedback: str
-
-class ItemOut(BaseModel):
-    id: str
-    feedback: str
-    predictions: str
 
 app = FastAPI()
 
@@ -76,7 +71,7 @@ def accept(items: List[ItemIn]):
 def predict(items: List[ItemIn]):
     df = pd.DataFrame([i.dict() for i in items])
     model = 'results_label/pipeline_label.sav'
-    text_data = df.rename(columns = {'feedback': 'predictor'})
+    text_data = df.rename(columns = {'comment_text': 'predictor'})
     predictions = factory_predict_unlabelled_text(dataset=text_data, predictor="predictor",
                                                     theme = 'label', pipe_path_or_object=model,
                                                     columns_to_return='all_cols')

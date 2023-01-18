@@ -8,7 +8,6 @@ Then you can run this test_api script to check if the API is behaving as it shou
 """
 
 
-
 def test_sql():
     ids = ','.join([str(x) for x in range(1,50)])
     params={"ids": ids, "target": "criticality"}
@@ -30,6 +29,8 @@ if __name__ == "__main__":
     df = df.loc[50:100][['feedback']]
     js = []
     for i in range(df.shape[0]):
-        js.append({'id': str(i), 'feedback': df.iloc[i]['feedback']})
-    test_json(js)
+        js.append({'id': str(i), 'comment_text': df.iloc[i]['feedback']})
+    print('The JSON that was sent looks like:')
+    print(js[:5])
+    print('The JSON that is returned is:')
     test_json_predictions(js)
