@@ -2,11 +2,19 @@ from fastapi import FastAPI
 from pxtextmining.factories.factory_predict_unlabelled_text import factory_predict_unlabelled_text
 import pandas as pd
 import mysql.connector
+from typing import Union, List
+from pydantic import BaseModel
 
+class ItemIn(BaseModel):
+    id: str
+    comment_text: str
+
+class TestJson(BaseModel):
+    id: str
+    feedback: str
 
 app = FastAPI()
 
-# Define a root `/` endpoint
 @app.get('/')
 def index():
     return {'Test': 'Hello'}
@@ -53,4 +61,18 @@ def predict(ids: str,
         predictions = factory_predict_unlabelled_text(dataset=text_data, predictor="predictor",
                                                     theme = 'label', pipe_path_or_object=model,
                                                     columns_to_return=['id', 'predictions'])
+    return predictions.to_dict(orient='records')
+
+@app.post('/test_json', response_model=List[TestJson])
+def accept(items: List[ItemIn]):
+    return [i.dict() for i in items]
+
+@app.post('/predict_from_json')
+def predict(items: List[ItemIn]):
+    df = pd.DataFrame([i.dict() for i in items])
+    model = 'results_label/pipeline_label.sav'
+    text_data = df.rename(columns = {'comment_text': 'predictor'})
+    predictions = factory_predict_unlabelled_text(dataset=text_data, predictor="predictor",
+                                                    theme = 'label', pipe_path_or_object=model,
+                                                    columns_to_return='all_cols')
     return predictions.to_dict(orient='records')
