@@ -72,7 +72,7 @@ def predict(ids: str,
 def accept(items: List[ItemIn]):
     return [i.dict() for i in items]
 
-@app.post('/predict_from_json', response_model=List[ItemOut])
+@app.post('/predict_from_json')
 def predict(items: List[ItemIn]):
     df = pd.DataFrame([i.dict() for i in items])
     model = 'results_label/pipeline_label.sav'
