@@ -14,7 +14,7 @@ def load_multilabel_data(filename, target = 'labels'):
 
     Args:
         filename (_type_): _description_
-        target (str, optional): Options are 'labels', 'major_categories', or 'sentiment. Defaults to 'labels'.
+        target (str, optional): Options are 'minor_categories', 'major_categories', or 'sentiment. Defaults to 'minor_categories'.
 
     Raises:
         for: _description_
@@ -29,7 +29,7 @@ def load_multilabel_data(filename, target = 'labels'):
     text_data = text_data.set_index('Comment ID').copy()
     features = ['FFT categorical answer', 'FFT question', 'FFT answer']
     #For now the labels are hardcoded, these are subject to change as framework is in progress
-    if target in ['labels', 'major_categories']:
+    if target in ['minor_categories', 'major_categories']:
         cols = ['Gratitude/ good experience', 'Negative experience', 'Not assigned',
         'Organisation & efficiency', 'Funding & use of financial resources',
         'Non-specific praise for staff',
