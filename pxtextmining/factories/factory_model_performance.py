@@ -7,11 +7,7 @@ from pxtextmining.helpers.metrics import class_balance_accuracy_score
 from sklearn.dummy import DummyClassifier
 from sklearn import metrics
 
-def get_multilabel_class_counts(df):
-    class_counts = {}
-    for i in df.columns:
-        class_counts[i] = df[i].sum()
-    return class_counts
+
 
 def get_multilabel_metrics(x_train, y_train, x_test, y_test, labels, model = None):
     """Function to produce performance metrics for a multilabel machine learning model.

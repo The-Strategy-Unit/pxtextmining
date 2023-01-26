@@ -9,6 +9,13 @@ from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 
 
 
+def get_multilabel_class_counts(df):
+    class_counts = {}
+    for i in df.columns:
+        class_counts[i] = df[i].sum()
+    return class_counts
+
+
 def load_multilabel_data(filename, target = 'major_categories'):
     """_summary_
 
@@ -160,6 +167,10 @@ def load_multilabel_data(filename, target = 'major_categories'):
     clean_dataframe = clean_dataframe[clean_dataframe['num_labels'] != 0]
     print(f'Shape of cleaned data is {clean_dataframe.shape}')
     return clean_dataframe
+
+
+
+
 
 def load_data(filename, target, predictor, theme = None):
     """
