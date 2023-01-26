@@ -14,7 +14,18 @@ def get_multilabel_class_counts(df):
     return class_counts
 
 def get_multilabel_metrics(x_train, y_train, x_test, y_test, labels, model = None):
-    # Right now it just prints the metrics, later we can edit it to write to a .txt file
+    """Function to produce performance metrics for a multilabel machine learning model.
+
+    :param pd.DataFrame x_train: Training data (predictor).
+    :param pd.Series y_train: Training data (target).
+    :param pd.DataFrame x_test: Test data (predictor).
+    :param pd.Series y_test: Test data (target).
+    :param str model: Trained classifier. Defaults to 'dummy' which instantiates dummy classifier for baseline metrics.
+
+    :return: None
+    :rtype: None
+    """
+
     model_metrics = {}
     if model == None:
         model = DummyClassifier(strategy = 'uniform')
@@ -33,10 +44,6 @@ def get_multilabel_metrics(x_train, y_train, x_test, y_test, labels, model = Non
     print('\n per class Jaccard score:')
     for k,v in per_class_jaccard:
         print(f'{k}: {v}')
-
-
-
-
 
 
 def get_metrics(x_train, x_test, y_train, y_test, model=None):
