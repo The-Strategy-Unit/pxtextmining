@@ -9,7 +9,7 @@ from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 
 
 
-def load_multilabel_data(filename, target = 'labels'):
+def load_multilabel_data(filename, target = 'major_categories'):
     """_summary_
 
     Args:
