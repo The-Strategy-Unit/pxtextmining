@@ -9,14 +9,34 @@ from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 
 
 
-def load_multilabel_data(filename, target = 'labels'):
+def get_multilabel_class_counts(df):
+    class_counts = {}
+    for i in df.columns:
+        class_counts[i] = df[i].sum()
+    return class_counts
+
+
+def load_multilabel_data(filename, target = 'major_categories'):
+    """_summary_
+
+    Args:
+        filename (_type_): _description_
+        target (str, optional): Options are 'minor_categories', 'major_categories', or 'sentiment. Defaults to 'minor_categories'.
+
+    Raises:
+        for: _description_
+        for: _description_
+
+    Returns:
+        _type_: _description_
+    """
     print('Loading multilabel dataset...')
     text_data = pd.read_csv(filename)
     text_data.columns = text_data.columns.str.strip()
     text_data = text_data.set_index('Comment ID').copy()
     features = ['FFT categorical answer', 'FFT question', 'FFT answer']
     #For now the labels are hardcoded, these are subject to change as framework is in progress
-    if target == 'labels':
+    if target in ['minor_categories', 'major_categories']:
         cols = ['Gratitude/ good experience', 'Negative experience', 'Not assigned',
         'Organisation & efficiency', 'Funding & use of financial resources',
         'Non-specific praise for staff',
@@ -53,12 +73,9 @@ def load_multilabel_data(filename, target = 'labels'):
         'Collecting patients feedback']
     elif target == 'sentiment':
         cols = ['Comment sentiment']
-    filtered_dataframe = text_data[features + cols].copy()
+    filtered_dataframe = text_data.loc[:,features + cols].copy()
     print(f'Shape of raw data is {filtered_dataframe.shape}')
     clean_dataframe = filtered_dataframe.dropna(subset=features)
-
-    clean_dataframe.loc[:,'num_labels'] = clean_dataframe.loc[:,cols].sum(axis = 1)
-    clean_dataframe = clean_dataframe[clean_dataframe['num_labels'] != 0]
     # Standardize FFT qs
     q_map = {'Please tells us why you gave this answer?': 'nonspecific',
         'FFT Why?': 'nonspecific',
@@ -66,12 +83,94 @@ def load_multilabel_data(filename, target = 'labels'):
         'How could we improve?': 'could_improve',
         'What could we do better?': 'could_improve',
         'Please describe any things about the 111 service that \nyou were particularly satisfied and/or dissatisfied with': 'nonspecific'}
-    clean_dataframe.loc[:,'FFT_q_standardised'] = clean_dataframe['FFT question'].map(q_map)
+    clean_dataframe.loc[:,'FFT_q_standardised']  = clean_dataframe.loc[:,'FFT question'].map(q_map).copy()
     # Could probably do more text cleaning in here before doing text_length
-    clean_dataframe['text_length'] = clean_dataframe['FFT answer'].apply(lambda x:
+    clean_dataframe.loc[:,'text_length'] = clean_dataframe.loc[:,'FFT answer'].apply(lambda x:
                                     len([word for word in str(x).split(' ') if word != '']))
+    if target == 'major_categories':
+        major_categories = {
+        'Gratitude/ good experience': 'General',
+        'Negative experience': 'General',
+        'Not assigned': 'General',
+        'Organisation & efficiency': 'General',
+        'Funding & use of financial resources': 'General',
+        'Non-specific praise for staff': 'Staff',
+        'Non-specific dissatisfaction with staff': 'Staff',
+        'Staff manner & personal attributes': 'Staff',
+        'Number & deployment of staff': 'Staff',
+        'Staff responsiveness': 'Staff',
+        'Staff continuity': 'Staff',
+        'Competence & training': 'Staff',
+        'Unspecified communication': 'Communication & involvement',
+        'Staff listening, understanding & involving patients': 'Communication & involvement',
+        'Information directly from staff during care': 'Communication & involvement',
+        'Information provision & guidance': 'Communication & involvement',
+        'Being kept informed, clarity & consistency of information': 'Communication & involvement',
+        'Service involvement with family/ carers': 'Communication & involvement',
+        'Patient contact with family/ carers': 'Communication & involvement',
+        'Contacting services': 'Access to medical care & support',
+        'Appointment arrangements': 'Access to medical care & support',
+        'Appointment method': 'Access to medical care & support',
+        'Timeliness of care': 'Access to medical care & support',
+        'Supplying medication': 'Medication',
+        'Understanding medication': 'Medication',
+        'Pain management': 'Medication',
+        'Diagnosis': 'Patient journey & service coordination',
+        'Referals & continuity of care': 'Patient journey & service coordination',
+        'Length of stay/ duration of care': 'Patient journey & service coordination',
+        'Discharge': 'Patient journey & service coordination',
+        'Care plans': 'Patient journey & service coordination',
+        'Patient records': 'Patient journey & service coordination',
+        'Impact of treatment/ care - physical health': 'Patient journey & service coordination',
+        'Impact of treatment/ care - mental health': 'Patient journey & service coordination',
+        'Impact of treatment/ care - general': 'Patient journey & service coordination',
+        'Links with non-NHS organisations': 'Patient journey & service coordination',
+        'Cleanliness, tidiness & infection control': 'Environment & equipment',
+        'Noise & restful environment': 'Environment & equipment',
+        'Temperature': 'Environment & equipment',
+        'Lighting': 'Environment & equipment',
+        'Decoration': 'Environment & equipment',
+        'Smell': 'Environment & equipment',
+        'Comfort of environment': 'Environment & equipment',
+        'Atmosphere of ward/ environment': 'Environment & equipment',
+        'Access to outside/ fresh air': 'Environment & equipment',
+        'Privacy': 'Environment & equipment',
+        'Safety & security': 'Environment & equipment',
+        'Provision of medical  equipment': 'Environment & equipment',
+        'Food & drink provision': 'Food & diet',
+        'Food preparation facilities for patients & visitors': 'Food & diet',
+        'Service location': 'Service location, travel & transport',
+        'Transport to/ from services': 'Service location, travel & transport',
+        'Parking': 'Service location, travel & transport',
+        'Provision & range of activities': 'Activities',
+        'Electronic entertainment': 'Activities',
+        'Feeling safe': 'Category TBC',
+        'Patient appearance & grooming': 'Category TBC',
+        'Mental Health Act': 'Mental Health specifics',
+        'Psychological therapy arrangements': 'Mental Health specifics',
+        'Existence of services': 'Additional',
+        'Choice of services': 'Additional',
+        'Respect for diversity': 'Additional',
+        'Admission': 'Additional',
+        'Out of hours support (community services)': 'Additional',
+        'Learning organisation': 'Additional',
+        'Collecting patients feedback': 'Additional'}
+        new_df = clean_dataframe.copy().drop(columns = cols)
+        for i in clean_dataframe[cols].index:
+            for label in cols:
+                if clean_dataframe.loc[i,label] == 1:
+                    new_cat = major_categories[label]
+                    new_df.loc[i,new_cat] = 1
+        clean_dataframe = new_df.copy()
+        cols = list(set(major_categories.values()))
+    clean_dataframe.loc[:,'num_labels'] = clean_dataframe.loc[:,cols].sum(axis = 1)
+    clean_dataframe = clean_dataframe[clean_dataframe['num_labels'] != 0]
     print(f'Shape of cleaned data is {clean_dataframe.shape}')
     return clean_dataframe
+
+
+
+
 
 def load_data(filename, target, predictor, theme = None):
     """
@@ -327,5 +426,5 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 
 if __name__ == '__main__':
-    df = load_multilabel_data(filename = 'datasets/phase_2_test.csv')
+    df = load_multilabel_data(filename = 'datasets/phase_2_test.csv', target = 'major_categories')
     print(df.head())
