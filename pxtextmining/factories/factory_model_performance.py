@@ -9,13 +9,13 @@ from sklearn import metrics
 
 
 
-def get_multilabel_metrics(x_train, y_train, x_test, y_test, labels, model = None):
+def get_multilabel_metrics(x_test, y_test, labels, x_train = None, y_train = None,  model = None):
     """Function to produce performance metrics for a multilabel machine learning model.
 
-    :param pd.DataFrame x_train: Training data (predictor).
-    :param pd.Series y_train: Training data (target).
     :param pd.DataFrame x_test: Test data (predictor).
     :param pd.Series y_test: Test data (target).
+    :param pd.DataFrame x_train: Training data (predictor). Defaults to None, only needed if model = None
+    :param pd.Series y_train: Training data (target). Defaults to None, only needed if model = None
     :param str model: Trained classifier. Defaults to 'dummy' which instantiates dummy classifier for baseline metrics.
 
     :return: None
@@ -25,10 +25,13 @@ def get_multilabel_metrics(x_train, y_train, x_test, y_test, labels, model = Non
     model_metrics = {}
     if model == None:
         model = DummyClassifier(strategy = 'uniform')
-        model.fit(x_train, y_train)
+        if x_train:
+            model.fit(x_train, y_train)
+        else:
+            raise ValueError('For dummy model, x_train and y_train must be provided')
     y_pred = model.predict(x_test)
     c_report_str = metrics.classification_report(y_test, y_pred,
-                                            target_names = labels)
+                                            target_names = labels, zero_division=0)
     model_metrics['exact_accuracy'] = metrics.accuracy_score(y_test, y_pred)
     model_metrics['hamming_loss'] = metrics.hamming_loss(y_test, y_pred)
     model_metrics['macro_jaccard_score'] = metrics.jaccard_score(y_test, y_pred, average = 'macro')
@@ -36,8 +39,8 @@ def get_multilabel_metrics(x_train, y_train, x_test, y_test, labels, model = Non
         print(f'{k}: {v}')
     print('\n\n Classification report:')
     print(c_report_str)
-    per_class_jaccard = zip(labels,metrics.jaccard_score(y_test, y_pred, average = None))
-    print('\n per class Jaccard score:')
+    per_class_jaccard = zip(labels,metrics.jaccard_score(y_test, y_pred, average = None, zero_division = 0))
+    print('\nper class Jaccard score:')
     for k,v in per_class_jaccard:
         print(f'{k}: {v}')
 
