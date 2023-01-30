@@ -6,6 +6,7 @@ import re
 import string
 import numpy as np
 from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
 
 
@@ -168,9 +169,23 @@ def load_multilabel_data(filename, target = 'major_categories'):
     print(f'Shape of cleaned data is {clean_dataframe.shape}')
     return clean_dataframe
 
+def vectorise_multilabel_data(text_data):
+    # can try different types of vectorizer here
+    count_vect = CountVectorizer()
+    X_counts = count_vect.fit_transform(text_data)
+    tfidf_transformer = TfidfTransformer()
+    X_tfidf = tfidf_transformer.fit_transform(X_counts)
+    return X_tfidf
 
-
-
+def process_and_split_multilabel_data(df, target, vectorise = True):
+    # Currently just the text itself. Not adding other features yet or doing any cleaning
+    Y = df[target]
+    if vectorise == True:
+        X = vectorise_multilabel_data(df['FFT answer'])
+    else:
+        X = df['FFT answer']
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3)
+    return X_train, X_test, Y_train, Y_test
 
 def load_data(filename, target, predictor, theme = None):
     """
