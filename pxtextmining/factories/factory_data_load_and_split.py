@@ -76,7 +76,7 @@ def load_multilabel_data(filename, target = 'major_categories'):
         cols = ['Comment sentiment']
     filtered_dataframe = text_data.loc[:,features + cols].copy()
     print(f'Shape of raw data is {filtered_dataframe.shape}')
-    clean_dataframe = filtered_dataframe.dropna(subset=features)
+    clean_dataframe = filtered_dataframe.dropna(subset=features).copy()
     # Standardize FFT qs
     q_map = {'Please tells us why you gave this answer?': 'nonspecific',
         'FFT Why?': 'nonspecific',
@@ -179,7 +179,7 @@ def vectorise_multilabel_data(text_data):
 
 def process_and_split_multilabel_data(df, target, vectorise = True):
     # Currently just the text itself. Not adding other features yet or doing any cleaning
-    Y = df[target]
+    Y = df[target].fillna(value=0)
     if vectorise == True:
         X = vectorise_multilabel_data(df['FFT answer'])
     else:

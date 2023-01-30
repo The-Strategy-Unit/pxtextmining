@@ -35,6 +35,9 @@ def get_multilabel_metrics(x_test, y_test, labels, x_train = None, y_train = Non
     model_metrics['exact_accuracy'] = metrics.accuracy_score(y_test, y_pred)
     model_metrics['hamming_loss'] = metrics.hamming_loss(y_test, y_pred)
     model_metrics['macro_jaccard_score'] = metrics.jaccard_score(y_test, y_pred, average = 'macro')
+    print(f'\n**********')
+    print(model)
+    print('\n')
     for k,v in model_metrics.items():
         print(f'{k}: {v}')
     print('\n\n Classification report:')

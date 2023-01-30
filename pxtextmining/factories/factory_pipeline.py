@@ -8,8 +8,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectPercentile, chi2, f_classif
 from sklearn.model_selection import RandomizedSearchCV
 # from sklearn.svm import LinearSVC
-from sklearn.linear_model import PassiveAggressiveClassifier, Perceptron, RidgeClassifier, SGDClassifier
+from sklearn.linear_model import PassiveAggressiveClassifier, Perceptron, RidgeClassifier, SGDClassifier, LogisticRegression
 from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
+from sklearn.multioutput import MultiOutputClassifier
 from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
 from sklearn.ensemble import RandomForestClassifier
 from pxtextmining.helpers.tokenization import LemmaTokenizer
@@ -22,6 +23,22 @@ from pxtextmining.helpers.scaler_switcher import ScalerSwitcher
 from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwitcher
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
 from pxtextmining.helpers.theme_binarization import ThemeBinarizer
+
+
+def train_sklearn_multilabel_models(X_train, Y_train):
+    # My idea is to create separate pipelines for each model. Gridsearch each one separately
+    # Currently just vanilla model, not pipeline. Work in progress!
+    # Need to have a think about which models and why... find some literature to support decisionmaking
+    nb_clf = MultinomialNB()
+    sgd = SGDClassifier(loss='log', penalty='l2', alpha=1e-3, max_iter=1000, tol=None)
+    lr = LogisticRegression()
+    models = []
+    for classifier in [nb_clf, sgd, lr]:
+        clf = MultiOutputClassifier(classifier)
+        print(f'Training {clf}')
+        clf.fit(X_train, Y_train)
+        models.append(clf)
+    return models
 
 def create_learners(learners, ordinal=False):
     """Creates list of learner models which is then fed into pipeline, based on user selection.
