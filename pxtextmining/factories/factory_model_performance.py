@@ -25,7 +25,7 @@ def get_multilabel_metrics(x_test, y_test, labels, x_train = None, y_train = Non
     metrics_string = '\n *****************'
     model_metrics = {}
     if model == None:
-        model = DummyClassifier(strategy = 'uniform')
+        model = DummyClassifier(strategy = 'prior')
         if x_train:
             model.fit(x_train, y_train)
         else:
