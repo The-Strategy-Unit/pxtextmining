@@ -9,12 +9,15 @@ import pickle
 from sqlalchemy import create_engine
 
 
-def write_multilabel_models_and_metrics(models, model_metrics, path):
+def write_multilabel_models_and_metrics(models, model_metrics, path, dummy=False):
     for i in range(len(models)):
         model_name = f'model_{i}'
         pickle.dump(models[i], open(f'{path}/{model_name}.sav', 'wb'))
         with open(f'{path}/{model_name}.txt', 'w') as file:
             file.write(model_metrics[i])
+    if len(model_metrics) != len(models):
+        with open(f'{path}/dummy_metrics.txt', 'w') as file:
+            file.write(model_metrics[-1])
     print(f'{len(models)} models have been written to {path}')
 
 
