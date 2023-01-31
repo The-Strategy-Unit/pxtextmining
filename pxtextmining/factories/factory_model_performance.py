@@ -22,6 +22,7 @@ def get_multilabel_metrics(x_test, y_test, labels, x_train = None, y_train = Non
     :rtype: None
     """
 
+    metrics_string = '\n *****************'
     model_metrics = {}
     if model == None:
         model = DummyClassifier(strategy = 'uniform')
@@ -35,17 +36,16 @@ def get_multilabel_metrics(x_test, y_test, labels, x_train = None, y_train = Non
     model_metrics['exact_accuracy'] = metrics.accuracy_score(y_test, y_pred)
     model_metrics['hamming_loss'] = metrics.hamming_loss(y_test, y_pred)
     model_metrics['macro_jaccard_score'] = metrics.jaccard_score(y_test, y_pred, average = 'macro')
-    print(f'\n**********')
-    print(model)
-    print('\n')
+    metrics_string += f'\n{model}\n'
     for k,v in model_metrics.items():
-        print(f'{k}: {v}')
-    print('\n\n Classification report:')
-    print(c_report_str)
-    per_class_jaccard = zip(labels,metrics.jaccard_score(y_test, y_pred, average = None, zero_division = 0))
-    print('\nper class Jaccard score:')
-    for k,v in per_class_jaccard:
-        print(f'{k}: {v}')
+        metrics_string += f'\n{k}: {v}'
+    metrics_string += '\n\n Classification report:\n'
+    metrics_string += c_report_str
+    # per_class_jaccard = zip(labels,metrics.jaccard_score(y_test, y_pred, average = None, zero_division = 0))
+    # metrics_string += '\nper class Jaccard score:'
+    # for k,v in per_class_jaccard:
+    #     print(f'{k}: {v}')
+    return metrics_string
 
 
 def get_metrics(x_train, x_test, y_train, y_test, model=None):
