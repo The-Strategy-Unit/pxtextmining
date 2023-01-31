@@ -3,6 +3,10 @@ from pxtextmining.factories.factory_model_performance import get_multilabel_metr
 from pxtextmining.factories.factory_pipeline import train_sklearn_multilabel_models
 from pxtextmining.factories.factory_write_results import write_multilabel_models_and_metrics
 
+
+
+
+
 df = load_multilabel_data(filename = 'datasets/phase_2_test.csv', target = 'major_categories')
 major_cats = ['Access to medical care & support',
  'Activities',
@@ -22,4 +26,5 @@ models = train_sklearn_multilabel_models(X_train, Y_train)
 model_metrics = []
 for m in models:
     model_metrics.append(get_multilabel_metrics(X_test, Y_test, labels = major_cats, model = m))
+model_metrics.append(get_multilabel_metrics(X_test, Y_test, labels = major_cats, x_train = X_train, y_train = Y_train, model = None))
 write_multilabel_models_and_metrics(models,model_metrics,path='test_multilabel')

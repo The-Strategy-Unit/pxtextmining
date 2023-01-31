@@ -6,7 +6,7 @@ from sklearn.metrics import balanced_accuracy_score, confusion_matrix, matthews_
 from pxtextmining.helpers.metrics import class_balance_accuracy_score
 from sklearn.dummy import DummyClassifier
 from sklearn import metrics
-
+from sklearn.multioutput import MultiOutputClassifier
 
 
 def get_multilabel_metrics(x_test, y_test, labels, x_train = None, y_train = None,  model = None):
@@ -25,8 +25,8 @@ def get_multilabel_metrics(x_test, y_test, labels, x_train = None, y_train = Non
     metrics_string = '\n *****************'
     model_metrics = {}
     if model == None:
-        model = DummyClassifier(strategy = 'prior')
-        if x_train:
+        model = DummyClassifier(strategy = 'uniform')
+        if x_train != None:
             model.fit(x_train, y_train)
         else:
             raise ValueError('For dummy model, x_train and y_train must be provided')
