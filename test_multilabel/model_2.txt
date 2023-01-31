@@ -1,0 +1,29 @@
+
+ *****************
+MultiOutputClassifier(estimator=LogisticRegression())
+
+exact_accuracy: 0.5071138211382114
+hamming_loss: 0.05354909318323953
+macro_jaccard_score: 0.17015196392993198
+
+ Classification report:
+                                        precision    recall  f1-score   support
+
+      Access to medical care & support       0.87      0.54      0.66       180
+                            Activities       0.00      0.00      0.00        23
+                            Additional       0.00      0.00      0.00         6
+                          Category TBC       0.00      0.00      0.00         1
+           Communication & involvement       0.97      0.35      0.51       195
+               Environment & equipment       0.00      0.00      0.00        29
+                           Food & diet       0.00      0.00      0.00        23
+                               General       0.96      0.75      0.84       396
+                            Medication       0.00      0.00      0.00        20
+               Mental Health specifics       0.00      0.00      0.00        10
+Patient journey & service coordination       0.67      0.02      0.04        88
+  Service location, travel & transport       0.00      0.00      0.00        22
+                                 Staff       0.89      0.67      0.77       305
+
+                             micro avg       0.92      0.52      0.66      1298
+                             macro avg       0.33      0.18      0.22      1298
+                          weighted avg       0.81      0.52      0.61      1298
+                           samples avg       0.64      0.58      0.60      1298
