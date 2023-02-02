@@ -1,5 +1,6 @@
 from imblearn import FunctionSampler
 from imblearn.pipeline import Pipeline
+from sklearn.pipeline import make_pipeline
 # from sklearn.pipeline import Pipeline
 from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef
 from sklearn.compose import ColumnTransformer
@@ -23,6 +24,41 @@ from pxtextmining.helpers.scaler_switcher import ScalerSwitcher
 from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwitcher
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
 from pxtextmining.helpers.theme_binarization import ThemeBinarizer
+from scipy import stats
+
+def create_sklearn_pipeline(model_type):
+    params = {'tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
+                'tfidfvectorizer__max_df': [0.8, 0.85, 0.9, 0.95, 1],
+                'tfidfvectorizer__min_df': [0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1]}
+    if model_type == 'mnb':
+        pipe = make_pipeline(TfidfVectorizer(),
+                                       MultiOutputClassifier(MultinomialNB())
+                                       )
+        params['multioutputclassifier__estimator__alpha'] = stats.uniform(0.1,1)
+    if model_type == 'sgd':
+        pipe = make_pipeline(TfidfVectorizer(),
+                            MultiOutputClassifier(SGDClassifier(loss='log', penalty='l2', alpha=1e-3, max_iter=1000, tol=None))
+                            )
+    if model_type == 'lr':
+        pipe = make_pipeline(TfidfVectorizer(),
+                            MultiOutputClassifier(LogisticRegression())
+                            )
+    return pipe, params
+
+def search_sklearn_pipelines(X_train, Y_train, models_to_try):
+    models = []
+    for model_type in models_to_try:
+        if model_type not in ['mnb', 'sgd', 'lr']:
+            raise ValueError('Please choose valid model_type. Options are mnb, sgd, or lr')
+        else:
+            pipe, params = create_sklearn_pipeline(model_type)
+            print(f'****SEARCHING {pipe.steps[-1][-1]}')
+            search = RandomizedSearchCV(pipe, params,
+                                        scoring='f1_macro', n_iter=100,
+                                        cv=4, n_jobs=-1, refit=True)
+            search.fit(X_train, Y_train)
+            models.append(search.best_estimator_)
+    return models
 
 
 def train_sklearn_multilabel_models(X_train, Y_train):

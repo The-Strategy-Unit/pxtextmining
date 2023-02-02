@@ -1,29 +1,32 @@
 
  *****************
-MultiOutputClassifier(estimator=LogisticRegression())
+Pipeline(steps=[('tfidfvectorizer',
+                 TfidfVectorizer(max_df=0.9, min_df=0.01, ngram_range=(1, 2))),
+                ('multioutputclassifier',
+                 MultiOutputClassifier(estimator=LogisticRegression()))])
 
-exact_accuracy: 0.5101626016260162
-hamming_loss: 0.05433083176985616
-macro_jaccard_score: 0.17894731629887242
+exact_accuracy: 0.5350609756097561
+hamming_loss: 0.05112570356472795
+macro_jaccard_score: 0.18968113894510774
 
  Classification report:
                                         precision    recall  f1-score   support
 
-      Access to medical care & support       0.92      0.44      0.60       215
-                            Activities       1.00      0.05      0.10        19
-                            Additional       0.00      0.00      0.00        13
-                          Category TBC       0.00      0.00      0.00         3
-           Communication & involvement       0.96      0.41      0.58       197
-               Environment & equipment       0.00      0.00      0.00        25
-                           Food & diet       1.00      0.07      0.12        15
-                               General       0.94      0.81      0.87       361
-                            Medication       0.00      0.00      0.00        15
+      Access to medical care & support       0.79      0.59      0.67       114
+                            Activities       0.00      0.00      0.00        11
+                            Additional       0.00      0.00      0.00         8
+                          Category TBC       0.00      0.00      0.00         0
+           Communication & involvement       0.93      0.48      0.64       130
+               Environment & equipment       0.00      0.00      0.00        20
+                           Food & diet       1.00      0.08      0.15        12
+                               General       0.92      0.80      0.86       254
+                            Medication       0.00      0.00      0.00        12
                Mental Health specifics       0.00      0.00      0.00         3
-Patient journey & service coordination       1.00      0.03      0.05       108
-  Service location, travel & transport       0.00      0.00      0.00        24
-                                 Staff       0.88      0.63      0.73       306
+Patient journey & service coordination       0.83      0.08      0.14        64
+  Service location, travel & transport       0.00      0.00      0.00         7
+                                 Staff       0.83      0.66      0.74       209
 
-                             micro avg       0.92      0.51      0.66      1304
-                             macro avg       0.52      0.19      0.24      1304
-                          weighted avg       0.87      0.51      0.61      1304
-                           samples avg       0.64      0.58      0.60      1304
+                             micro avg       0.87      0.57      0.69       844
+                             macro avg       0.41      0.21      0.25       844
+                          weighted avg       0.81      0.57      0.64       844
+                           samples avg       0.68      0.62      0.64       844

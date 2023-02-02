@@ -26,7 +26,7 @@ def get_multilabel_metrics(x_test, y_test, labels, x_train = None, y_train = Non
     model_metrics = {}
     if model == None:
         model = DummyClassifier(strategy = 'uniform')
-        if x_train != None:
+        if isinstance(x_train, pd.Series):
             model.fit(x_train, y_train)
         else:
             raise ValueError('For dummy model, x_train and y_train must be provided')
