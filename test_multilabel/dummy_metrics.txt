@@ -2,28 +2,31 @@
  *****************
 DummyClassifier(strategy='uniform')
 
+
+Training time: None
+
 exact_accuracy: 0.0
-hamming_loss: 0.49671669793621015
-macro_jaccard_score: 0.08111691505875977
+hamming_loss: 0.5089118198874296
+macro_jaccard_score: 0.07607106526535828
 
  Classification report:
                                         precision    recall  f1-score   support
 
-      Access to medical care & support       0.19      0.56      0.29       114
-                            Activities       0.02      0.45      0.03        11
-                            Additional       0.02      0.75      0.04         8
+      Access to medical care & support       0.22      0.50      0.31       141
+                            Activities       0.02      0.58      0.04        12
+                            Additional       0.01      0.50      0.01         4
                           Category TBC       0.00      0.00      0.00         0
-           Communication & involvement       0.19      0.48      0.28       130
-               Environment & equipment       0.03      0.45      0.05        20
-                           Food & diet       0.02      0.50      0.04        12
-                               General       0.36      0.48      0.42       254
-                            Medication       0.01      0.42      0.03        12
-               Mental Health specifics       0.00      0.33      0.01         3
-Patient journey & service coordination       0.11      0.53      0.18        64
-  Service location, travel & transport       0.02      0.71      0.03         7
-                                 Staff       0.33      0.53      0.41       209
+           Communication & involvement       0.17      0.51      0.26       109
+               Environment & equipment       0.02      0.57      0.04        14
+                           Food & diet       0.02      0.36      0.03        14
+                               General       0.39      0.46      0.42       273
+                            Medication       0.02      0.50      0.04        12
+               Mental Health specifics       0.01      0.50      0.02         8
+Patient journey & service coordination       0.08      0.46      0.13        54
+  Service location, travel & transport       0.02      0.43      0.03        14
+                                 Staff       0.28      0.47      0.35       188
 
-                             micro avg       0.10      0.51      0.17       844
-                             macro avg       0.10      0.48      0.14       844
-                          weighted avg       0.26      0.51      0.32       844
-                           samples avg       0.10      0.51      0.16       844
+                             micro avg       0.09      0.48      0.16       843
+                             macro avg       0.10      0.45      0.13       843
+                          weighted avg       0.25      0.48      0.31       843
+                           samples avg       0.09      0.47      0.15       843

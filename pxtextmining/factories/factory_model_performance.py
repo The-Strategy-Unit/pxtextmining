@@ -9,7 +9,7 @@ from sklearn import metrics
 from sklearn.multioutput import MultiOutputClassifier
 
 
-def get_multilabel_metrics(x_test, y_test, labels, x_train = None, y_train = None,  model = None):
+def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time = None, x_train = None, y_train = None):
     """Function to produce performance metrics for a multilabel machine learning model.
 
     :param pd.DataFrame x_test: Test data (predictor).
@@ -37,6 +37,7 @@ def get_multilabel_metrics(x_test, y_test, labels, x_train = None, y_train = Non
     model_metrics['hamming_loss'] = metrics.hamming_loss(y_test, y_pred)
     model_metrics['macro_jaccard_score'] = metrics.jaccard_score(y_test, y_pred, average = 'macro')
     metrics_string += f'\n{model}\n'
+    metrics_string += f'\n\nTraining time: {training_time}\n'
     for k,v in model_metrics.items():
         metrics_string += f'\n{k}: {v}'
     metrics_string += '\n\n Classification report:\n'

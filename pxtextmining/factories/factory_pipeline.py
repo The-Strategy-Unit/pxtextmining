@@ -25,6 +25,7 @@ from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwit
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
 from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 from scipy import stats
+import time
 
 def create_sklearn_pipeline(model_type):
     params = {'tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
@@ -47,18 +48,22 @@ def create_sklearn_pipeline(model_type):
 
 def search_sklearn_pipelines(X_train, Y_train, models_to_try):
     models = []
+    training_times = []
     for model_type in models_to_try:
         if model_type not in ['mnb', 'sgd', 'lr']:
             raise ValueError('Please choose valid model_type. Options are mnb, sgd, or lr')
         else:
             pipe, params = create_sklearn_pipeline(model_type)
+            start_time = time.time()
             print(f'****SEARCHING {pipe.steps[-1][-1]}')
             search = RandomizedSearchCV(pipe, params,
                                         scoring='f1_macro', n_iter=100,
                                         cv=4, n_jobs=-1, refit=True)
             search.fit(X_train, Y_train)
             models.append(search.best_estimator_)
-    return models
+            training_time = time.time() - start_time
+            training_times.append(round(training_time,2))
+    return models, training_times
 
 
 def train_sklearn_multilabel_models(X_train, Y_train):
