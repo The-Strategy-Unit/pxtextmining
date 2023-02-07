@@ -25,6 +25,7 @@ from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwit
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
 from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 from scipy import stats
+import datetime
 import time
 
 def create_sklearn_pipeline(model_type):
@@ -61,8 +62,9 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try):
                                         cv=4, n_jobs=-1, refit=True)
             search.fit(X_train, Y_train)
             models.append(search.best_estimator_)
-            training_time = time.time() - start_time
-            training_times.append(round(training_time,2))
+            training_time = round(time.time() - start_time, 0)
+            training_times.append(str(datetime.timedelta(seconds=training_time)))
+            # training_times.append(round(training_time,2))
     return models, training_times
 
 
