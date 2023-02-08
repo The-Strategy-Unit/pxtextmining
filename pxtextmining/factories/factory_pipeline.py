@@ -8,7 +8,7 @@ from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, OneHotE
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectPercentile, chi2, f_classif
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
 from sklearn.linear_model import PassiveAggressiveClassifier, Perceptron, RidgeClassifier, SGDClassifier, LogisticRegression
 from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
 from sklearn.multioutput import MultiOutputClassifier
@@ -39,16 +39,24 @@ def create_sklearn_pipeline(model_type):
         params['multioutputclassifier__estimator__alpha'] = stats.uniform(0.1,1)
     if model_type == 'knn':
         pipe = make_pipeline(TfidfVectorizer(),
-                            MultiOutputClassifier(KNeighborsClassifier())
-                            )
+                            KNeighborsClassifier())
+        params['kneighborsclassifier__n_neighbors'] = [2,3,4,5,6,7,8]
+        params['kneighborsclassifier__n_jobs'] = [-1]
     if model_type == 'svm':
         pipe = make_pipeline(TfidfVectorizer(),
-                            MultiOutputClassifier(LinearSVC())
+                            MultiOutputClassifier(SVC())
                             )
+        params['multioutputclassifier__estimator__C'] = [0.001, 0.01, 0.1, 1, 10, 100]
+        params['multioutputclassifier__estimator__kernel'] = ['linear', 'poly', 'rbf', 'sigmoid']
+        params['multioutputclassifier__estimator__class_weight'] = ['balanced', None]
+        # params['multioutputclassifier__estimator__max_iter'] = [1000]
     if model_type == 'rfc':
         pipe = make_pipeline(TfidfVectorizer(),
-                            MultiOutputClassifier(RandomForestClassifier())
+                            RandomForestClassifier()
                             )
+        params['randomforestclassifier__max_depth'] = [10,20,30,40]
+        params['randomforestclassifier__n_jobs'] = [-1]
+        params['randomforestclassifier__class_weight'] = ['balanced', 'balanced_subsample', None]
     return pipe, params
 
 def search_sklearn_pipelines(X_train, Y_train, models_to_try):

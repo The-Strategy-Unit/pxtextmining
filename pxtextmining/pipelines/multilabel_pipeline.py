@@ -25,7 +25,7 @@ major_cats = ['Access to medical care & support',
  'Service location, travel & transport',
  'Staff']
 X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = major_cats)
-models, training_times = search_sklearn_pipelines(X_train, Y_train, models_to_try = ['mnb', 'sgd', 'lr'])
+models, training_times = search_sklearn_pipelines(X_train, Y_train, models_to_try = ['mnb', 'knn', 'svm', 'rfc'])
 # models = train_sklearn_multilabel_models(X_train, Y_train)
 model_metrics = []
 for i in range(len(models)):

@@ -1,36 +1,34 @@
 
  *****************
-Pipeline(steps=[('tfidfvectorizer', TfidfVectorizer(max_df=0.8, min_df=0.01)),
-                ('multioutputclassifier',
-                 MultiOutputClassifier(estimator=SGDClassifier(alpha=0.001,
-                                                               loss='log',
-                                                               tol=None)))])
+Pipeline(steps=[('tfidfvectorizer', TfidfVectorizer(max_df=0.95, min_df=0.03)),
+                ('kneighborsclassifier',
+                 KNeighborsClassifier(n_jobs=-1, n_neighbors=3))])
 
 
-Training time: 0:03:54
+Training time: 0:00:39
 
-exact_accuracy: 0.4878048780487805
-hamming_loss: 0.0549953095684803
-macro_jaccard_score: 0.16365835214584717
+exact_accuracy: 0.43902439024390244
+hamming_loss: 0.07516416510318949
+macro_jaccard_score: 0.15385745518721225
 
  Classification report:
                                         precision    recall  f1-score   support
 
-      Access to medical care & support       0.92      0.42      0.57       130
-                            Activities       1.00      0.11      0.20         9
-                            Additional       0.00      0.00      0.00         4
-                          Category TBC       0.00      0.00      0.00         2
-           Communication & involvement       0.98      0.34      0.51       120
-               Environment & equipment       0.00      0.00      0.00        20
-                           Food & diet       0.00      0.00      0.00        11
-                               General       0.90      0.77      0.83       265
-                            Medication       0.00      0.00      0.00         8
-               Mental Health specifics       0.00      0.00      0.00         7
-Patient journey & service coordination       0.00      0.00      0.00        55
-  Service location, travel & transport       0.00      0.00      0.00        11
-                                 Staff       0.87      0.61      0.72       210
+      Access to medical care & support       0.66      0.43      0.52       129
+                            Activities       0.00      0.00      0.00         9
+                            Additional       1.00      0.11      0.20         9
+                          Category TBC       0.00      0.00      0.00         0
+           Communication & involvement       0.49      0.31      0.38       137
+               Environment & equipment       0.00      0.00      0.00        15
+                           Food & diet       0.00      0.00      0.00        13
+                               General       0.76      0.83      0.80       253
+                            Medication       0.00      0.00      0.00        12
+               Mental Health specifics       0.00      0.00      0.00         6
+Patient journey & service coordination       0.48      0.20      0.29        64
+  Service location, travel & transport       0.00      0.00      0.00        15
+                                 Staff       0.69      0.60      0.64       216
 
-                             micro avg       0.90      0.50      0.65       852
-                             macro avg       0.36      0.17      0.22       852
-                          weighted avg       0.78      0.50      0.60       852
-                           samples avg       0.63      0.56      0.58       852
+                             micro avg       0.68      0.52      0.59       878
+                             macro avg       0.31      0.19      0.22       878
+                          weighted avg       0.61      0.52      0.55       878
+                           samples avg       0.62      0.57      0.58       878
