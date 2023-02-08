@@ -8,7 +8,7 @@ from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, OneHotE
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectPercentile, chi2, f_classif
 from sklearn.model_selection import RandomizedSearchCV
-# from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC
 from sklearn.linear_model import PassiveAggressiveClassifier, Perceptron, RidgeClassifier, SGDClassifier, LogisticRegression
 from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
 from sklearn.multioutput import MultiOutputClassifier
@@ -37,13 +37,17 @@ def create_sklearn_pipeline(model_type):
                                        MultiOutputClassifier(MultinomialNB())
                                        )
         params['multioutputclassifier__estimator__alpha'] = stats.uniform(0.1,1)
-    if model_type == 'sgd':
+    if model_type == 'knn':
         pipe = make_pipeline(TfidfVectorizer(),
-                            MultiOutputClassifier(SGDClassifier(loss='log', penalty='l2', alpha=1e-3, max_iter=1000, tol=None))
+                            MultiOutputClassifier(KNeighborsClassifier())
                             )
-    if model_type == 'lr':
+    if model_type == 'svm':
         pipe = make_pipeline(TfidfVectorizer(),
-                            MultiOutputClassifier(LogisticRegression())
+                            MultiOutputClassifier(LinearSVC())
+                            )
+    if model_type == 'rfc':
+        pipe = make_pipeline(TfidfVectorizer(),
+                            MultiOutputClassifier(RandomForestClassifier())
                             )
     return pipe, params
 
@@ -51,8 +55,8 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try):
     models = []
     training_times = []
     for model_type in models_to_try:
-        if model_type not in ['mnb', 'sgd', 'lr']:
-            raise ValueError('Please choose valid model_type. Options are mnb, sgd, or lr')
+        if model_type not in ['mnb', 'knn', 'svm', 'rfc']:
+            raise ValueError('Please choose valid model_type. Options are mnb, knn, svm, or rfc')
         else:
             pipe, params = create_sklearn_pipeline(model_type)
             start_time = time.time()
