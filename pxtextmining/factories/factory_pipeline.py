@@ -27,23 +27,25 @@ from pxtextmining.helpers.theme_binarization import ThemeBinarizer
 from scipy import stats
 import datetime
 import time
+from pxtextmining.helpers.tokenization import spacy_tokenizer
+
 
 def create_sklearn_pipeline(model_type):
     params = {'tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
                 'tfidfvectorizer__max_df': [0.8, 0.85, 0.9, 0.95, 1],
                 'tfidfvectorizer__min_df': [0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1]}
     if model_type == 'mnb':
-        pipe = make_pipeline(TfidfVectorizer(),
+        pipe = make_pipeline(TfidfVectorizer(tokenizer = spacy_tokenizer),
                                        MultiOutputClassifier(MultinomialNB())
                                        )
         params['multioutputclassifier__estimator__alpha'] = stats.uniform(0.1,1)
     if model_type == 'knn':
-        pipe = make_pipeline(TfidfVectorizer(),
+        pipe = make_pipeline(TfidfVectorizer(tokenizer = spacy_tokenizer),
                             KNeighborsClassifier())
-        params['kneighborsclassifier__n_neighbors'] = [2,3,4,5,6,7,8]
+        params['kneighborsclassifier__n_neighbors'] = stats.randint(1,50)
         params['kneighborsclassifier__n_jobs'] = [-1]
     if model_type == 'svm':
-        pipe = make_pipeline(TfidfVectorizer(),
+        pipe = make_pipeline(TfidfVectorizer(tokenizer = spacy_tokenizer),
                             MultiOutputClassifier(SVC())
                             )
         params['multioutputclassifier__estimator__C'] = [0.001, 0.01, 0.1, 1, 10, 100]
@@ -51,7 +53,7 @@ def create_sklearn_pipeline(model_type):
         params['multioutputclassifier__estimator__class_weight'] = ['balanced', None]
         # params['multioutputclassifier__estimator__max_iter'] = [1000]
     if model_type == 'rfc':
-        pipe = make_pipeline(TfidfVectorizer(),
+        pipe = make_pipeline(TfidfVectorizer(tokenizer = spacy_tokenizer),
                             RandomForestClassifier()
                             )
         params['randomforestclassifier__max_depth'] = [10,20,30,40]
@@ -76,7 +78,6 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try):
             models.append(search.best_estimator_)
             training_time = round(time.time() - start_time, 0)
             training_times.append(str(datetime.timedelta(seconds=training_time)))
-            # training_times.append(round(training_time,2))
     return models, training_times
 
 

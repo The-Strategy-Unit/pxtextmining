@@ -8,6 +8,13 @@ except OSError:
     print('Warning! Have you downloaded the spacy models? Run " python -m spacy download en_core_web_sm " in your terminal')
 
 
+en_nlp = spacy.load('en_core_web_lg', disable=["parser", "ner"])
+
+def spacy_tokenizer(document):
+    doc_spacy = en_nlp(document)
+    return [token.lemma_ for token in doc_spacy]
+
+
 class LemmaTokenizer:
     """
     Class for custom lemmatization in
