@@ -29,23 +29,30 @@ import datetime
 import time
 from pxtextmining.helpers.tokenization import spacy_tokenizer
 
+def create_sklearn_vectorizer(tokenizer = None):
+    if tokenizer == 'spacy':
+        vectorizer = TfidfVectorizer(tokenizer = spacy_tokenizer)
+    else:
+        vectorizer = TfidfVectorizer()
+    return vectorizer
 
-def create_sklearn_pipeline(model_type):
+def create_sklearn_pipeline(model_type, tokenizer = None):
+    vectorizer = create_sklearn_vectorizer(tokenizer = tokenizer)
     params = {'tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
                 'tfidfvectorizer__max_df': [0.8, 0.85, 0.9, 0.95, 1],
                 'tfidfvectorizer__min_df': [0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1]}
     if model_type == 'mnb':
-        pipe = make_pipeline(TfidfVectorizer(tokenizer = spacy_tokenizer),
-                                       MultiOutputClassifier(MultinomialNB())
-                                       )
+        pipe = make_pipeline(vectorizer,
+                            MultiOutputClassifier(MultinomialNB())
+                            )
         params['multioutputclassifier__estimator__alpha'] = stats.uniform(0.1,1)
     if model_type == 'knn':
-        pipe = make_pipeline(TfidfVectorizer(tokenizer = spacy_tokenizer),
+        pipe = make_pipeline(vectorizer,
                             KNeighborsClassifier())
         params['kneighborsclassifier__n_neighbors'] = stats.randint(1,50)
         params['kneighborsclassifier__n_jobs'] = [-1]
     if model_type == 'svm':
-        pipe = make_pipeline(TfidfVectorizer(tokenizer = spacy_tokenizer),
+        pipe = make_pipeline(vectorizer,
                             MultiOutputClassifier(SVC())
                             )
         params['multioutputclassifier__estimator__C'] = [0.001, 0.01, 0.1, 1, 10, 100]
@@ -53,7 +60,7 @@ def create_sklearn_pipeline(model_type):
         params['multioutputclassifier__estimator__class_weight'] = ['balanced', None]
         # params['multioutputclassifier__estimator__max_iter'] = [1000]
     if model_type == 'rfc':
-        pipe = make_pipeline(TfidfVectorizer(tokenizer = spacy_tokenizer),
+        pipe = make_pipeline(vectorizer,
                             RandomForestClassifier()
                             )
         params['randomforestclassifier__max_depth'] = [10,20,30,40]
