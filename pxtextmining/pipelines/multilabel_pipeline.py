@@ -3,10 +3,7 @@ from pxtextmining.factories.factory_model_performance import get_multilabel_metr
 from pxtextmining.factories.factory_pipeline import train_sklearn_multilabel_models, search_sklearn_pipelines
 from pxtextmining.factories.factory_write_results import write_multilabel_models_and_metrics
 
-## Next steps: fix error messages on zero_division, move dummy model metrics into pipe??
-# fill out hyperparameters to search for other model types
-# try other model types?
-# investigate spacy options
+# Should I put all of this into an 'pipeline' object??
 
 
 df = load_multilabel_data(filename = 'datasets/phase_2_test.csv', target = 'major_categories')
