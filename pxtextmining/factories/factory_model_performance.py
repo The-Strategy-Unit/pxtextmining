@@ -7,6 +7,7 @@ from pxtextmining.helpers.metrics import class_balance_accuracy_score
 from sklearn.dummy import DummyClassifier
 from sklearn import metrics
 from sklearn.multioutput import MultiOutputClassifier
+from tensorflow.keras import Sequential
 
 
 def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time = None, x_train = None, y_train = None):

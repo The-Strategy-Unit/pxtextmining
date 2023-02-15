@@ -28,25 +28,10 @@ from scipy import stats
 import datetime
 import time
 from pxtextmining.helpers.tokenization import spacy_tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.preprocessing.text import Tokenizer
 from sklearn.utils.class_weight import compute_class_weight
 from tensorflow.keras import layers, Sequential
 from tensorflow.keras.callbacks import EarlyStopping
 import numpy as np
-
-
-def tf_preprocessing(X_train, X_test, max_sentence_length = 150):
-    tk = Tokenizer()
-    tk.fit_on_texts(X_train)
-    vocab_size = len(tk.word_index)
-    print(f'There are {vocab_size} different words in your corpus')
-    X_train_token = tk.texts_to_sequences(X_train)
-    X_test_token = tk.texts_to_sequences(X_test)
-    ### Pad the inputs
-    X_train_pad = pad_sequences(X_train_token, dtype='float32', padding='post', maxlen = max_sentence_length)
-    X_test_pad = pad_sequences(X_test_token, dtype='float32', padding='post', maxlen = max_sentence_length)
-    return X_train_pad, X_test_pad, vocab_size
 
 def calculating_class_weights(y_true):
     y_np = np.array(y_true)
@@ -58,6 +43,7 @@ def calculating_class_weights(y_true):
     for i in range(len(weights)):
         class_weights_dict[i] = weights[i][-1]
     return class_weights_dict
+
 
 def create_tf_model(vocab_size = None, embedding_size = 100):
     model = Sequential()
@@ -74,8 +60,16 @@ def create_tf_model(vocab_size = None, embedding_size = 100):
                 metrics=['CategoricalAccuracy', 'Precision', 'Recall'])
     return model
 
-def full_tf_process(X_train, Y_train):
-    pass
+
+def train_tf_model(X_train, Y_train, model, class_weights_dict = None):
+    es = EarlyStopping(patience=3, restore_best_weights=True)
+    start_time = time.time()
+    model.fit(X_train, Y_train,
+          epochs=200, batch_size=32, verbose=1,
+          validation_split=0.2,
+          callbacks=[es], class_weight= class_weights_dict)
+    training_time = round(time.time() - start_time, 0)
+    return model, training_time
 
 
 def create_sklearn_vectorizer(tokenizer = None):
