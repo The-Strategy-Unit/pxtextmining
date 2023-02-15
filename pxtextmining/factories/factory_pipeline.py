@@ -68,7 +68,8 @@ def train_tf_model(X_train, Y_train, model, class_weights_dict = None):
           epochs=200, batch_size=32, verbose=1,
           validation_split=0.2,
           callbacks=[es], class_weight= class_weights_dict)
-    training_time = round(time.time() - start_time, 0)
+    seconds_taken = round(time.time() - start_time, 0)
+    training_time = str(datetime.timedelta(seconds=seconds_taken))
     return model, training_time
 
 

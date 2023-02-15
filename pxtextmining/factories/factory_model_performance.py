@@ -31,13 +31,21 @@ def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time =
             model.fit(x_train, y_train)
         else:
             raise ValueError('For dummy model, x_train and y_train must be provided')
-    y_pred = model.predict(x_test)
+    if isinstance(model, Sequential):
+        y_pred_probs = model.predict(x_test)
+        y_pred = np.where(y_pred_probs > 0.5, 1, 0)
+    else:
+        y_pred = model.predict(x_test)
     c_report_str = metrics.classification_report(y_test, y_pred,
                                             target_names = labels, zero_division=0)
     model_metrics['exact_accuracy'] = metrics.accuracy_score(y_test, y_pred)
     model_metrics['hamming_loss'] = metrics.hamming_loss(y_test, y_pred)
     model_metrics['macro_jaccard_score'] = metrics.jaccard_score(y_test, y_pred, average = 'macro')
-    metrics_string += f'\n{model}\n'
+    if isinstance(model, Sequential):
+        model_summary = str(model.summary())
+        metrics_string += f'\n{model_summary}\n'
+    else:
+        metrics_string += f'\n{model}\n'
     metrics_string += f'\n\nTraining time: {training_time}\n'
     for k,v in model_metrics.items():
         metrics_string += f'\n{k}: {v}'
