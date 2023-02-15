@@ -1095,6 +1095,23 @@ typing-extensions = ">=3.6.6"
 wrapt = ">=1.11.0"
 
 [[package]]
+name = "tensorflow-addons"
+version = "0.19.0"
+description = "TensorFlow Addons."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+packaging = "*"
+typeguard = ">=2.7"
+
+[package.extras]
+tensorflow = ["tensorflow (>=2.9.0,<2.12.0)"]
+tensorflow-cpu = ["tensorflow-cpu (>=2.9.0,<2.12.0)"]
+tensorflow-gpu = ["tensorflow-gpu (>=2.9.0,<2.12.0)"]
+
+[[package]]
 name = "tensorflow-estimator"
 version = "2.11.0"
 description = "TensorFlow Estimator."
@@ -1217,6 +1234,18 @@ dev = ["py-make (>=0.1.0)", "twine", "wheel"]
 notebook = ["ipywidgets (>=6)"]
 slack = ["slack-sdk"]
 telegram = ["requests"]
+
+[[package]]
+name = "typeguard"
+version = "2.13.3"
+description = "Run-time type checker for Python"
+category = "main"
+optional = false
+python-versions = ">=3.5.3"
+
+[package.extras]
+doc = ["sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme"]
+test = ["mypy", "pytest", "typing-extensions"]
 
 [[package]]
 name = "typer"
@@ -1349,7 +1378,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8, <3.12"
-content-hash = "8d8b77551aa335078cbdb87dae3b7f81cc97e25ebb8bc44533447c236dd35fc3"
+content-hash = "d763c9311ad1b812bfeb522c3633a597492d6095d5acecaf7e74815acf903ba4"
 
 [metadata.files]
 absl-py = [
@@ -2452,6 +2481,23 @@ tensorflow = [
     {file = "tensorflow-2.11.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:276a44210d956701899dc78ad0aa116a0071f22fb0bcc1ea6bb59f7646b08d11"},
     {file = "tensorflow-2.11.0-cp39-cp39-win_amd64.whl", hash = "sha256:cc3444fe1d58c65a195a69656bf56015bf19dc2916da607d784b0a1e215ec008"},
 ]
+tensorflow-addons = [
+    {file = "tensorflow_addons-0.19.0-cp310-cp310-macosx_10_14_x86_64.whl", hash = "sha256:ca3764beba54c4ee4bb01a4294f8c2fef5c3814fd0f521dbe8beb4522545cb2d"},
+    {file = "tensorflow_addons-0.19.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:8f74646fe83fd6f0d84ae5e0186c85cae3dd7e6c2329c8a5db4574c144706f39"},
+    {file = "tensorflow_addons-0.19.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a46016fe9a1705043e39b7dacee3b089303ecdedbf1b12eb607aa35b7d2471e3"},
+    {file = "tensorflow_addons-0.19.0-cp310-cp310-win_amd64.whl", hash = "sha256:eefbdb4e0450b93fba6b393870784dad4c91189e5551e01b268aeb5fe5b04da6"},
+    {file = "tensorflow_addons-0.19.0-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:a297db1af6e682277f593411d4d28b939646c2b67b8351ef0d31a30b9531fb93"},
+    {file = "tensorflow_addons-0.19.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:06b673fe22c4113edabdc0dc1ef919ba0f1fb024ca39a5718ec146285c400e8f"},
+    {file = "tensorflow_addons-0.19.0-cp37-cp37m-win_amd64.whl", hash = "sha256:eefb6bf6d7a31d60649d6f6e99aee172ed4f5e693a079acfb264297997de21d0"},
+    {file = "tensorflow_addons-0.19.0-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:d447a3f7852810b7985c890852dbcb6454f3899100d439d5eba370a78d8bd281"},
+    {file = "tensorflow_addons-0.19.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:51fefd5f496ada5dafb13c446853fa1ddeb5482a0b9074af14efe0b99903816e"},
+    {file = "tensorflow_addons-0.19.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:101c3142149f16e81362cc1d0959686543cb69df79f38a3ea3c5205fbf57b28e"},
+    {file = "tensorflow_addons-0.19.0-cp38-cp38-win_amd64.whl", hash = "sha256:c93602cf3b8a7bbe1fbf973b7b9f986892be34ba8b943923f09ae6cd79f0a241"},
+    {file = "tensorflow_addons-0.19.0-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:fc058876dce711009227c47559b05295a5fb480748d6ec5c49386b1dc2c00167"},
+    {file = "tensorflow_addons-0.19.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:9334910bb6b599dd627e632a59f35ae9256bda2312b06929066a437076bf4789"},
+    {file = "tensorflow_addons-0.19.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f25b029a917b635162b1f14df0263b2f79deadcd71daecd3161f69ccb1fbcea4"},
+    {file = "tensorflow_addons-0.19.0-cp39-cp39-win_amd64.whl", hash = "sha256:b8f4c3a88b381bd28bba3189a0216749f9e799ae3dc4959651728e01ae20d738"},
+]
 tensorflow-estimator = [
     {file = "tensorflow_estimator-2.11.0-py2.py3-none-any.whl", hash = "sha256:ea3b64acfff3d9a244f06178c9bdedcbdd3f125b67d0888dba8229498d06468b"},
 ]
@@ -2525,6 +2571,10 @@ tomli = [
 tqdm = [
     {file = "tqdm-4.64.1-py2.py3-none-any.whl", hash = "sha256:6fee160d6ffcd1b1c68c65f14c829c22832bc401726335ce92c52d395944a6a1"},
     {file = "tqdm-4.64.1.tar.gz", hash = "sha256:5f4f682a004951c1b450bc753c710e9280c5746ce6ffedee253ddbcbf54cf1e4"},
+]
+typeguard = [
+    {file = "typeguard-2.13.3-py3-none-any.whl", hash = "sha256:5e3e3be01e887e7eafae5af63d1f36c849aaa94e3a0112097312aabfa16284f1"},
+    {file = "typeguard-2.13.3.tar.gz", hash = "sha256:00edaa8da3a133674796cf5ea87d9f4b4c367d77476e185e80251cc13dfbb8c4"},
 ]
 typer = [
     {file = "typer-0.7.0-py3-none-any.whl", hash = "sha256:b5e704f4e48ec263de1c0b3a2387cd405a13767d2f907f44c1a08cbad96f606d"},
