@@ -42,7 +42,9 @@ def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time =
     model_metrics['hamming_loss'] = metrics.hamming_loss(y_test, y_pred)
     model_metrics['macro_jaccard_score'] = metrics.jaccard_score(y_test, y_pred, average = 'macro')
     if isinstance(model, Sequential):
-        model_summary = str(model.summary())
+        stringlist = []
+        model.summary(print_fn=lambda x: stringlist.append(x))
+        model_summary = "\n".join(stringlist)
         metrics_string += f'\n{model_summary}\n'
     else:
         metrics_string += f'\n{model}\n'
