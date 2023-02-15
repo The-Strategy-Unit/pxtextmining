@@ -28,6 +28,55 @@ from scipy import stats
 import datetime
 import time
 from pxtextmining.helpers.tokenization import spacy_tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.preprocessing.text import Tokenizer
+from sklearn.utils.class_weight import compute_class_weight
+from tensorflow.keras import layers, Sequential
+from tensorflow.keras.callbacks import EarlyStopping
+import numpy as np
+
+
+def tf_preprocessing(X_train, X_test, max_sentence_length = 150):
+    tk = Tokenizer()
+    tk.fit_on_texts(X_train)
+    vocab_size = len(tk.word_index)
+    print(f'There are {vocab_size} different words in your corpus')
+    X_train_token = tk.texts_to_sequences(X_train)
+    X_test_token = tk.texts_to_sequences(X_test)
+    ### Pad the inputs
+    X_train_pad = pad_sequences(X_train_token, dtype='float32', padding='post', maxlen = max_sentence_length)
+    X_test_pad = pad_sequences(X_test_token, dtype='float32', padding='post', maxlen = max_sentence_length)
+    return X_train_pad, X_test_pad, vocab_size
+
+def calculating_class_weights(y_true):
+    y_np = np.array(y_true)
+    number_dim = np.shape(y_np)[1]
+    weights = np.empty([number_dim, 2])
+    for i in range(number_dim):
+        weights[i] = compute_class_weight('balanced', classes = [0.,1.], y = y_np[:, i])
+    class_weights_dict = {}
+    for i in range(len(weights)):
+        class_weights_dict[i] = weights[i][-1]
+    return class_weights_dict
+
+def create_tf_model(vocab_size = None, embedding_size = 100):
+    model = Sequential()
+    model.add(layers.Embedding(
+        input_dim=vocab_size+1,
+        output_dim=embedding_size,
+        mask_zero=True
+    ))
+    model.add(layers.LSTM(50))
+    model.add(layers.Dense(20, activation='relu'))
+    model.add(layers.Dense(13, activation='sigmoid'))
+    model.compile(loss='binary_crossentropy',
+                optimizer='rmsprop',
+                metrics=['CategoricalAccuracy', 'Precision', 'Recall'])
+    return model
+
+def full_tf_process(X_train, Y_train):
+    pass
+
 
 def create_sklearn_vectorizer(tokenizer = None):
     if tokenizer == 'spacy':
