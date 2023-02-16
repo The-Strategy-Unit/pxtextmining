@@ -97,12 +97,10 @@ def create_sklearn_pipeline(model_type, tokenizer = None):
         params['kneighborsclassifier__n_jobs'] = [-1]
     if model_type == 'svm':
         pipe = make_pipeline(vectorizer,
-                            MultiOutputClassifier(SVC())
+                            MultiOutputClassifier(SVC(probability = True, class_weight = 'balanced',  max_iter = 1000), n_jobs = -1)
                             )
         params['multioutputclassifier__estimator__C'] = [0.001, 0.01, 0.1, 1, 10, 100]
         params['multioutputclassifier__estimator__kernel'] = ['linear', 'poly', 'rbf', 'sigmoid']
-        params['multioutputclassifier__estimator__class_weight'] = ['balanced', None]
-        # params['multioutputclassifier__estimator__max_iter'] = [1000]
     if model_type == 'rfc':
         pipe = make_pipeline(vectorizer,
                             RandomForestClassifier()
@@ -123,8 +121,8 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try):
             start_time = time.time()
             print(f'****SEARCHING {pipe.steps[-1][-1]}')
             search = RandomizedSearchCV(pipe, params,
-                                        scoring='f1_macro', n_iter=100,
-                                        cv=4, n_jobs=-1, refit=True)
+                                        scoring='f1_macro', n_iter=50,
+                                        cv=4, n_jobs=-2, refit=True)
             search.fit(X_train, Y_train)
             models.append(search.best_estimator_)
             training_time = round(time.time() - start_time, 0)

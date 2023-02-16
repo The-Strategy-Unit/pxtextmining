@@ -53,7 +53,7 @@ def load_multilabel_data(filename, target = 'major_categories'):
         'Patient contact with family/ carers', 'Contacting services',
         'Appointment arrangements', 'Appointment method', 'Timeliness of care',
         'Supplying medication', 'Understanding medication', 'Pain management',
-        'Diagnosis', 'Referals & continuity of care',
+        'Diagnosis & triage', 'Referals & continuity of care',
         'Length of stay/ duration of care', 'Discharge', 'Care plans',
         'Patient records', 'Impact of treatment/ care - physical health',
         'Impact of treatment/ care - mental health',
@@ -118,7 +118,7 @@ def load_multilabel_data(filename, target = 'major_categories'):
         'Supplying medication': 'Medication',
         'Understanding medication': 'Medication',
         'Pain management': 'Medication',
-        'Diagnosis': 'Patient journey & service coordination',
+        'Diagnosis & triage': 'Patient journey & service coordination',
         'Referals & continuity of care': 'Patient journey & service coordination',
         'Length of stay/ duration of care': 'Patient journey & service coordination',
         'Discharge': 'Patient journey & service coordination',
@@ -185,7 +185,7 @@ def process_and_split_multilabel_data(df, target, vectorise = False):
     if vectorise == True:
         X = vectorise_multilabel_data(df['FFT answer'])
     else:
-        X = df['FFT answer'].apply(remove_punc_and_nums)
+        X = df['FFT answer'].astype(str).apply(remove_punc_and_nums)
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
     return X_train, X_test, Y_train, Y_test
 
@@ -443,5 +443,5 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 
 if __name__ == '__main__':
-    df = load_multilabel_data(filename = 'datasets/phase_2_test.csv', target = 'major_categories')
+    df = load_multilabel_data(filename = 'datasets/multilabeldata_2.csv', target = 'major_categories')
     print(df.head())

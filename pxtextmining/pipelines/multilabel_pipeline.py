@@ -8,7 +8,7 @@ from pxtextmining.helpers.text_preprocessor import tf_preprocessing
 # Should I put all of this into an 'pipeline' object??
 
 def run_sklearn_pipeline():
-    df = load_multilabel_data(filename = 'datasets/phase_2_test.csv', target = 'major_categories')
+    df = load_multilabel_data(filename = 'datasets/multilabeldata_2.csv', target = 'major_categories')
     major_cats = ['Access to medical care & support',
     'Activities',
     'Additional',
@@ -30,10 +30,10 @@ def run_sklearn_pipeline():
         t = training_times[i]
         model_metrics.append(get_multilabel_metrics(X_test, Y_test, labels = major_cats, model = m, training_time = t))
     model_metrics.append(get_multilabel_metrics(X_test, Y_test, labels = major_cats, x_train = X_train, y_train = Y_train, model = None))
-    write_multilabel_models_and_metrics(models,model_metrics,path='test_multilabel')
+    write_multilabel_models_and_metrics(models,model_metrics,path='test_multilabel/sklearn')
 
 def run_tf_pipeline():
-    df = load_multilabel_data(filename = 'datasets/phase_2_test.csv', target = 'major_categories')
+    df = load_multilabel_data(filename = 'datasets/multilabeldata_2.csv', target = 'major_categories')
     major_cats = ['Access to medical care & support',
     'Activities',
     'Additional',
@@ -58,4 +58,5 @@ def run_tf_pipeline():
     write_multilabel_models_and_metrics([model_trained],[model_metrics],path='test_multilabel/tf')
 
 if __name__ == '__main__':
+    run_sklearn_pipeline()
     run_tf_pipeline()
