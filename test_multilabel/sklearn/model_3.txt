@@ -1,0 +1,34 @@
+
+ *****************
+Pipeline(steps=[('tfidfvectorizer', TfidfVectorizer(max_df=0.85, min_df=0.01)),
+                ('randomforestclassifier',
+                 RandomForestClassifier(max_depth=40, n_jobs=-1))])
+
+
+Training time: 0:02:29
+
+exact_accuracy: 0.5328125
+hamming_loss: 0.054286858974358976
+macro_jaccard_score: 0.18943349149452868
+
+ Classification report:
+                                        precision    recall  f1-score   support
+
+      Access to medical care & support       0.86      0.53      0.66       374
+                            Activities       0.00      0.00      0.00        27
+                            Additional       0.00      0.00      0.00        14
+                          Category TBC       0.00      0.00      0.00         8
+           Communication & involvement       0.94      0.42      0.58       390
+               Environment & equipment       1.00      0.19      0.32        74
+                           Food & diet       0.00      0.00      0.00        27
+                               General       0.87      0.74      0.80       590
+                            Medication       0.00      0.00      0.00        44
+               Mental Health specifics       0.00      0.00      0.00        16
+Patient journey & service coordination       1.00      0.01      0.01       139
+  Service location, travel & transport       0.00      0.00      0.00        70
+                                 Staff       0.87      0.79      0.83       871
+
+                             micro avg       0.88      0.57      0.69      2644
+                             macro avg       0.43      0.21      0.25      2644
+                          weighted avg       0.82      0.57      0.64      2644
+                           samples avg       0.70      0.62      0.65      2644

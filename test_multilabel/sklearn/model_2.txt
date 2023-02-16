@@ -1,0 +1,38 @@
+
+ *****************
+Pipeline(steps=[('tfidfvectorizer', TfidfVectorizer(max_df=0.85, min_df=0)),
+                ('multioutputclassifier',
+                 MultiOutputClassifier(estimator=SVC(C=100,
+                                                     class_weight='balanced',
+                                                     max_iter=1000,
+                                                     probability=True),
+                                       n_jobs=-1))])
+
+
+Training time: 0:15:49
+
+exact_accuracy: 0.6427083333333333
+hamming_loss: 0.04014423076923077
+macro_jaccard_score: 0.3918124025742494
+
+ Classification report:
+                                        precision    recall  f1-score   support
+
+      Access to medical care & support       0.83      0.80      0.81       374
+                            Activities       1.00      0.41      0.58        27
+                            Additional       0.00      0.00      0.00        14
+                          Category TBC       1.00      0.12      0.22         8
+           Communication & involvement       0.89      0.75      0.81       390
+               Environment & equipment       0.91      0.41      0.56        74
+                           Food & diet       0.95      0.67      0.78        27
+                               General       0.85      0.83      0.84       590
+                            Medication       0.80      0.18      0.30        44
+               Mental Health specifics       0.00      0.00      0.00        16
+Patient journey & service coordination       0.69      0.19      0.30       139
+  Service location, travel & transport       1.00      0.31      0.48        70
+                                 Staff       0.90      0.84      0.87       871
+
+                             micro avg       0.87      0.73      0.79      2644
+                             macro avg       0.75      0.42      0.50      2644
+                          weighted avg       0.86      0.73      0.77      2644
+                           samples avg       0.81      0.77      0.78      2644
