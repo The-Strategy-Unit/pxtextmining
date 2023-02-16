@@ -75,6 +75,8 @@ def load_multilabel_data(filename, target = 'major_categories'):
     elif target == 'sentiment':
         cols = ['Comment sentiment']
     filtered_dataframe = text_data.loc[:,features + cols].copy()
+    filtered_dataframe = filtered_dataframe.replace(r'^\s*$', np.nan, regex=True)
+    filtered_dataframe = filtered_dataframe.replace('1', 1)
     print(f'Shape of raw data is {filtered_dataframe.shape}')
     clean_dataframe = filtered_dataframe.dropna(subset=features).copy()
     # Standardize FFT qs
