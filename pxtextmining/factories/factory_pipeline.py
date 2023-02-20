@@ -1,5 +1,6 @@
 from imblearn import FunctionSampler
 from imblearn.pipeline import Pipeline
+from sklearn.pipeline import make_pipeline
 # from sklearn.pipeline import Pipeline
 from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef
 from sklearn.compose import ColumnTransformer
@@ -7,9 +8,10 @@ from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, OneHotE
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectPercentile, chi2, f_classif
 from sklearn.model_selection import RandomizedSearchCV
-# from sklearn.svm import LinearSVC
-from sklearn.linear_model import PassiveAggressiveClassifier, Perceptron, RidgeClassifier, SGDClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import PassiveAggressiveClassifier, Perceptron, RidgeClassifier, SGDClassifier, LogisticRegression
 from sklearn.naive_bayes import BernoulliNB, ComplementNB, MultinomialNB
+from sklearn.multioutput import MultiOutputClassifier
 from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
 from sklearn.ensemble import RandomForestClassifier
 from pxtextmining.helpers.tokenization import LemmaTokenizer
@@ -22,6 +24,127 @@ from pxtextmining.helpers.scaler_switcher import ScalerSwitcher
 from pxtextmining.helpers.feature_selection_switcher import FeatureSelectionSwitcher
 from pxtextmining.helpers.text_transformer_switcher import TextTransformerSwitcher
 from pxtextmining.helpers.theme_binarization import ThemeBinarizer
+from scipy import stats
+import datetime
+import time
+from pxtextmining.helpers.tokenization import spacy_tokenizer
+from sklearn.utils.class_weight import compute_class_weight
+from tensorflow.keras import layers, Sequential
+from tensorflow.keras.callbacks import EarlyStopping
+import numpy as np
+
+def calculating_class_weights(y_true):
+    y_np = np.array(y_true)
+    number_dim = np.shape(y_np)[1]
+    weights = np.empty([number_dim, 2])
+    for i in range(number_dim):
+        weights[i] = compute_class_weight('balanced', classes = [0.,1.], y = y_np[:, i])
+    class_weights_dict = {}
+    for i in range(len(weights)):
+        class_weights_dict[i] = weights[i][-1]
+    return class_weights_dict
+
+
+def create_tf_model(vocab_size = None, embedding_size = 100):
+    model = Sequential()
+    model.add(layers.Embedding(
+        input_dim=vocab_size+1,
+        output_dim=embedding_size,
+        mask_zero=True
+    ))
+    model.add(layers.LSTM(50))
+    model.add(layers.Dense(20, activation='relu'))
+    model.add(layers.Dense(13, activation='sigmoid'))
+    model.compile(loss='binary_crossentropy',
+                optimizer='rmsprop',
+                metrics=['CategoricalAccuracy', 'Precision', 'Recall'])
+    return model
+
+
+def train_tf_model(X_train, Y_train, model, class_weights_dict = None):
+    es = EarlyStopping(patience=3, restore_best_weights=True)
+    start_time = time.time()
+    model.fit(X_train, Y_train,
+          epochs=200, batch_size=32, verbose=1,
+          validation_split=0.2,
+          callbacks=[es], class_weight= class_weights_dict)
+    seconds_taken = round(time.time() - start_time, 0)
+    training_time = str(datetime.timedelta(seconds=seconds_taken))
+    return model, training_time
+
+
+def create_sklearn_vectorizer(tokenizer = None):
+    if tokenizer == 'spacy':
+        vectorizer = TfidfVectorizer(tokenizer = spacy_tokenizer)
+    else:
+        vectorizer = TfidfVectorizer()
+    return vectorizer
+
+def create_sklearn_pipeline(model_type, tokenizer = None):
+    vectorizer = create_sklearn_vectorizer(tokenizer = tokenizer)
+    params = {'tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
+                'tfidfvectorizer__max_df': [0.8, 0.85, 0.9, 0.95, 1],
+                'tfidfvectorizer__min_df': [0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1]}
+    if model_type == 'mnb':
+        pipe = make_pipeline(vectorizer,
+                            MultiOutputClassifier(MultinomialNB())
+                            )
+        params['multioutputclassifier__estimator__alpha'] = stats.uniform(0.1,1)
+    if model_type == 'knn':
+        pipe = make_pipeline(vectorizer,
+                            KNeighborsClassifier())
+        params['kneighborsclassifier__n_neighbors'] = stats.randint(1,50)
+        params['kneighborsclassifier__n_jobs'] = [-1]
+    if model_type == 'svm':
+        pipe = make_pipeline(vectorizer,
+                            MultiOutputClassifier(SVC(probability = True, class_weight = 'balanced',
+                                                      max_iter = 1000, cache_size = 500), n_jobs = -1)
+                            )
+        params['multioutputclassifier__estimator__C'] = [0.001, 0.01, 0.1, 1, 10, 100]
+        params['multioutputclassifier__estimator__kernel'] = ['linear', 'poly', 'rbf', 'sigmoid']
+    if model_type == 'rfc':
+        pipe = make_pipeline(vectorizer,
+                            RandomForestClassifier()
+                            )
+        params['randomforestclassifier__max_depth'] = [10,20,30,40]
+        params['randomforestclassifier__n_jobs'] = [-1]
+        params['randomforestclassifier__class_weight'] = ['balanced', 'balanced_subsample', None]
+    return pipe, params
+
+def search_sklearn_pipelines(X_train, Y_train, models_to_try):
+    models = []
+    training_times = []
+    for model_type in models_to_try:
+        if model_type not in ['mnb', 'knn', 'svm', 'rfc']:
+            raise ValueError('Please choose valid model_type. Options are mnb, knn, svm, or rfc')
+        else:
+            pipe, params = create_sklearn_pipeline(model_type)
+            start_time = time.time()
+            print(f'****SEARCHING {pipe.steps[-1][-1]}')
+            search = RandomizedSearchCV(pipe, params,
+                                        scoring='f1_macro', n_iter=50,
+                                        cv=4, n_jobs=-2, refit=True)
+            search.fit(X_train, Y_train)
+            models.append(search.best_estimator_)
+            training_time = round(time.time() - start_time, 0)
+            training_times.append(str(datetime.timedelta(seconds=training_time)))
+    return models, training_times
+
+
+def train_sklearn_multilabel_models(X_train, Y_train):
+    # My idea is to create separate pipelines for each model. Gridsearch each one separately
+    # Currently just vanilla model, not pipeline. Work in progress!
+    # Need to have a think about which models and why... find some literature to support decisionmaking
+    nb_clf = MultinomialNB()
+    sgd = SGDClassifier(loss='log', penalty='l2', alpha=1e-3, max_iter=1000, tol=None)
+    lr = LogisticRegression()
+    models = []
+    for classifier in [nb_clf, sgd, lr]:
+        clf = MultiOutputClassifier(classifier)
+        print(f'Training {clf}')
+        clf.fit(X_train, Y_train)
+        models.append(clf)
+    return models
 
 def create_learners(learners, ordinal=False):
     """Creates list of learner models which is then fed into pipeline, based on user selection.

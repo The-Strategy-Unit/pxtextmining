@@ -6,6 +6,7 @@ import re
 import string
 import numpy as np
 from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
 
 
@@ -52,7 +53,7 @@ def load_multilabel_data(filename, target = 'major_categories'):
         'Patient contact with family/ carers', 'Contacting services',
         'Appointment arrangements', 'Appointment method', 'Timeliness of care',
         'Supplying medication', 'Understanding medication', 'Pain management',
-        'Diagnosis', 'Referals & continuity of care',
+        'Diagnosis & triage', 'Referals & continuity of care',
         'Length of stay/ duration of care', 'Discharge', 'Care plans',
         'Patient records', 'Impact of treatment/ care - physical health',
         'Impact of treatment/ care - mental health',
@@ -74,8 +75,10 @@ def load_multilabel_data(filename, target = 'major_categories'):
     elif target == 'sentiment':
         cols = ['Comment sentiment']
     filtered_dataframe = text_data.loc[:,features + cols].copy()
+    filtered_dataframe = filtered_dataframe.replace(r'^\s*$', np.nan, regex=True)
+    filtered_dataframe = filtered_dataframe.replace('1', 1)
     print(f'Shape of raw data is {filtered_dataframe.shape}')
-    clean_dataframe = filtered_dataframe.dropna(subset=features)
+    clean_dataframe = filtered_dataframe.dropna(subset=features).copy()
     # Standardize FFT qs
     q_map = {'Please tells us why you gave this answer?': 'nonspecific',
         'FFT Why?': 'nonspecific',
@@ -115,7 +118,7 @@ def load_multilabel_data(filename, target = 'major_categories'):
         'Supplying medication': 'Medication',
         'Understanding medication': 'Medication',
         'Pain management': 'Medication',
-        'Diagnosis': 'Patient journey & service coordination',
+        'Diagnosis & triage': 'Patient journey & service coordination',
         'Referals & continuity of care': 'Patient journey & service coordination',
         'Length of stay/ duration of care': 'Patient journey & service coordination',
         'Discharge': 'Patient journey & service coordination',
@@ -168,9 +171,23 @@ def load_multilabel_data(filename, target = 'major_categories'):
     print(f'Shape of cleaned data is {clean_dataframe.shape}')
     return clean_dataframe
 
+def vectorise_multilabel_data(text_data):
+    # can try different types of vectorizer here
+    count_vect = CountVectorizer()
+    X_counts = count_vect.fit_transform(text_data)
+    tfidf_transformer = TfidfTransformer()
+    X_tfidf = tfidf_transformer.fit_transform(X_counts)
+    return X_tfidf
 
-
-
+def process_and_split_multilabel_data(df, target, vectorise = False):
+    # Currently just the text itself. Not adding other features yet or doing any cleaning
+    Y = df[target].fillna(value=0)
+    if vectorise == True:
+        X = vectorise_multilabel_data(df['FFT answer'])
+    else:
+        X = df['FFT answer'].astype(str).apply(remove_punc_and_nums)
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
+    return X_train, X_test, Y_train, Y_test
 
 def load_data(filename, target, predictor, theme = None):
     """
@@ -426,5 +443,5 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 
 if __name__ == '__main__':
-    df = load_multilabel_data(filename = 'datasets/phase_2_test.csv', target = 'major_categories')
+    df = load_multilabel_data(filename = 'datasets/multilabeldata_2.csv', target = 'major_categories')
     print(df.head())

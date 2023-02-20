@@ -6,40 +6,58 @@ from sklearn.metrics import balanced_accuracy_score, confusion_matrix, matthews_
 from pxtextmining.helpers.metrics import class_balance_accuracy_score
 from sklearn.dummy import DummyClassifier
 from sklearn import metrics
+from sklearn.multioutput import MultiOutputClassifier
+from tensorflow.keras import Sequential
 
 
-
-def get_multilabel_metrics(x_train, y_train, x_test, y_test, labels, model = None):
+def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time = None, x_train = None, y_train = None):
     """Function to produce performance metrics for a multilabel machine learning model.
 
-    :param pd.DataFrame x_train: Training data (predictor).
-    :param pd.Series y_train: Training data (target).
     :param pd.DataFrame x_test: Test data (predictor).
     :param pd.Series y_test: Test data (target).
+    :param pd.DataFrame x_train: Training data (predictor). Defaults to None, only needed if model = None
+    :param pd.Series y_train: Training data (target). Defaults to None, only needed if model = None
     :param str model: Trained classifier. Defaults to 'dummy' which instantiates dummy classifier for baseline metrics.
 
     :return: None
     :rtype: None
     """
 
+    metrics_string = '\n *****************'
     model_metrics = {}
     if model == None:
         model = DummyClassifier(strategy = 'uniform')
-        model.fit(x_train, y_train)
-    y_pred = model.predict(x_test)
+        if isinstance(x_train, pd.Series):
+            model.fit(x_train, y_train)
+        else:
+            raise ValueError('For dummy model, x_train and y_train must be provided')
+    if isinstance(model, Sequential):
+        y_pred_probs = model.predict(x_test)
+        y_pred = np.where(y_pred_probs > 0.5, 1, 0)
+    else:
+        y_pred = model.predict(x_test)
     c_report_str = metrics.classification_report(y_test, y_pred,
-                                            target_names = labels)
+                                            target_names = labels, zero_division=0)
     model_metrics['exact_accuracy'] = metrics.accuracy_score(y_test, y_pred)
     model_metrics['hamming_loss'] = metrics.hamming_loss(y_test, y_pred)
     model_metrics['macro_jaccard_score'] = metrics.jaccard_score(y_test, y_pred, average = 'macro')
+    if isinstance(model, Sequential):
+        stringlist = []
+        model.summary(print_fn=lambda x: stringlist.append(x))
+        model_summary = "\n".join(stringlist)
+        metrics_string += f'\n{model_summary}\n'
+    else:
+        metrics_string += f'\n{model}\n'
+    metrics_string += f'\n\nTraining time: {training_time}\n'
     for k,v in model_metrics.items():
-        print(f'{k}: {v}')
-    print('\n\n Classification report:')
-    print(c_report_str)
-    per_class_jaccard = zip(labels,metrics.jaccard_score(y_test, y_pred, average = None))
-    print('\n per class Jaccard score:')
-    for k,v in per_class_jaccard:
-        print(f'{k}: {v}')
+        metrics_string += f'\n{k}: {v}'
+    metrics_string += '\n\n Classification report:\n'
+    metrics_string += c_report_str
+    # per_class_jaccard = zip(labels,metrics.jaccard_score(y_test, y_pred, average = None, zero_division = 0))
+    # metrics_string += '\nper class Jaccard score:'
+    # for k,v in per_class_jaccard:
+    #     print(f'{k}: {v}')
+    return metrics_string
 
 
 def get_metrics(x_train, x_test, y_train, y_test, model=None):
