@@ -97,7 +97,8 @@ def create_sklearn_pipeline(model_type, tokenizer = None):
         params['kneighborsclassifier__n_jobs'] = [-1]
     if model_type == 'svm':
         pipe = make_pipeline(vectorizer,
-                            MultiOutputClassifier(SVC(probability = True, class_weight = 'balanced',  max_iter = 1000), n_jobs = -1)
+                            MultiOutputClassifier(SVC(probability = True, class_weight = 'balanced',
+                                                      max_iter = 1000, cache_size = 500), n_jobs = -1)
                             )
         params['multioutputclassifier__estimator__C'] = [0.001, 0.01, 0.1, 1, 10, 100]
         params['multioutputclassifier__estimator__kernel'] = ['linear', 'poly', 'rbf', 'sigmoid']
