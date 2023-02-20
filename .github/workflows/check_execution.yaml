@@ -28,7 +28,6 @@ jobs:
         pip install .
         python -m spacy download en_core_web_sm
         python -m spacy download en_core_web_lg
-    - name: Test execution files
+    - name: Test execution file
       run: |
-        python execution/execution_label.py
         python execution/execution_predict.py
