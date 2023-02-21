@@ -179,13 +179,16 @@ def vectorise_multilabel_data(text_data):
     X_tfidf = tfidf_transformer.fit_transform(X_counts)
     return X_tfidf
 
-def process_and_split_multilabel_data(df, target, vectorise = False):
+def process_and_split_multilabel_data(df, target, vectorise = False, preprocess_text = True):
     # Currently just the text itself. Not adding other features yet or doing any cleaning
     Y = df[target].fillna(value=0)
     if vectorise == True:
         X = vectorise_multilabel_data(df['FFT answer'])
     else:
-        X = df['FFT answer'].astype(str).apply(remove_punc_and_nums)
+        if preprocess_text == True:
+            X = df['FFT answer'].astype(str).apply(remove_punc_and_nums)
+        if preprocess_text == False:
+            X = df['FFT answer'].astype(str)
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
     return X_train, X_test, Y_train, Y_test
 

@@ -7,7 +7,7 @@ from pxtextmining.helpers.metrics import class_balance_accuracy_score
 from sklearn.dummy import DummyClassifier
 from sklearn import metrics
 from sklearn.multioutput import MultiOutputClassifier
-from tensorflow.keras import Sequential
+from tensorflow.keras import Sequential, Functional
 
 
 def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time = None, x_train = None, y_train = None):
@@ -31,7 +31,7 @@ def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time =
             model.fit(x_train, y_train)
         else:
             raise ValueError('For dummy model, x_train and y_train must be provided')
-    if isinstance(model, Sequential):
+    if isinstance(model, (Sequential, Functional)):
         y_pred_probs = model.predict(x_test)
         y_pred = np.where(y_pred_probs > 0.5, 1, 0)
     else:
@@ -41,7 +41,7 @@ def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time =
     model_metrics['exact_accuracy'] = metrics.accuracy_score(y_test, y_pred)
     model_metrics['hamming_loss'] = metrics.hamming_loss(y_test, y_pred)
     model_metrics['macro_jaccard_score'] = metrics.jaccard_score(y_test, y_pred, average = 'macro')
-    if isinstance(model, Sequential):
+    if isinstance(model, (Sequential, Functional)):
         stringlist = []
         model.summary(print_fn=lambda x: stringlist.append(x))
         model_summary = "\n".join(stringlist)
