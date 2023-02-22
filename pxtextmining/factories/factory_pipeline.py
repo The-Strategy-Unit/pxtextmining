@@ -17,7 +17,7 @@ from sklearn.ensemble import RandomForestClassifier
 from pxtextmining.helpers.tokenization import LemmaTokenizer
 from pxtextmining.helpers.word_vectorization import EmbeddingsTransformer
 from pxtextmining.helpers.oversampling import random_over_sampler_data_generator
-from pxtextmining.helpers.metrics import class_balance_accuracy_score
+from pxtextmining.helpers.metrics import class_balance_accuracy_score, multi_label_accuracy
 from pxtextmining.helpers.estimator_switcher import ClfSwitcher
 from pxtextmining.helpers.ordinal_classification import OrdinalClassifier
 from pxtextmining.helpers.scaler_switcher import ScalerSwitcher
@@ -32,6 +32,7 @@ from sklearn.utils.class_weight import compute_class_weight
 from tensorflow.keras import layers, Sequential
 from tensorflow.keras.callbacks import EarlyStopping
 import numpy as np
+
 
 def calculating_class_weights(y_true):
     y_np = np.array(y_true)
