@@ -31,8 +31,49 @@ from pxtextmining.helpers.tokenization import spacy_tokenizer
 from sklearn.utils.class_weight import compute_class_weight
 from tensorflow.keras import layers, Sequential
 from tensorflow.keras.callbacks import EarlyStopping
+from transformers import TFDistilBertForSequenceClassification
+from tensorflow.keras.initializers import TruncatedNormal
+from tensorflow.keras.layers import Input, Dropout, Dense
+from tensorflow.keras.losses import BinaryCrossentropy
+from tensorflow.keras.models import Model
+from tensorflow.keras.optimizers import Adam
 import numpy as np
+from transformers import DistilBertConfig
 
+def create_bert_model(Y_train, model_name='distilbert-base-cased', max_length=150):
+    config = DistilBertConfig.from_pretrained(model_name)
+    transformer_model = TFDistilBertForSequenceClassification.from_pretrained(model_name, output_hidden_states = False)
+    bert = transformer_model.layers[0]
+    input_ids = Input(shape=(max_length,), name='input_ids', dtype='int32')
+    inputs = {'input_ids': input_ids}
+    bert_model = bert(inputs)[0][:, 0, :]
+    dropout = Dropout(config.dropout, name='pooled_output')
+    pooled_output = dropout(bert_model, training=False)
+    output = Dense(units=Y_train.shape[1],
+                    kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
+                    activation="sigmoid",
+                    name='output')(pooled_output)
+    model = Model(inputs=inputs, outputs=output, name='BERT_MultiLabel')
+    # compile model
+    loss = BinaryCrossentropy()
+    optimizer = Adam(5e-5)
+    metrics = [
+        multi_label_accuracy,
+        'CategoricalAccuracy'
+    ]
+    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+    return model
+
+def train_bert_model(X_train, Y_train, X_val, Y_val, model, class_weights_dict = None):
+    es = EarlyStopping(patience=2, restore_best_weights=True)
+    start_time = time.time()
+    model.fit(X_train.shuffle(1000).batch(16), epochs=30, batch_size=16,
+                                class_weight= class_weights_dict,
+                                validation_data=X_val.batch(16),
+                                callbacks=[es])
+    total_time = round(time.time() - start_time, 0)
+    training_time = str(datetime.timedelta(seconds=total_time))
+    return model, training_time
 
 def calculating_class_weights(y_true):
     y_np = np.array(y_true)
