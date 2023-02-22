@@ -1,6 +1,6 @@
 from pxtextmining.factories.factory_data_load_and_split import load_multilabel_data,bert_data_to_dataset, process_and_split_multilabel_data
 from pxtextmining.factories.factory_model_performance import get_multilabel_metrics
-from pxtextmining.factories.factory_pipeline import search_sklearn_pipelines, create_tf_model
+from pxtextmining.factories.factory_pipeline import search_sklearn_pipelines, create_tf_model, create_bert_model
 from pxtextmining.factories.factory_pipeline import calculating_class_weights, train_tf_model
 from pxtextmining.factories.factory_write_results import write_multilabel_models_and_metrics
 from pxtextmining.helpers.text_preprocessor import tf_preprocessing
@@ -79,7 +79,7 @@ def run_bert_pipeline():
     X_val_dataset = bert_data_to_dataset(X_val, Y_val)
     X_test_dataset = bert_data_to_dataset(X_test, Y_test)
     class_weights_dict = calculating_class_weights(Y_train_val)
-    model = create_tf_model(vocab_size)
+    model = create_bert_model(Y_train)
     model_trained, training_time = train_tf_model(X_train_pad, Y_train, model, class_weights_dict = class_weights_dict)
     model_metrics = get_multilabel_metrics(X_test_pad, Y_test, labels = major_cats,
                                            model = model_trained, training_time = training_time)
