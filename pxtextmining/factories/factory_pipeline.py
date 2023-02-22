@@ -64,12 +64,12 @@ def create_bert_model(Y_train, model_name='distilbert-base-cased', max_length=15
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
     return model
 
-def train_bert_model(X_train, Y_train, X_val, Y_val, model, class_weights_dict = None):
+def train_bert_model(train_dataset, val_dataset, model, class_weights_dict = None, epochs = 30):
     es = EarlyStopping(patience=2, restore_best_weights=True)
     start_time = time.time()
-    model.fit(X_train.shuffle(1000).batch(16), epochs=30, batch_size=16,
+    model.fit(train_dataset.shuffle(1000).batch(16), epochs=epochs, batch_size=16,
                                 class_weight= class_weights_dict,
-                                validation_data=X_val.batch(16),
+                                validation_data=val_dataset.batch(16),
                                 callbacks=[es])
     total_time = round(time.time() - start_time, 0)
     training_time = str(datetime.timedelta(seconds=total_time))
