@@ -10,11 +10,12 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from transformers import AutoTokenizer
 from tensorflow.data import Dataset
 
-def tokenize_bert_data(data, max_length=150, model_name='distilbert-base-cased'):
+def bert_data_to_dataset(X, Y, max_length=150, model_name='distilbert-base-cased'):
     tokenizer=AutoTokenizer.from_pretrained(model_name)
-    data_encoded = tokenizer(list(data), truncation=True, padding=True,
+    data_encoded = tokenizer(list(X), truncation=True, padding=True,
                              max_length=max_length, return_tensors='tf')
-    return data_encoded
+    encoded_dataset = Dataset.from_tensor_slices((dict(data_encoded), Y))
+    return encoded_dataset
 
 def get_multilabel_class_counts(df):
     class_counts = {}
