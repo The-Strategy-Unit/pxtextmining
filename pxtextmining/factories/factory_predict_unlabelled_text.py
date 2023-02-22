@@ -2,7 +2,23 @@ import pandas as pd
 import joblib
 from itertools import chain
 from pxtextmining.factories.factory_data_load_and_split import process_data, load_data
+from tensorflow.keras.models import load_model
+from transformers import DistilBertTokenizerFast
+from pxtextmining.helpers.metrics import multi_label_accuracy
 
+def predict_with_bert(text, model_path, max_length=150):
+    model = load_model(model_path, custom_objects={"multi_label_accuracy": multi_label_accuracy})
+    tokenizer = DistilBertTokenizerFast.from_pretrained('distilbert-base-uncased')
+    padded_encodings = tokenizer.encode_plus(
+                            list(text),
+                            max_length=max_length,
+                            return_token_type_ids=True,
+                            return_attention_mask=True,
+                            truncation=True,
+                            padding='max_length',
+                            return_tensors='tf')
+    predictions = model(padded_encodings["input_ids"]).numpy()
+    return predictions
 
 def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
                                     columns_to_return='all_cols', theme=None):
@@ -71,9 +87,8 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
     return data_with_predictions[columns_to_return]
 
 
-# if __name__ == '__main__':
-#     dataset = pd.read_csv('datasets/text_data.csv')
-#     predictions = factory_predict_unlabelled_text(dataset=dataset, predictor="feedback",
-#                                     pipe_path_or_object="results_label/pipeline_label.sav",
-#                                     columns_to_return=['feedback', 'organization', 'question'])
-#     print(predictions.head())
+if __name__ == '__main__':
+    dataset = pd.read_csv('datasets/text_data.csv')
+    text_to_predict = dataset['feedback'][:10]
+    predictions = predict_with_bert(text_to_predict, model_path='test_multilabel/distilbert2')
+    print(predictions)
