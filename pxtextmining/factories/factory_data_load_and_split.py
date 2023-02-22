@@ -7,8 +7,14 @@ import string
 import numpy as np
 from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from transformers import AutoTokenizer
+from tensorflow.data import Dataset
 
-
+def tokenize_bert_data(data, max_length=150, model_name='distilbert-base-cased'):
+    tokenizer=AutoTokenizer.from_pretrained(model_name)
+    data_encoded = tokenizer(list(data), truncation=True, padding=True,
+                             max_length=max_length, return_tensors='tf')
+    return data_encoded
 
 def get_multilabel_class_counts(df):
     class_counts = {}
