@@ -38,6 +38,11 @@ def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time =
         y_pred = turn_probs_into_binary(y_pred_probs)
     else:
         y_pred = model.predict(x_test)
+        y_probs = np.array(model.predict_proba(x_test))
+        for i in range(len(y_pred)):
+            if y_pred[i].sum() == 0:
+                highest_cat = np.argmax(y_probs[:,i,1])
+                y_pred[i][highest_cat] = 1
     c_report_str = metrics.classification_report(y_test, y_pred,
                                             target_names = labels, zero_division=0)
     model_metrics['exact_accuracy'] = metrics.accuracy_score(y_test, y_pred)
