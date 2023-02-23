@@ -8,6 +8,7 @@ from sklearn.dummy import DummyClassifier
 from sklearn import metrics
 from sklearn.multioutput import MultiOutputClassifier
 from tensorflow.keras import Sequential, Model
+from pxtextmining.factories.factory_predict_unlabelled_text import turn_probs_into_binary
 
 
 def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time = None, x_train = None, y_train = None):
@@ -34,7 +35,7 @@ def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time =
     # TF Keras models output probabilities with model.predict, turn into binary outcomes
     if isinstance(model, (Sequential, Model)):
         y_pred_probs = model.predict(x_test)
-        y_pred = np.where(y_pred_probs > 0.5, 1, 0)
+        y_pred = turn_probs_into_binary(y_pred_probs)
     else:
         y_pred = model.predict(x_test)
     c_report_str = metrics.classification_report(y_test, y_pred,

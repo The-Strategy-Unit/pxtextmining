@@ -3,22 +3,31 @@ import joblib
 from itertools import chain
 from pxtextmining.factories.factory_data_load_and_split import process_data, load_data
 from tensorflow.keras.models import load_model
-from transformers import DistilBertTokenizerFast
+from transformers import DistilBertTokenizer
 from pxtextmining.helpers.metrics import multi_label_accuracy
+import numpy as np
 
 def predict_with_bert(text, model_path, max_length=150):
     model = load_model(model_path, custom_objects={"multi_label_accuracy": multi_label_accuracy})
-    tokenizer = DistilBertTokenizerFast.from_pretrained('distilbert-base-uncased')
-    padded_encodings = tokenizer.encode_plus(
-                            list(text),
+    tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-cased')
+    padded_encodings = tokenizer.batch_encode_plus(
+                            text,
                             max_length=max_length,
                             return_token_type_ids=True,
                             return_attention_mask=True,
                             truncation=True,
                             padding='max_length',
                             return_tensors='tf')
-    predictions = model(padded_encodings["input_ids"]).numpy()
+    predictions = model.predict(padded_encodings["input_ids"])
     return predictions
+
+def turn_probs_into_binary(predicted_probs):
+    preds = np.where(predicted_probs > 0.5, 1, 0)
+    for i in range(len(preds)):
+        if sum(preds[i]) == 0:
+            index_max = list(predicted_probs[i]).index(max(predicted_probs[i]))
+            preds[i][index_max] = 1
+    return preds
 
 def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
                                     columns_to_return='all_cols', theme=None):
@@ -88,7 +97,7 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
 
 
 if __name__ == '__main__':
-    dataset = pd.read_csv('datasets/text_data.csv')
-    text_to_predict = dataset['feedback'][:10]
-    predictions = predict_with_bert(text_to_predict, model_path='test_multilabel/distilbert2')
-    print(predictions)
+    dataset = pd.read_csv('datasets/multilabeldata_2.csv')
+    text_to_predict = dataset['FFT answer'][:2000].dropna().to_list()
+    predicted_probs = predict_with_bert(text_to_predict, model_path='test_multilabel/bert/distilbert2')
+    preds = turn_probs_into_binary(predicted_probs)
