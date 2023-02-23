@@ -23,6 +23,7 @@ def predict_with_bert(text, model_path, max_length=150):
 
 def turn_probs_into_binary(predicted_probs):
     preds = np.where(predicted_probs > 0.5, 1, 0)
+    # In situations where no labels predicted, just takes the label with the max probability
     for i in range(len(preds)):
         if sum(preds[i]) == 0:
             index_max = list(predicted_probs[i]).index(max(predicted_probs[i]))
