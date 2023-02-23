@@ -125,8 +125,8 @@ def create_sklearn_vectorizer(tokenizer = None):
 def create_sklearn_pipeline(model_type, tokenizer = None):
     vectorizer = create_sklearn_vectorizer(tokenizer = tokenizer)
     params = {'tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
-                'tfidfvectorizer__max_df': [0.8, 0.85, 0.9, 0.95, 1],
-                'tfidfvectorizer__min_df': [0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1]}
+                'tfidfvectorizer__max_df': stats.uniform(0.8,1),
+                'tfidfvectorizer__min_df': stats.uniform(0.01,0.1)}
     if model_type == 'mnb':
         pipe = make_pipeline(vectorizer,
                             MultiOutputClassifier(MultinomialNB())
@@ -142,7 +142,7 @@ def create_sklearn_pipeline(model_type, tokenizer = None):
                             MultiOutputClassifier(SVC(probability = True, class_weight = 'balanced',
                                                       max_iter = 1000, cache_size = 500), n_jobs = -1)
                             )
-        params['multioutputclassifier__estimator__C'] = [0.001, 0.01, 0.1, 1, 10, 100]
+        params['multioutputclassifier__estimator__C'] = stats.uniform(0.1, 50)
         params['multioutputclassifier__estimator__kernel'] = ['linear', 'poly', 'rbf', 'sigmoid']
     if model_type == 'rfc':
         pipe = make_pipeline(vectorizer,
