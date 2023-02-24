@@ -58,7 +58,6 @@ def create_bert_model(Y_train, model_name='distilbert-base-cased', max_length=15
     loss = BinaryCrossentropy()
     optimizer = Adam(5e-5)
     metrics = [
-        multi_label_accuracy,
         'CategoricalAccuracy'
     ]
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)

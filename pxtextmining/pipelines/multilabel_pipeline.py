@@ -87,4 +87,4 @@ def run_bert_pipeline():
     write_multilabel_models_and_metrics([model_trained],[model_metrics],path='test_multilabel/bert_test')
 
 if __name__ == '__main__':
-    run_sklearn_pipeline()
+    run_bert_pipeline()
