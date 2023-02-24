@@ -40,7 +40,7 @@ from tensorflow.keras.optimizers import Adam
 import numpy as np
 from transformers import DistilBertConfig
 
-def create_bert_model(Y_train, model_name='distilbert-base-cased', max_length=150):
+def create_bert_model(Y_train, model_name='distilbert-base-uncased', max_length=150):
     config = DistilBertConfig.from_pretrained(model_name)
     transformer_model = TFDistilBertForSequenceClassification.from_pretrained(model_name, output_hidden_states = False)
     bert = transformer_model.layers[0]

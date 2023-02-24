@@ -7,8 +7,8 @@ from transformers import DistilBertTokenizer
 from pxtextmining.helpers.metrics import multi_label_accuracy
 import numpy as np
 
-def predict_with_bert(text, model, max_length=150):
-    tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-cased')
+def predict_with_bert(text: pd.Series, model, max_length=150):
+    tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
     padded_encodings = tokenizer.batch_encode_plus(
                             list(text),
                             max_length=max_length,
