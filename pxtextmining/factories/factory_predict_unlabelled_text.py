@@ -7,11 +7,10 @@ from transformers import DistilBertTokenizer
 from pxtextmining.helpers.metrics import multi_label_accuracy
 import numpy as np
 
-def predict_with_bert(text, model_path, max_length=150):
-    model = load_model(model_path)
+def predict_with_bert(text, model, max_length=150):
     tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-cased')
     padded_encodings = tokenizer.batch_encode_plus(
-                            text,
+                            list(text),
                             max_length=max_length,
                             return_token_type_ids=True,
                             return_attention_mask=True,
@@ -21,13 +20,13 @@ def predict_with_bert(text, model_path, max_length=150):
     predictions = model.predict(padded_encodings["input_ids"])
     return predictions
 
-def fix_no_labels(binary_preds, predicted_probs, model = 'sklearn'):
+def fix_no_labels(binary_preds, predicted_probs, model_type = 'sklearn'):
     for i in range(len(binary_preds)):
         if binary_preds[i].sum() == 0:
-            if model == 'tf':
+            if model_type in ('tf', 'bert'):
                 # index_max = list(predicted_probs[i]).index(max(predicted_probs[i])
                 index_max = np.argmax(predicted_probs[i])
-            if model == 'sklearn':
+            if model_type == 'sklearn':
                 index_max = np.argmax(predicted_probs[:,i,1])
             binary_preds[i][index_max] = 1
     return binary_preds

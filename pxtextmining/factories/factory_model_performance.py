@@ -8,10 +8,10 @@ from sklearn.dummy import DummyClassifier
 from sklearn import metrics
 from sklearn.multioutput import MultiOutputClassifier
 from tensorflow.keras import Sequential, Model
-from pxtextmining.factories.factory_predict_unlabelled_text import turn_probs_into_binary, fix_no_labels
+from pxtextmining.factories.factory_predict_unlabelled_text import turn_probs_into_binary, fix_no_labels, predict_with_bert
 
 
-def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time = None, x_train = None, y_train = None):
+def get_multilabel_metrics(x_test, y_test, labels, model_type = None, model = None, training_time = None, x_train = None, y_train = None):
     """Function to produce performance metrics for a multilabel machine learning model.
 
     :param pd.DataFrame x_test: Test data (predictor).
@@ -34,14 +34,17 @@ def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time =
             raise ValueError('For dummy model, x_train and y_train must be provided')
     # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
     # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
-    if isinstance(model, (Sequential, Model)):
-        y_probs = model.predict(x_test)
+    if model_type in ('bert', 'tf'):
+        if model_type == 'bert':
+            y_probs = predict_with_bert(x_test, model)
+        else:
+            y_probs = model.predict(x_test)
         binary_preds = turn_probs_into_binary(y_probs)
-        y_pred = fix_no_labels(binary_preds, y_probs, model = 'tf')
+        y_pred = fix_no_labels(binary_preds, y_probs, model_type = 'tf')
     else:
         binary_preds = model.predict(x_test)
         y_probs = np.array(model.predict_proba(x_test))
-        y_pred = fix_no_labels(binary_preds, y_probs, model = 'sklearn')
+        y_pred = fix_no_labels(binary_preds, y_probs, model_type = 'sklearn')
     c_report_str = metrics.classification_report(y_test, y_pred,
                                             target_names = labels, zero_division=0)
     model_metrics['exact_accuracy'] = metrics.accuracy_score(y_test, y_pred)
