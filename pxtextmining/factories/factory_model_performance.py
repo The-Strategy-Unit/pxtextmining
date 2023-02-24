@@ -8,7 +8,7 @@ from sklearn.dummy import DummyClassifier
 from sklearn import metrics
 from sklearn.multioutput import MultiOutputClassifier
 from tensorflow.keras import Sequential, Model
-from pxtextmining.factories.factory_predict_unlabelled_text import turn_probs_into_binary
+from pxtextmining.factories.factory_predict_unlabelled_text import turn_probs_into_binary, fix_no_labels
 
 
 def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time = None, x_train = None, y_train = None):
@@ -32,17 +32,16 @@ def get_multilabel_metrics(x_test, y_test, labels, model = None, training_time =
             model.fit(x_train, y_train)
         else:
             raise ValueError('For dummy model, x_train and y_train must be provided')
-    # TF Keras models output probabilities with model.predict, turn into binary outcomes
+    # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
+    # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
     if isinstance(model, (Sequential, Model)):
-        y_pred_probs = model.predict(x_test)
-        y_pred = turn_probs_into_binary(y_pred_probs)
+        y_probs = model.predict(x_test)
+        binary_preds = turn_probs_into_binary(y_probs)
+        y_pred = fix_no_labels(binary_preds, y_probs, model = 'tf')
     else:
-        y_pred = model.predict(x_test)
+        binary_preds = model.predict(x_test)
         y_probs = np.array(model.predict_proba(x_test))
-        for i in range(len(y_pred)):
-            if y_pred[i].sum() == 0:
-                highest_cat = np.argmax(y_probs[:,i,1])
-                y_pred[i][highest_cat] = 1
+        y_pred = fix_no_labels(binary_preds, y_probs, model = 'sklearn')
     c_report_str = metrics.classification_report(y_test, y_pred,
                                             target_names = labels, zero_division=0)
     model_metrics['exact_accuracy'] = metrics.accuracy_score(y_test, y_pred)
