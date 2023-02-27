@@ -7,12 +7,12 @@ import shutil
 import pickle
 # import feather
 from sqlalchemy import create_engine
-from tensorflow.keras import Sequential
+from tensorflow.keras import Sequential, Model
 
 def write_multilabel_models_and_metrics(models, model_metrics, path, dummy=False):
     for i in range(len(models)):
         model_name = f'model_{i}'
-        if isinstance(models[i], Sequential):
+        if isinstance(models[i], (Sequential, Model)):
             models[i].save(f'{path}/{model_name}')
         else:
             pickle.dump(models[i], open(f'{path}/{model_name}.sav', 'wb'))

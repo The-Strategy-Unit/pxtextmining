@@ -2,7 +2,38 @@ import pandas as pd
 import joblib
 from itertools import chain
 from pxtextmining.factories.factory_data_load_and_split import process_data, load_data
+from tensorflow.keras.models import load_model
+from transformers import DistilBertTokenizer
+from pxtextmining.helpers.metrics import multi_label_accuracy
+import numpy as np
 
+def predict_with_bert(text: pd.Series, model, max_length=150):
+    tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+    padded_encodings = tokenizer.batch_encode_plus(
+                            list(text),
+                            max_length=max_length,
+                            return_token_type_ids=True,
+                            return_attention_mask=True,
+                            truncation=True,
+                            padding='max_length',
+                            return_tensors='tf')
+    predictions = model.predict(padded_encodings["input_ids"])
+    return predictions
+
+def fix_no_labels(binary_preds, predicted_probs, model_type = 'sklearn'):
+    for i in range(len(binary_preds)):
+        if binary_preds[i].sum() == 0:
+            if model_type in ('tf', 'bert'):
+                # index_max = list(predicted_probs[i]).index(max(predicted_probs[i])
+                index_max = np.argmax(predicted_probs[i])
+            if model_type == 'sklearn':
+                index_max = np.argmax(predicted_probs[:,i,1])
+            binary_preds[i][index_max] = 1
+    return binary_preds
+
+def turn_probs_into_binary(predicted_probs):
+    preds = np.where(predicted_probs > 0.5, 1, 0)
+    return preds
 
 def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
                                     columns_to_return='all_cols', theme=None):
@@ -71,9 +102,8 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
     return data_with_predictions[columns_to_return]
 
 
-# if __name__ == '__main__':
-#     dataset = pd.read_csv('datasets/text_data.csv')
-#     predictions = factory_predict_unlabelled_text(dataset=dataset, predictor="feedback",
-#                                     pipe_path_or_object="results_label/pipeline_label.sav",
-#                                     columns_to_return=['feedback', 'organization', 'question'])
-#     print(predictions.head())
+if __name__ == '__main__':
+    dataset = pd.read_csv('datasets/multilabeldata_2.csv')
+    text_to_predict = dataset['FFT answer'][:2000].dropna().to_list()
+    predicted_probs = predict_with_bert(text_to_predict, model_path='test_multilabel/bert/distilbert2')
+    preds = turn_probs_into_binary(predicted_probs)

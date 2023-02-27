@@ -7,8 +7,15 @@ import string
 import numpy as np
 from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from transformers import AutoTokenizer
+from tensorflow.data import Dataset
 
-
+def bert_data_to_dataset(X, Y, max_length=150, model_name='distilbert-base-cased'):
+    tokenizer=AutoTokenizer.from_pretrained(model_name)
+    data_encoded = tokenizer(list(X), truncation=True, padding=True,
+                             max_length=max_length, return_tensors='tf')
+    encoded_dataset = Dataset.from_tensor_slices((dict(data_encoded), Y))
+    return encoded_dataset
 
 def get_multilabel_class_counts(df):
     class_counts = {}
@@ -179,13 +186,16 @@ def vectorise_multilabel_data(text_data):
     X_tfidf = tfidf_transformer.fit_transform(X_counts)
     return X_tfidf
 
-def process_and_split_multilabel_data(df, target, vectorise = False):
+def process_and_split_multilabel_data(df, target, vectorise = False, preprocess_text = True):
     # Currently just the text itself. Not adding other features yet or doing any cleaning
     Y = df[target].fillna(value=0)
     if vectorise == True:
         X = vectorise_multilabel_data(df['FFT answer'])
     else:
-        X = df['FFT answer'].astype(str).apply(remove_punc_and_nums)
+        if preprocess_text == True:
+            X = df['FFT answer'].astype(str).apply(remove_punc_and_nums)
+        if preprocess_text == False:
+            X = df['FFT answer'].astype(str)
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
     return X_train, X_test, Y_train, Y_test
 

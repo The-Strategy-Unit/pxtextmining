@@ -17,7 +17,7 @@ from sklearn.ensemble import RandomForestClassifier
 from pxtextmining.helpers.tokenization import LemmaTokenizer
 from pxtextmining.helpers.word_vectorization import EmbeddingsTransformer
 from pxtextmining.helpers.oversampling import random_over_sampler_data_generator
-from pxtextmining.helpers.metrics import class_balance_accuracy_score
+from pxtextmining.helpers.metrics import class_balance_accuracy_score, multi_label_accuracy
 from pxtextmining.helpers.estimator_switcher import ClfSwitcher
 from pxtextmining.helpers.ordinal_classification import OrdinalClassifier
 from pxtextmining.helpers.scaler_switcher import ScalerSwitcher
@@ -31,7 +31,48 @@ from pxtextmining.helpers.tokenization import spacy_tokenizer
 from sklearn.utils.class_weight import compute_class_weight
 from tensorflow.keras import layers, Sequential
 from tensorflow.keras.callbacks import EarlyStopping
+from transformers import TFDistilBertForSequenceClassification
+from tensorflow.keras.initializers import TruncatedNormal
+from tensorflow.keras.layers import Input, Dropout, Dense
+from tensorflow.keras.losses import BinaryCrossentropy
+from tensorflow.keras.models import Model
+from tensorflow.keras.optimizers import Adam
 import numpy as np
+from transformers import DistilBertConfig
+
+def create_bert_model(Y_train, model_name='distilbert-base-uncased', max_length=150):
+    config = DistilBertConfig.from_pretrained(model_name)
+    transformer_model = TFDistilBertForSequenceClassification.from_pretrained(model_name, output_hidden_states = False)
+    bert = transformer_model.layers[0]
+    input_ids = Input(shape=(max_length,), name='input_ids', dtype='int32')
+    inputs = {'input_ids': input_ids}
+    bert_model = bert(inputs)[0][:, 0, :]
+    dropout = Dropout(config.dropout, name='pooled_output')
+    pooled_output = dropout(bert_model, training=False)
+    output = Dense(units=Y_train.shape[1],
+                    kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
+                    activation="sigmoid",
+                    name='output')(pooled_output)
+    model = Model(inputs=inputs, outputs=output, name='BERT_MultiLabel')
+    # compile model
+    loss = BinaryCrossentropy()
+    optimizer = Adam(5e-5)
+    metrics = [
+        'CategoricalAccuracy'
+    ]
+    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+    return model
+
+def train_bert_model(train_dataset, val_dataset, model, class_weights_dict = None, epochs = 30):
+    es = EarlyStopping(patience=2, restore_best_weights=True)
+    start_time = time.time()
+    model.fit(train_dataset.shuffle(1000).batch(16), epochs=epochs, batch_size=16,
+                                class_weight= class_weights_dict,
+                                validation_data=val_dataset.batch(16),
+                                callbacks=[es])
+    total_time = round(time.time() - start_time, 0)
+    training_time = str(datetime.timedelta(seconds=total_time))
+    return model, training_time
 
 def calculating_class_weights(y_true):
     y_np = np.array(y_true)
@@ -83,8 +124,8 @@ def create_sklearn_vectorizer(tokenizer = None):
 def create_sklearn_pipeline(model_type, tokenizer = None):
     vectorizer = create_sklearn_vectorizer(tokenizer = tokenizer)
     params = {'tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
-                'tfidfvectorizer__max_df': [0.8, 0.85, 0.9, 0.95, 1],
-                'tfidfvectorizer__min_df': [0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1]}
+                'tfidfvectorizer__max_df': stats.uniform(0.8,1),
+                'tfidfvectorizer__min_df': stats.uniform(0.01,0.1)}
     if model_type == 'mnb':
         pipe = make_pipeline(vectorizer,
                             MultiOutputClassifier(MultinomialNB())
@@ -100,7 +141,7 @@ def create_sklearn_pipeline(model_type, tokenizer = None):
                             MultiOutputClassifier(SVC(probability = True, class_weight = 'balanced',
                                                       max_iter = 1000, cache_size = 500), n_jobs = -1)
                             )
-        params['multioutputclassifier__estimator__C'] = [0.001, 0.01, 0.1, 1, 10, 100]
+        params['multioutputclassifier__estimator__C'] = stats.uniform(0.1, 50)
         params['multioutputclassifier__estimator__kernel'] = ['linear', 'poly', 'rbf', 'sigmoid']
     if model_type == 'rfc':
         pipe = make_pipeline(vectorizer,
