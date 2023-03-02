@@ -29,7 +29,7 @@ def predict_multilabel_sklearn(text: pd.Series, model, labels = ['Access to medi
     predictions = fix_no_labels(binary_preds, pred_probs, model_type = 'sklearn')
     preds_df = pd.DataFrame(predictions, index=text_cleaned.index, columns=labels)
     preds_df['labels'] = preds_df.apply(get_labels, args=(labels,), axis=1)
-    return preds_df['labels']
+    return preds_df
 
 def get_labels(row, labels):
     label_list = []

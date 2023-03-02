@@ -26,12 +26,11 @@ def predict(items: List[ItemIn]):
     df = pd.DataFrame([i.dict() for i in items])
     df['comment_id'] = df['comment_id'].astype(int)
     text_to_predict = df['comment_text']
-    preds = predict_multilabel_sklearn(text_to_predict, loaded_model)
-    preds_df = pd.DataFrame(preds)
+    preds_df = predict_multilabel_sklearn(text_to_predict, loaded_model)
     ## Is it necessary to merge with original df? maybe to check they still line up?
-    preds_df['comment_id'] = preds.index.astype(int)
+    preds_df['comment_id'] = preds_df.index.astype(int)
     merged = pd.merge(df, preds_df, how='inner', on='comment_id')
-    return merged.to_dict(orient='records')
+    return merged[['comment_id', 'labels']].to_dict(orient='records')
     # return preds_df.to_dict(orient='records')
 
 @app.post('/test_json', response_model=List[TestJson])
