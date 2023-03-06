@@ -1,4 +1,4 @@
-name: Check execution
+name: Run tests
 
 on:
   push:
@@ -28,6 +28,5 @@ jobs:
         pip install .
         python -m spacy download en_core_web_sm
         python -m spacy download en_core_web_lg
-    - name: Test execution file
-      run: |
-        python execution/execution_predict.py
+    - name: Run tests
+      run: pytest tests/test_*.py
