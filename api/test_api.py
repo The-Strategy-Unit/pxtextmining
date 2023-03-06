@@ -1,5 +1,6 @@
 import requests
 import pandas as pd
+import json
 
 """
 To test the API, first in terminal, run this command to launch uvicorn server on http://127.0.0.1:8000
@@ -20,17 +21,21 @@ def test_json(json):
     print(response.json())
 
 def test_json_predictions(json):
-    response = requests.post("http://127.0.0.1:8000/predict_from_json", json=json)
+    response = requests.post("http://127.0.0.1:8000/predict_multilabel", json=json)
     print(response.status_code)
-    print(response.json())
+    return response
 
 if __name__ == "__main__":
-    df = pd.read_csv('datasets/text_data.csv')
-    df = df.loc[50:100][['feedback']]
+    df = pd.read_csv('datasets/API_test.csv')
+    df = df[['row_id', 'comment_txt']].copy().set_index('row_id')
     js = []
-    for i in range(df.shape[0]):
-        js.append({'id': str(i), 'comment_text': df.iloc[i]['feedback']})
+    for i in df.index:
+        js.append({'comment_id': str(i), 'comment_text': df.loc[i]['comment_txt']})
     print('The JSON that was sent looks like:')
     print(js[:5])
     print('The JSON that is returned is:')
-    test_json_predictions(js)
+    returned_json = test_json_predictions(js).json()
+    print(returned_json)
+    json_object = json.dumps(returned_json, indent=4)
+    with open("predictions.json", "w") as outfile:
+        outfile.write(json_object)

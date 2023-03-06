@@ -7,6 +7,5 @@ test_results_criticality/*
 site/
 dist/
 .vscode/
-datasets/phase_2_test.csv
-datasets/multilabeldata_2.csv
+datasets/hidden/*
 test_multilabel/*

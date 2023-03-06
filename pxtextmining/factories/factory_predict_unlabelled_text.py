@@ -1,11 +1,42 @@
 import pandas as pd
 import joblib
 from itertools import chain
-from pxtextmining.factories.factory_data_load_and_split import process_data, load_data
+from pxtextmining.factories.factory_data_load_and_split import process_data, load_data, remove_punc_and_nums
 from tensorflow.keras.models import load_model
 from transformers import DistilBertTokenizer
 from pxtextmining.helpers.metrics import multi_label_accuracy
 import numpy as np
+import pickle
+
+def predict_multilabel_sklearn(text: pd.Series, model, labels = ['Access to medical care & support',
+                                                                'Activities',
+                                                                'Additional',
+                                                                'Category TBC',
+                                                                'Communication & involvement',
+                                                                'Environment & equipment',
+                                                                'Food & diet',
+                                                                'General',
+                                                                'Medication',
+                                                                'Mental Health specifics',
+                                                                'Patient journey & service coordination',
+                                                                'Service location, travel & transport',
+                                                                'Staff']):
+    text_no_whitespace = text.replace(r'^\s*$', np.nan, regex=True)
+    text_no_nans = text_no_whitespace.dropna()
+    text_cleaned = text_no_nans.astype(str).apply(remove_punc_and_nums)
+    binary_preds = model.predict(text_cleaned)
+    pred_probs = np.array(model.predict_proba(text_cleaned))
+    predictions = fix_no_labels(binary_preds, pred_probs, model_type = 'sklearn')
+    preds_df = pd.DataFrame(predictions, index=text_cleaned.index, columns=labels)
+    preds_df['labels'] = preds_df.apply(get_labels, args=(labels,), axis=1)
+    return preds_df
+
+def get_labels(row, labels):
+    label_list = []
+    for c in labels:
+        if row[c]==1:
+            label_list.append(c)
+    return label_list
 
 def predict_with_bert(text: pd.Series, model, max_length=150):
     tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
@@ -104,6 +135,7 @@ def factory_predict_unlabelled_text(dataset, predictor, pipe_path_or_object,
 
 if __name__ == '__main__':
     dataset = pd.read_csv('datasets/multilabeldata_2.csv')
-    text_to_predict = dataset['FFT answer'][:2000].dropna().to_list()
-    predicted_probs = predict_with_bert(text_to_predict, model_path='test_multilabel/bert/distilbert2')
-    preds = turn_probs_into_binary(predicted_probs)
+    text_to_predict = dataset['FFT answer'][:2000]
+    loaded_model = pickle.load(open('current_best_multilabel/model_0.sav', 'rb'))
+    preds = predict_multilabel_sklearn(text_to_predict, loaded_model)
+    print(preds)
