@@ -82,7 +82,6 @@ def load_multilabel_data(filename, target = 'major_categories'):
     elif target == 'sentiment':
         cols = ['Comment sentiment']
     filtered_dataframe = text_data.loc[:,features + cols].copy()
-    filtered_dataframe = filtered_dataframe.replace(r'^\s*$', np.nan, regex=True)
     filtered_dataframe = filtered_dataframe.replace('1', 1)
     print(f'Shape of raw data is {filtered_dataframe.shape}')
     clean_dataframe = filtered_dataframe.dropna(subset=features).copy()
@@ -176,6 +175,11 @@ def load_multilabel_data(filename, target = 'major_categories'):
     clean_dataframe.loc[:,'num_labels'] = clean_dataframe.loc[:,cols].sum(axis = 1)
     clean_dataframe = clean_dataframe[clean_dataframe['num_labels'] != 0]
     print(f'Shape of cleaned data is {clean_dataframe.shape}')
+    return clean_dataframe
+
+def clean_empty_features(text_dataframe):
+    clean_dataframe = text_dataframe.replace(r'^\s*$', np.nan, regex=True)
+    clean_dataframe = clean_dataframe.dropna()
     return clean_dataframe
 
 def vectorise_multilabel_data(text_data):
@@ -453,5 +457,6 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 
 if __name__ == '__main__':
-    df = load_multilabel_data(filename = 'datasets/multilabeldata_2.csv', target = 'major_categories')
+    df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv', target = 'major_categories')
     print(df.head())
+    print(df.columns)
