@@ -39,9 +39,10 @@ def load_multilabel_data(filename, target = 'major_categories'):
         _type_: _description_
     """
     print('Loading multilabel dataset...')
-    text_data = pd.read_csv(filename)
-    text_data.columns = text_data.columns.str.strip()
-    text_data = text_data.set_index('Comment ID').copy()
+    raw_data = pd.read_csv(filename)
+    print(f'Shape of raw data is {raw_data.shape}')
+    raw_data.columns = raw_data.columns.str.strip()
+    raw_data = raw_data.set_index('Comment ID').copy()
     features = ['FFT categorical answer', 'FFT question', 'FFT answer']
     #For now the labels are hardcoded, these are subject to change as framework is in progress
     if target in ['minor_categories', 'major_categories']:
@@ -81,10 +82,9 @@ def load_multilabel_data(filename, target = 'major_categories'):
         'Collecting patients feedback']
     elif target == 'sentiment':
         cols = ['Comment sentiment']
-    filtered_dataframe = text_data.loc[:,features + cols].copy()
-    filtered_dataframe = filtered_dataframe.replace('1', 1)
-    print(f'Shape of raw data is {filtered_dataframe.shape}')
-    clean_dataframe = filtered_dataframe.dropna(subset=features).copy()
+    # Sort out the features first
+    features_df = raw_data.loc[:, features].copy()
+    features_df = clean_empty_features(features_df)
     # Standardize FFT qs
     q_map = {'Please tells us why you gave this answer?': 'nonspecific',
         'FFT Why?': 'nonspecific',
@@ -92,10 +92,12 @@ def load_multilabel_data(filename, target = 'major_categories'):
         'How could we improve?': 'could_improve',
         'What could we do better?': 'could_improve',
         'Please describe any things about the 111 service that \nyou were particularly satisfied and/or dissatisfied with': 'nonspecific'}
-    clean_dataframe.loc[:,'FFT_q_standardised']  = clean_dataframe.loc[:,'FFT question'].map(q_map).copy()
-    # Could probably do more text cleaning in here before doing text_length
-    clean_dataframe.loc[:,'text_length'] = clean_dataframe.loc[:,'FFT answer'].apply(lambda x:
+    features_df.loc[:,'FFT_q_standardised']  = features_df.loc[:,'FFT question'].map(q_map).copy()
+    features_df.loc[:,'text_length'] = features_df.loc[:,'FFT answer'].apply(lambda x:
                                     len([word for word in str(x).split(' ') if word != '']))
+    # Sort out the targets
+    targets_df = raw_data.loc[:, cols].copy()
+    targets_df = targets_df.replace('1', 1)
     if target == 'major_categories':
         major_categories = {
         'Gratitude/ good experience': 'General',
@@ -164,18 +166,21 @@ def load_multilabel_data(filename, target = 'major_categories'):
         'Out of hours support (community services)': 'Additional',
         'Learning organisation': 'Additional',
         'Collecting patients feedback': 'Additional'}
-        new_df = clean_dataframe.copy().drop(columns = cols)
-        for i in clean_dataframe[cols].index:
+        new_df = targets_df.copy().drop(columns = cols)
+        for i in targets_df[cols].index:
             for label in cols:
-                if clean_dataframe.loc[i,label] == 1:
+                if targets_df.loc[i,label] == 1:
                     new_cat = major_categories[label]
                     new_df.loc[i,new_cat] = 1
-        clean_dataframe = new_df.copy()
+        targets_df = new_df.copy()
         cols = list(set(major_categories.values()))
-    clean_dataframe.loc[:,'num_labels'] = clean_dataframe.loc[:,cols].sum(axis = 1)
-    clean_dataframe = clean_dataframe[clean_dataframe['num_labels'] != 0]
-    print(f'Shape of cleaned data is {clean_dataframe.shape}')
-    return clean_dataframe
+    targets_df.loc[:,'num_labels'] = targets_df.loc[:,cols].sum(axis = 1)
+    targets_df = targets_df[targets_df['num_labels'] != 0]
+    targets_df = targets_df.fillna(value=0)
+    # merge two together
+    combined_df = pd.merge(features_df, targets_df, left_index=True, right_index=True)
+    print(f'Shape of cleaned data is {combined_df.shape}')
+    return combined_df
 
 def clean_empty_features(text_dataframe):
     clean_dataframe = text_dataframe.replace(r'^\s*$', np.nan, regex=True)
