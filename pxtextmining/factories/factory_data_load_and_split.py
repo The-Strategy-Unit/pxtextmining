@@ -151,7 +151,7 @@ def load_multilabel_data(filename, target = 'major_categories'):
     features_df = raw_data.loc[:, features].copy()
     features_df = clean_empty_features(features_df)
     # Standardize FFT qs
-    q_map = {'Please tells us why': 'nonspecific',
+    q_map = {'Please tell us why': 'nonspecific',
         'Please tells us why you gave this answer?': 'nonspecific',
         'FFT Why?': 'nonspecific',
         'What was good?': 'what_good',
@@ -354,9 +354,13 @@ def remove_punc_and_nums(text):
     text = re.sub('\\r', ' ', text)
     text = ''.join(char for char in text if not char.isdigit())
     punc_list = string.punctuation.replace('!', '')
+    # punc_list = punc_list.replace('!', '')
     # punc_list = punc_list.replace("'", '')
     for punctuation in punc_list:
-        text = text.replace(punctuation, ' ')
+        if punctuation not in [',', '.', '-']:
+            text = text.replace(punctuation, '')
+        else:
+            text = text.replace(punctuation, ' ')
     # text = decode_emojis.decode_emojis(text)
     text_split = [word for word in text.split(' ') if word != '']
     text_lower = []
@@ -552,4 +556,4 @@ if __name__ == '__main__':
     print(df.head())
     X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = major_cats,
                                                                          additional_features =True)
-    print(X_train['FFT_q_standardised'].value_counts())
+    print(X_train.head())
