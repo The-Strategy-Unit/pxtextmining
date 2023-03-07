@@ -276,7 +276,7 @@ def process_and_split_multilabel_data(df, target, vectorise = False, preprocess_
         if preprocess_text == False:
             X = df['FFT answer'].astype(str)
     if additional_features == True:
-        X = pd.merge(X, df['FFT_q_standardised'], left_index=True, right_index=True)
+        X = pd.merge(X, df[['FFT_q_standardised', 'text_length']], left_index=True, right_index=True)
         Y = Y.loc[X.index]
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
     return X_train, X_test, Y_train, Y_test
@@ -353,7 +353,7 @@ def remove_punc_and_nums(text):
     text = re.sub('\\n', ' ', text)
     text = re.sub('\\r', ' ', text)
     text = ''.join(char for char in text if not char.isdigit())
-    punc_list = string.punctuation.replace('!', '')
+    punc_list = string.punctuation
     # punc_list = punc_list.replace('!', '')
     # punc_list = punc_list.replace("'", '')
     for punctuation in punc_list:
@@ -365,10 +365,12 @@ def remove_punc_and_nums(text):
     text_split = [word for word in text.split(' ') if word != '']
     text_lower = []
     for word in text_split:
-        if word.isupper():
-            text_lower.append(word)
-        else:
-            text_lower.append(word.lower())
+        # does it make a difference if we keep allcaps?
+        # if word.isupper():
+        #     text_lower.append(word)
+        # else:
+        #     text_lower.append(word.lower())
+        text_lower.append(word.lower())
     cleaned_sentence = ' '.join(word for word in text_lower)
     cleaned_sentence = cleaned_sentence.strip()
     return cleaned_sentence
