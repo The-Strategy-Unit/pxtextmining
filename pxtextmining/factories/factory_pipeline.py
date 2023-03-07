@@ -131,7 +131,7 @@ def create_sklearn_pipeline_additional_features(model_type, tokenizer = None, ad
                 (vectorizer, 'FFT answer'),
                 (num_transformer, ['text_length']))
         params = {'columntransformer__tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
-                    'columntransformer__tfidfvectorizer__max_df': stats.uniform(0.7,1.0),
+                    'columntransformer__tfidfvectorizer__max_df': [0.8,0.85,0.9,0.95,0.99],
                     'columntransformer__tfidfvectorizer__min_df': stats.uniform(0.005,0.1)
                     }
     else:
@@ -159,11 +159,13 @@ def create_sklearn_pipeline_additional_features(model_type, tokenizer = None, ad
                                                               'rbf', 'sigmoid']
     if model_type == 'rfc':
         pipe = make_pipeline(preproc,
-                            RandomForestClassifier()
+                            RandomForestClassifier(n_jobs = -1)
                             )
-        params['randomforestclassifier__max_depth'] = [10,20,30,40]
-        params['randomforestclassifier__n_jobs'] = [-1]
+        params['randomforestclassifier__max_depth'] = stats.randint(5,50)
+        params['randomforestclassifier__min_samples_split'] = stats.randint(2,5)
         params['randomforestclassifier__class_weight'] = ['balanced', 'balanced_subsample', None]
+        params['randomforestclassifier__min_samples_leaf'] = stats.randint(1,10)
+        params['randomforestclassifier__max_features'] = ['sqrt', 'log2', None, 0.3]
     return pipe, params
 
 def create_sklearn_pipeline(model_type, tokenizer = None):
