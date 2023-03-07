@@ -39,7 +39,72 @@ def load_multilabel_data(filename, target = 'major_categories'):
         _type_: _description_
     """
     print('Loading multilabel dataset...')
-    raw_data = pd.read_csv(filename)
+    raw_data = pd.read_csv(filename, dtype= {'Gratitude/ good experience': 'Int64',
+ 'Negative experience': 'Int64',
+ 'Not assigned': 'Int64',
+ 'Organisation & efficiency': 'Int64',
+ 'Funding & use of financial resources': 'Int64',
+ 'Non-specific praise for staff': 'Int64',
+ 'Non-specific dissatisfaction with staff': 'Int64',
+ 'Staff manner & personal attributes': 'Int64',
+ 'Number & deployment of staff': 'Int64',
+ 'Staff responsiveness': 'Int64',
+ 'Staff continuity': 'Int64',
+ 'Competence & training': 'Int64',
+ 'Unspecified communication': 'Int64',
+ 'Staff listening, understanding & involving patients': 'Int64',
+ 'Information directly from staff during care': 'Int64',
+ 'Information provision & guidance': 'Int64',
+ 'Being kept informed, clarity & consistency of information': 'Int64',
+ 'Service involvement with family/ carers': 'Int64',
+ 'Patient contact with family/ carers': 'Int64',
+ 'Contacting services': 'Int64',
+ 'Appointment arrangements': 'Int64',
+ 'Appointment method': 'Int64',
+ 'Timeliness of care': 'Int64',
+ 'Supplying medication': 'Int64',
+ 'Understanding medication': 'Int64',
+ 'Pain management': 'Int64',
+ 'Diagnosis & triage': 'Int64',
+ 'Referals & continuity of care': 'Int64',
+ 'Length of stay/ duration of care': 'Int64',
+ 'Discharge': 'Int64',
+ 'Care plans': 'Int64',
+ 'Patient records': 'Int64',
+ 'Impact of treatment/ care - physical health': 'Int64',
+ 'Impact of treatment/ care - mental health': 'Int64',
+ 'Impact of treatment/ care - general': 'Int64',
+ 'Links with non-NHS organisations': 'Int64',
+ 'Cleanliness, tidiness & infection control': 'Int64',
+ 'Noise & restful environment': 'Int64',
+ 'Temperature': 'Int64',
+ 'Lighting': 'Int64',
+ 'Decoration': 'Int64',
+ 'Smell': 'Int64',
+ 'Comfort of environment': 'Int64',
+ 'Atmosphere of ward/ environment': 'Int64',
+ 'Access to outside/ fresh air': 'Int64',
+ 'Privacy': 'Int64',
+ 'Safety & security': 'Int64',
+ 'Provision of medical  equipment': 'Int64',
+ 'Food & drink provision': 'Int64',
+ 'Food preparation facilities for patients & visitors': 'Int64',
+ 'Service location': 'Int64',
+ 'Transport to/ from services': 'Int64',
+ 'Parking': 'Int64',
+ 'Provision & range of activities': 'Int64',
+ 'Electronic entertainment': 'Int64',
+ 'Feeling safe': 'Int64',
+ 'Patient appearance & grooming': 'Int64',
+ 'Mental Health Act': 'Int64',
+ 'Psychological therapy arrangements': 'Int64',
+ 'Existence of services': 'Int64',
+ 'Choice of services': 'Int64',
+ 'Respect for diversity': 'Int64',
+ 'Admission': 'Int64',
+ 'Out of hours support (community services)': 'Int64',
+ 'Learning organisation': 'Int64',
+ 'Collecting patients feedback': 'Int64'}, na_values= ' ')
     print(f'Shape of raw data is {raw_data.shape}')
     raw_data.columns = raw_data.columns.str.strip()
     raw_data = raw_data.set_index('Comment ID').copy()
@@ -86,9 +151,11 @@ def load_multilabel_data(filename, target = 'major_categories'):
     features_df = raw_data.loc[:, features].copy()
     features_df = clean_empty_features(features_df)
     # Standardize FFT qs
-    q_map = {'Please tells us why you gave this answer?': 'nonspecific',
+    q_map = {'Please tells us why': 'nonspecific',
+        'Please tells us why you gave this answer?': 'nonspecific',
         'FFT Why?': 'nonspecific',
         'What was good?': 'what_good',
+        'Is there anything we could have done better?': 'could_improve',
         'How could we improve?': 'could_improve',
         'What could we do better?': 'could_improve',
         'Please describe any things about the 111 service that \nyou were particularly satisfied and/or dissatisfied with': 'nonspecific'}
@@ -98,6 +165,7 @@ def load_multilabel_data(filename, target = 'major_categories'):
     # Sort out the targets
     targets_df = raw_data.loc[:, cols].copy()
     targets_df = targets_df.replace('1', 1)
+    targets_df = targets_df.fillna(value=0)
     if target == 'major_categories':
         major_categories = {
         'Gratitude/ good experience': 'General',
@@ -484,4 +552,4 @@ if __name__ == '__main__':
     print(df.head())
     X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = major_cats,
                                                                          additional_features =True)
-    print(X_train.head())
+    print(X_train['FFT_q_standardised'].value_counts())
