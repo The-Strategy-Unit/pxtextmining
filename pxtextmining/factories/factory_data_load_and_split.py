@@ -277,7 +277,7 @@ def process_and_split_multilabel_data(df, target, vectorise = False, preprocess_
             X = df['FFT answer'].astype(str)
     if additional_features == True:
         X = pd.merge(X, df[['FFT_q_standardised', 'text_length']], left_index=True, right_index=True)
-        Y = Y.loc[X.index]
+    Y = Y.loc[X.index]
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
     return X_train, X_test, Y_train, Y_test
 

@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 # Should I put all of this into an 'pipeline' object??
 
 def run_sklearn_pipeline():
-    df = load_multilabel_data(filename = 'datasets/multilabeldata_2.csv', target = 'major_categories')
+    df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv', target = 'major_categories')
     major_cats = ['Access to medical care & support',
     'Activities',
     'Additional',
@@ -23,15 +23,17 @@ def run_sklearn_pipeline():
     'Patient journey & service coordination',
     'Service location, travel & transport',
     'Staff']
-    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = major_cats)
-    models, training_times = search_sklearn_pipelines(X_train, Y_train, models_to_try = ['svm'])
+    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = major_cats,
+                                                                         additional_features =True)
+    models, training_times = search_sklearn_pipelines(X_train, Y_train, models_to_try = ['knn', 'svm', 'rfc'], additional_features = True)
     model_metrics = []
     for i in range(len(models)):
         m = models[i]
         t = training_times[i]
-        model_metrics.append(get_multilabel_metrics(X_test, Y_test, labels = major_cats, model_type = 'sklearn', model = m, training_time = t))
+        model_metrics.append(get_multilabel_metrics(X_test, Y_test,
+                                                    labels = major_cats, model_type = 'sklearn', model = m, training_time = t))
     # model_metrics.append(get_multilabel_metrics(X_test, Y_test, labels = major_cats, x_train = X_train, y_train = Y_train, model = None))
-    write_multilabel_models_and_metrics(models,model_metrics,path='test_multilabel/sklearn/svm')
+    write_multilabel_models_and_metrics(models,model_metrics,path='test_multilabel/additional_features')
 
 def run_tf_pipeline():
     df = load_multilabel_data(filename = 'datasets/multilabeldata_2.csv', target = 'major_categories')
@@ -88,4 +90,4 @@ def run_bert_pipeline():
     write_multilabel_models_and_metrics([model_trained],[model_metrics],path='test_multilabel/bert')
 
 if __name__ == '__main__':
-    run_bert_pipeline()
+    run_sklearn_pipeline()

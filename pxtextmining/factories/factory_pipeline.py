@@ -3,8 +3,8 @@ from imblearn.pipeline import Pipeline
 from sklearn.pipeline import make_pipeline
 # from sklearn.pipeline import Pipeline
 from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, OneHotEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer, make_column_transformer
+from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, OneHotEncoder, StandardScaler, RobustScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectPercentile, chi2, f_classif
 from sklearn.model_selection import RandomizedSearchCV
@@ -121,6 +121,51 @@ def create_sklearn_vectorizer(tokenizer = None):
         vectorizer = TfidfVectorizer()
     return vectorizer
 
+def create_sklearn_pipeline_additional_features(model_type, tokenizer = None, additional_features = True):
+    if additional_features == True:
+        cat_transformer = OneHotEncoder(handle_unknown='ignore')
+        vectorizer = create_sklearn_vectorizer(tokenizer = None)
+        num_transformer = RobustScaler()
+        preproc = make_column_transformer(
+                (cat_transformer, ['FFT_q_standardised']),
+                (vectorizer, 'FFT answer'),
+                (num_transformer, ['text_length']))
+        params = {'columntransformer__tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
+                    'columntransformer__tfidfvectorizer__max_df': stats.uniform(0.7,1.0),
+                    'columntransformer__tfidfvectorizer__min_df': stats.uniform(0.005,0.1)
+                    }
+    else:
+        preproc = create_sklearn_vectorizer(tokenizer = tokenizer)
+        params = {'tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
+                'tfidfvectorizer__max_df': stats.uniform(0.8,1),
+                'tfidfvectorizer__min_df': stats.uniform(0.01,0.1)}
+    if model_type == 'mnb':
+        pipe = make_pipeline(preproc,
+                            MultiOutputClassifier(MultinomialNB())
+                            )
+        params['multioutputclassifier__estimator__alpha'] = stats.uniform(0.1,1)
+    if model_type == 'knn':
+        pipe = make_pipeline(preproc,
+                            KNeighborsClassifier())
+        params['kneighborsclassifier__n_neighbors'] = stats.randint(1,50)
+        params['kneighborsclassifier__n_jobs'] = [-1]
+    if model_type == 'svm':
+        pipe = make_pipeline(preproc,
+                            MultiOutputClassifier(SVC(probability = True, class_weight = 'balanced',
+                                                      max_iter = 1000, cache_size = 500), n_jobs = -1)
+                            )
+        params['multioutputclassifier__estimator__C'] = stats.uniform(0.1, 50)
+        params['multioutputclassifier__estimator__kernel'] = ['linear',
+                                                              'rbf', 'sigmoid']
+    if model_type == 'rfc':
+        pipe = make_pipeline(preproc,
+                            RandomForestClassifier()
+                            )
+        params['randomforestclassifier__max_depth'] = [10,20,30,40]
+        params['randomforestclassifier__n_jobs'] = [-1]
+        params['randomforestclassifier__class_weight'] = ['balanced', 'balanced_subsample', None]
+    return pipe, params
+
 def create_sklearn_pipeline(model_type, tokenizer = None):
     vectorizer = create_sklearn_vectorizer(tokenizer = tokenizer)
     params = {'tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
@@ -152,14 +197,18 @@ def create_sklearn_pipeline(model_type, tokenizer = None):
         params['randomforestclassifier__class_weight'] = ['balanced', 'balanced_subsample', None]
     return pipe, params
 
-def search_sklearn_pipelines(X_train, Y_train, models_to_try):
+def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_features =True):
     models = []
     training_times = []
     for model_type in models_to_try:
         if model_type not in ['mnb', 'knn', 'svm', 'rfc']:
             raise ValueError('Please choose valid model_type. Options are mnb, knn, svm, or rfc')
         else:
-            pipe, params = create_sklearn_pipeline(model_type)
+            if additional_features == False:
+                pipe, params = create_sklearn_pipeline_additional_features(model_type, additional_features =False)
+            elif additional_features == True:
+                pipe, params = create_sklearn_pipeline_additional_features(model_type)
+                print(params)
             start_time = time.time()
             print(f'****SEARCHING {pipe.steps[-1][-1]}')
             search = RandomizedSearchCV(pipe, params,
