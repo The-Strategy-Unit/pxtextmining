@@ -195,16 +195,21 @@ def vectorise_multilabel_data(text_data):
     X_tfidf = tfidf_transformer.fit_transform(X_counts)
     return X_tfidf
 
-def process_and_split_multilabel_data(df, target, vectorise = False, preprocess_text = True):
-    # Currently just the text itself. Not adding other features yet or doing any cleaning
+def process_and_split_multilabel_data(df, target, vectorise = False, preprocess_text = True,
+                                      additional_features = False):
     Y = df[target].fillna(value=0)
     if vectorise == True:
         X = vectorise_multilabel_data(df['FFT answer'])
     else:
         if preprocess_text == True:
             X = df['FFT answer'].astype(str).apply(remove_punc_and_nums)
+            X = clean_empty_features(X)
+            print(f'After preprocessing, shape of X is {X.shape}')
         if preprocess_text == False:
             X = df['FFT answer'].astype(str)
+    if additional_features == True:
+        X = pd.merge(X, df['FFT_q_standardised'], left_index=True, right_index=True)
+        Y = Y.loc[X.index]
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
     return X_train, X_test, Y_train, Y_test
 
@@ -281,10 +286,10 @@ def remove_punc_and_nums(text):
     text = re.sub('\\r', ' ', text)
     text = ''.join(char for char in text if not char.isdigit())
     punc_list = string.punctuation.replace('!', '')
-    punc_list = punc_list.replace("'", '')
+    # punc_list = punc_list.replace("'", '')
     for punctuation in punc_list:
         text = text.replace(punctuation, ' ')
-    text = decode_emojis.decode_emojis(text)
+    # text = decode_emojis.decode_emojis(text)
     text_split = [word for word in text.split(' ') if word != '']
     text_lower = []
     for word in text_split:
@@ -462,6 +467,21 @@ def factory_data_load_and_split(filename, target, predictor, test_size=0.33, red
 
 
 if __name__ == '__main__':
+    major_cats = ['Access to medical care & support',
+    'Activities',
+    'Additional',
+    'Category TBC',
+    'Communication & involvement',
+    'Environment & equipment',
+    'Food & diet',
+    'General',
+    'Medication',
+    'Mental Health specifics',
+    'Patient journey & service coordination',
+    'Service location, travel & transport',
+    'Staff']
     df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv', target = 'major_categories')
     print(df.head())
-    print(df.columns)
+    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = major_cats,
+                                                                         additional_features =True)
+    print(X_train.head())
