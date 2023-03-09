@@ -7,14 +7,17 @@ import string
 import numpy as np
 from pxtextmining.helpers import decode_emojis, text_length, sentiment_scores
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.preprocessing import OneHotEncoder
 from transformers import AutoTokenizer
 from tensorflow.data import Dataset
 
-def bert_data_to_dataset(X, Y, max_length=150, model_name='distilbert-base-cased'):
+def bert_data_to_dataset(X, Y, max_length=150, model_name='distilbert-base-cased', additional_features = False):
     tokenizer=AutoTokenizer.from_pretrained(model_name)
-    data_encoded = tokenizer(list(X), truncation=True, padding=True,
-                             max_length=max_length, return_tensors='tf')
-    encoded_dataset = Dataset.from_tensor_slices((dict(data_encoded), Y))
+    data_encoded = dict(tokenizer(list(X), truncation=True, padding=True,
+                             max_length=max_length, return_tensors='tf'))
+    if additional_features == True:
+        pass
+    encoded_dataset = Dataset.from_tensor_slices(data_encoded, Y)
     return encoded_dataset
 
 def get_multilabel_class_counts(df):
@@ -263,8 +266,13 @@ def vectorise_multilabel_data(text_data):
     X_tfidf = tfidf_transformer.fit_transform(X_counts)
     return X_tfidf
 
-def process_and_split_multilabel_data(df, target, vectorise = False, preprocess_text = True,
-                                      additional_features = False):
+def onehot(df, col_to_onehot):
+    encoder = OneHotEncoder()
+    col_encoded = encoder.fit_transform(df[[col_to_onehot]])
+    return col_encoded
+
+def process_multilabel_data(df, target, vectorise = False, preprocess_text = True,
+                                      additional_features = False, onehot = False):
     Y = df[target].fillna(value=0)
     if vectorise == True:
         X = vectorise_multilabel_data(df['FFT answer'])
@@ -278,6 +286,12 @@ def process_and_split_multilabel_data(df, target, vectorise = False, preprocess_
     if additional_features == True:
         X = pd.merge(X, df[['FFT_q_standardised', 'text_length']], left_index=True, right_index=True)
     Y = Y.loc[X.index]
+    return X, Y
+
+def process_and_split_multilabel_data(df, target, vectorise = False, preprocess_text = True,
+                                      additional_features = False, onehot = False):
+    X, Y = process_multilabel_data(df, target, vectorise = vectorise, preprocess_text = preprocess_text,
+                                   additional_features = additional_features, onhot = onehot)
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
     return X_train, X_test, Y_train, Y_test
 
