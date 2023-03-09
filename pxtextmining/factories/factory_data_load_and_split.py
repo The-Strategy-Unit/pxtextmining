@@ -13,11 +13,12 @@ from tensorflow.data import Dataset
 
 def bert_data_to_dataset(X, Y, max_length=150, model_name='distilbert-base-cased', additional_features = False):
     tokenizer=AutoTokenizer.from_pretrained(model_name)
-    data_encoded = dict(tokenizer(list(X), truncation=True, padding=True,
+    data_encoded = dict(tokenizer(list(X['FFT answer']), truncation=True, padding=True,
                              max_length=max_length, return_tensors='tf'))
     if additional_features == True:
-        pass
-    encoded_dataset = Dataset.from_tensor_slices(data_encoded, Y)
+        onehotted = onehot(X, 'FFT_q_standardised')
+        data_encoded['input_cat'] = onehotted
+    encoded_dataset = Dataset.from_tensor_slices((data_encoded, Y))
     return encoded_dataset
 
 def get_multilabel_class_counts(df):
@@ -267,12 +268,12 @@ def vectorise_multilabel_data(text_data):
     return X_tfidf
 
 def onehot(df, col_to_onehot):
-    encoder = OneHotEncoder()
+    encoder = OneHotEncoder(sparse=False)
     col_encoded = encoder.fit_transform(df[[col_to_onehot]])
     return col_encoded
 
 def process_multilabel_data(df, target, vectorise = False, preprocess_text = True,
-                                      additional_features = False, onehot = False):
+                                      additional_features = False):
     Y = df[target].fillna(value=0)
     if vectorise == True:
         X = vectorise_multilabel_data(df['FFT answer'])
@@ -289,9 +290,9 @@ def process_multilabel_data(df, target, vectorise = False, preprocess_text = Tru
     return X, Y
 
 def process_and_split_multilabel_data(df, target, vectorise = False, preprocess_text = True,
-                                      additional_features = False, onehot = False):
+                                      additional_features = False):
     X, Y = process_multilabel_data(df, target, vectorise = vectorise, preprocess_text = preprocess_text,
-                                   additional_features = additional_features, onhot = onehot)
+                                   additional_features = additional_features)
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
     return X_train, X_test, Y_train, Y_test
 
