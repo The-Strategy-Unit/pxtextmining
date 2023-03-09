@@ -11,14 +11,17 @@ from sklearn.preprocessing import OneHotEncoder
 from transformers import AutoTokenizer
 from tensorflow.data import Dataset
 
-def bert_data_to_dataset(X, Y, max_length=150, model_name='distilbert-base-cased', additional_features = False):
+def bert_data_to_dataset(X, Y = None, max_length=150, model_name='distilbert-base-cased', additional_features = False):
     tokenizer=AutoTokenizer.from_pretrained(model_name)
     data_encoded = dict(tokenizer(list(X['FFT answer']), truncation=True, padding=True,
                              max_length=max_length, return_tensors='tf'))
     if additional_features == True:
         onehotted = onehot(X, 'FFT_q_standardised')
         data_encoded['input_cat'] = onehotted
-    encoded_dataset = Dataset.from_tensor_slices((data_encoded, Y))
+    if isinstance(Y, pd.DataFrame):
+        encoded_dataset = Dataset.from_tensor_slices((data_encoded, Y))
+    else:
+        encoded_dataset = Dataset.from_tensor_slices(data_encoded)
     return encoded_dataset
 
 def get_multilabel_class_counts(df):
