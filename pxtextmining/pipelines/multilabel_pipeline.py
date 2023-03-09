@@ -1,6 +1,6 @@
 from pxtextmining.factories.factory_data_load_and_split import load_multilabel_data,bert_data_to_dataset, process_and_split_multilabel_data
 from pxtextmining.factories.factory_model_performance import get_multilabel_metrics
-from pxtextmining.factories.factory_pipeline import search_sklearn_pipelines, create_tf_model, create_bert_model
+from pxtextmining.factories.factory_pipeline import search_sklearn_pipelines, create_tf_model, create_bert_model, create_bert_model_additional_features
 from pxtextmining.factories.factory_pipeline import calculating_class_weights, train_tf_model, train_bert_model
 from pxtextmining.factories.factory_write_results import write_multilabel_models_and_metrics
 from pxtextmining.helpers.text_preprocessor import tf_preprocessing
@@ -61,7 +61,7 @@ def run_tf_pipeline():
                                            model = model_trained, training_time = training_time)
     write_multilabel_models_and_metrics([model_trained],[model_metrics],path='test_multilabel/tf')
 
-def run_bert_pipeline():
+def run_bert_pipeline(additional_features = False):
     df = load_multilabel_data(filename = 'datasets/multilabeldata_2.csv', target = 'major_categories')
     major_cats = ['Access to medical care & support',
     'Activities',
@@ -76,18 +76,22 @@ def run_bert_pipeline():
     'Patient journey & service coordination',
     'Service location, travel & transport',
     'Staff']
-    X_train_val, X_test, Y_train_val, Y_test = process_and_split_multilabel_data(df, target = major_cats, preprocess_text = False)
+    X_train_val, X_test, Y_train_val, Y_test = process_and_split_multilabel_data(df, target = major_cats, preprocess_text = False, additional_features = additional_features)
     X_train, X_val, Y_train, Y_val = train_test_split(X_train_val, Y_train_val, test_size=0.2)
-    train_dataset = bert_data_to_dataset(X_train, Y_train)
-    val_dataset = bert_data_to_dataset(X_val, Y_val)
+    train_dataset = bert_data_to_dataset(X_train, Y_train, additional_features = additional_features)
+    val_dataset = bert_data_to_dataset(X_val, Y_val, additional_features = additional_features)
+    test_dataset = bert_data_to_dataset(X_test, Y = None, additional_features = additional_features)
     class_weights_dict = calculating_class_weights(Y_train_val)
-    model = create_bert_model(Y_train)
+    if additional_features == True:
+        model = create_bert_model_additional_features(Y_train)
+    else:
+        model = create_bert_model(Y_train)
     model_trained, training_time = train_bert_model(train_dataset, val_dataset, model,
                                                     class_weights_dict = class_weights_dict, epochs = 25)
-    model_metrics = get_multilabel_metrics(X_test, Y_test, labels = major_cats,
+    model_metrics = get_multilabel_metrics(test_dataset, Y_test, labels = major_cats,
                                            model_type = 'bert',
                                            model = model_trained, training_time = training_time)
-    write_multilabel_models_and_metrics([model_trained],[model_metrics],path='test_multilabel/bert')
+    write_multilabel_models_and_metrics([model_trained],[model_metrics],path='test_multilabel/bert_additional_features')
 
 if __name__ == '__main__':
-    run_sklearn_pipeline()
+    run_bert_pipeline(additional_features = True)
