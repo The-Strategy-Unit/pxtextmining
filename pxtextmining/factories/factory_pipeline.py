@@ -33,7 +33,7 @@ from tensorflow.keras import layers, Sequential
 from tensorflow.keras.callbacks import EarlyStopping
 from transformers import TFDistilBertForSequenceClassification
 from tensorflow.keras.initializers import TruncatedNormal
-from tensorflow.keras.layers import Input, Dropout, Dense
+from tensorflow.keras.layers import Input, Dropout, Dense, concatenate
 from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
@@ -55,6 +55,34 @@ def create_bert_model(Y_train, model_name='distilbert-base-uncased', max_length=
                     name='output')(pooled_output)
     model = Model(inputs=inputs, outputs=output, name='BERT_MultiLabel')
     # compile model
+    loss = BinaryCrossentropy()
+    optimizer = Adam(5e-5)
+    metrics = [
+        'CategoricalAccuracy'
+    ]
+    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+    return model
+
+
+def create_bert_model_additional_features(Y_train, model_name='distilbert-base-uncased', max_length=150):
+    config = DistilBertConfig.from_pretrained(model_name)
+    transformer_model = TFDistilBertForSequenceClassification.from_pretrained(model_name, output_hidden_states = False)
+    bert = transformer_model.layers[0]
+    input_ids = Input(shape=(150,), name='input_ids', dtype='int32')
+    input_text = {'input_ids': input_ids}
+    bert_model = bert(input_text)[0][:, 0, :]
+    dropout = Dropout(config.dropout, name='pooled_output')
+    bert_output = dropout(bert_model, training=False)
+    # Get onehotencoded categories in (3 categories)
+    input_cat = Input(shape=(3,), name='input_cat')
+    # concatenate both together
+    concat_layer = concatenate([bert_output, input_cat])
+    output = Dense(units=Y_train.shape[1],
+                    kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
+                    activation="sigmoid",
+                    name='output')(concat_layer)
+    model = Model(inputs=[input_ids, input_cat],
+                outputs=output, name='BERT_MultiLabel')
     loss = BinaryCrossentropy()
     optimizer = Adam(5e-5)
     metrics = [
