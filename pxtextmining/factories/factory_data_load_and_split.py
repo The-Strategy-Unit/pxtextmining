@@ -293,10 +293,10 @@ def process_multilabel_data(df, target, vectorise = False, preprocess_text = Tru
     return X, Y
 
 def process_and_split_multilabel_data(df, target, vectorise = False, preprocess_text = True,
-                                      additional_features = False):
+                                      additional_features = False, random_state = 42):
     X, Y = process_multilabel_data(df, target, vectorise = vectorise, preprocess_text = preprocess_text,
                                    additional_features = additional_features)
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=random_state)
     return X_train, X_test, Y_train, Y_test
 
 def load_data(filename, target, predictor, theme = None):
