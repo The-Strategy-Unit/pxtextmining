@@ -1,5 +1,4 @@
 from pxtextmining.factories import factory_data_load_and_split
-from sklearn.model_selection import train_test_split
 import pandas as pd
 
 
@@ -14,7 +13,7 @@ def test_onehot():
     df_onehotted = factory_data_load_and_split.onehot(df_to_onehot, 'Categories')
     assert df_onehotted.shape == (6,3)
 
-df = factory_data_load_and_split.load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv', target = 'major_categories')[:500]
+df = factory_data_load_and_split.load_multilabel_data(filename = 'datasets/testing/multilabeldata_2.csv', target = 'major_categories')[:500]
 major_cats = ['Access to medical care & support',
     'Activities',
     'Additional',
@@ -36,4 +35,4 @@ def test_bert_data_to_dataset_with_Y(X_train_val = X_train_val, Y_train_val = Y_
 
 def test_bert_data_to_dataset_without_Y():
     test_dataset = factory_data_load_and_split.bert_data_to_dataset(X_test, Y = None, additional_features = True)
-    assert type(test_dataset._structure) == dict
+    assert type(test_dataset) == dict
