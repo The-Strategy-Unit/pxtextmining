@@ -10,8 +10,25 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.preprocessing import OneHotEncoder
 from transformers import AutoTokenizer
 from tensorflow.data import Dataset
+from typing import Un
 
 def bert_data_to_dataset(X, Y = None, max_length=150, model_name='distilbert-base-uncased', additional_features = False):
+    """This function converts a dataframe into a format that can be utilised by a transformer model.
+    If Y is provided then it returns a TensorFlow dataset for training the model.
+    If Y is not provided, then it returns a dict which can be used to make predictions by an already trained model.
+
+    Args:
+        X (pd.DataFrame): Data to be converted to text data. Text should be in column 'FFT answer',
+            FFT question should be in column 'FFT_q_standardised'.
+        Y (pd.DataFrame, optional): One Hot Encoded targets. Defaults to None.
+        max_length (int, optional): Maximum length of text to be encoded. Defaults to 150.
+        model_name (str, optional): Type of transformer model. Defaults to 'distilbert-base-uncased'.
+        additional_features (bool, optional): Whether additional features are to be included, currently this is only question type
+            in 'FFT_q_standardised' column. Defaults to False.
+
+    Returns:
+        : tf.data.Dataset if Y is provided, dict otherwise.
+    """
     tokenizer=AutoTokenizer.from_pretrained(model_name)
     data_encoded = dict(tokenizer(list(X['FFT answer']), truncation=True, padding=True,
                              max_length=max_length, return_tensors='tf'))
