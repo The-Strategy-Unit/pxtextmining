@@ -10,7 +10,6 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.preprocessing import OneHotEncoder
 from transformers import AutoTokenizer
 from tensorflow.data import Dataset
-from typing import Un
 
 def bert_data_to_dataset(X, Y = None, max_length=150, model_name='distilbert-base-uncased', additional_features = False):
     """This function converts a dataframe into a format that can be utilised by a transformer model.
