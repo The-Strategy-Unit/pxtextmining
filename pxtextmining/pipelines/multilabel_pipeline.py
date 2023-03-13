@@ -98,7 +98,7 @@ def run_bert_pipeline(additional_features = False):
     model_metrics = get_multilabel_metrics(test_dataset, Y_test, random_state = random_state, labels = major_cats,
                                            model_type = 'bert',
                                            model = model_trained, training_time = training_time,
-                                           additional_features = additional_features)
+                                           additional_features = additional_features, already_encoded = True)
     write_multilabel_models_and_metrics([model_trained],[model_metrics],path='test_multilabel/bert_additional_features')
 
 if __name__ == '__main__':
