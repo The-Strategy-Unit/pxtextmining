@@ -67,6 +67,7 @@ def run_tf_pipeline():
 
 def run_bert_pipeline(additional_features = False):
     random_state = random.randint(1,999)
+    print(f'random_state is: {random_state}')
     df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv', target = 'major_categories')
     major_cats = ['Access to medical care & support',
     'Activities',
