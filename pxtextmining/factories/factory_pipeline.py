@@ -75,8 +75,10 @@ def create_bert_model_additional_features(Y_train, model_name='distilbert-base-u
     bert_output = dropout(bert_model, training=False)
     # Get onehotencoded categories in (3 categories)
     input_cat = Input(shape=(3,), name='input_cat')
+    cat_dense = Dense(units = 10, activation = 'relu')
+    cat_dense = cat_dense(input_cat)
     # concatenate both together
-    concat_layer = concatenate([bert_output, input_cat])
+    concat_layer = concatenate([bert_output,cat_dense])
     output = Dense(units=Y_train.shape[1],
                     kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
                     activation="sigmoid",

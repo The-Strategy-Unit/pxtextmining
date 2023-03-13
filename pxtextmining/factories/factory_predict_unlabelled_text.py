@@ -1,7 +1,7 @@
 import pandas as pd
 import joblib
 from itertools import chain
-from pxtextmining.factories.factory_data_load_and_split import process_data, load_data, remove_punc_and_nums
+from pxtextmining.factories.factory_data_load_and_split import process_data, load_data, remove_punc_and_nums, bert_data_to_dataset
 from tensorflow.keras.models import load_model
 from transformers import DistilBertTokenizer
 from pxtextmining.helpers.metrics import multi_label_accuracy
@@ -38,17 +38,14 @@ def get_labels(row, labels):
             label_list.append(c)
     return label_list
 
-def predict_with_bert(text: pd.Series, model, max_length=150):
-    tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
-    padded_encodings = tokenizer.batch_encode_plus(
-                            list(text),
-                            max_length=max_length,
-                            return_token_type_ids=True,
-                            return_attention_mask=True,
-                            truncation=True,
-                            padding='max_length',
-                            return_tensors='tf')
-    predictions = model.predict(padded_encodings["input_ids"])
+def predict_with_bert(data, model, max_length=150, additional_features = False, already_encoded = False):
+    if already_encoded == False:
+        encoded_dataset = bert_data_to_dataset(data, Y = None,
+                                           max_length = max_length,
+                                           additional_features=additional_features)
+    else:
+        encoded_dataset = data
+    predictions = model.predict(encoded_dataset)
     return predictions
 
 def fix_no_labels(binary_preds, predicted_probs, model_type = 'sklearn'):

@@ -11,7 +11,9 @@ from tensorflow.keras import Sequential, Model
 from pxtextmining.factories.factory_predict_unlabelled_text import turn_probs_into_binary, fix_no_labels, predict_with_bert
 
 
-def get_multilabel_metrics(x_test, y_test, labels, random_state, model_type = None, model = None, training_time = None, x_train = None, y_train = None):
+def get_multilabel_metrics(x_test, y_test, labels, random_state, model_type = None, model = None,
+                           training_time = None, x_train = None, y_train = None, additional_features = False,
+                           already_encoded = False):
     """Function to produce performance metrics for a multilabel machine learning model.
 
     :param pd.DataFrame x_test: Test data (predictor).
@@ -25,7 +27,7 @@ def get_multilabel_metrics(x_test, y_test, labels, random_state, model_type = No
     """
 
     metrics_string = '\n *****************'
-    metrics_string += f'\n Random state seed for train test split is: {random_state}'
+    metrics_string += f'\n Random state seed for train test split is: {random_state} \n\n'
     model_metrics = {}
     if model == None:
         model = DummyClassifier(strategy = 'uniform')
@@ -37,7 +39,7 @@ def get_multilabel_metrics(x_test, y_test, labels, random_state, model_type = No
     # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
     if model_type in ('bert', 'tf'):
         if model_type == 'bert':
-            y_probs = predict_with_bert(x_test, model)
+            y_probs = predict_with_bert(x_test, model, additional_features = additional_features, already_encoded= already_encoded)
         else:
             y_probs = model.predict(x_test)
         binary_preds = turn_probs_into_binary(y_probs)

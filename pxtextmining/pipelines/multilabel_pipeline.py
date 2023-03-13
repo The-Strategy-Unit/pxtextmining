@@ -6,6 +6,7 @@ from pxtextmining.factories.factory_write_results import write_multilabel_models
 from pxtextmining.helpers.text_preprocessor import tf_preprocessing
 from sklearn.model_selection import train_test_split
 import random
+from tensorflow.keras.models import load_model
 
 # Should I put all of this into an 'pipeline' object??
 
@@ -96,7 +97,8 @@ def run_bert_pipeline(additional_features = False):
     model_trained.save('test_multilabel/bert_additional_features')
     model_metrics = get_multilabel_metrics(test_dataset, Y_test, random_state = random_state, labels = major_cats,
                                            model_type = 'bert',
-                                           model = model_trained, training_time = training_time)
+                                           model = model_trained, training_time = training_time,
+                                           additional_features = additional_features)
     write_multilabel_models_and_metrics([model_trained],[model_metrics],path='test_multilabel/bert_additional_features')
 
 if __name__ == '__main__':
