@@ -3,8 +3,8 @@ from imblearn.pipeline import Pipeline
 from sklearn.pipeline import make_pipeline
 # from sklearn.pipeline import Pipeline
 from sklearn.metrics import make_scorer, accuracy_score, balanced_accuracy_score, matthews_corrcoef
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, OneHotEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer, make_column_transformer
+from sklearn.preprocessing import FunctionTransformer, KBinsDiscretizer, OneHotEncoder, StandardScaler, RobustScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectPercentile, chi2, f_classif
 from sklearn.model_selection import RandomizedSearchCV
@@ -33,7 +33,7 @@ from tensorflow.keras import layers, Sequential
 from tensorflow.keras.callbacks import EarlyStopping
 from transformers import TFDistilBertForSequenceClassification
 from tensorflow.keras.initializers import TruncatedNormal
-from tensorflow.keras.layers import Input, Dropout, Dense
+from tensorflow.keras.layers import Input, Dropout, Dense, concatenate
 from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
@@ -55,6 +55,36 @@ def create_bert_model(Y_train, model_name='distilbert-base-uncased', max_length=
                     name='output')(pooled_output)
     model = Model(inputs=inputs, outputs=output, name='BERT_MultiLabel')
     # compile model
+    loss = BinaryCrossentropy()
+    optimizer = Adam(5e-5)
+    metrics = [
+        'CategoricalAccuracy'
+    ]
+    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+    return model
+
+
+def create_bert_model_additional_features(Y_train, model_name='distilbert-base-uncased', max_length=150):
+    config = DistilBertConfig.from_pretrained(model_name)
+    transformer_model = TFDistilBertForSequenceClassification.from_pretrained(model_name, output_hidden_states = False)
+    bert = transformer_model.layers[0]
+    input_ids = Input(shape=(150,), name='input_ids', dtype='int32')
+    input_text = {'input_ids': input_ids}
+    bert_model = bert(input_text)[0][:, 0, :]
+    dropout = Dropout(config.dropout, name='pooled_output')
+    bert_output = dropout(bert_model, training=False)
+    # Get onehotencoded categories in (3 categories)
+    input_cat = Input(shape=(3,), name='input_cat')
+    cat_dense = Dense(units = 10, activation = 'relu')
+    cat_dense = cat_dense(input_cat)
+    # concatenate both together
+    concat_layer = concatenate([bert_output,cat_dense])
+    output = Dense(units=Y_train.shape[1],
+                    kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
+                    activation="sigmoid",
+                    name='output')(concat_layer)
+    model = Model(inputs=[input_ids, input_cat],
+                outputs=output, name='BERT_MultiLabel')
     loss = BinaryCrossentropy()
     optimizer = Adam(5e-5)
     metrics = [
@@ -121,45 +151,64 @@ def create_sklearn_vectorizer(tokenizer = None):
         vectorizer = TfidfVectorizer()
     return vectorizer
 
-def create_sklearn_pipeline(model_type, tokenizer = None):
-    vectorizer = create_sklearn_vectorizer(tokenizer = tokenizer)
-    params = {'tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
+def create_sklearn_pipeline(model_type, tokenizer = None, additional_features = True):
+    if additional_features == True:
+        cat_transformer = OneHotEncoder(handle_unknown='ignore')
+        vectorizer = create_sklearn_vectorizer(tokenizer = None)
+        num_transformer = RobustScaler()
+        preproc = make_column_transformer(
+                (cat_transformer, ['FFT_q_standardised']),
+                (vectorizer, 'FFT answer'),
+                (num_transformer, ['text_length']))
+        params = {'columntransformer__tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
+                    'columntransformer__tfidfvectorizer__max_df': [0.85,0.86,0.87,0.88,0.89,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97],
+                    'columntransformer__tfidfvectorizer__min_df': stats.uniform(0,0.15)
+                    }
+    else:
+        preproc = create_sklearn_vectorizer(tokenizer = tokenizer)
+        params = {'tfidfvectorizer__ngram_range': ((1,1), (1,2), (2,2)),
                 'tfidfvectorizer__max_df': stats.uniform(0.8,1),
                 'tfidfvectorizer__min_df': stats.uniform(0.01,0.1)}
     if model_type == 'mnb':
-        pipe = make_pipeline(vectorizer,
+        pipe = make_pipeline(preproc,
                             MultiOutputClassifier(MultinomialNB())
                             )
         params['multioutputclassifier__estimator__alpha'] = stats.uniform(0.1,1)
     if model_type == 'knn':
-        pipe = make_pipeline(vectorizer,
+        pipe = make_pipeline(preproc,
                             KNeighborsClassifier())
         params['kneighborsclassifier__n_neighbors'] = stats.randint(1,50)
         params['kneighborsclassifier__n_jobs'] = [-1]
     if model_type == 'svm':
-        pipe = make_pipeline(vectorizer,
+        pipe = make_pipeline(preproc,
                             MultiOutputClassifier(SVC(probability = True, class_weight = 'balanced',
                                                       max_iter = 1000, cache_size = 500), n_jobs = -1)
                             )
-        params['multioutputclassifier__estimator__C'] = stats.uniform(0.1, 50)
-        params['multioutputclassifier__estimator__kernel'] = ['linear', 'poly', 'rbf', 'sigmoid']
+        params['multioutputclassifier__estimator__C'] = stats.uniform(0.1, 20)
+        params['multioutputclassifier__estimator__kernel'] = ['linear',
+                                                              'rbf', 'sigmoid']
     if model_type == 'rfc':
-        pipe = make_pipeline(vectorizer,
-                            RandomForestClassifier()
+        pipe = make_pipeline(preproc,
+                            RandomForestClassifier(n_jobs = -1)
                             )
-        params['randomforestclassifier__max_depth'] = [10,20,30,40]
-        params['randomforestclassifier__n_jobs'] = [-1]
+        params['randomforestclassifier__max_depth'] = stats.randint(5,50)
+        params['randomforestclassifier__min_samples_split'] = stats.randint(2,5)
         params['randomforestclassifier__class_weight'] = ['balanced', 'balanced_subsample', None]
+        params['randomforestclassifier__min_samples_leaf'] = stats.randint(1,10)
+        params['randomforestclassifier__max_features'] = ['sqrt', 'log2', None, 0.3]
     return pipe, params
 
-def search_sklearn_pipelines(X_train, Y_train, models_to_try):
+def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_features =True):
     models = []
     training_times = []
     for model_type in models_to_try:
         if model_type not in ['mnb', 'knn', 'svm', 'rfc']:
             raise ValueError('Please choose valid model_type. Options are mnb, knn, svm, or rfc')
         else:
-            pipe, params = create_sklearn_pipeline(model_type)
+            if additional_features == False:
+                pipe, params = create_sklearn_pipeline(model_type, additional_features =False)
+            elif additional_features == True:
+                pipe, params = create_sklearn_pipeline(model_type, additional_features = True)
             start_time = time.time()
             print(f'****SEARCHING {pipe.steps[-1][-1]}')
             search = RandomizedSearchCV(pipe, params,
