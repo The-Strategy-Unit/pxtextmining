@@ -9,12 +9,6 @@ Then you can run this test_api script to check if the API is behaving as it shou
 """
 
 
-def test_sql():
-    ids = ','.join([str(x) for x in range(1,50)])
-    params={"ids": ids, "target": "criticality"}
-    response = requests.get("http://127.0.0.1:8000/predict_from_sql", params=params)
-    print(response.json())
-
 def test_json(json):
     response = requests.post("http://127.0.0.1:8000/test_json", json=json)
     print(response.status_code)
