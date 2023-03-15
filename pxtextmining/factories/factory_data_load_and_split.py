@@ -347,7 +347,7 @@ def vectorise_multilabel_data(text_data):
 
 
 def onehot(df, col_to_onehot):
-    encoder = OneHotEncoder(sparse=False)
+    encoder = OneHotEncoder(sparse_output=False)
     col_encoded = encoder.fit_transform(df[[col_to_onehot]])
     return col_encoded
 
