@@ -1,14 +1,20 @@
-from pxtextmining.factories.factory_data_load_and_split import load_multilabel_data,bert_data_to_dataset, process_and_split_multilabel_data
-from pxtextmining.factories.factory_model_performance import get_multilabel_metrics
-from pxtextmining.factories.factory_pipeline import search_sklearn_pipelines, create_tf_model, create_bert_model, create_bert_model_additional_features
-from pxtextmining.factories.factory_pipeline import calculating_class_weights, train_tf_model, train_bert_model
-from pxtextmining.factories.factory_write_results import write_multilabel_models_and_metrics
-from pxtextmining.helpers.text_preprocessor import tf_preprocessing
-from sklearn.model_selection import train_test_split
 import random
-from tensorflow.keras.models import load_model
 
-# Should I put all of this into an 'pipeline' object??
+from sklearn.model_selection import train_test_split
+
+from pxtextmining.factories.factory_data_load_and_split import (
+    bert_data_to_dataset, load_multilabel_data,
+    process_and_split_multilabel_data)
+from pxtextmining.factories.factory_model_performance import \
+    get_multilabel_metrics
+from pxtextmining.factories.factory_pipeline import (
+    calculating_class_weights, create_bert_model,
+    create_bert_model_additional_features, create_tf_model,
+    search_sklearn_pipelines, train_bert_model, train_tf_model)
+from pxtextmining.factories.factory_write_results import \
+    write_multilabel_models_and_metrics
+from pxtextmining.helpers.text_preprocessor import tf_preprocessing
+
 
 def run_sklearn_pipeline():
     random_state = random.randint(1,999)
