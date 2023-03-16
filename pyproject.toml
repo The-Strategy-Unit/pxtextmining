@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pxtextmining"
-version = "0.4.2"
+version = "0.5.0"
 description = "Text classification of patient experience feedback."
 authors = ['CDU Data Science <cdudatascience@nottshc.nhs.uk>',
 'Andreas D Soteriades <andreas.soteriades@nottshc.nhs.uk>',
@@ -11,7 +11,7 @@ repository = "https://github.com/CDU-data-science-team/pxtextmining"
 documentation = "https://cdu-data-science-team.github.io/pxtextmining"
 
 [tool.poetry.dependencies]
-python = ">=3.8, <3.12"
+python = ">=3.8, <3.11"
 spacy = "^3.4.4"
 joblib = "^1.2.0"
 matplotlib = "^3.3.2"
