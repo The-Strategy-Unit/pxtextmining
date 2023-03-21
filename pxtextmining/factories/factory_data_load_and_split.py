@@ -337,6 +337,15 @@ def clean_empty_features(text_dataframe):
 
 
 def onehot(df, col_to_onehot):
+    """Function to one-hot encode specified columns in a dataframe.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing data to be one-hot encoded
+        col_to_onehot (list): List of column names to be one-hot encoded
+
+    Returns:
+        (pd.DataFrame): One-hot encoded data
+    """
     encoder = OneHotEncoder(sparse_output=False)
     col_encoded = encoder.fit_transform(df[[col_to_onehot]])
     return col_encoded
@@ -345,6 +354,21 @@ def onehot(df, col_to_onehot):
 def process_multilabel_data(
     df, target, preprocess_text=True, additional_features=False
 ):
+    """Utilises remove_punc_and_nums and clean_empty_features functions to clean the text data and
+    drop any rows that are only whitespace after cleaning. Also fills one-hot encoded columns with
+    0s rather than NaNs so that Y target is not sparse.
+
+    Args:
+        df (pd.DataFrame): DataFrame to be cleaned
+        target (list): List of column names of targets
+        preprocess_text (bool, optional): Whether or not text is to be processed with remove_punc_and_nums. If utilising
+            an sklearn model then should be True. If utilising transformer-based BERT model then should be set to False.
+            Defaults to True.
+        additional_features (bool, optional): Whether or not 'question type' feature should be included. Defaults to False.
+
+    Returns:
+        tuple containing two pd.DataFrames. The first contains the X features (text, with or without question type depending on additional_features), the second contains the one-hot encoded Y targets
+    """
     Y = df[target].fillna(value=0)
     if preprocess_text == True:
             X = df["FFT answer"].astype(str).apply(remove_punc_and_nums)
@@ -370,6 +394,18 @@ def process_and_split_multilabel_data(
     additional_features=False,
     random_state=42,
 ):
+    """_summary_
+
+    Args:
+        df (_type_): _description_
+        target (_type_): _description_
+        preprocess_text (bool, optional): _description_. Defaults to True.
+        additional_features (bool, optional): _description_. Defaults to False.
+        random_state (int, optional): _description_. Defaults to 42.
+
+    Returns:
+        _type_: _description_
+    """
     X, Y = process_multilabel_data(
         df,
         target,
@@ -383,14 +419,13 @@ def process_and_split_multilabel_data(
 
 
 def remove_punc_and_nums(text):
-    """
-    This function removes excess punctuation and numbers from the text. Exclamation marks and apostrophes have been
-    left in, as have words in allcaps, as these may denote strong sentiment. Returns a string.
+    """_summary_
 
-    :param str text: Text to be cleaned
+    Args:
+        text (_type_): _description_
 
-    :return: the cleaned text as a str
-    :rtype: str
+    Returns:
+        _type_: _description_
     """
     text = re.sub("\\n", " ", text)
     text = re.sub("\\r", " ", text)
