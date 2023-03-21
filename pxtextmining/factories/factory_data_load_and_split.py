@@ -61,7 +61,7 @@ def load_multilabel_data(filename, target="major_categories"):
         target (str, optional): Options are 'minor_categories', 'major_categories', or 'sentiment'. Defaults to 'major_categories'.
 
     Returns:
-        pd.DataFrame: DataFrame containing the columns 'FFT categorical answer', 'FFT question', and 'FFT answer'. Also conducts some
+        (pd.DataFrame): DataFrame containing the columns 'FFT categorical answer', 'FFT question', and 'FFT answer'. Also conducts some
     """
     print("Loading multilabel dataset...")
     raw_data = pd.read_csv(
@@ -323,18 +323,17 @@ def load_multilabel_data(filename, target="major_categories"):
 
 
 def clean_empty_features(text_dataframe):
+    """Replaces all empty whitespaces in a dataframe with np.NaN.
+
+    Args:
+        text_dataframe (pd.DataFrame): DataFrame containing text data with labels.
+
+    Returns:
+        (pd.DataFrame): DataFrame with all empty whitespaces replaced with np.NaN
+    """
     clean_dataframe = text_dataframe.replace(r"^\s*$", np.nan, regex=True)
     clean_dataframe = clean_dataframe.dropna()
     return clean_dataframe
-
-
-def vectorise_multilabel_data(text_data):
-    # can try different types of vectorizer here
-    count_vect = CountVectorizer()
-    X_counts = count_vect.fit_transform(text_data)
-    tfidf_transformer = TfidfTransformer()
-    X_tfidf = tfidf_transformer.fit_transform(X_counts)
-    return X_tfidf
 
 
 def onehot(df, col_to_onehot):
@@ -344,17 +343,14 @@ def onehot(df, col_to_onehot):
 
 
 def process_multilabel_data(
-    df, target, vectorise=False, preprocess_text=True, additional_features=False
+    df, target, preprocess_text=True, additional_features=False
 ):
     Y = df[target].fillna(value=0)
-    if vectorise == True:
-        X = vectorise_multilabel_data(df["FFT answer"])
-    else:
-        if preprocess_text == True:
+    if preprocess_text == True:
             X = df["FFT answer"].astype(str).apply(remove_punc_and_nums)
             X = clean_empty_features(X)
             print(f"After preprocessing, shape of X is {X.shape}")
-        if preprocess_text == False:
+    if preprocess_text == False:
             X = df["FFT answer"].astype(str)
     if additional_features == True:
         X = pd.merge(
@@ -370,7 +366,6 @@ def process_multilabel_data(
 def process_and_split_multilabel_data(
     df,
     target,
-    vectorise=False,
     preprocess_text=True,
     additional_features=False,
     random_state=42,
@@ -378,7 +373,6 @@ def process_and_split_multilabel_data(
     X, Y = process_multilabel_data(
         df,
         target,
-        vectorise=vectorise,
         preprocess_text=preprocess_text,
         additional_features=additional_features,
     )
