@@ -31,7 +31,7 @@ def bert_data_to_dataset(
             in 'FFT_q_standardised' column. Defaults to False.
 
     Returns:
-        : tf.data.Dataset if Y is provided, dict otherwise.
+        tf.data.Dataset if Y is provided, dict otherwise.
     """
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     data_encoded = dict(
@@ -51,26 +51,17 @@ def bert_data_to_dataset(
     return data_encoded
 
 
-def get_multilabel_class_counts(df):
-    class_counts = {}
-    for i in df.columns:
-        class_counts[i] = df[i].sum()
-    return class_counts
-
-
 def load_multilabel_data(filename, target="major_categories"):
-    """_summary_
+    """Function for loading the multilabel dataset, converting it from csv to pd.DataFrame. Conducts some basic preprocessing,
+    including standardisation of the question types, calculation of text length, and drops rows with no labels. Depending on
+    selected `target`, returned dataframe contains different columns.
 
     Args:
-        filename (_type_): _description_
-        target (str, optional): Options are 'minor_categories', 'major_categories', or 'sentiment. Defaults to 'minor_categories'.
-
-    Raises:
-        for: _description_
-        for: _description_
+        filename (str): Path to file containing multilabel data, in csv format
+        target (str, optional): Options are 'minor_categories', 'major_categories', or 'sentiment'. Defaults to 'major_categories'.
 
     Returns:
-        _type_: _description_
+        pd.DataFrame: DataFrame containing the columns 'FFT categorical answer', 'FFT question', and 'FFT answer'. Also conducts some
     """
     print("Loading multilabel dataset...")
     raw_data = pd.read_csv(
@@ -431,29 +422,3 @@ def remove_punc_and_nums(text):
     cleaned_sentence = " ".join(word for word in text_lower)
     cleaned_sentence = cleaned_sentence.strip()
     return cleaned_sentence
-
-
-if __name__ == "__main__":
-    major_cats = [
-        "Access to medical care & support",
-        "Activities",
-        "Additional",
-        "Category TBC",
-        "Communication & involvement",
-        "Environment & equipment",
-        "Food & diet",
-        "General",
-        "Medication",
-        "Mental Health specifics",
-        "Patient journey & service coordination",
-        "Service location, travel & transport",
-        "Staff",
-    ]
-    df = load_multilabel_data(
-        filename="datasets/hidden/multilabeldata_2.csv", target="major_categories"
-    )
-    print(df.head())
-    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(
-        df, target=major_cats, additional_features=True
-    )
-    print(X_train.head())
