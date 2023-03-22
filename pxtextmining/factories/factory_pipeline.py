@@ -142,7 +142,7 @@ def train_bert_model(
 
 
 def calculating_class_weights(y_true):
-    """Function for calculating class weights for target classes.
+    """Function for calculating class weights for target classes, to be used when fitting a model.
 
     Args:
         y_true (pd.DataFrame): Dataset containing onehot encoded multilabel targets
@@ -162,6 +162,15 @@ def calculating_class_weights(y_true):
 
 
 def create_tf_model(vocab_size=None, embedding_size=100):
+    """Creates LSTM multilabel classification model using tensorflow keras, with a layer of outputs matching what is currently the number of major_categories.
+
+    Args:
+        vocab_size (int, optional): Number of different words in vocabulary, as derived from tokenization process. Defaults to None.
+        embedding_size (int, optional): Size of embedding dimension to be output by embedding layer. Defaults to 100.
+
+    Returns:
+        (tf.keras.models.Model): Compiled tensorflow keras LSTM model.
+    """
     model = Sequential()
     model.add(
         layers.Embedding(
@@ -180,6 +189,17 @@ def create_tf_model(vocab_size=None, embedding_size=100):
 
 
 def train_tf_model(X_train, Y_train, model, class_weights_dict=None):
+    """Trains tensorflow keras model. Some overlap with train_bert_model, could probably be merged.
+
+    Args:
+        X_train (pd.DataFrame): DataFrame containing tokenized text features.
+        Y_train (pd.DataFrame): DataFrame containing one-hot encoded multilabel targets.
+        model (tf.keras.models.Model): Compiled tensorflow keras model.
+        class_weights_dict (dict, optional): Dict containing class weights for target classes. Defaults to None.
+
+    Returns:
+        (tuple): Tuple containing trained model and the training time as a str.
+    """
     es = EarlyStopping(patience=3, restore_best_weights=True)
     start_time = time.time()
     model.fit(
@@ -198,6 +218,14 @@ def train_tf_model(X_train, Y_train, model, class_weights_dict=None):
 
 
 def create_sklearn_vectorizer(tokenizer=None):
+    """Creates vectorizer for use with sklearn models, either using sklearn tokenizer or the spacy tokenizer
+
+    Args:
+        tokenizer (str, optional): Enables selection of spacy tokenizer. Defaults to None, which is sklearn default tokenizer.
+
+    Returns:
+        (sklearn.feature_extraction.text.TfidfVectorizer): sklearn TfidfVectorizer with either spacy or sklearn tokenizer
+    """
     if tokenizer == "spacy":
         vectorizer = TfidfVectorizer(tokenizer=spacy_tokenizer)
     else:
@@ -206,6 +234,16 @@ def create_sklearn_vectorizer(tokenizer=None):
 
 
 def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True):
+    """Creates sklearn pipeline and hyperparameter grid for searching, depending on model_type selected.
+
+    Args:
+        model_type (str): Allows for selection of different estimators. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).
+        tokenizer (str, optional): Allows for selection of "spacy" tokenizer. Defaults to None, which is the default sklearn tokenizer
+        additional_features (bool, optional): Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.
+
+    Returns:
+        (tuple): Tuple containing the `sklearn.pipeline.Pipeline` with the selected estimator, and a `dict` containing the hyperparameters to be tuned.
+    """
     if additional_features == True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
         vectorizer = create_sklearn_vectorizer(tokenizer=None)
@@ -282,6 +320,20 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
 
 
 def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_features=True):
+    """Iterates through selected estimators, instantiating the relevant sklearn pipelines and searching for the optimum hyperparameters.
+
+    Args:
+        X_train (pd.DataFrame): DataFrame containing the features to be fed into the estimator
+        Y_train (pd.DataFrame): DataFrame containing the targets
+        models_to_try (list): List containing the estimator types to be tried. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).
+        additional_features (bool, optional): Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.
+
+    Raises:
+        ValueError: If model_type includes value other than permitted values "mnb", "knn", "svm", or "rfc"
+
+    Returns:
+        (tuple): Tuple containing: a `list` containing the refitted pipelines with the best hyperparameters identified in the search, and a `list` containing the training times for each of the pipelines.
+    """
     models = []
     training_times = []
     for model_type in models_to_try:
@@ -308,19 +360,3 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_feature
             training_time = round(time.time() - start_time, 0)
             training_times.append(str(datetime.timedelta(seconds=training_time)))
     return models, training_times
-
-
-def train_sklearn_multilabel_models(X_train, Y_train):
-    # My idea is to create separate pipelines for each model. Gridsearch each one separately
-    # Currently just vanilla model, not pipeline. Work in progress!
-    # Need to have a think about which models and why... find some literature to support decisionmaking
-    nb_clf = MultinomialNB()
-    sgd = SGDClassifier(loss="log", penalty="l2", alpha=1e-3, max_iter=1000, tol=None)
-    lr = LogisticRegression()
-    models = []
-    for classifier in [nb_clf, sgd, lr]:
-        clf = MultiOutputClassifier(classifier)
-        print(f"Training {clf}")
-        clf.fit(X_train, Y_train)
-        models.append(clf)
-    return models
