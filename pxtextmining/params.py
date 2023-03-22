@@ -13,3 +13,5 @@ major_cats = [
         "Service location, travel & transport",
         "Staff",
     ]
+
+model_name = "distilbert-base-uncased"

@@ -25,9 +25,22 @@ from tensorflow.keras.optimizers import Adam
 from transformers import DistilBertConfig, TFDistilBertForSequenceClassification
 
 from pxtextmining.helpers.tokenization import spacy_tokenizer
+from pxtextmining.params import model_name
 
+model_name = model_name
 
-def create_bert_model(Y_train, model_name="distilbert-base-uncased", max_length=150):
+def create_bert_model(Y_train, model_name=model_name, max_length=150):
+    """Creates Transformer based model trained on text data, with last layer added on
+    for multilabel classification task. Number of neurons in last layer depends on number of labels in Y target.
+
+    Args:
+        Y_train (pd.DataFrame): DataFrame containing one-hot encoded targets
+        model_name (str, optional): Type of pretrained transformer model to load. Defaults to `model_name` set in `pxtextmining.params`
+        max_length (int, optional): Maximum length of text to be passed through transformer model. Defaults to 150.
+
+    Returns:
+        (tensorflow.keras.models.Model): Compiled Tensforflow Keras model with pretrained transformer layers and last layer suited for multilabel classification task
+    """
     config = DistilBertConfig.from_pretrained(model_name)
     transformer_model = TFDistilBertForSequenceClassification.from_pretrained(
         model_name, output_hidden_states=False
@@ -54,14 +67,26 @@ def create_bert_model(Y_train, model_name="distilbert-base-uncased", max_length=
 
 
 def create_bert_model_additional_features(
-    Y_train, model_name="distilbert-base-uncased", max_length=150
+    Y_train, model_name=model_name, max_length=150
 ):
+    """Creates Transformer based model trained on text data, concatenated with an additional Dense layer taking additional inputs, with last layer added on
+    for multilabel classification task. Number of neurons in last layer depends on number of labels in Y target.
+
+    Args:
+        Y_train (pd.DataFrame): DataFrame containing one-hot encoded targets
+        model_name (str, optional): Type of pretrained transformer model to load. Defaults to `model_name` set in `pxtextmining.params`
+        max_length (int, optional): Maximum length of text to be passed through transformer model. Defaults to 150.
+
+    Returns:
+        (tensorflow.keras.models.Model): Compiled Tensforflow Keras model with pretrained transformer layers, three question_type inputs passed through a Dense layer, and last layer suited for multilabel classification task
+
+    """
     config = DistilBertConfig.from_pretrained(model_name)
     transformer_model = TFDistilBertForSequenceClassification.from_pretrained(
         model_name, output_hidden_states=False
     )
     bert = transformer_model.layers[0]
-    input_ids = Input(shape=(150,), name="input_ids", dtype="int32")
+    input_ids = Input(shape=(max_length,), name="input_ids", dtype="int32")
     input_text = {"input_ids": input_ids}
     bert_model = bert(input_text)[0][:, 0, :]
     dropout = Dropout(config.dropout, name="pooled_output")
@@ -89,6 +114,18 @@ def create_bert_model_additional_features(
 def train_bert_model(
     train_dataset, val_dataset, model, class_weights_dict=None, epochs=30
 ):
+    """_summary_
+
+    Args:
+        train_dataset (_type_): _description_
+        val_dataset (_type_): _description_
+        model (_type_): _description_
+        class_weights_dict (_type_, optional): _description_. Defaults to None.
+        epochs (int, optional): _description_. Defaults to 30.
+
+    Returns:
+        _type_: _description_
+    """
     es = EarlyStopping(patience=2, restore_best_weights=True)
     start_time = time.time()
     model.fit(
