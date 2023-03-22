@@ -114,17 +114,17 @@ def create_bert_model_additional_features(
 def train_bert_model(
     train_dataset, val_dataset, model, class_weights_dict=None, epochs=30
 ):
-    """_summary_
+    """Trains compiled transformer model with early stopping.
 
     Args:
-        train_dataset (_type_): _description_
-        val_dataset (_type_): _description_
-        model (_type_): _description_
-        class_weights_dict (_type_, optional): _description_. Defaults to None.
-        epochs (int, optional): _description_. Defaults to 30.
+        train_dataset (tf.data.Dataset): Train dataset, tokenized with huggingface tokenizer, in tf.data.Dataset format
+        val_dataset (tf.data.Dataset): Validation dataset, tokenized with huggingface tokenizer, in tf.data.Dataset format
+        model (tf.keras.models.Model): Compiled transformer model with additional layers for specific task.
+        class_weights_dict (dict, optional): Dict containing class weights for each target class. Defaults to None.
+        epochs (int, optional): Number of epochs to train model for. Defaults to 30.
 
     Returns:
-        _type_: _description_
+        (tuple): Tuple containing trained model and the training time as a str.
     """
     es = EarlyStopping(patience=2, restore_best_weights=True)
     start_time = time.time()
@@ -142,6 +142,14 @@ def train_bert_model(
 
 
 def calculating_class_weights(y_true):
+    """Function for calculating class weights for target classes.
+
+    Args:
+        y_true (pd.DataFrame): Dataset containing onehot encoded multilabel targets
+
+    Returns:
+        (dict): Dict containing calculated class weights for each target label.
+    """
     y_np = np.array(y_true)
     number_dim = np.shape(y_np)[1]
     weights = np.empty([number_dim, 2])
