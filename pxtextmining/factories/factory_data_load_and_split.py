@@ -359,7 +359,7 @@ def process_multilabel_data(
     0s rather than NaNs so that Y target is not sparse.
 
     Args:
-        df (pd.DataFrame): DataFrame to be cleaned
+        df (pd.DataFrame): DataFrame containing text data, any additional features, and targets
         target (list): List of column names of targets
         preprocess_text (bool, optional): Whether or not text is to be processed with remove_punc_and_nums. If utilising
             an sklearn model then should be True. If utilising transformer-based BERT model then should be set to False.
@@ -367,7 +367,7 @@ def process_multilabel_data(
         additional_features (bool, optional): Whether or not 'question type' feature should be included. Defaults to False.
 
     Returns:
-        tuple containing two pd.DataFrames. The first contains the X features (text, with or without question type depending on additional_features), the second contains the one-hot encoded Y targets
+        (tuple): Tuple containing two pd.DataFrames. The first contains the X features (text, with or without question type depending on additional_features), the second contains the one-hot encoded Y targets
     """
     Y = df[target].fillna(value=0)
     if preprocess_text == True:
@@ -394,17 +394,20 @@ def process_and_split_multilabel_data(
     additional_features=False,
     random_state=42,
 ):
-    """_summary_
+    """Combines the process_multilabel_data and train_test_split functions into one function
 
     Args:
-        df (_type_): _description_
-        target (_type_): _description_
-        preprocess_text (bool, optional): _description_. Defaults to True.
-        additional_features (bool, optional): _description_. Defaults to False.
-        random_state (int, optional): _description_. Defaults to 42.
+        df (pd.DataFrame): DataFrame containing text data, any additional features, and targets
+        target (list): List of column names of targets
+        preprocess_text (bool, optional): Whether or not text is to be processed with remove_punc_and_nums. If utilising
+            an sklearn model then should be True. If utilising transformer-based BERT model then should be set to False.
+            Defaults to True.
+        additional_features (bool, optional): Whether or not 'question type' feature should be included. Defaults to False.
+        random_state (int, optional): Controls the shuffling applied to the data before applying the split. Enables
+        reproducible output across multiple function calls. Defaults to 42.
 
     Returns:
-        _type_: _description_
+        (list): List containing train-test split of preprocessed X features and Y targets.
     """
     X, Y = process_multilabel_data(
         df,
@@ -419,34 +422,27 @@ def process_and_split_multilabel_data(
 
 
 def remove_punc_and_nums(text):
-    """_summary_
+    """Function to conduct basic preprocessing of text, removing punctuation and numbers, converting
+    all text to lowercase, removing trailing whitespace.
 
     Args:
-        text (_type_): _description_
+        text (str): Str containing the text to be cleaned
 
     Returns:
-        _type_: _description_
+        (str): Cleaned text, all lowercased with no punctuation, numbers or trailing whitespace.
     """
     text = re.sub("\\n", " ", text)
     text = re.sub("\\r", " ", text)
     text = "".join(char for char in text if not char.isdigit())
     punc_list = string.punctuation
-    # punc_list = punc_list.replace('!', '')
-    # punc_list = punc_list.replace("'", '')
     for punctuation in punc_list:
-        if punctuation not in [",", ".", "-"]:
-            text = text.replace(punctuation, "")
-        else:
+        if punctuation in [",", ".", "-"]:
             text = text.replace(punctuation, " ")
-    # text = decode_emojis.decode_emojis(text)
+        else:
+            text = text.replace(punctuation, "")
     text_split = [word for word in text.split(" ") if word != ""]
     text_lower = []
     for word in text_split:
-        # does it make a difference if we keep allcaps?
-        # if word.isupper():
-        #     text_lower.append(word)
-        # else:
-        #     text_lower.append(word.lower())
         text_lower.append(word.lower())
     cleaned_sentence = " ".join(word for word in text_lower)
     cleaned_sentence = cleaned_sentence.strip()
