@@ -58,17 +58,18 @@ def get_labels(row, labels):
 def predict_with_bert(
     data, model, max_length=150, additional_features=False, already_encoded=False
 ):
-    """_summary_
+    """Makes predictions using a transformer-based model. Can encode the data if not already encoded.
 
     Args:
-        data (_type_): _description_
-        model (_type_): _description_
-        max_length (int, optional): _description_. Defaults to 150.
-        additional_features (bool, optional): _description_. Defaults to False.
-        already_encoded (bool, optional): _description_. Defaults to False.
+        data (pd.DataFrame): DataFrame containing features to be passed through model.
+        model (tf.keras.models.Model): Pretrained transformer based model in tensorflow keras.
+        max_length (int, optional): If encoding is required, maximum length of input text. Defaults to 150.
+        additional_features (bool, optional): Whether or not additional features (e.g. question type) are
+        included. Defaults to False.
+        already_encoded (bool, optional): Whether or not the input data needs to be encoded. Defaults to False.
 
     Returns:
-        _type_: _description_
+        (np.array): Predicted probabilities for each label.
     """
     if already_encoded == False:
         encoded_dataset = bert_data_to_dataset(
@@ -81,6 +82,19 @@ def predict_with_bert(
 
 
 def fix_no_labels(binary_preds, predicted_probs, model_type="sklearn"):
+    """Function that takes in the binary predicted labels for a particular input, and the predicted probabilities for
+    all the labels classes. Where no labels have been predicted for a particular input, takes the label with the highest predicted probability
+    as the predicted label.
+
+    Args:
+        binary_preds (np.array): Predicted labels, in a one-hot encoded binary format. Some rows may not have any predicted labels.
+        predicted_probs (np.array): Predicted probability of each label.
+        model_type (str, optional): Whether the model is a sklearn or tensorflow keras model; options are
+        'tf', 'bert', or 'sklearn. Defaults to "sklearn".
+
+    Returns:
+        (np.array): Predicted labels in one-hot encoded format, with all rows containing at least one predicted label.
+    """
     for i in range(len(binary_preds)):
         if binary_preds[i].sum() == 0:
             if model_type in ("tf", "bert"):
@@ -93,5 +107,17 @@ def fix_no_labels(binary_preds, predicted_probs, model_type="sklearn"):
 
 
 def turn_probs_into_binary(predicted_probs):
+    """Takes predicted probabilities (floats between 0 and 1) and converts these to binary outcomes.
+    Scope to finetune this in later iterations of the project depending on the label and whether recall/precision
+    is prioritised for that label.
+
+    Args:
+        predicted_probs (np.array): Array containing the predicted probabilities for each class. Shape of array
+        corresponds to the number of inputs and the number of target classes; if shape is (100, 13) then
+        there are 100 datapoints, and 13 target classes. Predicted probabilities should range from 0 to 1.
+
+    Returns:
+        (np.array): Array containing binary outcomes for each label. Shape should remain the same as input, but values will be either 0 or 1.
+    """
     preds = np.where(predicted_probs > 0.5, 1, 0)
     return preds
