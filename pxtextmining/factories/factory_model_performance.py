@@ -3,7 +3,6 @@ import pandas as pd
 from sklearn import metrics
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import confusion_matrix
-from tensorflow.keras import Model, Sequential
 
 from pxtextmining.factories.factory_predict_unlabelled_text import (
     fix_no_labels,
@@ -82,7 +81,6 @@ def get_multilabel_metrics(
         binary_preds = turn_probs_into_binary(y_probs)
         y_pred = fix_no_labels(binary_preds, y_probs, model_type="tf")
     elif model_type == "sklearn":
-        y_probs = model.predict(x_test)
         binary_preds = model.predict(x_test)
         y_probs = np.array(model.predict_proba(x_test))
         y_pred = fix_no_labels(binary_preds, y_probs, model_type="sklearn")
@@ -104,6 +102,7 @@ def get_multilabel_metrics(
     metrics_string += f"\n\nTraining time: {training_time}\n"
     for k, v in model_metrics.items():
         metrics_string += f"\n{k}: {v}"
+    # Classification report
     metrics_string += "\n\n Classification report:\n"
     c_report_str = metrics.classification_report(
         y_test, y_pred, target_names=labels, zero_division=0
