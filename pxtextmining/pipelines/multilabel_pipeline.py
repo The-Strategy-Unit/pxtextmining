@@ -16,19 +16,27 @@ from pxtextmining.factories.factory_write_results import \
 from pxtextmining.helpers.text_preprocessor import tf_preprocessing
 from pxtextmining.params import major_cats
 
-def run_sklearn_pipeline(additional_features = False):
+def run_sklearn_pipeline(additional_features = False, target= major_cats, models_to_try = ["mnb", "knn", "svm", "rfc"], path = 'test_multilabel'):
+    """_summary_
+
+    Args:
+        additional_features (bool, optional): _description_. Defaults to False.
+        target (_type_, optional): _description_. Defaults to major_cats.
+        models_to_try (list, optional): _description_. Defaults to ["mnb", "knn", "svm", "rfc"].
+        path (str, optional): _description_. Defaults to 'test_multilabel'.
+    """
     random_state = random.randint(1,999)
     df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv', target = 'major_categories')
-    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = major_cats,
+    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = target,
                                                                          additional_features =additional_features, random_state = random_state)
-    models, training_times = search_sklearn_pipelines(X_train, Y_train, models_to_try = ['knn', 'rfc'], additional_features = True)
+    models, training_times = search_sklearn_pipelines(X_train, Y_train, models_to_try = models_to_try, additional_features = additional_features)
     model_metrics = []
     for i in range(len(models)):
         m = models[i]
         t = training_times[i]
         model_metrics.append(get_multilabel_metrics(X_test, Y_test, random_state = random_state,
-                                                    labels = major_cats, model_type = 'sklearn', model = m, training_time = t))
-    write_multilabel_models_and_metrics(models,model_metrics,path='test_multilabel/new_write_model')
+                                                    labels = target, model_type = 'sklearn', model = m, training_time = t))
+    write_multilabel_models_and_metrics(models,model_metrics,path=path)
 
 def run_tf_pipeline():
     random_state = random.randint(1,999)
