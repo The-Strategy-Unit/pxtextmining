@@ -14,27 +14,14 @@ from pxtextmining.factories.factory_pipeline import (
 from pxtextmining.factories.factory_write_results import \
     write_multilabel_models_and_metrics
 from pxtextmining.helpers.text_preprocessor import tf_preprocessing
+from pxtextmining.params import major_cats
 
-
-def run_sklearn_pipeline():
+def run_sklearn_pipeline(additional_features = False):
     random_state = random.randint(1,999)
     df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv', target = 'major_categories')
-    major_cats = ['Access to medical care & support',
-    'Activities',
-    'Additional',
-    'Category TBC',
-    'Communication & involvement',
-    'Environment & equipment',
-    'Food & diet',
-    'General',
-    'Medication',
-    'Mental Health specifics',
-    'Patient journey & service coordination',
-    'Service location, travel & transport',
-    'Staff']
     X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = major_cats,
-                                                                         additional_features =True, random_state = random_state)
-    models, training_times = search_sklearn_pipelines(X_train, Y_train, models_to_try = ['knn', 'svm', 'rfc'], additional_features = True)
+                                                                         additional_features =additional_features, random_state = random_state)
+    models, training_times = search_sklearn_pipelines(X_train, Y_train, models_to_try = ['knn', 'rfc'], additional_features = True)
     model_metrics = []
     for i in range(len(models)):
         m = models[i]
@@ -42,24 +29,11 @@ def run_sklearn_pipeline():
         model_metrics.append(get_multilabel_metrics(X_test, Y_test, random_state = random_state,
                                                     labels = major_cats, model_type = 'sklearn', model = m, training_time = t))
     # model_metrics.append(get_multilabel_metrics(X_test, Y_test, labels = major_cats, x_train = X_train, y_train = Y_train, model = None))
-    write_multilabel_models_and_metrics(models,model_metrics,path='test_multilabel/additional_features')
+    write_multilabel_models_and_metrics(models,model_metrics,path='test_multilabel/new_write_model')
 
 def run_tf_pipeline():
     random_state = random.randint(1,999)
     df = load_multilabel_data(filename = 'datasets/multilabeldata_2.csv', target = 'major_categories')
-    major_cats = ['Access to medical care & support',
-    'Activities',
-    'Additional',
-    'Category TBC',
-    'Communication & involvement',
-    'Environment & equipment',
-    'Food & diet',
-    'General',
-    'Medication',
-    'Mental Health specifics',
-    'Patient journey & service coordination',
-    'Service location, travel & transport',
-    'Staff']
     X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = major_cats, random_state = random_state)
     X_train_pad, vocab_size = tf_preprocessing(X_train)
     X_test_pad, _ = tf_preprocessing(X_test)
@@ -75,19 +49,6 @@ def run_bert_pipeline(additional_features = False):
     random_state = random.randint(1,999)
     print(f'random_state is: {random_state}')
     df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv', target = 'major_categories')
-    major_cats = ['Access to medical care & support',
-    'Activities',
-    'Additional',
-    'Category TBC',
-    'Communication & involvement',
-    'Environment & equipment',
-    'Food & diet',
-    'General',
-    'Medication',
-    'Mental Health specifics',
-    'Patient journey & service coordination',
-    'Service location, travel & transport',
-    'Staff']
     X_train_val, X_test, Y_train_val, Y_test = process_and_split_multilabel_data(df, target = major_cats, preprocess_text = False,
                                                                                  additional_features = additional_features, random_state = random_state)
     X_train, X_val, Y_train, Y_val = train_test_split(X_train_val, Y_train_val, test_size=0.2, random_state = random_state)
@@ -109,4 +70,4 @@ def run_bert_pipeline(additional_features = False):
     write_multilabel_models_and_metrics([model_trained],[model_metrics],path='test_multilabel/bert_additional_features')
 
 if __name__ == '__main__':
-    run_bert_pipeline(additional_features = True)
+    run_sklearn_pipeline(additional_features = True)
