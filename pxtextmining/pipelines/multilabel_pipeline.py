@@ -28,7 +28,6 @@ def run_sklearn_pipeline(additional_features = False):
         t = training_times[i]
         model_metrics.append(get_multilabel_metrics(X_test, Y_test, random_state = random_state,
                                                     labels = major_cats, model_type = 'sklearn', model = m, training_time = t))
-    # model_metrics.append(get_multilabel_metrics(X_test, Y_test, labels = major_cats, x_train = X_train, y_train = Y_train, model = None))
     write_multilabel_models_and_metrics(models,model_metrics,path='test_multilabel/new_write_model')
 
 def run_tf_pipeline():
