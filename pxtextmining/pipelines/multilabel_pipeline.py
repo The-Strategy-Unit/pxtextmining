@@ -17,13 +17,18 @@ from pxtextmining.helpers.text_preprocessor import tf_preprocessing
 from pxtextmining.params import major_cats
 
 def run_sklearn_pipeline(additional_features = False, target= major_cats, models_to_try = ["mnb", "knn", "svm", "rfc"], path = 'test_multilabel'):
-    """_summary_
+    """Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
+    Creates sklearn pipelines and hyperparameters to search, using specified estimators.
+    For each estimator type selected, performs a randomized search across the hyperparameters to identify the parameters providing the best
+    results on the holdout data within the randomized search.
+    Evaluates the performance of the refitted estimator with the best hyperparameters on the test set, and saves the model
+    and the performance metrics to a specified folder.
 
     Args:
-        additional_features (bool, optional): _description_. Defaults to False.
-        target (_type_, optional): _description_. Defaults to major_cats.
-        models_to_try (list, optional): _description_. Defaults to ["mnb", "knn", "svm", "rfc"].
-        path (str, optional): _description_. Defaults to 'test_multilabel'.
+        additional_features (bool, optional): Whether or not additional features (question type and text length) are used. Defaults to False.
+        target (list, optional): The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.
+        models_to_try (list, optional): List of the estimators to try. Defaults to ["mnb", "knn", "svm", "rfc"]. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).
+        path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
     """
     random_state = random.randint(1,999)
     df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv', target = 'major_categories')
