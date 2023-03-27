@@ -30,7 +30,7 @@ def bert_data_to_dataset(
             in 'FFT_q_standardised' column. Defaults to False.
 
     Returns:
-        tf.data.Dataset if Y is provided, dict otherwise.
+        (tf.data.Dataset OR dict): `tf.data.Dataset` if Y is provided, `dict` otherwise.
     """
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     data_encoded = dict(
@@ -402,8 +402,7 @@ def process_and_split_multilabel_data(
             an sklearn model then should be True. If utilising transformer-based BERT model then should be set to False.
             Defaults to True.
         additional_features (bool, optional): Whether or not 'question type' feature should be included. Defaults to False.
-        random_state (int, optional): Controls the shuffling applied to the data before applying the split. Enables
-        reproducible output across multiple function calls. Defaults to 42.
+        random_state (int, optional): Controls the shuffling applied to the data before applying the split. Enables reproducible output across multiple function calls. Defaults to 42.
 
     Returns:
         (list): List containing train-test split of preprocessed X features and Y targets.

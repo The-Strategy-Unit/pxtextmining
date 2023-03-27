@@ -43,16 +43,12 @@ def get_multilabel_metrics(
         x_test (pd.DataFrame): DataFrame containing test dataset features
         y_test (pd.DataFrame): DataFrame containing test dataset true target values
         labels (list): List containing the target labels
-        random_state (int): Seed used to control the shuffling of the data, to enable reproducible
-        results.
-        model_type (str): Type of model used. Options are 'bert', 'tf', or 'sklearn'.
-        Defaults to None.
+        random_state (int): Seed used to control the shuffling of the data, to enable reproducible results.
+        model_type (str): Type of model used. Options are 'bert', 'tf', or 'sklearn'. Defaults to None.
         model (tf.keras or sklearn model): Trained estimator.
         training_time (str, optional): Amount of time taken for model to train. Defaults to None.
-        additional_features (bool, optional): Whether or not additional features (e.g. question type)
-        have been included in training the model. Defaults to False.
-        already_encoded (bool, optional): Whether or not, if a `bert` model was used, x_test has already been encoded.
-        Defaults to False.
+        additional_features (bool, optional): Whether or not additional features (e.g. question type) have been included in training the model. Defaults to False.
+        already_encoded (bool, optional): Whether or not, if a `bert` model was used, x_test has already been encoded. Defaults to False.
 
     Raises:
         ValueError: Only model_type 'bert', 'tf' or 'sklearn' are allowed.

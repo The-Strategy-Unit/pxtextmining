@@ -4,4 +4,4 @@ The pxtextmining project is hosted by Nottinghamshire Healthcare NHS Foundation 
 
 This package works together with the [experiencesdashboard](https://github.com/CDU-data-science-team/experiencesdashboard), a frontend coded in R/Shiny.
 
-Joint documentation for the project as a whole is forthcoming.
+A full overview of this project is avaialble at [the Patient Experience Qualitative Data Categorisation project website](https://cdu-data-science-team.github.io/PatientExperience-QDC/)
