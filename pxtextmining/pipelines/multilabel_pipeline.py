@@ -50,6 +50,7 @@ def run_tf_pipeline(target= major_cats, path = 'test_multilabel/tf'):
     Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
     and the performance metrics to a specified folder.
     Cannot currently take additional features, is only designed for text data alone.
+    This model architecture performs very poorly and may be taken out of the model.
 
     Args:
         target (list, optional): The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.
