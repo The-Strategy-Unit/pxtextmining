@@ -16,7 +16,9 @@ def predict_multilabel_sklearn(
     """Conducts basic preprocessing to remove punctuation and numbers.
     Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
     Also takes the class with the highest predicted probability as the predicted class in cases where no class has
-    been predicted. Currently used in API, cannot take additional features. Superceded by use of pipeline.
+    been predicted. Currently used in API, cannot take additional features.
+
+    Major development needed for API: Ability to keep index numbers from input text. Probably need to change to DataFrame not Series.
 
     Args:
         text (pd.Series): Series containing text data to be processed and utilised for predictions.
@@ -29,10 +31,11 @@ def predict_multilabel_sklearn(
     text_no_whitespace = text.replace(r"^\s*$", np.nan, regex=True)
     text_no_nans = text_no_whitespace.dropna()
     text_cleaned = text_no_nans.astype(str).apply(remove_punc_and_nums)
-    binary_preds = model.predict(text_cleaned)
-    pred_probs = np.array(model.predict_proba(text_cleaned))
+    processed_text = text_cleaned.replace(r"^\s*$", np.nan, regex=True).dropna()
+    binary_preds = model.predict(processed_text)
+    pred_probs = np.array(model.predict_proba(processed_text))
     predictions = fix_no_labels(binary_preds, pred_probs, model_type="sklearn")
-    preds_df = pd.DataFrame(predictions, index=text_cleaned.index, columns=labels)
+    preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
     return preds_df
 
