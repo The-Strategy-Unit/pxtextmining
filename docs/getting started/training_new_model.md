@@ -2,7 +2,7 @@
 
 To train a new model to categorise patient feedback text, labelled data is required. Discussions are currently underway to enable the release of the data that the multilabel models in `pxtextmining` are trained on.
 
-This page breaks down the steps in the function `pxtextmining.pipelines.run_sklearn_pipeline`, which outputs trained sklearn models. This is a high-level explanation of the processes; for more detailed information please see the relevant code reference pages for each function.
+This page breaks down the steps in the function `pxtextmining.pipelines.run_sklearn_pipeline`, which outputs trained sklearn models. This is a high-level explanation of the processes; for more detailed technical information please see the relevant code reference pages for each function.
 
 
 ```python
