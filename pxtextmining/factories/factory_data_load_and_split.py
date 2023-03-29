@@ -3,7 +3,6 @@ import string
 
 import numpy as np
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 from tensorflow.data import Dataset
@@ -31,7 +30,7 @@ def bert_data_to_dataset(
             in 'FFT_q_standardised' column. Defaults to False.
 
     Returns:
-        : tf.data.Dataset if Y is provided, dict otherwise.
+        (tf.data.Dataset OR dict): `tf.data.Dataset` if Y is provided, `dict` otherwise.
     """
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     data_encoded = dict(
@@ -51,26 +50,17 @@ def bert_data_to_dataset(
     return data_encoded
 
 
-def get_multilabel_class_counts(df):
-    class_counts = {}
-    for i in df.columns:
-        class_counts[i] = df[i].sum()
-    return class_counts
-
-
 def load_multilabel_data(filename, target="major_categories"):
-    """_summary_
+    """Function for loading the multilabel dataset, converting it from csv to pd.DataFrame. Conducts some basic preprocessing,
+    including standardisation of the question types, calculation of text length, and drops rows with no labels. Depending on
+    selected `target`, returned dataframe contains different columns.
 
     Args:
-        filename (_type_): _description_
-        target (str, optional): Options are 'minor_categories', 'major_categories', or 'sentiment. Defaults to 'minor_categories'.
-
-    Raises:
-        for: _description_
-        for: _description_
+        filename (str): Path to file containing multilabel data, in csv format
+        target (str, optional): Options are 'minor_categories', 'major_categories', or 'sentiment'. Defaults to 'major_categories'.
 
     Returns:
-        _type_: _description_
+        (pd.DataFrame): DataFrame containing the columns 'FFT categorical answer', 'FFT question', and 'FFT answer'. Also conducts some
     """
     print("Loading multilabel dataset...")
     raw_data = pd.read_csv(
@@ -332,38 +322,58 @@ def load_multilabel_data(filename, target="major_categories"):
 
 
 def clean_empty_features(text_dataframe):
+    """Replaces all empty whitespaces in a dataframe with np.NaN.
+
+    Args:
+        text_dataframe (pd.DataFrame): DataFrame containing text data with labels.
+
+    Returns:
+        (pd.DataFrame): DataFrame with all empty whitespaces replaced with np.NaN
+    """
     clean_dataframe = text_dataframe.replace(r"^\s*$", np.nan, regex=True)
     clean_dataframe = clean_dataframe.dropna()
     return clean_dataframe
 
 
-def vectorise_multilabel_data(text_data):
-    # can try different types of vectorizer here
-    count_vect = CountVectorizer()
-    X_counts = count_vect.fit_transform(text_data)
-    tfidf_transformer = TfidfTransformer()
-    X_tfidf = tfidf_transformer.fit_transform(X_counts)
-    return X_tfidf
-
-
 def onehot(df, col_to_onehot):
-    encoder = OneHotEncoder(sparse_output=False)
+    """Function to one-hot encode specified columns in a dataframe.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing data to be one-hot encoded
+        col_to_onehot (list): List of column names to be one-hot encoded
+
+    Returns:
+        (pd.DataFrame): One-hot encoded data
+    """
+    encoder = OneHotEncoder(sparse=False)
     col_encoded = encoder.fit_transform(df[[col_to_onehot]])
     return col_encoded
 
 
 def process_multilabel_data(
-    df, target, vectorise=False, preprocess_text=True, additional_features=False
+    df, target, preprocess_text=True, additional_features=False
 ):
+    """Utilises remove_punc_and_nums and clean_empty_features functions to clean the text data and
+    drop any rows that are only whitespace after cleaning. Also fills one-hot encoded columns with
+    0s rather than NaNs so that Y target is not sparse.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing text data, any additional features, and targets
+        target (list): List of column names of targets
+        preprocess_text (bool, optional): Whether or not text is to be processed with remove_punc_and_nums. If utilising
+            an sklearn model then should be True. If utilising transformer-based BERT model then should be set to False.
+            Defaults to True.
+        additional_features (bool, optional): Whether or not 'question type' feature should be included. Defaults to False.
+
+    Returns:
+        (tuple): Tuple containing two pd.DataFrames. The first contains the X features (text, with or without question type depending on additional_features), the second contains the one-hot encoded Y targets
+    """
     Y = df[target].fillna(value=0)
-    if vectorise == True:
-        X = vectorise_multilabel_data(df["FFT answer"])
-    else:
-        if preprocess_text == True:
+    if preprocess_text == True:
             X = df["FFT answer"].astype(str).apply(remove_punc_and_nums)
             X = clean_empty_features(X)
             print(f"After preprocessing, shape of X is {X.shape}")
-        if preprocess_text == False:
+    if preprocess_text == False:
             X = df["FFT answer"].astype(str)
     if additional_features == True:
         X = pd.merge(
@@ -379,15 +389,27 @@ def process_multilabel_data(
 def process_and_split_multilabel_data(
     df,
     target,
-    vectorise=False,
     preprocess_text=True,
     additional_features=False,
     random_state=42,
 ):
+    """Combines the process_multilabel_data and train_test_split functions into one function
+
+    Args:
+        df (pd.DataFrame): DataFrame containing text data, any additional features, and targets
+        target (list): List of column names of targets
+        preprocess_text (bool, optional): Whether or not text is to be processed with remove_punc_and_nums. If utilising
+            an sklearn model then should be True. If utilising transformer-based BERT model then should be set to False.
+            Defaults to True.
+        additional_features (bool, optional): Whether or not 'question type' feature should be included. Defaults to False.
+        random_state (int, optional): Controls the shuffling applied to the data before applying the split. Enables reproducible output across multiple function calls. Defaults to 42.
+
+    Returns:
+        (list): List containing train-test split of preprocessed X features and Y targets.
+    """
     X, Y = process_multilabel_data(
         df,
         target,
-        vectorise=vectorise,
         preprocess_text=preprocess_text,
         additional_features=additional_features,
     )
@@ -398,62 +420,28 @@ def process_and_split_multilabel_data(
 
 
 def remove_punc_and_nums(text):
-    """
-    This function removes excess punctuation and numbers from the text. Exclamation marks and apostrophes have been
-    left in, as have words in allcaps, as these may denote strong sentiment. Returns a string.
+    """Function to conduct basic preprocessing of text, removing punctuation and numbers, converting
+    all text to lowercase, removing trailing whitespace.
 
-    :param str text: Text to be cleaned
+    Args:
+        text (str): Str containing the text to be cleaned
 
-    :return: the cleaned text as a str
-    :rtype: str
+    Returns:
+        (str): Cleaned text, all lowercased with no punctuation, numbers or trailing whitespace.
     """
     text = re.sub("\\n", " ", text)
     text = re.sub("\\r", " ", text)
     text = "".join(char for char in text if not char.isdigit())
     punc_list = string.punctuation
-    # punc_list = punc_list.replace('!', '')
-    # punc_list = punc_list.replace("'", '')
     for punctuation in punc_list:
-        if punctuation not in [",", ".", "-"]:
-            text = text.replace(punctuation, "")
-        else:
+        if punctuation in [",", ".", "-"]:
             text = text.replace(punctuation, " ")
-    # text = decode_emojis.decode_emojis(text)
+        else:
+            text = text.replace(punctuation, "")
     text_split = [word for word in text.split(" ") if word != ""]
     text_lower = []
     for word in text_split:
-        # does it make a difference if we keep allcaps?
-        # if word.isupper():
-        #     text_lower.append(word)
-        # else:
-        #     text_lower.append(word.lower())
         text_lower.append(word.lower())
     cleaned_sentence = " ".join(word for word in text_lower)
     cleaned_sentence = cleaned_sentence.strip()
     return cleaned_sentence
-
-
-if __name__ == "__main__":
-    major_cats = [
-        "Access to medical care & support",
-        "Activities",
-        "Additional",
-        "Category TBC",
-        "Communication & involvement",
-        "Environment & equipment",
-        "Food & diet",
-        "General",
-        "Medication",
-        "Mental Health specifics",
-        "Patient journey & service coordination",
-        "Service location, travel & transport",
-        "Staff",
-    ]
-    df = load_multilabel_data(
-        filename="datasets/hidden/multilabeldata_2.csv", target="major_categories"
-    )
-    print(df.head())
-    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(
-        df, target=major_cats, additional_features=True
-    )
-    print(X_train.head())
