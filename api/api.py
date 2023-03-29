@@ -1,18 +1,17 @@
-from fastapi import FastAPI
-from pxtextmining.factories.factory_predict_unlabelled_text import factory_predict_unlabelled_text, predict_multilabel_sklearn
-import pandas as pd
-import mysql.connector
-from typing import Union, List
-from pydantic import BaseModel
 import pickle
+from typing import List
+
+import pandas as pd
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+from pxtextmining.factories.factory_predict_unlabelled_text import \
+    predict_multilabel_sklearn
+
 
 class ItemIn(BaseModel):
     comment_id: str
     comment_text: str
-
-class TestJson(BaseModel):
-    id: str
-    feedback: str
 
 app = FastAPI()
 
@@ -22,27 +21,21 @@ def index():
 
 @app.post('/predict_multilabel')
 def predict(items: List[ItemIn]):
-    loaded_model = pickle.load(open('current_best_multilabel/model_0.sav', 'rb'))
-    df = pd.DataFrame([i.dict() for i in items])
-    df['comment_id'] = df['comment_id'].astype(int)
-    text_to_predict = df['comment_text']
+    print('loading model')
+    with open('current_best_multilabel/svc_text_only.sav', 'rb') as model:
+        loaded_model = pickle.load(model)
+    print('processing df')
+    df = pd.DataFrame([i.dict() for i in items], dtype=str)
+    df_newindex = df.set_index('comment_id')
+    df_newindex.index.rename('Index', inplace = True)
+    text_to_predict = df_newindex['comment_text']
+    print('making predictions')
     preds_df = predict_multilabel_sklearn(text_to_predict, loaded_model)
-    ## Is it necessary to merge with original df? maybe to check they still line up?
-    preds_df['comment_id'] = preds_df.index.astype(int)
+    preds_df['comment_id'] = preds_df.index.astype(str)
+    print('merging predictions with input')
     merged = pd.merge(df, preds_df, how='inner', on='comment_id')
-    return merged[['comment_id', 'labels']].to_dict(orient='records')
-    # return preds_df.to_dict(orient='records')
-
-@app.post('/test_json', response_model=List[TestJson])
-def accept(items: List[ItemIn]):
-    return [i.dict() for i in items]
-
-@app.post('/predict_from_json')
-def predict(items: List[ItemIn]):
-    df = pd.DataFrame([i.dict() for i in items])
-    model = 'results_label/pipeline_label.sav'
-    text_data = df.rename(columns = {'comment_text': 'predictor'})
-    predictions = factory_predict_unlabelled_text(dataset=text_data, predictor="predictor",
-                                                    theme = 'label', pipe_path_or_object=model,
-                                                    columns_to_return='all_cols')
-    return predictions.to_dict(orient='records')
+    return_dict = {'comments_labelled': merged[['comment_id', 'comment_text', 'labels']].to_dict(orient='records')}
+    print('not_processed step')
+    not_processed = [i for i in df['comment_id'] if i not in preds_df['comment_id']]
+    return_dict['comment_ids_failed'] = not_processed
+    return return_dict
