@@ -15,6 +15,6 @@ The documentation is split into three separate sections:
     - [Training a new model](getting%20started/training_new_model.md)
     - [Making predictions with a trained model](getting%20started/using_trained_model.md)
 3. Code reference, a more technical overview of the functions and modules:
-    - [Factories](reference/factories/factory_data_load_and_split.md)
-    - [Helpers](reference/helpers/text_preprocessor.md)
-    - [Pipelines](reference/pipelines/multilabel_pipeline.md)
+    - [Factories](reference/pxtextmining/factories/factory_data_load_and_split.md)
+    - [Helpers](reference/pxtextmining/helpers/text_preprocessor.md)
+    - [Pipelines](reference/pxtextmining/pipelines/multilabel_pipeline.md)
