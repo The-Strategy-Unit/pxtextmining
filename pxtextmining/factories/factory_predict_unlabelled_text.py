@@ -28,7 +28,10 @@ def predict_multilabel_sklearn(
     Returns:
         (pd.DataFrame): DataFrame containing the labels and predictions.
     """
-    text_no_whitespace = text.replace(r"^\s*$", np.nan, regex=True)
+    text_as_str = text.astype(str)
+    text_stripped = text_as_str.str.strip()
+    text_no_whitespace = text_stripped.replace([r"^\s*$", r"(?i)^nan$", r"(?i)^null$", r"(?i)^n\/a$"],
+                                             np.nan, regex=True)
     text_no_nans = text_no_whitespace.dropna()
     text_cleaned = text_no_nans.astype(str).apply(remove_punc_and_nums)
     processed_text = text_cleaned.replace(r"^\s*$", np.nan, regex=True).dropna()
