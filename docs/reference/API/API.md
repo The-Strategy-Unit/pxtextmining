@@ -24,14 +24,15 @@ At this stage in the project (March 2023) it is only available locally as a proo
 3. After waiting for the data to be processed and passed through the machine learning model, receive predicted labels at the same endpoint, in the example format below.
 
 ```python
-{ 'comments_labelled': [
-                        {'comment_id': '1',
-                        'comment_text': 'This is the first comment. Nurse was great.',
-                        'labels': ['Staff']} ,
-                        { 'comment_id': '2',
-                        'comment_text': 'This is the second comment. The ward was freezing.',
-                        'labels': ['General', 'Environment & equipment']}
-                        ] ,
-  'comment_ids_failed': ['3'] # Because this comment_text was empty, no predictions could be made.
-}
+[
+  { 'comment_id': '1',
+    'comment_text': 'This is the first comment. Nurse was great.',
+    'labels': ['Staff']} ,
+  { 'comment_id': '2',
+    'comment_text': 'This is the second comment. The ward was freezing.',
+    'labels': ['General', 'Environment & equipment']} ,
+  { 'comment_id': '3',
+    'comment_text': '',
+    'labels': ['Labelling not possible'] }
+]
 ```

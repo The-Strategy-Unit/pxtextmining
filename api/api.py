@@ -37,8 +37,10 @@ def predict(items: List[ItemIn]):
     text_to_predict = df_newindex['comment_text']
     preds_df = predict_multilabel_sklearn(text_to_predict, loaded_model)
     preds_df['comment_id'] = preds_df.index.astype(str)
-    merged = pd.merge(df, preds_df, how='inner', on='comment_id')
-    return_dict = {'comments_labelled': merged[['comment_id', 'comment_text', 'labels']].to_dict(orient='records')}
-    comments_lost = [i for i in df['comment_id'] if i not in preds_df['comment_id']]
-    return_dict['comment_ids_failed'] = comments_lost
+    merged = pd.merge(df, preds_df, how='left', on='comment_id')
+    merged['labels'] = merged['labels'].fillna('').apply(list)
+    for i in merged['labels'].index:
+        if len(merged['labels'].loc[i]) < 1:
+            merged['labels'].loc[i].append('Labelling not possible')
+    return_dict = merged[['comment_id', 'comment_text', 'labels']].to_dict(orient='records')
     return return_dict
