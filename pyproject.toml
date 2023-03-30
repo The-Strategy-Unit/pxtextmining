@@ -1,9 +1,8 @@
 [tool.poetry]
 name = "pxtextmining"
 version = "0.5.0"
-description = "Text classification of patient experience feedback."
+description = "Multilabel text classification of patient experience feedback."
 authors = ['CDU Data Science <cdudatascience@nottshc.nhs.uk>',
-'Andreas D Soteriades <andreas.soteriades@nottshc.nhs.uk>',
 'YiWen Hon <yiwen.hon@nottshc.nhs.uk>']
 readme = "README.md"
 license = "MIT"
