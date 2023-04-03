@@ -1,0 +1,31 @@
+name: Run tests
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install poetry
+      run: pipx install poetry
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'poetry'
+    - name: Install package
+      run: poetry install --with dev
+    - name: Run tests
+      run: poetry run pytest tests/* -sx

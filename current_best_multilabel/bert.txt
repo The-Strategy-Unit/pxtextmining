@@ -1,0 +1,55 @@
+
+ *****************
+Model: "BERT_MultiLabel"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ input_ids (InputLayer)      [(None, 150)]             0         
+                                                                 
+ distilbert (TFDistilBertMai  TFBaseModelOutput(last_h  65190912 
+ nLayer)                     idden_state=(None, 150,             
+                             768),                               
+                              hidden_states=None, att            
+                             entions=None)                       
+                                                                 
+ tf.__operators__.getitem (S  (None, 768)              0         
+ licingOpLambda)                                                 
+                                                                 
+ pooled_output (Dropout)     (None, 768)               0         
+                                                                 
+ output (Dense)              (None, 13)                9997      
+                                                                 
+=================================================================
+Total params: 65,200,909
+Trainable params: 65,200,909
+Non-trainable params: 0
+_________________________________________________________________
+
+
+Training time: 5:29:26
+
+exact_accuracy: 0.6973958333333333
+hamming_loss: 0.03669871794871795
+macro_jaccard_score: 0.5073603047286803
+
+ Classification report:
+                                        precision    recall  f1-score   support
+
+      Access to medical care & support       0.83      0.86      0.84       387
+                            Activities       0.92      0.55      0.69        22
+                            Additional       0.33      0.12      0.17        17
+                          Category TBC       0.21      0.60      0.32         5
+           Communication & involvement       0.87      0.76      0.81       374
+               Environment & equipment       0.66      0.64      0.65        87
+                           Food & diet       0.89      0.76      0.82        33
+                               General       0.91      0.83      0.87       610
+                            Medication       0.67      0.89      0.76        27
+               Mental Health specifics       0.60      0.21      0.32        14
+Patient journey & service coordination       0.47      0.51      0.49       138
+  Service location, travel & transport       0.78      0.58      0.67        65
+                                 Staff       0.87      0.92      0.90       833
+
+                             micro avg       0.83      0.81      0.82      2612
+                             macro avg       0.69      0.63      0.64      2612
+                          weighted avg       0.84      0.81      0.82      2612
+                           samples avg       0.85      0.84      0.83      2612

@@ -1,0 +1,32 @@
+
+ *****************
+DummyClassifier(strategy='uniform')
+
+
+Training time: None
+
+exact_accuracy: 0.0
+hamming_loss: 0.5030487804878049
+macro_jaccard_score: 0.0787901813020388
+
+ Classification report:
+                                        precision    recall  f1-score   support
+
+      Access to medical care & support       0.21      0.47      0.29       143
+                            Activities       0.01      0.36      0.02        11
+                            Additional       0.01      0.43      0.02         7
+                          Category TBC       0.00      0.00      0.00         1
+           Communication & involvement       0.21      0.53      0.31       137
+               Environment & equipment       0.03      0.52      0.06        21
+                           Food & diet       0.03      0.57      0.05        14
+                               General       0.36      0.46      0.40       248
+                            Medication       0.03      0.77      0.06        13
+               Mental Health specifics       0.01      0.43      0.02         7
+Patient journey & service coordination       0.08      0.48      0.14        58
+  Service location, travel & transport       0.01      0.33      0.02        12
+                                 Staff       0.28      0.48      0.35       193
+
+                             micro avg       0.10      0.48      0.16       865
+                             macro avg       0.10      0.45      0.13       865
+                          weighted avg       0.24      0.48      0.30       865
+                           samples avg       0.10      0.48      0.15       865

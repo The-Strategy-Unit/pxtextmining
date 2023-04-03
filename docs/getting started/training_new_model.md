@@ -1,23 +1,46 @@
 # Training a new model
 
-To train a new model to categorise patient feedback text, labelled data is required.
+To train a new model to categorise patient feedback text, labelled data is required. Discussions are currently underway to enable the release of the data that the multilabel models in `pxtextmining` are trained on.
 
-Data from phase 1 of the project is available in the folder [`datasets`](https://github.com/CDU-data-science-team/pxtextmining/blob/main/datasets/text_data.csv), or it can also be loaded from an SQL database. If you have your own labelled patient experience feedback, you can use this instead to train your own model.
+This page breaks down the steps in the function `pxtextmining.pipelines.run_sklearn_pipeline`, which outputs trained sklearn models. This is a high-level explanation of the processes; for more detailed technical information please see the relevant code reference pages for each function.
 
-The [text_classification_pipeline](../../reference/pipelines/text_classification_pipeline) contains the function required to output a fully trained model. Two types of models can be trained using this pipeline, one that can predict the categorical 'label' for the text, or one that can predict the positive or negative 'criticality' score for the text. Examples of the pipeline being used to output each type of model can be seen in [execution_criticality](https://github.com/CDU-data-science-team/pxtextmining/blob/main/execution/execution_criticality.py) and [execution_label](https://github.com/CDU-data-science-team/pxtextmining/blob/main/execution/execution_label.py).
 
-The steps involved in training a model are as follows:
+```python
 
-1. The data is loaded and split into training and test sets by the function `factory_data_load_and_split`. This also conducts some basic text preprocessing, such as removing special characters, whitespaces and linebreaks. It produces additional features through the creation of 'text_length' and sentiment scores using [vaderSentiment](https://pypi.org/project/vaderSentiment/) and [textblob](https://pypi.org/project/textblob/). Any invalid lines (e.g. empty strings, NULL values) are removed from the data.
+# Step 1: Generate a random_state which is used for the train_test_split.
+# This means that the pipeline and evaluation should be reproducible.
+random_state = random.randint(1,999)
 
-2. The function in `factory_pipeline` creates an sklearn pipeline. This pipeline is comprised of the following steps: first, the preprocessed text input is upsampled to help compensate for the unbalanced dataset. The text is then tokenized and vectorised (turned into numbers that can be processed by the model) using either [spacy](https://spacy.io/) or [wordnet](https://wordnet.princeton.edu/). Feature selection is then conducted to select only the most important features to train the model. A hyperparameter grid is constructed with potential hyperparameter values, depending on the learners/classification models to be tested in the Randomized Search. A Randomized Search is then used to identify the best performing model and its optimal hyperparameters.
+# Step 2: Load the data and isolate the target columns from the dataframe.
+df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv',
+                          target = 'major_categories')
 
-3. The fitted pipeline is then evaluated on the test set in `factory_model_performance`. The evaluation metrics used are: ([Accuracy](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html), [Class Balance Accuracy](https://lib.dr.iastate.edu/cgi/viewcontent.cgi?article=4544&context=etd) (Mosley, 2013), [Balanced Accuracy](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.balanced_accuracy_score.html) (Guyon et al., 2015, Kelleher et al., 2015) and [Matthews Correlation Coefficient](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.matthews_corrcoef.html) (Baldi et al., 2000, Matthews, 1975)). A visual representation of the performance evaluation is output in the form of a barchart.
+# Step 3: Conduct preprocessing: remove punctuation and numbers, clean whitespace and drop empty lines.
+# Split into train and test using the random_state above.
+X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(
+                                        df, target = target,
+                                        random_state = random_state)
 
-4. Writing the results: The fitted pipeline, tuning results, predictions, accuracy
-per class, model comparison barchart, training data index, and test data index are output by `factory_write_results`.
+# Step 4: Instantiate a pipeline and hyperparamter grid for each estimator to be tried.
+# Conduct a cross-validated randomized search to identify the hyperparameters
+  # producing the best results on the validation set.
+# For each estimator, returns the pipeline with the best hyperparameters,
+  # together with the time taken to search the pipeline.
+models, training_times = search_sklearn_pipelines(X_train, Y_train,
+                                        models_to_try = models_to_try,
+                                        additional_features = additional_features)
 
-The four steps above are all pulled together in [`pxtextmining.pipelines.text_classification_pipeline`](https://github.com/CDU-data-science-team/pxtextmining/tree/main/pxtextmining/pipelines).
+# Step 5: Evaluate each pipeline using the test set, comparing predicted values with real values.
+# Performance metrics are recorded together with the time taken to search the pipeline.
+model_metrics = []
+for i in range(len(models)):
+    m = models[i]
+    t = training_times[i]
+    model_metrics.append(get_multilabel_metrics(X_test, Y_test,
+                                        random_state = random_state,
+                                        labels = target, model_type = 'sklearn',
+                                        model = m, training_time = t))
 
-Here is a visual display of the process:
-![](https://raw.githubusercontent.com/CDU-data-science-team/pxtextmining/main/text_classification_package_structure.png)
+# Step 6: Save the models and performance metrics to the path specified
+write_multilabel_models_and_metrics(models,model_metrics,path=path)
+```
