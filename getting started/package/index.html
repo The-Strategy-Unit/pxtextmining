@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/getting%20started/using_trained_model/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/getting%20started/package/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Using a trained model - pxtextmining</title>
+    <title>Package structure - pxtextmining</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
@@ -14,9 +14,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Using a trained model";
-        var mkdocs_page_input_path = "getting started/using_trained_model.md";
-        var mkdocs_page_url = "/pxtextmining/getting%20started/using_trained_model/";
+        var mkdocs_page_name = "Package structure";
+        var mkdocs_page_input_path = "getting started/package.md";
+        var mkdocs_page_url = "/pxtextmining/getting%20started/package/";
       </script>
     
     <script src="../../js/jquery-3.6.0.min.js" defer></script>
@@ -54,13 +54,17 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../install/">Install</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../package/">Package structure</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Package structure</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#pxtextmining">pxtextmining</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#api">API</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../training_new_model/">Training a new model</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Using a trained model</a>
-    <ul class="current">
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../using_trained_model/">Using a trained model</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Reference</span></p>
@@ -119,7 +123,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>Getting started &raquo;</li>
-      <li>Using a trained model</li>
+      <li>Package structure</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -128,39 +132,47 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="using-a-trained-model">Using a trained model</h1>
-<p>The <code>current_best_multilabel</code> folder should contain a fully trained <code>sklearn</code> model in .sav format, as well as performance metrics for the model.</p>
-<p>The Transformer-based <code>tensorflow.keras</code> model is over 1GB and cannot be shared via GitHub. However, it will be made available via the API, which is forthcoming in a future release of this package.</p>
-<p>This page breaks down the steps in the function <code>pxtextmining.pipelines.factory_predict_unlabelled_text.predict_multilabel_sklearn</code>, which can make predictions using the <code>sklearn</code> model available via GitHub. This is a high-level explanation of the processes; for more detailed technical information please see the relevant code reference page.</p>
-<pre><code class="language-python">
-# Step 1: Conduct preprocessing on text:
-# Temove trailing whitespaces, NULL values, NaNs, and punctuation. Converts to lowercase.
-text_no_whitespace = text.replace(r&quot;^\s*$&quot;, np.nan, regex=True)
-text_no_nans = text_no_whitespace.dropna()
-text_cleaned = text_no_nans.astype(str).apply(remove_punc_and_nums)
-processed_text = text_cleaned.astype(str).apply(clean_empty_features)
-
-# Step 2: Make predictions with the trained model
-binary_preds = model.predict(processed_text)
-
-# Step 3: Get predicted probabilities for each label
-pred_probs = np.array(model.predict_proba(processed_text))
-
-# Step 4: Some samples do not have any predicted labels.
-# For these, take the label with the highest predicted probability.
-predictions = fix_no_labels(binary_preds, pred_probs, model_type=&quot;sklearn&quot;)
-
-# Step 5: Convert predictions to a dataframe.
-preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
-preds_df[&quot;labels&quot;] = preds_df.apply(get_labels, args=(labels,), axis=1)
-
-</code></pre>
+                <h1 id="package-structure">Package structure</h1>
+<h2 id="pxtextmining">pxtextmining</h2>
+<p>The <code>pxtextmining</code> package is constructed using the following elements:</p>
+<ul>
+<li>
+<p><strong><code>pxtextmining.factories</code></strong>
+This module contains vast majority of the code in the package. There are five different stages, each corresponding to a different submodule.</p>
+<ul>
+<li>
+<p><code>factory_data_load_and_split</code>: Loading of multilabel data, preprocessing, and splitting into train/test/validation sets as appropriate.</p>
+</li>
+<li>
+<p><code>factory_pipeline</code>: Construction and training of different models/estimators/algorithms using the <code>sklearn</code>, <code>tensorflow.keras</code> and <code>transformers</code> libraries.</p>
+</li>
+<li>
+<p><code>factory_model_performance</code>: Evaluation of a trained model, comparing predicted targets with real target values, to produce performance metrics. The decision-making process behind the peformance metrics chosen can be seen on the <a href="https://cdu-data-science-team.github.io/PatientExperience-QDC/pxtextmining/performance_metrics.html">project documentation website</a>. The performance metrics for the current best models utilised in the API can be found in the <code>current_best_multilabel</code> folder in the main repository.</p>
+</li>
+<li>
+<p><code>factory_predict_unlabelled_text</code>: Prepares unlabelled text (with or without additional features such as question type) in a format suitable for each model type, and passes this through the selected models, to produce predicted labels.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>pxtextmining.helpers</code></strong>
+This module contains some helper functions which are used in <code>pxtextmining.factories</code>. Some of this is legacy code, so this may just be moved into the <code>factories</code> submodule in future versions of the package.</p>
+</li>
+<li>
+<p><strong><code>pxtextmining.pipelines</code></strong>
+All of the processes in <code>pxtextmining.factories</code> are pulled together in <code>multilabel_pipeline</code>, to create the complete end-to-end process of data processing, model creation, training, evaluation, and saving.</p>
+</li>
+</ul>
+<p>There is also a <code>pxtextmining.params</code> file which is used to standardise specific variables that are used across the entire package. The aim of this is to reduce repetition across the package, for example when trying different targets or model types.</p>
+<h2 id="api">API</h2>
+<p>Separate from the <code>pxtextmining</code> package is the API, which can be found in the folder <code>api</code>. It is constructed using FastAPI and Uvicorn. The aim of the API is to make the trained machine learning models available publicly, so that predictions can be made on any text. Full documentation for the API is forthcoming.</p>
+<p>The current version of the API is only able to take the text of the patient feedback comments, with no additional features e.g. question type. This functionality is intended for future development of the package.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../training_new_model/" class="btn btn-neutral float-left" title="Training a new model"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../reference/API/API/" class="btn btn-neutral float-right" title="pxtextmining API">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../install/" class="btn btn-neutral float-left" title="Install"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../training_new_model/" class="btn btn-neutral float-right" title="Training a new model">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -183,10 +195,10 @@ preds_df[&quot;labels&quot;] = preds_df.apply(get_labels, args=(labels,), axis=1
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../training_new_model/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../install/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../../reference/API/API/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../training_new_model/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

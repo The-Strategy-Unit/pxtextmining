@@ -56,6 +56,8 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../getting%20started/install/">Install</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting%20started/package/">Package structure</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../getting%20started/training_new_model/">Training a new model</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../getting%20started/using_trained_model/">Using a trained model</a>
@@ -63,57 +65,41 @@
               </ul>
               <p class="caption"><span class="caption-text">Reference</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="#">Factories</a>
+                  <li class="toctree-l1"><a class="reference internal" href="#">API</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/factories/factory_data_load_and_split/">Factory data load and split</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/factories/factory_model_performance/">Factory model performance</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/factories/factory_pipeline/">Factory pipeline</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/factories/factory_predict_unlabelled_text/">Factory predict unlabelled text</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/factories/factory_write_results/">Factory write results</a>
+                <li class="toctree-l2"><a class="reference internal" href="../reference/API/API/">pxtextmining API</a>
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="#">Helpers</a>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Pxtextmining</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/decode_emojis/">Decode emojis</a>
+                <li class="toctree-l2"><a class="reference internal" href="#">Factories</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../reference/pxtextmining/factories/factory_data_load_and_split/">Factory data load and split</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/estimator_switcher/">Estimator switcher</a>
+                <li class="toctree-l3"><a class="reference internal" href="../reference/pxtextmining/factories/factory_model_performance/">Factory model performance</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/feature_selection_switcher/">Feature selection switcher</a>
+                <li class="toctree-l3"><a class="reference internal" href="../reference/pxtextmining/factories/factory_pipeline/">Factory pipeline</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/metrics/">Metrics</a>
+                <li class="toctree-l3"><a class="reference internal" href="../reference/pxtextmining/factories/factory_predict_unlabelled_text/">Factory predict unlabelled text</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/ordinal_classification/">Ordinal classification</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/oversampling/">Oversampling</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/passthrough/">Passthrough</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/scaler_switcher/">Scaler switcher</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/sentiment_scores/">Sentiment scores</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/text_length/">Text length</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/text_preprocessor/">Text preprocessor</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/text_transformer_switcher/">Text transformer switcher</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/theme_binarization/">Theme binarization</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/tokenization/">Tokenization</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/helpers/word_vectorization/">Word vectorization</a>
+                <li class="toctree-l3"><a class="reference internal" href="../reference/pxtextmining/factories/factory_write_results/">Factory write results</a>
                 </li>
     </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="#">Pipelines</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Helpers</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../reference/pipelines/text_classification_pipeline/">Text classification pipeline</a>
+                <li class="toctree-l3"><a class="reference internal" href="../reference/pxtextmining/helpers/text_preprocessor/">Text preprocessor</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../reference/pxtextmining/helpers/tokenization/">Tokenization</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Pipelines</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../reference/pxtextmining/pipelines/multilabel_pipeline/">Multilabel pipeline</a>
+                </li>
+    </ul>
                 </li>
     </ul>
                   </li>
@@ -142,9 +128,9 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="project-background">Project background</h1>
-<p>The pxtextmining project is hosted by Nottinghamshire Healthcare NHS Foundation Trust's Clinical Development Unit Data Science Team, and funded by NHS England's Insight and Feedback Team. The primary objective of the project is to create a machine learning model capable of analysing and categorising the free text data obtained through the <a href="https://www.england.nhs.uk/fft/">NHS England Friends and Family Test</a> (FFT). In doing so, it will support better use of qualitative patient experience feedback by NHS provider organisations.</p>
+<p>The <code>pxtextmining</code> package is part of <a href="https://cdu-data-science-team.github.io/PatientExperience-QDC/">the Patient Experience Qualitative Data Categorisation project</a>. This project is is hosted by Nottinghamshire Healthcare NHS Foundation Trust's Clinical Development Unit Data Science Team, and funded by NHS England's Insight and Feedback Team.</p>
+<p>The primary objective of the <code>pxtextmining</code> element is to create a machine learning model capable of categorising the free text data obtained through the <a href="https://www.england.nhs.uk/fft/">NHS England Friends and Family Test</a> (FFT). It is a multilabel classification problem, with one or more categories applied to each patient feedback comment. In this way, we hope to support better use of qualitative patient experience feedback by NHS provider organisations.</p>
 <p>This package works together with the <a href="https://github.com/CDU-data-science-team/experiencesdashboard">experiencesdashboard</a>, a frontend coded in R/Shiny.</p>
-<p>Joint documentation for the project as a whole is forthcoming.</p>
               
             </div>
           </div><footer>

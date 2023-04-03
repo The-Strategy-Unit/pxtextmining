@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pxtextmining/pipelines/multilabel_pipeline/" />
+      <link rel="shortcut icon" href="../../../../img/favicon.ico" />
+    <title>Multilabel pipeline - pxtextmining</title>
+    <link rel="stylesheet" href="../../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../../../main.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Multilabel pipeline";
+        var mkdocs_page_input_path = "reference/pxtextmining/pipelines/multilabel_pipeline.md";
+        var mkdocs_page_url = "/pxtextmining/reference/pxtextmining/pipelines/multilabel_pipeline/";
+      </script>
+    
+    <script src="../../../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../../.." class="icon icon-home"> pxtextmining
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../../about/">Project background</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting%20started/install/">Install</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting%20started/package/">Package structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting%20started/training_new_model/">Training a new model</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting%20started/using_trained_model/">Using a trained model</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reference</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="#">API</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../API/API/">pxtextmining API</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Pxtextmining</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="#">Factories</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../factories/factory_data_load_and_split/">Factory data load and split</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../factories/factory_model_performance/">Factory model performance</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../factories/factory_pipeline/">Factory pipeline</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../factories/factory_predict_unlabelled_text/">Factory predict unlabelled text</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../factories/factory_write_results/">Factory write results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Helpers</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../helpers/text_preprocessor/">Text preprocessor</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../helpers/tokenization/">Tokenization</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Pipelines</a>
+    <ul class="current">
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Multilabel pipeline</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_sklearn_pipeline">run_sklearn_pipeline()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_tf_pipeline">run_tf_pipeline()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_bert_pipeline">run_bert_pipeline()</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../..">pxtextmining</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Reference &raquo;</li>
+          <li>Pxtextmining &raquo;</li>
+          <li>Pipelines &raquo;</li>
+      <li>Multilabel pipeline</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <div class="doc doc-object doc-module">
+
+
+
+<h4 id="pxtextmining.pipelines.multilabel_pipeline" class="doc doc-heading">
+          <code>multilabel_pipeline</code>
+
+
+</h4>
+
+  <div class="doc doc-contents first">
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.pipelines.multilabel_pipeline.run_sklearn_pipeline" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">run_sklearn_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">models_to_try</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mnb&#39;</span><span class="p">,</span> <span class="s1">&#39;knn&#39;</span><span class="p">,</span> <span class="s1">&#39;svm&#39;</span><span class="p">,</span> <span class="s1">&#39;rfc&#39;</span><span class="p">],</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel&#39;</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
+Creates sklearn pipelines and hyperparameters to search, using specified estimators.
+For each estimator type selected, performs a randomized search across the hyperparameters to identify the parameters providing the best
+results on the holdout data within the randomized search.
+Evaluates the performance of the refitted estimator with the best hyperparameters on the test set, and saves the model
+and the performance metrics to a specified folder.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>additional_features</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not additional features (question type and text length) are used. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>target</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.</p></td>
+          <td>
+                <code>major_cats</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>models_to_try</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>List of the estimators to try. Defaults to ["mnb", "knn", "svm", "rfc"]. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).</p></td>
+          <td>
+                <code>[&#39;mnb&#39;, &#39;knn&#39;, &#39;svm&#39;, &#39;rfc&#39;]</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>path</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
+          <td>
+                <code>&#39;test_multilabel&#39;</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.pipelines.multilabel_pipeline.run_tf_pipeline" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">run_tf_pipeline</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/tf&#39;</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
+Creates tf.keras LSTM model and trains it on the train set.
+Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
+and the performance metrics to a specified folder.
+Cannot currently take additional features, is only designed for text data alone.
+This model architecture performs very poorly and may be taken out of the model.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>target</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.</p></td>
+          <td>
+                <code>major_cats</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>path</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
+          <td>
+                <code>&#39;test_multilabel/tf&#39;</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.pipelines.multilabel_pipeline.run_bert_pipeline" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">run_bert_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/bert&#39;</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Runs all the functions required to load multilabel data, preprocess it, and split it into training, test and validation sets.
+Creates tf.keras Transformer model with additional layers specific to the classification task, and trains it on the train set.
+Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
+and the performance metrics to a specified folder.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>additional_features</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not additional features (question type and text length) are used. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>path</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
+          <td>
+                <code>&#39;test_multilabel/bert&#39;</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../helpers/tokenization/" class="btn btn-neutral float-left" title="Tokenization"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../helpers/tokenization/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pxtextmining/factories/factory_predict_unlabelled_text/" />
+      <link rel="shortcut icon" href="../../../../img/favicon.ico" />
+    <title>Factory predict unlabelled text - pxtextmining</title>
+    <link rel="stylesheet" href="../../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../../../main.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Factory predict unlabelled text";
+        var mkdocs_page_input_path = "reference/pxtextmining/factories/factory_predict_unlabelled_text.md";
+        var mkdocs_page_url = "/pxtextmining/reference/pxtextmining/factories/factory_predict_unlabelled_text/";
+      </script>
+    
+    <script src="../../../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../../.." class="icon icon-home"> pxtextmining
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../../about/">Project background</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting%20started/install/">Install</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting%20started/package/">Package structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting%20started/training_new_model/">Training a new model</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting%20started/using_trained_model/">Using a trained model</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reference</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="#">API</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../API/API/">pxtextmining API</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Pxtextmining</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Factories</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../factory_data_load_and_split/">Factory data load and split</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../factory_model_performance/">Factory model performance</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../factory_pipeline/">Factory pipeline</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Factory predict unlabelled text</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_sklearn">predict_multilabel_sklearn()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.get_labels">get_labels()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_with_bert">predict_with_bert()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.fix_no_labels">fix_no_labels()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.turn_probs_into_binary">turn_probs_into_binary()</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../factory_write_results/">Factory write results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Helpers</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../helpers/text_preprocessor/">Text preprocessor</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../helpers/tokenization/">Tokenization</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Pipelines</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../pipelines/multilabel_pipeline/">Multilabel pipeline</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../..">pxtextmining</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Reference &raquo;</li>
+          <li>Pxtextmining &raquo;</li>
+          <li>Factories &raquo;</li>
+      <li>Factory predict unlabelled text</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <div class="doc doc-object doc-module">
+
+
+
+<h4 id="pxtextmining.factories.factory_predict_unlabelled_text" class="doc doc-heading">
+          <code>factory_predict_unlabelled_text</code>
+
+
+</h4>
+
+  <div class="doc doc-contents first">
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_sklearn" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">predict_multilabel_sklearn</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">major_cats</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Conducts basic preprocessing to remove punctuation and numbers.
+Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
+Also takes the class with the highest predicted probability as the predicted class in cases where no class has
+been predicted. Currently used in API, cannot take additional features.</p>
+<p>Major development needed for API: Ability to keep index numbers from input text. Probably need to change to DataFrame not Series.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>text</code></td>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.Series">Series</span></code>
+          </td>
+          <td><p>Series containing text data to be processed and utilised for predictions.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>model</code></td>
+          <td>
+                <code>sklearn.<span title="sklearn.base">base</span></code>
+          </td>
+          <td><p>Trained sklearn estimator able to perform multilabel classification.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>labels</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>List containing target labels. Defaults to major_cats.</p></td>
+          <td>
+                <code>major_cats</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>DataFrame containing the labels and predictions.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.get_labels" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_labels</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Given a one-hot encoded row of predictions from a dataframe,
+returns a list containing the actual predicted labels as a <code>str</code>.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>row</code></td>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>Row in a DataFrame containing one-hot encoded predicted labels.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>labels</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>List containing all the target labels, which should also be columns in the dataframe.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>List of the labels that have been predicted for the given text.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_with_bert" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">predict_with_bert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">already_encoded</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Makes predictions using a transformer-based model. Can encode the data if not already encoded.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>DataFrame containing features to be passed through model.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>model</code></td>
+          <td>
+                <code>tf.<span title="tf.keras">keras</span>.<span title="tf.keras.models">models</span>.<span title="tf.keras.models.Model">Model</span></code>
+          </td>
+          <td><p>Pretrained transformer based model in tensorflow keras.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>max_length</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td><p>If encoding is required, maximum length of input text. Defaults to 150.</p></td>
+          <td>
+                <code>150</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>additional_features</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not additional features (e.g. question type) are included. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>already_encoded</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not the input data needs to be encoded. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>Predicted probabilities for each label.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.fix_no_labels" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">fix_no_labels</span><span class="p">(</span><span class="n">binary_preds</span><span class="p">,</span> <span class="n">predicted_probs</span><span class="p">,</span> <span class="n">model_type</span><span class="o">=</span><span class="s1">&#39;sklearn&#39;</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Function that takes in the binary predicted labels for a particular input, and the predicted probabilities for
+all the labels classes. Where no labels have been predicted for a particular input, takes the label with the highest predicted probability
+as the predicted label.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>binary_preds</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>Predicted labels, in a one-hot encoded binary format. Some rows may not have any predicted labels.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>predicted_probs</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>Predicted probability of each label.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>model_type</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Whether the model is a sklearn or tensorflow keras model; options are 'tf', 'bert', or 'sklearn. Defaults to "sklearn".</p></td>
+          <td>
+                <code>&#39;sklearn&#39;</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>Predicted labels in one-hot encoded format, with all rows containing at least one predicted label.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.turn_probs_into_binary" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">turn_probs_into_binary</span><span class="p">(</span><span class="n">predicted_probs</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Takes predicted probabilities (floats between 0 and 1) and converts these to binary outcomes.
+Scope to finetune this in later iterations of the project depending on the label and whether recall/precision
+is prioritised for that label.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>predicted_probs</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>Array containing the predicted probabilities for each class. Shape of array corresponds to the number of inputs and the number of target classes; if shape is (100, 13) then there are 100 datapoints, and 13 target classes. Predicted probabilities should range from 0 to 1.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>Array containing binary outcomes for each label. Shape should remain the same as input, but values will be either 0 or 1.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../factory_pipeline/" class="btn btn-neutral float-left" title="Factory pipeline"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../factory_write_results/" class="btn btn-neutral float-right" title="Factory write results">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../factory_pipeline/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../factory_write_results/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
