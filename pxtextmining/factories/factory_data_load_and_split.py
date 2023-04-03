@@ -8,6 +8,7 @@ from sklearn.preprocessing import OneHotEncoder
 from tensorflow.data import Dataset
 from transformers import AutoTokenizer
 
+from pxtextmining.params import minor_cats, cat_map
 
 def bert_data_to_dataset(
     X,
@@ -141,74 +142,7 @@ def load_multilabel_data(filename, target="major_categories"):
     features = ["FFT categorical answer", "FFT question", "FFT answer"]
     # For now the labels are hardcoded, these are subject to change as framework is in progress
     if target in ["minor_categories", "major_categories"]:
-        cols = [
-            "Gratitude/ good experience",
-            "Negative experience",
-            "Not assigned",
-            "Organisation & efficiency",
-            "Funding & use of financial resources",
-            "Non-specific praise for staff",
-            "Non-specific dissatisfaction with staff",
-            "Staff manner & personal attributes",
-            "Number & deployment of staff",
-            "Staff responsiveness",
-            "Staff continuity",
-            "Competence & training",
-            "Unspecified communication",
-            "Staff listening, understanding & involving patients",
-            "Information directly from staff during care",
-            "Information provision & guidance",
-            "Being kept informed, clarity & consistency of information",
-            "Service involvement with family/ carers",
-            "Patient contact with family/ carers",
-            "Contacting services",
-            "Appointment arrangements",
-            "Appointment method",
-            "Timeliness of care",
-            "Supplying medication",
-            "Understanding medication",
-            "Pain management",
-            "Diagnosis & triage",
-            "Referals & continuity of care",
-            "Length of stay/ duration of care",
-            "Discharge",
-            "Care plans",
-            "Patient records",
-            "Impact of treatment/ care - physical health",
-            "Impact of treatment/ care - mental health",
-            "Impact of treatment/ care - general",
-            "Links with non-NHS organisations",
-            "Cleanliness, tidiness & infection control",
-            "Noise & restful environment",
-            "Temperature",
-            "Lighting",
-            "Decoration",
-            "Smell",
-            "Comfort of environment",
-            "Atmosphere of ward/ environment",
-            "Access to outside/ fresh air",
-            "Privacy",
-            "Safety & security",
-            "Provision of medical  equipment",
-            "Food & drink provision",
-            "Food preparation facilities for patients & visitors",
-            "Service location",
-            "Transport to/ from services",
-            "Parking",
-            "Provision & range of activities",
-            "Electronic entertainment",
-            "Feeling safe",
-            "Patient appearance & grooming",
-            "Mental Health Act",
-            "Psychological therapy arrangements",
-            "Existence of services",
-            "Choice of services",
-            "Respect for diversity",
-            "Admission",
-            "Out of hours support (community services)",
-            "Learning organisation",
-            "Collecting patients feedback",
-        ]
+        cols = minor_cats
     elif target == "sentiment":
         cols = ["Comment sentiment"]
     # Sort out the features first
@@ -223,11 +157,13 @@ def load_multilabel_data(filename, target="major_categories"):
         "Is there anything we could have done better?": "could_improve",
         "How could we improve?": "could_improve",
         "What could we do better?": "could_improve",
-        "Please describe any things about the 111 service that \nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
+        "Please describe any things about the 111 service that\r\nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
     }
     features_df.loc[:, "FFT_q_standardised"] = (
         features_df.loc[:, "FFT question"].map(q_map).copy()
     )
+    if features_df["FFT_q_standardised"] != features_df.shape[1]:
+        raise ValueError("Check q_map is correct")
     features_df.loc[:, "text_length"] = features_df.loc[:, "FFT answer"].apply(
         lambda x: len([word for word in str(x).split(" ") if word != ""])
     )
@@ -236,74 +172,7 @@ def load_multilabel_data(filename, target="major_categories"):
     targets_df = targets_df.replace("1", 1)
     targets_df = targets_df.fillna(value=0)
     if target == "major_categories":
-        major_categories = {
-            "Gratitude/ good experience": "General",
-            "Negative experience": "General",
-            "Not assigned": "General",
-            "Organisation & efficiency": "General",
-            "Funding & use of financial resources": "General",
-            "Non-specific praise for staff": "Staff",
-            "Non-specific dissatisfaction with staff": "Staff",
-            "Staff manner & personal attributes": "Staff",
-            "Number & deployment of staff": "Staff",
-            "Staff responsiveness": "Staff",
-            "Staff continuity": "Staff",
-            "Competence & training": "Staff",
-            "Unspecified communication": "Communication & involvement",
-            "Staff listening, understanding & involving patients": "Communication & involvement",
-            "Information directly from staff during care": "Communication & involvement",
-            "Information provision & guidance": "Communication & involvement",
-            "Being kept informed, clarity & consistency of information": "Communication & involvement",
-            "Service involvement with family/ carers": "Communication & involvement",
-            "Patient contact with family/ carers": "Communication & involvement",
-            "Contacting services": "Access to medical care & support",
-            "Appointment arrangements": "Access to medical care & support",
-            "Appointment method": "Access to medical care & support",
-            "Timeliness of care": "Access to medical care & support",
-            "Supplying medication": "Medication",
-            "Understanding medication": "Medication",
-            "Pain management": "Medication",
-            "Diagnosis & triage": "Patient journey & service coordination",
-            "Referals & continuity of care": "Patient journey & service coordination",
-            "Length of stay/ duration of care": "Patient journey & service coordination",
-            "Discharge": "Patient journey & service coordination",
-            "Care plans": "Patient journey & service coordination",
-            "Patient records": "Patient journey & service coordination",
-            "Impact of treatment/ care - physical health": "Patient journey & service coordination",
-            "Impact of treatment/ care - mental health": "Patient journey & service coordination",
-            "Impact of treatment/ care - general": "Patient journey & service coordination",
-            "Links with non-NHS organisations": "Patient journey & service coordination",
-            "Cleanliness, tidiness & infection control": "Environment & equipment",
-            "Noise & restful environment": "Environment & equipment",
-            "Temperature": "Environment & equipment",
-            "Lighting": "Environment & equipment",
-            "Decoration": "Environment & equipment",
-            "Smell": "Environment & equipment",
-            "Comfort of environment": "Environment & equipment",
-            "Atmosphere of ward/ environment": "Environment & equipment",
-            "Access to outside/ fresh air": "Environment & equipment",
-            "Privacy": "Environment & equipment",
-            "Safety & security": "Environment & equipment",
-            "Provision of medical  equipment": "Environment & equipment",
-            "Food & drink provision": "Food & diet",
-            "Food preparation facilities for patients & visitors": "Food & diet",
-            "Service location": "Service location, travel & transport",
-            "Transport to/ from services": "Service location, travel & transport",
-            "Parking": "Service location, travel & transport",
-            "Provision & range of activities": "Activities",
-            "Electronic entertainment": "Activities",
-            "Feeling safe": "Category TBC",
-            "Patient appearance & grooming": "Category TBC",
-            "Mental Health Act": "Mental Health specifics",
-            "Psychological therapy arrangements": "Mental Health specifics",
-            "Existence of services": "Additional",
-            "Choice of services": "Additional",
-            "Respect for diversity": "Additional",
-            "Admission": "Additional",
-            "Out of hours support (community services)": "Additional",
-            "Learning organisation": "Additional",
-            "Collecting patients feedback": "Additional",
-        }
+        major_categories = cat_map
         new_df = targets_df.copy().drop(columns=cols)
         for i in targets_df[cols].index:
             for label in cols:
