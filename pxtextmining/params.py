@@ -1,5 +1,5 @@
 
-dataset = 'datasets/hidden/multilabeldata_230403.csv'
+dataset = 'datasets/hidden/multilabel_230403.csv'
 
 model_name = "distilbert-base-uncased"
 

@@ -8,8 +8,7 @@ from sklearn.preprocessing import OneHotEncoder
 from tensorflow.data import Dataset
 from transformers import AutoTokenizer
 
-from pxtextmining.params import minor_cats, cat_map
-
+from pxtextmining.params import minor_cats, cat_map, dataset
 def bert_data_to_dataset(
     X,
     Y=None,
@@ -157,13 +156,16 @@ def load_multilabel_data(filename, target="major_categories"):
         "Is there anything we could have done better?": "could_improve",
         "How could we improve?": "could_improve",
         "What could we do better?": "could_improve",
+        "Please can you tell us why you gave your answer and what we could have done better?": "nonspecific",
         "Please describe any things about the 111 service that\r\nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
     }
     features_df.loc[:, "FFT_q_standardised"] = (
         features_df.loc[:, "FFT question"].map(q_map).copy()
     )
-    if features_df["FFT_q_standardised"] != features_df.shape[1]:
-        raise ValueError("Check q_map is correct")
+    if features_df["FFT_q_standardised"].count() != features_df.shape[0]:
+        raise ValueError(f'Check q_map is correct. features_df.shape[0] is {features_df.shape[0]}. \n \
+                         features_df["FFT_q_standardised"].count()  is {features_df["FFT_q_standardised"].count()}. \n\n\
+                         Questions are: {features_df["FFT question"].value_counts()}')
     features_df.loc[:, "text_length"] = features_df.loc[:, "FFT answer"].apply(
         lambda x: len([word for word in str(x).split(" ") if word != ""])
     )
@@ -314,3 +316,9 @@ def remove_punc_and_nums(text):
     cleaned_sentence = " ".join(word for word in text_lower)
     cleaned_sentence = cleaned_sentence.strip()
     return cleaned_sentence
+
+
+if __name__ == '__main__':
+    df = load_multilabel_data(dataset, target = 'minor_categories')
+    print(df.shape)
+    print(df.head())
