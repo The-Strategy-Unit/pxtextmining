@@ -14,7 +14,7 @@ from pxtextmining.factories.factory_pipeline import (
 from pxtextmining.factories.factory_write_results import \
     write_multilabel_models_and_metrics
 from pxtextmining.helpers.text_preprocessor import tf_preprocessing
-from pxtextmining.params import major_cats
+from pxtextmining.params import major_cats, minor_cats, dataset
 
 def run_sklearn_pipeline(additional_features = False, target= major_cats, models_to_try = ["mnb", "knn", "svm", "rfc"], path = 'test_multilabel'):
     """Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
@@ -69,7 +69,7 @@ def run_tf_pipeline(target= major_cats, path = 'test_multilabel/tf'):
                                            model = model_trained, training_time = training_time)
     write_multilabel_models_and_metrics([model_trained],[model_metrics],path=path)
 
-def run_bert_pipeline(additional_features = False, path = 'test_multilabel/bert'):
+def run_bert_pipeline(additional_features = False, path = 'test_multilabel/bert', target = major_cats):
     """Runs all the functions required to load multilabel data, preprocess it, and split it into training, test and validation sets.
     Creates tf.keras Transformer model with additional layers specific to the classification task, and trains it on the train set.
     Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
@@ -81,9 +81,12 @@ def run_bert_pipeline(additional_features = False, path = 'test_multilabel/bert'
     """
     random_state = random.randint(1,999)
     print(f'random_state is: {random_state}')
-    # This line on loading dataframe has to be manually edited depending on the target and the filename, currently
-    df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv', target = 'major_categories')
-    X_train_val, X_test, Y_train_val, Y_test = process_and_split_multilabel_data(df, target = major_cats, preprocess_text = False,
+    if target == major_cats:
+        target_name = 'major_categories'
+    if target == minor_cats:
+        target_name = 'minor_categories'
+    df = load_multilabel_data(filename = dataset, target = target_name)
+    X_train_val, X_test, Y_train_val, Y_test = process_and_split_multilabel_data(df, target = target, preprocess_text = False,
                                                                                  additional_features = additional_features, random_state = random_state)
     X_train, X_val, Y_train, Y_val = train_test_split(X_train_val, Y_train_val, test_size=0.2, random_state = random_state)
     train_dataset = bert_data_to_dataset(X_train, Y_train, additional_features = additional_features)
@@ -96,11 +99,11 @@ def run_bert_pipeline(additional_features = False, path = 'test_multilabel/bert'
         model = create_bert_model(Y_train)
     model_trained, training_time = train_bert_model(train_dataset, val_dataset, model,
                                                     class_weights_dict = class_weights_dict, epochs = 25)
-    model_metrics = get_multilabel_metrics(test_dataset, Y_test, random_state = random_state, labels = major_cats,
+    model_metrics = get_multilabel_metrics(test_dataset, Y_test, random_state = random_state, labels = target,
                                            model_type = 'bert',
                                            model = model_trained, training_time = training_time,
                                            additional_features = additional_features, already_encoded = True)
     write_multilabel_models_and_metrics([model_trained],[model_metrics],path=path)
 
 if __name__ == '__main__':
-    run_sklearn_pipeline(additional_features = True)
+    run_bert_pipeline(additional_features = True, path = 'test_multilabel/bert_minorcats', target = minor_cats)
