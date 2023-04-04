@@ -246,30 +246,16 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
     if additional_features == True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
         vectorizer = create_sklearn_vectorizer(tokenizer=None)
-        num_transformer = RobustScaler()
+        # num_transformer = RobustScaler()
         preproc = make_column_transformer(
             (cat_transformer, ["FFT_q_standardised"]),
             (vectorizer, "FFT answer"),
-            (num_transformer, ["text_length"]),
+            # (num_transformer, ["text_length"]),
         )
         params = {
             "columntransformer__tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
-            "columntransformer__tfidfvectorizer__max_df": [
-                0.85,
-                0.86,
-                0.87,
-                0.88,
-                0.89,
-                0.9,
-                0.91,
-                0.92,
-                0.93,
-                0.94,
-                0.95,
-                0.96,
-                0.97,
-            ],
-            "columntransformer__tfidfvectorizer__min_df": stats.uniform(0, 0.15),
+            "columntransformer__tfidfvectorizer__max_df": [0.85,0.86,0.87,0.88,0.89,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99],
+            "columntransformer__tfidfvectorizer__min_df": stats.uniform(0, 0.1),
         }
     else:
         preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
@@ -293,7 +279,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                     probability=True,
                     class_weight="balanced",
                     max_iter=1000,
-                    cache_size=500,
+                    cache_size=1000,
                 ),
                 n_jobs=-1,
             ),
