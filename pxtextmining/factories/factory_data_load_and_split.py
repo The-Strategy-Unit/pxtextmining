@@ -10,6 +10,25 @@ from transformers import AutoTokenizer
 
 from pxtextmining.params import minor_cats, cat_map, dataset
 
+def merge_categories(df, new_cat, cats_to_merge):
+    """Merges categories together in a dataset. Assumes all categories are all in the right format, one hot encoded with int values.
+
+    Args:
+        df (pd.DataFrame): DataFrame with labelled data.
+        new_cat (str): Name for new column of merged data.
+        cats_to_merge (list): List containing columns to be merged.
+
+    Returns:
+        (pd.DataFrame): DataFrame with new columns
+    """
+    df[new_cat] = np.NaN
+    for cat in cats_to_merge:
+        print(f"Number of {cat} labels: {df[cat].sum()}")
+        df[new_cat] = dataset[new_cat].mask(dataset[cat] == 1, other = 1)
+    print(f"Number of new label {new_cat}: {df[new_cat].sum()}")
+    return df
+
+
 def bert_data_to_dataset(
     X,
     Y=None,
@@ -287,6 +306,7 @@ def remove_punc_and_nums(text):
     """
     text = re.sub("\\n", " ", text)
     text = re.sub("\\r", " ", text)
+    text = re.sub("â€™", "'", text)
     text = "".join(char for char in text if not char.isdigit())
     punc_list = string.punctuation
     for punctuation in punc_list:

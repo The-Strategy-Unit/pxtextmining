@@ -2,6 +2,7 @@ import datetime
 import time
 
 import numpy as np
+import xgboost as xgb
 from scipy import stats
 from sklearn.compose import make_column_transformer
 from sklearn.ensemble import RandomForestClassifier
@@ -301,6 +302,9 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
         ]
         params["randomforestclassifier__min_samples_leaf"] = stats.randint(1, 10)
         params["randomforestclassifier__max_features"] = ["sqrt", "log2", None, 0.3]
+    if model_type == 'xgb':
+        pipe = make_pipeline(preproc, xgb.XGBClassifier(tree_method="hist"))
+
     return pipe, params
 
 
@@ -322,9 +326,9 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_feature
     models = []
     training_times = []
     for model_type in models_to_try:
-        if model_type not in ["mnb", "knn", "svm", "rfc"]:
+        if model_type not in ["mnb", "knn", "svm", "rfc", "xgb"]:
             raise ValueError(
-                "Please choose valid model_type. Options are mnb, knn, svm, or rfc"
+                "Please choose valid model_type. Options are mnb, knn, svm, xgb or rfc"
             )
         else:
             if additional_features == False:
