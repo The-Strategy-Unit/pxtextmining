@@ -31,8 +31,11 @@ def run_sklearn_pipeline(additional_features = False, target= major_cats, models
         path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
     """
     random_state = random.randint(1,999)
-    # This line on loading dataframe has to be manually edited depending on the target and the filename, currently
-    df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv', target = 'major_categories')
+    if target == major_cats:
+        target_name = 'major_categories'
+    if target == minor_cats:
+        target_name = 'minor_categories'
+    df = load_multilabel_data(filename = dataset, target = target_name)
     X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = target,
                                                                          additional_features =additional_features, random_state = random_state)
     models, training_times = search_sklearn_pipelines(X_train, Y_train, models_to_try = models_to_try, additional_features = additional_features)
@@ -106,4 +109,5 @@ def run_bert_pipeline(additional_features = False, path = 'test_multilabel/bert'
     write_multilabel_models_and_metrics([model_trained],[model_metrics],path=path)
 
 if __name__ == '__main__':
-    run_bert_pipeline(additional_features = True, path = 'test_multilabel/bert_minorcats', target = minor_cats)
+    # run_bert_pipeline(additional_features = True, path = 'test_multilabel/bert_minorcats', target = minor_cats)
+    run_sklearn_pipeline(additional_features = True, target= minor_cats, models_to_try = ["knn", "svm", "rfc"], path = 'test_multilabel/minorcats_sklearn')
