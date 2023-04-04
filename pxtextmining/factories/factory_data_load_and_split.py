@@ -234,11 +234,11 @@ def process_multilabel_data(
     if additional_features == True:
         X = pd.merge(
             X,
-            df[["FFT_q_standardised", "text_length"]],
+            df[["FFT_q_standardised"]],
             left_index=True,
             right_index=True,
         )
-    Y = Y.loc[X.index]
+    Y = np.array(Y.loc[X.index]).astype(int)
     return X, Y
 
 
