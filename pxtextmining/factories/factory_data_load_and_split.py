@@ -65,7 +65,7 @@ def bert_data_to_dataset(
     if additional_features == True:
         onehotted = onehot(X, "FFT_q_standardised")
         data_encoded["input_cat"] = onehotted.astype(np.float32)
-    if isinstance(Y, pd.DataFrame):
+    if Y is not None:
         data_encoded = Dataset.from_tensor_slices((data_encoded, Y))
     return data_encoded
 
