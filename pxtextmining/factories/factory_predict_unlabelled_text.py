@@ -9,9 +9,10 @@ from pxtextmining.params import major_cats
 
 
 def predict_multilabel_sklearn(
-    text: pd.Series,
+    data,
     model,
     labels=major_cats,
+    additional_features = False
 ):
     """Conducts basic preprocessing to remove punctuation and numbers.
     Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
@@ -28,6 +29,10 @@ def predict_multilabel_sklearn(
     Returns:
         (pd.DataFrame): DataFrame containing the labels and predictions.
     """
+    if additional_features == False:
+        text = pd.Series(data)
+    else:
+        text = data['FFT answer']
     text_as_str = text.astype(str)
     text_stripped = text_as_str.str.strip()
     text_no_whitespace = text_stripped.replace([r"^\s*$", r"(?i)^nan$", r"(?i)^null$", r"(?i)^n\/a$"],
@@ -35,8 +40,12 @@ def predict_multilabel_sklearn(
     text_no_nans = text_no_whitespace.dropna()
     text_cleaned = text_no_nans.astype(str).apply(remove_punc_and_nums)
     processed_text = text_cleaned.replace(r"^\s*$", np.nan, regex=True).dropna()
-    binary_preds = model.predict(processed_text)
-    pred_probs = np.array(model.predict_proba(processed_text))
+    if additional_features == False:
+        final_data = processed_text
+    else:
+        final_data = pd.merge(processed_text, data['FFT_q_standardised'], how='left', on='Comment ID')
+    binary_preds = model.predict(final_data)
+    pred_probs = np.array(model.predict_proba(final_data))
     predictions = fix_no_labels(binary_preds, pred_probs, model_type="sklearn")
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
