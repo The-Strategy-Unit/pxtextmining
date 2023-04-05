@@ -17,14 +17,13 @@ def predict_multilabel_sklearn(
     """Conducts basic preprocessing to remove punctuation and numbers.
     Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
     Also takes the class with the highest predicted probability as the predicted class in cases where no class has
-    been predicted. Currently used in API, cannot take additional features.
-
-    Major development needed for API: Ability to keep index numbers from input text. Probably need to change to DataFrame not Series.
+    been predicted.
 
     Args:
-        text (pd.Series): Series containing text data to be processed and utilised for predictions.
+        text (pd.Series OR pd.DataFrame): DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True
         model (sklearn.base): Trained sklearn estimator able to perform multilabel classification.
         labels (list, optional): List containing target labels. Defaults to major_cats.
+        additional_features: Whether or not FFT_q_standardised is included in data.
 
     Returns:
         (pd.DataFrame): DataFrame containing the labels and predictions.
