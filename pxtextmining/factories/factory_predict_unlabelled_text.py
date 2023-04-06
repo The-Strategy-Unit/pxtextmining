@@ -66,6 +66,35 @@ def predict_multilabel_sklearn(
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
     return preds_df
 
+def get_probabilities(label_series, labels, predicted_probabilities, model_type):
+    """Given a pd.Series containing labels, the list of labels, and a model's outputted predicted_probabilities for each label,
+    create a dictionary containing the label and the predicted probability of that label.
+
+    Args:
+        label_series (pd.Series): Series containing labels in the format `['label_one', 'label_two']`
+        labels (list): List of the label names
+        predicted_probabilities (np.array): Predicted probabilities for each label
+        model_type (str): Model architecture, if sklearn or otherwise.
+
+    Returns:
+        (pd.Series): Series, each line containing a dict with the predicted probabilities for each label.
+    """
+    probabilities = []
+    for i in range(label_series.shape[0]):
+        label_probs = {}
+        predicted_labels = label_series.iloc[i]
+        for each in predicted_labels:
+            index_label = labels.index(each)
+            if model_type == 'sklearn':
+                prob_of_label = predicted_probabilities[index_label, i, 1]
+            elif model_type in ('tf', 'bert'):
+                prob_of_label = predicted_probabilities[i]
+            label_probs[each] = round(prob_of_label, 5)
+        probabilities.append(label_probs)
+    probability_s = pd.Series(probabilities)
+    probability_s.index = label_series.index
+    probability_s.name = f'{label_series.name}_probabilities'
+    return probability_s
 
 def get_labels(row, labels):
     """Given a one-hot encoded row of predictions from a dataframe,
