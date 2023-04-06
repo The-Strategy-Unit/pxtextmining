@@ -124,3 +124,38 @@ def get_accuracy_per_class(y_test, pred):
     accuracy_per_class["class"], accuracy_per_class["counts"] = unique, frequency
     accuracy_per_class = accuracy_per_class[["class", "counts", "accuracy"]]
     return accuracy_per_class
+
+
+def parse_metrics_file(metrics_file, labels):
+    """Reads performance metrics files that are written by `factory_write_results.write_multilabel_models_and_metrics`.
+    Creates a pd.DataFrame with the precision, recall, f1_score, and support for each label, which can be filtered and sorted more easily.
+
+    Args:
+        metrics_file (str): Path to the metrics file to be parsed.
+        labels (list): List of the target labels used in the metrics file.
+
+    Returns:
+        (pd.DataFrame): DataFrame containing the precision, recall, f1_score, and support for each label, as detailed in the performance metrics file.
+    """
+    with open(metrics_file, 'r') as file:
+        content = file.readlines()
+    for i, l in enumerate(content):
+        if l.strip().startswith(labels[0][:10]):
+            startline = i
+        if l.strip().startswith(labels[-1][:10]):
+            endline = i+1
+    lines = [x.strip() for x in content[startline:endline]]
+    metrics_dict = {'label': [],
+                'precision': [],
+                'recall': [],
+                'f1_score': [],
+                'support': []}
+    for each in lines:
+        splitted = each.split('      ')
+        metrics_dict['label'].append(splitted[0].strip())
+        metrics_dict['precision'].append(splitted[1].strip())
+        metrics_dict['recall'].append(splitted[2].strip())
+        metrics_dict['f1_score'].append(splitted[3].strip())
+        metrics_dict['support'].append(splitted[4].strip())
+    metrics_df = pd.DataFrame.from_dict(metrics_dict)
+    return metrics_df
