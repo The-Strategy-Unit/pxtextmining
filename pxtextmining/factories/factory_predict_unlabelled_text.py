@@ -88,7 +88,7 @@ def get_probabilities(label_series, labels, predicted_probabilities, model_type)
             if model_type == 'sklearn':
                 prob_of_label = predicted_probabilities[index_label, i, 1]
             elif model_type in ('tf', 'bert'):
-                prob_of_label = predicted_probabilities[i]
+                prob_of_label = predicted_probabilities[i][index_label]
             label_probs[each] = round(prob_of_label, 5)
         probabilities.append(label_probs)
     probability_s = pd.Series(probabilities)
