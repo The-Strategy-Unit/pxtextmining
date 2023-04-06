@@ -31,7 +31,7 @@ def predict_multilabel_sklearn(
     model,
     labels=major_cats,
     additional_features = False,
-    fix_no_labels = True
+    label_fix = True
 ):
     """Conducts basic preprocessing to remove punctuation and numbers.
     Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
@@ -42,7 +42,8 @@ def predict_multilabel_sklearn(
         text (pd.Series OR pd.DataFrame): DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True
         model (sklearn.base): Trained sklearn estimator able to perform multilabel classification.
         labels (list, optional): List containing target labels. Defaults to major_cats.
-        additional_features: Whether or not FFT_q_standardised is included in data.
+        additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
+        label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
 
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
@@ -57,7 +58,7 @@ def predict_multilabel_sklearn(
     else:
         final_data = pd.merge(processed_text, data['FFT_q_standardised'], how='left', on='Comment ID')
     binary_preds = model.predict(final_data)
-    if fix_no_labels == True:
+    if label_fix == True:
         pred_probs = np.array(model.predict_proba(final_data))
         predictions = fix_no_labels(binary_preds, pred_probs, model_type="sklearn")
     else:
