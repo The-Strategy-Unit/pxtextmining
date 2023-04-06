@@ -7,17 +7,36 @@ from pxtextmining.factories.factory_data_load_and_split import (
 )
 from pxtextmining.params import major_cats
 
+def process_text(text):
+    """ Enacts same text preprocessing as is found in factory_data_load_and_split when creating training data. Converts to string, removes trailing whitespaces, null values, punctuation and numbers. Converts to lowercase.
+
+    Args:
+        text (pd.Series): Series containing data to be cleaned.
+
+    Returns:
+        (pd.Series): Processed text data
+    """
+    text_as_str = text.astype(str)
+    text_stripped = text_as_str.str.strip()
+    text_no_whitespace = text_stripped.replace([r"^\s*$", r"(?i)^nan$", r"(?i)^null$", r"(?i)^n\/a$"],
+                                             np.nan, regex=True)
+    text_no_nans = text_no_whitespace.dropna()
+    text_cleaned = text_no_nans.astype(str).apply(remove_punc_and_nums)
+    processed_text = text_cleaned.replace(r"^\s*$", np.nan, regex=True).dropna()
+    return processed_text
+
 
 def predict_multilabel_sklearn(
     data,
     model,
     labels=major_cats,
-    additional_features = False
+    additional_features = False,
+    fix_no_labels = True
 ):
     """Conducts basic preprocessing to remove punctuation and numbers.
     Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
     Also takes the class with the highest predicted probability as the predicted class in cases where no class has
-    been predicted.
+    been predicted, if fix_no_labels = True.
 
     Args:
         text (pd.Series OR pd.DataFrame): DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True
@@ -26,26 +45,23 @@ def predict_multilabel_sklearn(
         additional_features: Whether or not FFT_q_standardised is included in data.
 
     Returns:
-        (pd.DataFrame): DataFrame containing the labels and predictions.
+        (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
     """
     if additional_features == False:
         text = pd.Series(data)
     else:
         text = data['FFT answer']
-    text_as_str = text.astype(str)
-    text_stripped = text_as_str.str.strip()
-    text_no_whitespace = text_stripped.replace([r"^\s*$", r"(?i)^nan$", r"(?i)^null$", r"(?i)^n\/a$"],
-                                             np.nan, regex=True)
-    text_no_nans = text_no_whitespace.dropna()
-    text_cleaned = text_no_nans.astype(str).apply(remove_punc_and_nums)
-    processed_text = text_cleaned.replace(r"^\s*$", np.nan, regex=True).dropna()
+    processed_text = process_text(text)
     if additional_features == False:
         final_data = processed_text
     else:
         final_data = pd.merge(processed_text, data['FFT_q_standardised'], how='left', on='Comment ID')
     binary_preds = model.predict(final_data)
-    pred_probs = np.array(model.predict_proba(final_data))
-    predictions = fix_no_labels(binary_preds, pred_probs, model_type="sklearn")
+    if fix_no_labels == True:
+        pred_probs = np.array(model.predict_proba(final_data))
+        predictions = fix_no_labels(binary_preds, pred_probs, model_type="sklearn")
+    else:
+        predictions = binary_preds
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
     return preds_df
