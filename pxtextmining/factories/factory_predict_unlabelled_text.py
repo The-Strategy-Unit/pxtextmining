@@ -68,7 +68,21 @@ def predict_multilabel_sklearn(
     return preds_df
 
 def predict_with_probs(x, labels, model):
-    # Only works with SKLEARN models for now
+    """Given a trained model and some features, makes predictions based on the model's outputted probabilities using the model.predict_proba function.
+    Any label with a predicted probability over 0.5 is taken as the predicted label. If no labels are over 0.5 probability then the
+    label with the highest probability is taken.
+    Converts into one-hot encoded format (similar to what model.predict would output).
+    Currently only works with sklearn models.
+
+    Args:
+        x (pd.DataFrame): Features to be used to make the prediction.
+        labels (list): List of labels for the categories to be predicted.
+        model (sklearn.base): Trained sklearn multilabel classifier.
+
+    Returns:
+        (np.array): Predicted labels in one hot encoded format based on model probability estimates.
+    """
+
     # Get all probs for a given comment in one dict first
     pred_probs = model.predict_proba(x)
     probabilities = []
