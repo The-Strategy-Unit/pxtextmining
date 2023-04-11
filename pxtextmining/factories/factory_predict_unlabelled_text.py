@@ -67,6 +67,38 @@ def predict_multilabel_sklearn(
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
     return preds_df
 
+def predict_with_probs(x, labels, model):
+    # Only works with SKLEARN models for now
+    # Get all probs for a given comment in one dict first
+    pred_probs = model.predict_proba(x)
+    probabilities = []
+    for i in range(x.shape[0]):
+        label_probs = {}
+        for index, l in enumerate(labels):
+            prob_of_label = pred_probs[index, i, 1]
+            label_probs[l] = round(prob_of_label, 5)
+        probabilities.append(label_probs)
+    probability_s = pd.Series(probabilities)
+    probability_s.index = x.index
+    # Parse dict of probabilities into one hot encoded format
+    prob_preds = []
+    for d in range(len(probability_s)):
+        row_preds = [0] * 53
+        for k,v in probability_s.iloc[d].items():
+            max_val = 0
+            if v > max_val:
+                max_k = k
+            if v > 0.5:
+                index_over_5 = labels.index(k)
+                row_preds[index_over_5] = 1
+        if sum(row_preds) == 0:
+            index_max = labels.index(max_k)
+            row_preds[index_max] = 1
+        prob_preds.append(row_preds)
+    np.array(prob_preds).shape
+    y_pred = np.array(prob_preds)
+    return y_pred
+
 def get_probabilities(label_series, labels, predicted_probabilities, model_type):
     """Given a pd.Series containing labels, the list of labels, and a model's outputted predicted_probabilities for each label,
     create a dictionary containing the label and the predicted probability of that label.
