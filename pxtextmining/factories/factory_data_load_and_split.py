@@ -8,7 +8,7 @@ from sklearn.preprocessing import OneHotEncoder
 from tensorflow.data import Dataset
 from transformers import AutoTokenizer
 
-from pxtextmining.params import minor_cats, cat_map, dataset
+from pxtextmining.params import merged_minor_cats, minor_cats, cat_map, dataset
 
 def merge_categories(df, new_cat, cats_to_merge):
     """Merges categories together in a dataset. Assumes all categories are all in the right format, one hot encoded with int values.
@@ -85,58 +85,6 @@ def load_multilabel_data(filename, target="major_categories"):
     print("Loading multilabel dataset...")
     raw_data = pd.read_csv(
         filename,
-        dtype={'FFT categorical answer': 'Int64', 'text_length': 'Int64',
-            'Gratitude/ good experience': 'Int64', 'Negative experience': 'Int64',
-               'Not assigned': 'Int64', 'Organisation & efficiency': 'Int64',
-               'Funding & use of financial resources': 'Int64',
-               'Collecting patients feedback': 'Int64',
-               'Non-specific praise for staff': 'Int64',
-               'Non-specific dissatisfaction with staff': 'Int64',
-               'Staff manner & personal attributes': 'Int64',
-                'Number & deployment of staff': 'Int64',
-                'Staff responsiveness': 'Int64',
-                'Staff continuity': 'Int64',
-                'Competence & training': 'Int64',
-                'Unspecified communication': 'Int64',
-                'Staff listening, understanding & involving patients': 'Int64',
-                'Information directly from staff during care': 'Int64',
-                'Information provision & guidance': 'Int64',
-                'Being kept informed, clarity & consistency of information': 'Int64',
-                'Service involvement with family/ carers': 'Int64',
-                'Patient contact with family/ carers': 'Int64',
-                'Contacting services': 'Int64',
-                'Appointment arrangements': 'Int64',
-                'Appointment method': 'Int64',
-                'Timeliness of care': 'Int64',
-                'Supplying & understanding medication': 'Int64',
-                'Pain management': 'Int64',
-                'Diagnosis & triage': 'Int64',
-                'Referals & continuity of care': 'Int64',
-                'Length of stay/ duration of care': 'Int64',
-                'Admission': 'Int64',
-                'Discharge': 'Int64',
-                'Care plans': 'Int64',
-                'Patient records': 'Int64',
-                'Impact of treatment/ care': 'Int64',
-                'Links with non-NHS organisations': 'Int64',
-                'Cleanliness, tidiness & infection control': 'Int64',
-                'Sensory experience of environment': 'Int64',
-                'Comfort of environment': 'Int64',
-                'Atmosphere of ward/ environment': 'Int64',
-                'Privacy': 'Int64',
-                'Safety & security': 'Int64',
-                'Provision of medical equipment': 'Int64',
-                'Food & drink provision & facilities': 'Int64',
-                'Service location': 'Int64',
-                'Transport to/ from services': 'Int64',
-                'Parking': 'Int64',
-                'Activities & access to fresh air': 'Int64',
-                'Electronic entertainment': 'Int64',
-                'Feeling safe': 'Int64',
-                'Patient appearance & grooming': 'Int64',
-                'Equality, Diversity & Inclusion': 'Int64',
-                'Mental Health Act': 'Int64',
-                'Labelling not possible': 'Int64'},
         na_values=" ",
     )
     print(f"Shape of raw data is {raw_data.shape}")
@@ -146,6 +94,8 @@ def load_multilabel_data(filename, target="major_categories"):
     # For now the labels are hardcoded, these are subject to change as framework is in progress
     if target in ["minor_categories", "major_categories"]:
         cols = minor_cats
+    if target == 'test':
+        cols = merged_minor_cats
     elif target == "sentiment":
         cols = ["Comment sentiment"]
     # Sort out the features first
