@@ -7,7 +7,7 @@ from scipy import stats
 from sklearn.compose import make_column_transformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -349,3 +349,25 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_feature
             training_time = round(time.time() - start_time, 0)
             training_times.append(str(datetime.timedelta(seconds=training_time)))
     return models, training_times
+
+
+def create_and_train_svc_model(X_train, Y_train):
+    cat_transformer = OneHotEncoder(handle_unknown="ignore")
+    vectorizer = TfidfVectorizer(max_df = 0.9, min_df = 0, ngram_range=(1, 2))
+    preproc = make_column_transformer(
+                (cat_transformer, ["FFT_q_standardised"]),
+                (vectorizer, "FFT answer"),
+            )
+    pipe = make_pipeline(
+                preproc,
+                MultiOutputClassifier(
+                    SVC(C = 15,
+                        probability=True,
+                        class_weight="balanced",
+                        max_iter=1000,
+                        cache_size=1000,
+                    ),
+                ),
+            )
+    pipe.fit(X_train, Y_train)
+    return pipe
