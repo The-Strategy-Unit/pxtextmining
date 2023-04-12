@@ -24,7 +24,7 @@ def merge_categories(df, new_cat, cats_to_merge):
     df[new_cat] = np.NaN
     for cat in cats_to_merge:
         print(f"Number of {cat} labels: {df[cat].sum()}")
-        df[new_cat] = dataset[new_cat].mask(dataset[cat] == 1, other = 1)
+        df[new_cat] = df[new_cat].mask(df[cat] == 1, other = 1)
     print(f"Number of new label {new_cat}: {df[new_cat].sum()}")
     return df
 
