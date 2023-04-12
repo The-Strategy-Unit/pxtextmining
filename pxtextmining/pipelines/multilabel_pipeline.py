@@ -54,6 +54,8 @@ def run_svc_pipeline(additional_features = False, target= major_cats, path = 'te
         target_name = 'major_categories'
     if target == minor_cats:
         target_name = 'minor_categories'
+    if target == merged_minor_cats:
+        target_name = 'test'
     df = load_multilabel_data(filename = dataset, target = target_name)
     X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(df, target = target,
                                                                          additional_features =additional_features, random_state = random_state)
