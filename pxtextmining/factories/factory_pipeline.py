@@ -15,6 +15,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, RobustScaler
 from sklearn.svm import SVC
 from sklearn.utils.class_weight import compute_class_weight
+from sklearn.model_selection import cross_validate
 from tensorflow.keras import Sequential, layers
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.initializers import TruncatedNormal
@@ -373,3 +374,25 @@ def create_and_train_svc_model(X_train, Y_train):
     pipe.fit(X_train, Y_train)
     training_time = round(time.time() - start_time, 0)
     return pipe, training_time
+
+def cv_svc_model(X_train, Y_train):
+    cat_transformer = OneHotEncoder(handle_unknown="ignore")
+    vectorizer = TfidfVectorizer(max_df = 0.9, min_df = 0, ngram_range=(1, 2))
+    preproc = make_column_transformer(
+                (cat_transformer, ["FFT_q_standardised"]),
+                (vectorizer, "FFT answer"),
+            )
+    pipe = make_pipeline(
+                preproc,
+                MultiOutputClassifier(
+                    SVC(C = 15,
+                        probability=True,
+                        class_weight="balanced",
+                        max_iter=1000,
+                        cache_size=1000,
+                    ),
+                ),
+            )
+    scores = cross_validate(pipe, X_train, Y_train, cv = 4,
+                            scoring=['f1_micro', 'f1_macro'])
+    return scores
