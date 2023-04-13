@@ -84,20 +84,20 @@ def predict_with_probs(x, labels, model):
     """
 
     # Get all probs for a given comment in one dict first
-    pred_probs = model.predict_proba(x)
+    pred_probs = np.array(model.predict_proba(x))
     probabilities = []
     for i in range(x.shape[0]):
         label_probs = {}
-        for index, l in enumerate(labels):
+        for index, label in enumerate(labels):
             prob_of_label = pred_probs[index, i, 1]
-            label_probs[l] = round(prob_of_label, 5)
+            label_probs[label] = round(prob_of_label, 5)
         probabilities.append(label_probs)
     probability_s = pd.Series(probabilities)
     probability_s.index = x.index
     # Parse dict of probabilities into one hot encoded format
     prob_preds = []
     for d in range(len(probability_s)):
-        row_preds = [0] * 53
+        row_preds = [0] * len(labels)
         for k,v in probability_s.iloc[d].items():
             max_val = 0
             if v > max_val:
