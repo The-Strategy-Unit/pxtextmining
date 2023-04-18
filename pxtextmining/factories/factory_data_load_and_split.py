@@ -26,6 +26,7 @@ def merge_categories(df, new_cat, cats_to_merge):
         print(f"Number of {cat} labels: {df[cat].sum()}")
         df[new_cat] = df[new_cat].mask(df[cat] == 1, other = 1)
     print(f"Number of new label {new_cat}: {df[new_cat].sum()}")
+    df = df.drop(columns = cats_to_merge)
     return df
 
 
