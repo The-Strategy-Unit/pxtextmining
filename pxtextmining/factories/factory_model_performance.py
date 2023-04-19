@@ -8,7 +8,8 @@ from pxtextmining.factories.factory_predict_unlabelled_text import (
     fix_no_labels,
     predict_with_bert,
     turn_probs_into_binary,
-    predict_with_probs
+    predict_with_probs,
+    predict_multilabel_sklearn
 )
 
 
@@ -80,11 +81,12 @@ def get_multilabel_metrics(
         y_pred = fix_no_labels(binary_preds, y_probs, model_type="tf")
     elif model_type == "sklearn":
         if use_probs == True:
-            y_pred = predict_with_probs(x_test, labels, model)
+            y_pred = predict_with_probs(x_test, model, labels)
         else:
-            binary_preds = model.predict(x_test)
-            y_probs = np.array(model.predict_proba(x_test))
-            y_pred = fix_no_labels(binary_preds, y_probs, model_type="sklearn")
+            y_pred_df = predict_multilabel_sklearn(x_test, model, labels = labels,
+                                                additional_features = additional_features,
+                                                label_fix = True, enhance_with_probs = True)
+            y_pred = np.array(y_pred_df)[:,:-1].astype('int64')
     else:
         raise ValueError('Please select valid model_type. Options are "bert", "tf" or "sklearn"')
     # Calculate various metrics
