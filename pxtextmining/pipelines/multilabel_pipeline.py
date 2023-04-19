@@ -1,4 +1,5 @@
 import random
+import pandas as pd
 
 from sklearn.model_selection import train_test_split
 
@@ -6,14 +7,14 @@ from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset, load_multilabel_data,
     process_and_split_multilabel_data)
 from pxtextmining.factories.factory_model_performance import \
-    get_multilabel_metrics
+    get_multilabel_metrics, parse_metrics_file
 from pxtextmining.factories.factory_pipeline import (
     calculating_class_weights, create_bert_model,
     create_bert_model_additional_features, create_tf_model,
     create_and_train_svc_model,
     search_sklearn_pipelines, train_bert_model, train_tf_model)
 from pxtextmining.factories.factory_write_results import \
-    write_multilabel_models_and_metrics
+    write_multilabel_models_and_metrics, write_model_preds
 from pxtextmining.helpers.text_preprocessor import tf_preprocessing
 from pxtextmining.params import major_cats, minor_cats, dataset, merged_minor_cats
 
@@ -48,7 +49,7 @@ def run_sklearn_pipeline(additional_features = False, target= major_cats, models
                                                     labels = target, model_type = 'sklearn', model = m, training_time = t))
     write_multilabel_models_and_metrics(models,model_metrics,path=path)
 
-def run_svc_pipeline(additional_features = False, target= major_cats, path = 'test_multilabel'):
+def run_svc_pipeline(additional_features = False, target= major_cats, path = 'test_multilabel', include_analysis = False):
     random_state = random.randint(1,999)
     if target == major_cats:
         target_name = 'major_categories'
@@ -62,8 +63,19 @@ def run_svc_pipeline(additional_features = False, target= major_cats, path = 'te
     model, training_time = create_and_train_svc_model(X_train, Y_train)
     model_metrics = get_multilabel_metrics(X_test, Y_test, random_state = random_state,
                                                     labels = target, model_type = 'sklearn',
-                                                    model = model, training_time = training_time)
+                                                    model = model, training_time = training_time,
+                                                    additional_features=additional_features)
     write_multilabel_models_and_metrics([model],[model_metrics],path=path)
+    if include_analysis == True:
+        write_model_preds(X_test, Y_test, model, labels = target,
+                          additional_features = additional_features,
+                          use_probs = False, path = f'{path}/labels.xlsx')
+        metrics_df = parse_metrics_file(f'{path}/model_0.txt', labels = target)
+        label_counts = pd.DataFrame(df[target].sum())
+        label_counts = label_counts.reset_index()
+        label_counts = label_counts.rename(columns = {'index': 'label', 0: 'label_count'})
+        metrics_df = metrics_df.merge(label_counts, on='label')
+        metrics_df.to_excel(f'{path}/perf.xlsx', index = False)
 
 def run_tf_pipeline(target= major_cats, path = 'test_multilabel/tf'):
     """Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
@@ -130,4 +142,4 @@ if __name__ == '__main__':
     # run_bert_pipeline(additional_features = True, path = 'test_multilabel/bert_minorcats', target = minor_cats)
     # run_sklearn_pipeline(additional_features = True, target= minor_cats, models_to_try = ["knn", "svm", "rfc"], path = 'test_multilabel/minorcats_sklearn')
     run_svc_pipeline(additional_features= True, target= minor_cats,
-                     path = 'test_multilabel/minorcats_sklearn')
+                     path = 'test_multilabel/minorcats_sklearn_v2', include_analysis = True)
