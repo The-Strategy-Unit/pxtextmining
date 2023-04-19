@@ -8,7 +8,7 @@ from sklearn.preprocessing import OneHotEncoder
 from tensorflow.data import Dataset
 from transformers import AutoTokenizer
 
-from pxtextmining.params import merged_minor_cats, minor_cats, cat_map, dataset
+from pxtextmining.params import minor_cats,  dataset, major_cat_dict, merged_minor_cats
 
 def merge_categories(df, new_cat, cats_to_merge):
     """Merges categories together in a dataset. Assumes all categories are all in the right format, one hot encoded with int values.
@@ -129,15 +129,11 @@ def load_multilabel_data(filename, target="major_categories"):
     targets_df = targets_df.replace("1", 1)
     targets_df = targets_df.fillna(value=0)
     if target == "major_categories":
-        major_categories = cat_map
-        new_df = targets_df.copy().drop(columns=cols)
-        for i in targets_df[cols].index:
-            for label in cols:
-                if targets_df.loc[i, label] == 1:
-                    new_cat = major_categories[label]
-                    new_df.loc[i, new_cat] = 1
-        targets_df = new_df.copy()
-        cols = list(set(major_categories.values()))
+        for maj, min_list in major_cat_dict.items():
+            print(maj)
+            print(min_list)
+            targets_df = merge_categories(targets_df, maj, min_list)
+        cols = list(major_cat_dict.keys())
     targets_df.loc[:, "num_labels"] = targets_df.loc[:, cols].sum(axis=1)
     targets_df = targets_df[targets_df["num_labels"] != 0]
     targets_df = targets_df.fillna(value=0)
@@ -275,7 +271,7 @@ def remove_punc_and_nums(text):
 
 
 if __name__ == '__main__':
-    df = load_multilabel_data(dataset, target = 'minor_categories')
+    df = load_multilabel_data(dataset, target = 'major_categories')
     print(df.shape)
     print(df.head())
     for i in df.columns:
