@@ -31,7 +31,8 @@ def predict_multilabel_sklearn(
     model,
     labels=major_cats,
     additional_features = False,
-    label_fix = True
+    label_fix = True,
+    enhance_with_probs = True
 ):
     """Conducts basic preprocessing to remove punctuation and numbers.
     Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
@@ -58,16 +59,22 @@ def predict_multilabel_sklearn(
     else:
         final_data = pd.merge(processed_text, data['FFT_q_standardised'], how='left', on='Comment ID')
     binary_preds = model.predict(final_data)
+    pred_probs = np.array(model.predict_proba(final_data))
     if label_fix == True:
-        pred_probs = np.array(model.predict_proba(final_data))
         predictions = fix_no_labels(binary_preds, pred_probs, model_type="sklearn")
     else:
         predictions = binary_preds
+    if enhance_with_probs == True:
+        for row in range(predictions.shape[0]):
+            for label_index in range(predictions.shape[1]):
+                prob_of_label = pred_probs[label_index, row, 1]
+                if prob_of_label > 0.5:
+                    predictions[row][label_index] = 1
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
     return preds_df
 
-def predict_with_probs(x, labels, model):
+def predict_with_probs(x, model, labels):
     """Given a trained model and some features, makes predictions based on the model's outputted probabilities using the model.predict_proba function.
     Any label with a predicted probability over 0.5 is taken as the predicted label. If no labels are over 0.5 probability then the
     label with the highest probability is taken.
