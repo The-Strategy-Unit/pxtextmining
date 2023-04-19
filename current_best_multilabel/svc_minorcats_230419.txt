@@ -1,0 +1,87 @@
+
+ *****************
+ Random state seed for train test split is: 930 
+
+
+Pipeline(steps=[('columntransformer',
+                 ColumnTransformer(transformers=[('onehotencoder',
+                                                  OneHotEncoder(handle_unknown='ignore'),
+                                                  ['FFT_q_standardised']),
+                                                 ('tfidfvectorizer',
+                                                  TfidfVectorizer(max_df=0.9,
+                                                                  min_df=0,
+                                                                  ngram_range=(1,
+                                                                               2)),
+                                                  'FFT answer')])),
+                ('multioutputclassifier',
+                 MultiOutputClassifier(estimator=SVC(C=15, cache_size=1000,
+                                                     class_weight='balanced',
+                                                     max_iter=1000,
+                                                     probability=True)))])
+
+
+Training time: 550.0
+
+exact_accuracy: 0.5138638818869283
+hamming_loss: 0.017122441342399403
+macro_jaccard_score: 0.28459856654627275
+
+ Classification report:
+                                                           precision    recall  f1-score   support
+
+                               Gratitude/ good experience       0.80      0.89      0.84       508
+                                      Negative experience       0.44      0.46      0.45        37
+                                             Not assigned       0.19      0.38      0.25        79
+                                Organisation & efficiency       0.73      0.56      0.63        77
+                     Funding & use of financial resources       1.00      0.20      0.33        15
+                            Non-specific praise for staff       0.60      0.59      0.60       222
+                  Non-specific dissatisfaction with staff       0.00      0.00      0.00         7
+                       Staff manner & personal attributes       0.78      0.91      0.84       811
+                             Number & deployment of staff       0.54      0.39      0.45        38
+                                     Staff responsiveness       0.49      0.23      0.31        79
+                                         Staff continuity       0.33      0.05      0.09        19
+                                    Competence & training       0.68      0.29      0.41       102
+                                Unspecified communication       0.90      0.73      0.81        26
+      Staff listening, understanding & involving patients       0.64      0.59      0.61       188
+              Information directly from staff during care       0.81      0.65      0.72       192
+                         Information provision & guidance       0.64      0.28      0.39        58
+Being kept informed, clarity & consistency of information       0.68      0.27      0.39        77
+                  Service involvement with family/ carers       0.00      0.00      0.00        13
+                      Patient contact with family/ carers       0.75      0.33      0.46         9
+                                      Contacting services       0.64      0.41      0.50        66
+                                 Appointment arrangements       0.69      0.58      0.63       192
+                                       Appointment method       0.85      0.39      0.54        28
+                                       Timeliness of care       0.63      0.71      0.67       308
+                                          Pain management       0.00      0.00      0.00         4
+                                       Diagnosis & triage       0.57      0.11      0.19        36
+                            Referals & continuity of care       0.38      0.19      0.25        43
+                         Length of stay/ duration of care       0.00      0.00      0.00         2
+                                                Discharge       0.40      0.25      0.31         8
+                                               Care plans       0.67      0.25      0.36         8
+                                          Patient records       0.00      0.00      0.00         0
+                         Links with non-NHS organisations       1.00      0.33      0.50         3
+                Cleanliness, tidiness & infection control       1.00      0.58      0.74        36
+                                        Safety & security       0.00      0.00      0.00        12
+                           Provision of medical equipment       0.25      0.08      0.12        12
+                                         Service location       0.75      0.23      0.35        26
+                              Transport to/ from services       0.52      0.26      0.34        43
+                                                  Parking       0.86      0.75      0.80         8
+                                 Electronic entertainment       0.75      0.43      0.55         7
+                                             Feeling safe       1.00      0.20      0.33         5
+                            Patient appearance & grooming       0.00      0.00      0.00         1
+                                        Mental Health Act       0.50      0.17      0.25         6
+                          Equality, Diversity & Inclusion       0.00      0.00      0.00         9
+                                                Admission       0.00      0.00      0.00         2
+                             Collecting patients feedback       0.80      0.29      0.42        14
+                                   Labelling not possible       1.00      1.00      1.00       237
+                                 Environment & Facilities       0.75      0.26      0.38        47
+                     Supplying & understanding medication       0.56      0.27      0.36        37
+                         Activities & access to fresh air       1.00      0.39      0.56        31
+                      Food & drink provision & facilities       0.90      0.65      0.75        54
+                                       Sensory experience       0.67      0.36      0.47        22
+                                Impact of treatment/ care       0.57      0.20      0.30        84
+
+                                                micro avg       0.71      0.64      0.68      3948
+                                                macro avg       0.56      0.34      0.40      3948
+                                             weighted avg       0.71      0.64      0.65      3948
+                                              samples avg       0.73      0.71      0.69      3948
