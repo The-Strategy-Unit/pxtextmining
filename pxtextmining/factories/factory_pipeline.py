@@ -2,11 +2,12 @@ import datetime
 import time
 
 import numpy as np
+import xgboost as xgb
 from scipy import stats
 from sklearn.compose import make_column_transformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -14,6 +15,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, RobustScaler
 from sklearn.svm import SVC
 from sklearn.utils.class_weight import compute_class_weight
+from sklearn.model_selection import cross_validate
 from tensorflow.keras import Sequential, layers
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.initializers import TruncatedNormal
@@ -246,30 +248,16 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
     if additional_features == True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
         vectorizer = create_sklearn_vectorizer(tokenizer=None)
-        num_transformer = RobustScaler()
+        # num_transformer = RobustScaler()
         preproc = make_column_transformer(
             (cat_transformer, ["FFT_q_standardised"]),
             (vectorizer, "FFT answer"),
-            (num_transformer, ["text_length"]),
+            # (num_transformer, ["text_length"]),
         )
         params = {
             "columntransformer__tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
-            "columntransformer__tfidfvectorizer__max_df": [
-                0.85,
-                0.86,
-                0.87,
-                0.88,
-                0.89,
-                0.9,
-                0.91,
-                0.92,
-                0.93,
-                0.94,
-                0.95,
-                0.96,
-                0.97,
-            ],
-            "columntransformer__tfidfvectorizer__min_df": stats.uniform(0, 0.15),
+            "columntransformer__tfidfvectorizer__max_df": [0.85,0.86,0.87,0.88,0.89,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99],
+            "columntransformer__tfidfvectorizer__min_df": stats.uniform(0, 0.1),
         }
     else:
         preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
@@ -293,7 +281,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                     probability=True,
                     class_weight="balanced",
                     max_iter=1000,
-                    cache_size=500,
+                    cache_size=1000,
                 ),
                 n_jobs=-1,
             ),
@@ -315,6 +303,9 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
         ]
         params["randomforestclassifier__min_samples_leaf"] = stats.randint(1, 10)
         params["randomforestclassifier__max_features"] = ["sqrt", "log2", None, 0.3]
+    if model_type == 'xgb':
+        pipe = make_pipeline(preproc, xgb.XGBClassifier(tree_method="hist"))
+
     return pipe, params
 
 
@@ -336,9 +327,9 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_feature
     models = []
     training_times = []
     for model_type in models_to_try:
-        if model_type not in ["mnb", "knn", "svm", "rfc"]:
+        if model_type not in ["mnb", "knn", "svm", "rfc", "xgb"]:
             raise ValueError(
-                "Please choose valid model_type. Options are mnb, knn, svm, or rfc"
+                "Please choose valid model_type. Options are mnb, knn, svm, xgb or rfc"
             )
         else:
             if additional_features == False:
@@ -359,3 +350,50 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_feature
             training_time = round(time.time() - start_time, 0)
             training_times.append(str(datetime.timedelta(seconds=training_time)))
     return models, training_times
+
+
+def create_and_train_svc_model(X_train, Y_train):
+    cat_transformer = OneHotEncoder(handle_unknown="ignore")
+    vectorizer = TfidfVectorizer(max_df = 0.9, min_df = 0, ngram_range=(1, 2))
+    preproc = make_column_transformer(
+                (cat_transformer, ["FFT_q_standardised"]),
+                (vectorizer, "FFT answer"),
+            )
+    pipe = make_pipeline(
+                preproc,
+                MultiOutputClassifier(
+                    SVC(C = 15,
+                        probability=True,
+                        class_weight="balanced",
+                        max_iter=1000,
+                        cache_size=1000,
+                    ),
+                ),
+            )
+    start_time = time.time()
+    pipe.fit(X_train, Y_train)
+    training_time = round(time.time() - start_time, 0)
+    training_time = str(datetime.timedelta(seconds=training_time))
+    return pipe, training_time
+
+def cv_svc_model(X_train, Y_train):
+    cat_transformer = OneHotEncoder(handle_unknown="ignore")
+    vectorizer = TfidfVectorizer(max_df = 0.9, min_df = 0, ngram_range=(1, 2))
+    preproc = make_column_transformer(
+                (cat_transformer, ["FFT_q_standardised"]),
+                (vectorizer, "FFT answer"),
+            )
+    pipe = make_pipeline(
+                preproc,
+                MultiOutputClassifier(
+                    SVC(C = 15,
+                        probability=True,
+                        class_weight="balanced",
+                        max_iter=1000,
+                        cache_size=1000,
+                    ),
+                ),
+            )
+    scores = cross_validate(pipe, X_train, Y_train, cv = 4,
+                            scoring=['f1_micro', 'f1_macro'])
+    return scores

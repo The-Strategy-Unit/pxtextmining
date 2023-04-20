@@ -1,0 +1,79 @@
+
+ *****************
+ Random state seed for train test split is: 422 
+
+
+Pipeline(steps=[('columntransformer',
+                 ColumnTransformer(transformers=[('onehotencoder',
+                                                  OneHotEncoder(handle_unknown='ignore'),
+                                                  ['FFT_q_standardised']),
+                                                 ('tfidfvectorizer',
+                                                  TfidfVectorizer(max_df=0.9,
+                                                                  min_df=0,
+                                                                  ngram_range=(1,
+                                                                               2)),
+                                                  'FFT answer')])),
+                ('multioutputclassifier',
+                 MultiOutputClassifier(estimator=SVC(C=15, cache_size=1000,
+                                                     class_weight='balanced',
+                                                     max_iter=1000,
+                                                     probability=True)))])
+
+
+Training time: 0:07:39
+
+exact_accuracy: 0.5266738274257071
+hamming_loss: 0.018967684993213933
+macro_jaccard_score: 0.42040230083958613
+
+ Classification report:
+                                                           precision    recall  f1-score   support
+
+                               Gratitude/ good experience       0.76      0.91      0.83       495
+                                             Not assigned       0.22      0.37      0.28        86
+                                Organisation & efficiency       0.65      0.47      0.54        85
+                     Funding & use of financial resources       0.80      0.40      0.53        20
+                            Non-specific praise for staff       0.63      0.62      0.63       233
+                       Staff manner & personal attributes       0.83      0.86      0.85       817
+                             Number & deployment of staff       0.68      0.60      0.64        43
+                                     Staff responsiveness       0.50      0.35      0.41        65
+                                         Staff continuity       0.40      0.22      0.29        18
+                                    Competence & training       0.75      0.62      0.68        74
+                                Unspecified communication       0.89      0.76      0.82        21
+      Staff listening, understanding & involving patients       0.69      0.70      0.70       192
+              Information directly from staff during care       0.75      0.78      0.76       194
+                         Information provision & guidance       0.70      0.48      0.57        62
+Being kept informed, clarity & consistency of information       0.51      0.33      0.40        91
+                                      Contacting services       0.68      0.69      0.68        72
+                                 Appointment arrangements       0.68      0.65      0.66       164
+                                       Appointment method       0.77      0.74      0.76        23
+                                       Timeliness of care       0.67      0.76      0.71       334
+                                          Pain management       0.86      0.50      0.63        12
+                                       Diagnosis & triage       0.53      0.29      0.38        31
+                                               Care plans       0.71      0.38      0.50        13
+                Cleanliness, tidiness & infection control       0.97      0.83      0.89        41
+                           Provision of medical equipment       0.00      0.00      0.00        16
+                                         Service location       0.59      0.45      0.51        29
+                              Transport to/ from services       0.68      0.48      0.56        52
+                                                  Parking       1.00      0.90      0.95        10
+                                 Electronic entertainment       1.00      0.50      0.67        10
+                            Patient appearance & grooming       0.33      0.33      0.33         6
+                                        Mental Health Act       0.50      0.18      0.27        11
+                          Equality, Diversity & Inclusion       0.00      0.00      0.00         2
+                             Collecting patients feedback       0.00      0.00      0.00         7
+                                   Labelling not possible       0.99      1.00      1.00       264
+                                 Environment & Facilities       0.68      0.50      0.58        56
+                     Supplying & understanding medication       0.63      0.61      0.62        36
+                         Activities & access to fresh air       0.66      0.73      0.69        26
+                      Food & drink provision & facilities       0.81      0.86      0.83        50
+                                       Sensory experience       0.42      0.50      0.46        16
+                                Impact of treatment/ care       0.41      0.42      0.41        65
+                                                   Safety       0.77      0.67      0.71        15
+                                           Family/ carers       0.57      0.21      0.31        19
+                     Negative experience/ dissatisfaction       0.38      0.47      0.42        36
+                                          Patient journey       0.37      0.34      0.35        64
+
+                                                micro avg       0.71      0.71      0.71      3976
+                                                macro avg       0.61      0.52      0.55      3976
+                                             weighted avg       0.71      0.71      0.71      3976
+                                              samples avg       0.74      0.76      0.73      3976
