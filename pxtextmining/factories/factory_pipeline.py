@@ -373,6 +373,7 @@ def create_and_train_svc_model(X_train, Y_train):
     start_time = time.time()
     pipe.fit(X_train, Y_train)
     training_time = round(time.time() - start_time, 0)
+    training_time = str(datetime.timedelta(seconds=training_time))
     return pipe, training_time
 
 def cv_svc_model(X_train, Y_train):
