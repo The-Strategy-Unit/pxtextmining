@@ -1,7 +1,6 @@
 from pxtextmining.factories import factory_data_load_and_split
+from pxtextmining.params import major_cats, minor_cats
 import pandas as pd
-
-
 
 def test_clean_empty_features():
     df_with_empty_lines = pd.DataFrame({'text': ['Some text', '', ' ', 'More text']})
@@ -13,20 +12,7 @@ def test_onehot():
     df_onehotted = factory_data_load_and_split.onehot(df_to_onehot, 'Categories')
     assert df_onehotted.shape == (6,3)
 
-df = factory_data_load_and_split.load_multilabel_data(filename = 'datasets/testing/multilabeldata_2.csv', target = 'major_categories')[:500]
-major_cats = ['Access to medical care & support',
-    'Activities',
-    'Additional',
-    'Category TBC',
-    'Communication & involvement',
-    'Environment & equipment',
-    'Food & diet',
-    'General',
-    'Medication',
-    'Mental Health specifics',
-    'Patient journey & service coordination',
-    'Service location, travel & transport',
-    'Staff']
+df = factory_data_load_and_split.load_multilabel_data(filename = 'datasets/testing/test_data.csv', target = 'major_categories')[:500]
 X_train_val, X_test, Y_train_val, Y_test = factory_data_load_and_split.process_and_split_multilabel_data(df, target = major_cats, preprocess_text = False, additional_features = True)
 
 def test_bert_data_to_dataset_with_Y(X_train_val = X_train_val, Y_train_val = Y_train_val):
