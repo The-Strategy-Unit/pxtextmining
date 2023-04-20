@@ -142,4 +142,4 @@ if __name__ == '__main__':
     # run_bert_pipeline(additional_features = True, path = 'test_multilabel/bert_minorcats', target = minor_cats)
     # run_sklearn_pipeline(additional_features = True, target= minor_cats, models_to_try = ["knn", "svm", "rfc"], path = 'test_multilabel/minorcats_sklearn')
     run_svc_pipeline(additional_features= True, target= minor_cats,
-                     path = 'test_multilabel/minorcats_sklearn_v2', include_analysis = True)
+                     path = 'test_multilabel/minorcats_sklearn', include_analysis = True)
