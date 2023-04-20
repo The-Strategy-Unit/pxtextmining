@@ -1,5 +1,5 @@
 
-dataset = 'datasets/hidden/multilabel_230419.csv'
+dataset = 'datasets/hidden/multilabel_merged_230420.csv'
 
 model_name = "distilbert-base-uncased"
 
@@ -57,50 +57,32 @@ major_cat_dict = {'General': ['Gratitude/ good experience',
 
 major_cats = list(major_cat_dict.keys())
 
-merged_minor_cats = ['Gratitude/ good experience',
-                    'Negative experience',
-                    'Not assigned',
-                    'Organisation & efficiency',
-                    'Funding & use of financial resources',
-                    'Collecting patients feedback',
-                    'Non-specific praise for staff',
-                    'Non-specific dissatisfaction with staff',
-                    'Staff manner & personal attributes',
-                    'Number & deployment of staff',
-                    'Staff responsiveness',
-                    'Staff continuity',
-                    'Competence & training',
-                    'Unspecified communication',
-                    'Staff listening, understanding & involving patients',
-                    'Information directly from staff during care',
-                    'Information provision & guidance',
-                    'Being kept informed, clarity & consistency of information',
-                    'Contacting services',
-                    'Appointment arrangements',
-                    'Appointment method',
-                    'Timeliness of care',
-                    'Supplying & understanding medication',
-                    'Pain management',
-                    'Diagnosis & triage',
-                    'Care plans',
-                    'Impact of treatment/ care',
-                    'Cleanliness, tidiness & infection control',
-                    'Provision of medical equipment',
-                    'Food & drink provision & facilities',
-                    'Service location',
-                    'Transport to/ from services',
-                    'Parking',
-                    'Activities & access to fresh air',
-                    'Electronic entertainment',
-                    'Mental Health Act',
-                    'Labelling not possible',
-                    'Dignity',
-                    'Patient journey',
-                    'Safety',
-                    'Environment',
-                    'Family/ carers']
+#v5 20230420
+merged_minor_cats = ['Gratitude/ good experience', 'Not assigned',
+       'Organisation & efficiency', 'Funding & use of financial resources',
+       'Non-specific praise for staff', 'Staff manner & personal attributes',
+       'Number & deployment of staff', 'Staff responsiveness',
+       'Staff continuity', 'Competence & training',
+       'Unspecified communication',
+       'Staff listening, understanding & involving patients',
+       'Information directly from staff during care',
+       'Information provision & guidance',
+       'Being kept informed, clarity & consistency of information',
+       'Contacting services', 'Appointment arrangements', 'Appointment method',
+       'Timeliness of care', 'Pain management', 'Diagnosis & triage',
+       'Care plans', 'Cleanliness, tidiness & infection control',
+       'Provision of medical equipment', 'Service location',
+       'Transport to/ from services', 'Parking', 'Electronic entertainment',
+       'Patient appearance & grooming', 'Mental Health Act',
+       'Equality, Diversity & Inclusion', 'Collecting patients feedback',
+       'Labelling not possible',
+       'Environment & Facilities', 'Supplying & understanding medication',
+       'Activities & access to fresh air',
+       'Food & drink provision & facilities', 'Sensory experience',
+       'Impact of treatment/ care', 'Safety', 'Family/ carers',
+       'Negative experience/ dissatisfaction', 'Patient journey']
 
-#v5
+#v5 20230419
 minor_cats = ['Gratitude/ good experience',
  'Negative experience',
  'Not assigned',
