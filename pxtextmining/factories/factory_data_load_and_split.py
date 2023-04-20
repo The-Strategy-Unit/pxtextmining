@@ -113,6 +113,8 @@ def load_multilabel_data(filename, target="major_categories"):
         "What could we do better?": "could_improve",
         "Please can you tell us why you gave your answer and what we could have done better?": "nonspecific",
         "Please describe any things about the 111 service that\r\nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
+        "Please describe any things about the 111 service that\nyou were particularly satisfied and/or dissatisfied with": 'nonspecific',
+        "Nonspecific": 'nonspecific'
     }
     features_df.loc[:, "FFT_q_standardised"] = (
         features_df.loc[:, "FFT question"].map(q_map).copy()
@@ -130,8 +132,6 @@ def load_multilabel_data(filename, target="major_categories"):
     targets_df = targets_df.fillna(value=0)
     if target == "major_categories":
         for maj, min_list in major_cat_dict.items():
-            print(maj)
-            print(min_list)
             targets_df = merge_categories(targets_df, maj, min_list)
         cols = list(major_cat_dict.keys())
     targets_df.loc[:, "num_labels"] = targets_df.loc[:, cols].sum(axis=1)
@@ -139,6 +139,9 @@ def load_multilabel_data(filename, target="major_categories"):
     targets_df = targets_df.fillna(value=0)
     # merge two together
     combined_df = pd.merge(features_df, targets_df, left_index=True, right_index=True)
+    combined_df = combined_df.reset_index()
+    combined_df = combined_df.drop_duplicates()
+    combined_df = combined_df.set_index('Comment ID')
     print(f"Shape of cleaned data is {combined_df.shape}")
     return combined_df
 
@@ -192,19 +195,21 @@ def process_multilabel_data(
     """
     Y = df[target].fillna(value=0)
     if preprocess_text == True:
-            X = df["FFT answer"].astype(str).apply(remove_punc_and_nums)
-            X = clean_empty_features(X)
-            print(f"After preprocessing, shape of X is {X.shape}")
+        X = df["FFT answer"].astype(str).apply(remove_punc_and_nums)
+        X = clean_empty_features(X)
+        print(f"After preprocessing, shape of X is {X.shape}")
     if preprocess_text == False:
-            X = df["FFT answer"].astype(str)
+        X = df["FFT answer"].astype(str)
     if additional_features == True:
-        X = pd.merge(
-            X,
-            df[["FFT_q_standardised"]],
-            left_index=True,
-            right_index=True,
-        )
-    Y = np.array(Y.loc[X.index]).astype(int)
+        X = pd.merge(X, df[['FFT_q_standardised']], left_index = True, right_index = True)
+        X = X.reset_index()
+        X = X.drop_duplicates()
+        X = X.set_index('Comment ID')
+    Y = Y.loc[X.index]
+    Y = Y.reset_index()
+    Y = Y.drop_duplicates()
+    Y = Y.set_index('Comment ID')
+    Y = np.array(Y).astype(int)
     return X, Y
 
 
