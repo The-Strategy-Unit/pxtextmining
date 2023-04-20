@@ -40,6 +40,8 @@ def predict(items: List[ItemIn]):
         loaded_model = pickle.load(model)
     df = pd.DataFrame([i.dict() for i in items], dtype=str)
     df_newindex = df.set_index("comment_id")
+    if df_newindex.index.duplicated().sum() != 0:
+        raise ValueError('comment_id must all be unique values')
     df_newindex.index.rename("Comment ID", inplace=True)
     text_to_predict = df_newindex[["comment_text", "question_type"]]
     text_to_predict = text_to_predict.rename(
