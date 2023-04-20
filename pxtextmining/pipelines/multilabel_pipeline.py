@@ -242,7 +242,7 @@ if __name__ == "__main__":
     # run_sklearn_pipeline(additional_features = True, target= minor_cats, models_to_try = ["knn", "svm", "rfc"], path = 'test_multilabel/minorcats_sklearn')
     run_svc_pipeline(
         additional_features=True,
-        target=minor_cats,
-        path="test_multilabel/minorcats_sklearn_sw",
+        target=merged_minor_cats,
+        path="test_multilabel/minorcats_merged_230420",
         include_analysis=True
     )
