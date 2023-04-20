@@ -34,7 +34,7 @@ def predict(items: List[ItemIn]):
         For example, `[{'comment_id': '1', 'comment_text': 'Thank you', 'question_type': 'what_good'}, {'comment_id': '2', 'comment_text': 'Food was cold', 'question_type': 'could_improve'}]`
 
     Returns:
-        (dict):
+        (dict): Keys are: `comment_id`, `comment_text`, and predicted `labels`.
     """
     with open("current_best_multilabel/svc_minorcats_v5.sav", "rb") as model:
         loaded_model = pickle.load(model)
