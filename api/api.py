@@ -1,13 +1,13 @@
+import os
 import pickle
-from typing import List, Union
+from typing import List
 
 import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from pxtextmining.factories.factory_predict_unlabelled_text import (
-    predict_multilabel_sklearn,
-)
+from pxtextmining.factories.factory_predict_unlabelled_text import \
+    predict_multilabel_sklearn
 
 description = """
 This API is for classifying patient experience qualitative data,
@@ -33,6 +33,10 @@ app = FastAPI(
         "url": "https://cdu-data-science-team.github.io/PatientExperience-QDC/",
         "email": "CDUDataScience@nottshc.nhs.uk",
     },
+    license_info={
+        "name": "MIT License",
+        "url": "https://github.com/CDU-data-science-team/pxtextmining/blob/main/LICENSE",
+    }
     )
 
 
@@ -56,8 +60,8 @@ def predict(items: List[ItemIn]):
     Returns:
         (dict): Keys are: `comment_id`, `comment_text`, and predicted `labels`.
     """
-    with open("current_best_multilabel/svc_minorcats_v5.sav", "rb") as model:
-        loaded_model = pickle.load(model)
+
+    # Process received data
     df = pd.DataFrame([i.dict() for i in items], dtype=str)
     df_newindex = df.set_index("comment_id")
     if df_newindex.index.duplicated().sum() != 0:
@@ -67,9 +71,14 @@ def predict(items: List[ItemIn]):
     text_to_predict = text_to_predict.rename(
         columns={"comment_text": "FFT answer", "question_type": "FFT_q_standardised"}
     )
+    # Make predictions
+    model_path = os.path.join('current_best_multilabel', 'svc_minorcats_v5.sav')
+    with open(model_path, "rb") as model:
+        loaded_model = pickle.load(model)
     preds_df = predict_multilabel_sklearn(
         text_to_predict, loaded_model, additional_features=True
     )
+    # Join predicted labels with received data
     preds_df["comment_id"] = preds_df.index.astype(str)
     merged = pd.merge(df, preds_df, how="left", on="comment_id")
     merged["labels"] = merged["labels"].fillna("").apply(list)
