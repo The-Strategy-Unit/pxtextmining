@@ -104,7 +104,8 @@ def predict(items: List[ItemIn]):
         - `comment_text` (str)
         - `question_type` (str)
         The 'question_type' must be one of three values: 'nonspecific', 'what_good', and 'could_improve'.
-        For example, `[{'comment_id': '1', 'comment_text': 'Thank you', 'question_type': 'what_good'}, {'comment_id': '2', 'comment_text': 'Food was cold', 'question_type': 'could_improve'}]`
+        For example, `[{'comment_id': '1', 'comment_text': 'Thank you', 'question_type': 'what_good'},
+        {'comment_id': '2', 'comment_text': 'Food was cold', 'question_type': 'could_improve'}]`
 
     Returns:
         (dict): Keys are: `comment_id`, `comment_text`, and predicted `labels`.
@@ -121,7 +122,7 @@ def predict(items: List[ItemIn]):
         columns={"comment_text": "FFT answer", "question_type": "FFT_q_standardised"}
     )
     # Make predictions
-    model_path = os.path.join("current_best_multilabel", "svc_minorcats_v5.sav")
+    model_path = os.path.join("api", "svc_minorcats_v5.sav")
     with open(model_path, "rb") as model:
         loaded_model = pickle.load(model)
     preds_df = predict_multilabel_sklearn(
