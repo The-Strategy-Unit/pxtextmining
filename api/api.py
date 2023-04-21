@@ -4,7 +4,7 @@ from typing import List
 
 import pandas as pd
 from fastapi import FastAPI
-from pydantic import BaseModel, ValidationError, validator
+from pydantic import BaseModel, validator
 
 from pxtextmining.factories.factory_predict_unlabelled_text import \
     predict_multilabel_sklearn
@@ -53,7 +53,7 @@ app = FastAPI(
     description=description,
     version="0.0.1",
     contact={
-        "name": "CDU Data Science",
+        "name": "Patient Experience Qualitative Data Categorisation",
         "url": "https://cdu-data-science-team.github.io/PatientExperience-QDC/",
         "email": "CDUDataScience@nottshc.nhs.uk",
     },
