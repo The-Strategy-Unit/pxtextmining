@@ -19,10 +19,28 @@ class ItemIn(BaseModel):
     comment_text: str
     question_type: str
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "comment_id": "01",
+                "comment_text": "Nurses were friendly. Parking was awful.",
+                "question_type": "nonspecific"
+            }
+        }
+
 class ItemOut(BaseModel):
     comment_id: str
     comment_text: str
     labels: list
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "comment_id": "01",
+                "comment_text": "Nurses were friendly. Parking was awful.",
+                "labels": ['Staff manner & personal attributes', 'Parking']
+            }
+        }
 
 app = FastAPI(
     title="pxtextmining API",
