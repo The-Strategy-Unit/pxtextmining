@@ -15,6 +15,24 @@ This API is for classifying patient experience qualitative data,
 utilising the models trained as part of the pxtextmining project.
 """
 
+tags_metadata = [
+    {"name": "index", "description": "Basic page to test if API is working."},
+    {
+        "name": "predict",
+        "description": "Generate multilabel predictions for given text.",
+    },
+]
+
+
+class Test(BaseModel):
+    test: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "test": "Hello"
+            }
+        }
 
 class ItemIn(BaseModel):
     comment_id: str
@@ -67,15 +85,16 @@ app = FastAPI(
         "name": "MIT License",
         "url": "https://github.com/CDU-data-science-team/pxtextmining/blob/main/LICENSE",
     },
+    openapi_tags=tags_metadata
 )
 
 
-@app.get("/")
+@app.get("/", response_model=Test, tags=['index'])
 def index():
-    return {"Test": "Hello"}
+    return {"test": "Hello"}
 
 
-@app.post("/predict_multilabel", response_model=List[ItemOut])
+@app.post("/predict_multilabel", response_model=List[ItemOut], tags=['predict'])
 def predict(items: List[ItemIn]):
     """Accepts comment ids, comment text and question type as JSON in a POST request. Makes predictions using trained SVC model.
 
