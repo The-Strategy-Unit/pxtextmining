@@ -4,7 +4,7 @@ from typing import List
 
 import pandas as pd
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError, validator
 
 from pxtextmining.factories.factory_predict_unlabelled_text import \
     predict_multilabel_sklearn
@@ -27,6 +27,12 @@ class ItemIn(BaseModel):
                 "question_type": "nonspecific"
             }
         }
+
+    @validator('question_type')
+    def question_type_validation(cls, v):
+        if v not in ['what_good', 'could_improve', 'nonspecific']:
+            raise ValueError('question_type must be one of what_good, could_improve, or nonspecific')
+        return v
 
 class ItemOut(BaseModel):
     comment_id: str
