@@ -1,5 +1,5 @@
 import pickle
-from typing import List
+from typing import List, Union
 
 import pandas as pd
 from fastapi import FastAPI
@@ -9,14 +9,31 @@ from pxtextmining.factories.factory_predict_unlabelled_text import (
     predict_multilabel_sklearn,
 )
 
+description = """
+This API is for classifying patient experience qualitative data,
+utilising the models trained as part of the pxtextmining project.
+"""
 
 class ItemIn(BaseModel):
     comment_id: str
     comment_text: str
     question_type: str
 
+class ItemOut(BaseModel):
+    comment_id: str
+    comment_text: str
+    labels: list
 
-app = FastAPI()
+app = FastAPI(
+    title="pxtextmining API",
+    description=description,
+    version="0.0.1",
+    contact={
+        "name": "CDU Data Science",
+        "url": "https://cdu-data-science-team.github.io/PatientExperience-QDC/",
+        "email": "CDUDataScience@nottshc.nhs.uk",
+    },
+    )
 
 
 @app.get("/")
@@ -24,13 +41,16 @@ def index():
     return {"Test": "Hello"}
 
 
-@app.post("/predict_multilabel")
+@app.post("/predict_multilabel", response_model=List[ItemOut])
 def predict(items: List[ItemIn]):
     """Accepts comment ids, comment text and question type as JSON in a POST request. Makes predictions using trained SVC model.
 
     Args:
-        items (List[ItemIn]): JSON list of dictionaries with the following compulsory keys: `comment_id` (str), `comment_text` (str), and
-        `question_type` (str). The 'question_type' must be one of three values: 'nonspecific', 'what_good', and 'could_improve'.
+        items (List[ItemIn]): JSON list of dictionaries with the following compulsory keys:
+        - `comment_id` (str)
+        - `comment_text` (str), and
+        - `question_type` (str).
+        The 'question_type' must be one of three values: 'nonspecific', 'what_good', and 'could_improve'.
         For example, `[{'comment_id': '1', 'comment_text': 'Thank you', 'question_type': 'what_good'}, {'comment_id': '2', 'comment_text': 'Food was cold', 'question_type': 'could_improve'}]`
 
     Returns:
