@@ -91,6 +91,18 @@ def run_svc_pipeline(
     path="test_multilabel",
     include_analysis=False,
 ):
+    """Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
+    Creates sklearn pipeline using a MultiOutputClassifier and Support Vector Classifier estimator, with specific hyperparameters.
+    Fits the pipeline on the training data.
+    Evaluates the performance of the refitted estimator with the best hyperparameters on the test set, and saves the model and the performance metrics to a specified folder, together with optional further analysis in the form of Excel files.
+
+    Args:
+        additional_features (bool, optional): Whether or not additional features (question type and text length) are used. Defaults to False.
+        target (list, optional): The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.
+        path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
+        include_analysis (bool, optional): Whether or not to create Excel files including further analysis of the model's performance. Defaults to False. If True, writes two Excel files to the specified folder, one containing the labels and the performance metrics for each label, and one containing the predicted labels and the actual labels for the test set, with the model's probabilities for both.
+
+    """
     random_state = random.randint(1, 999)
     if target == major_cats:
         target_name = "major_categories"
@@ -124,8 +136,7 @@ def run_svc_pipeline(
             model,
             labels=target,
             additional_features=additional_features,
-            use_probs=False,
-            path=f"{path}/labels.xlsx",
+            path=f"{path}/labels.xlsx"
         )
         metrics_df = parse_metrics_file(f"{path}/model_0.txt", labels=target)
         label_counts = pd.DataFrame(df[target].sum())
