@@ -25,6 +25,4 @@ There is also a `pxtextmining.params` file which is used to standardise specific
 
 ## API
 
-Separate from the `pxtextmining` package is the API, which can be found in the folder `api`. It is constructed using FastAPI and Uvicorn. The aim of the API is to make the trained machine learning models available publicly, so that predictions can be made on any text. Full documentation for the API is forthcoming.
-
-The current version of the API is only able to take the text of the patient feedback comments, with no additional features e.g. question type. This functionality is intended for future development of the package.
+Separate from the `pxtextmining` package is the API, which can be found in the folder `api`. It is constructed using FastAPI and Uvicorn. The aim of the API is to make the trained machine learning models available publicly, so that predictions can be made on any text. The API is not currently publicly available and access is only for participating partner trusts. However, all the code and documentation is available on our github repository.
