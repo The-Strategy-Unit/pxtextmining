@@ -31,14 +31,22 @@ def write_multilabel_models_and_metrics(models, model_metrics, path):
             file.write(model_metrics[i])
     print(f"{len(models)} models have been written to {path}")
 
-def write_model_preds(x, y, model, labels, additional_features = True, use_probs = False, path = 'test.xlsx'):
+def write_model_preds(x, y, model, labels, additional_features = True, path = 'labels.xlsx'):
+    """Writes an Excel file to enable easier analysis of model outputs using the test set. Columns of the Excel file are: comment_id, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.
+
+    Currently only works with sklearn models.
+
+    Args:
+        x (pd.DataFrame): Features to be used to make the prediction.
+        y (np.array): Numpy array containing the targets, in one-hot encoded format
+        model (sklearn.base): Trained sklearn multilabel classifier.
+        labels (list): List of labels for the categories to be predicted.
+        additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to True.
+        path (str, optional): Filename for the outputted file. Defaults to 'labels.xlsx'.
+    """
     actual_labels = pd.DataFrame(y, columns = labels).apply(get_labels, args=(labels,), axis=1)
     actual_labels.name = 'actual_labels'
-    if use_probs == True:
-        predicted_labels = pd.Series(predict_with_probs(x, labels, model))
-
-    else:
-        predicted_labels = predict_multilabel_sklearn(x,
+    predicted_labels = predict_multilabel_sklearn(x,
                                                   model,
                                                   labels=labels,
                                                   additional_features = additional_features,
