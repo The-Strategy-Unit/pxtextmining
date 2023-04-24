@@ -5,7 +5,7 @@ from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset,
     remove_punc_and_nums,
 )
-from pxtextmining.params import major_cats
+from pxtextmining.params import minor_cats
 
 def process_text(text):
     """ Enacts same text preprocessing as is found in factory_data_load_and_split when creating training data. Converts to string, removes trailing whitespaces, null values, punctuation and numbers. Converts to lowercase.
@@ -29,7 +29,7 @@ def process_text(text):
 def predict_multilabel_sklearn(
     data,
     model,
-    labels=major_cats,
+    labels = minor_cats,
     additional_features = False,
     label_fix = True,
     enhance_with_probs = True
