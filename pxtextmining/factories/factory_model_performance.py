@@ -36,8 +36,7 @@ def get_multilabel_metrics(
     model,
     training_time=None,
     additional_features=False,
-    already_encoded=False,
-    use_probs=False
+    already_encoded=False
 ):
     """Creates a string detailing various performance metrics for a multilabel model, which can then be written to
     a text file.
@@ -80,13 +79,10 @@ def get_multilabel_metrics(
         binary_preds = turn_probs_into_binary(y_probs)
         y_pred = fix_no_labels(binary_preds, y_probs, model_type="tf")
     elif model_type == "sklearn":
-        if use_probs == True:
-            y_pred = predict_with_probs(x_test, model, labels)
-        else:
-            y_pred_df = predict_multilabel_sklearn(x_test, model, labels = labels,
+        y_pred_df = predict_multilabel_sklearn(x_test, model, labels = labels,
                                                 additional_features = additional_features,
                                                 label_fix = True, enhance_with_probs = True)
-            y_pred = np.array(y_pred_df)[:,:-1].astype('int64')
+        y_pred = np.array(y_pred_df)[:,:-1].astype('int64')
     else:
         raise ValueError('Please select valid model_type. Options are "bert", "tf" or "sklearn"')
     # Calculate various metrics
