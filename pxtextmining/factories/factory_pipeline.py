@@ -353,6 +353,15 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_feature
 
 
 def create_and_train_svc_model(X_train, Y_train):
+    """Creates pipeline with a Support Vector Classifier using specific hyperparameters identified through previous gridsearching.
+
+    Args:
+        X_train (pd.DataFrame): DataFrame containing the features to be fed into the estimator
+        Y_train (pd.DataFrame): DataFrame containing the targets
+
+    Returns:
+        (tuple): Tuple containing: a fitted `pipeline` with a MultiOutputClassifier utilising a Support Vector Classifier estimator, and a `str` of the training time taken for the fitting of the pipeline.
+    """
     cat_transformer = OneHotEncoder(handle_unknown="ignore")
     vectorizer = TfidfVectorizer(max_df = 0.9, min_df = 0, ngram_range=(1, 2))
     preproc = make_column_transformer(
@@ -375,25 +384,3 @@ def create_and_train_svc_model(X_train, Y_train):
     training_time = round(time.time() - start_time, 0)
     training_time = str(datetime.timedelta(seconds=training_time))
     return pipe, training_time
-
-def cv_svc_model(X_train, Y_train):
-    cat_transformer = OneHotEncoder(handle_unknown="ignore")
-    vectorizer = TfidfVectorizer(max_df = 0.9, min_df = 0, ngram_range=(1, 2))
-    preproc = make_column_transformer(
-                (cat_transformer, ["FFT_q_standardised"]),
-                (vectorizer, "FFT answer"),
-            )
-    pipe = make_pipeline(
-                preproc,
-                MultiOutputClassifier(
-                    SVC(C = 15,
-                        probability=True,
-                        class_weight="balanced",
-                        max_iter=1000,
-                        cache_size=1000,
-                    ),
-                ),
-            )
-    scores = cross_validate(pipe, X_train, Y_train, cv = 4,
-                            scoring=['f1_micro', 'f1_macro'])
-    return scores
