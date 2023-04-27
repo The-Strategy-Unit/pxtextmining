@@ -2,7 +2,6 @@ import datetime
 import time
 
 import numpy as np
-import xgboost as xgb
 from scipy import stats
 from sklearn.compose import make_column_transformer
 from sklearn.ensemble import RandomForestClassifier
