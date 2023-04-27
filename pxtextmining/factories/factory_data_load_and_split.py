@@ -8,7 +8,7 @@ from sklearn.preprocessing import OneHotEncoder
 from tensorflow.data import Dataset
 from transformers import AutoTokenizer
 
-from pxtextmining.params import minor_cats,  dataset, major_cat_dict, merged_minor_cats
+from pxtextmining.params import minor_cats,  dataset, major_cat_dict, merged_minor_cats, sentiment_dict
 
 def merge_categories(df, new_cat, cats_to_merge):
     """Merges categories together in a dataset. Assumes all categories are all in the right format, one hot encoded with int values.
@@ -193,7 +193,10 @@ def process_multilabel_data(
     Returns:
         (tuple): Tuple containing two pd.DataFrames. The first contains the X features (text, with or without question type depending on additional_features), the second contains the one-hot encoded Y targets
     """
-    Y = df[target].fillna(value=0)
+    if target == 'sentiment':
+        Y = df['Comment sentiment'].map(sentiment_dict)
+    else:
+        Y = df[target].fillna(value=0)
     if preprocess_text == True:
         X = df["FFT answer"].astype(str).apply(remove_punc_and_nums)
         X = clean_empty_features(X)
