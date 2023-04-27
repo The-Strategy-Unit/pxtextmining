@@ -99,6 +99,8 @@
     <ul class="current">
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_sklearn_pipeline">run_sklearn_pipeline()</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_svc_pipeline">run_svc_pipeline()</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_tf_pipeline">run_tf_pipeline()</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_bert_pipeline">run_bert_pipeline()</a>
@@ -241,6 +243,81 @@ and the performance metrics to a specified folder.</p>
 
 
 
+<h5 id="pxtextmining.pipelines.multilabel_pipeline.run_svc_pipeline" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">run_svc_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel&#39;</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
+Creates sklearn pipeline using a MultiOutputClassifier and Support Vector Classifier estimator, with specific hyperparameters.
+Fits the pipeline on the training data.
+Evaluates the performance of the refitted estimator with the best hyperparameters on the test set, and saves the model and the performance metrics to a specified folder, together with optional further analysis in the form of Excel files.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>additional_features</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not additional features (question type and text length) are used. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>target</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.</p></td>
+          <td>
+                <code>major_cats</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>path</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
+          <td>
+                <code>&#39;test_multilabel&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>include_analysis</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not to create Excel files including further analysis of the model's performance. Defaults to False. If True, writes two Excel files to the specified folder, one containing the labels and the performance metrics for each label, and one containing the predicted labels and the actual labels for the test set, with the model's probabilities for both.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
 <h5 id="pxtextmining.pipelines.multilabel_pipeline.run_tf_pipeline" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">run_tf_pipeline</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/tf&#39;</span><span class="p">)</span></code>
 
@@ -299,7 +376,7 @@ This model architecture performs very poorly and may be taken out of the model.<
 
 
 <h5 id="pxtextmining.pipelines.multilabel_pipeline.run_bert_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_bert_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/bert&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">run_bert_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/bert&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">)</span></code>
 
 </h5>
 

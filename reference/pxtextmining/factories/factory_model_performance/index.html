@@ -83,6 +83,8 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_model_performance.get_accuracy_per_class">get_accuracy_per_class()</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_model_performance.parse_metrics_file">parse_metrics_file()</a>
+    </li>
     </ul>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../factory_pipeline/">Factory pipeline</a>
@@ -406,6 +408,77 @@ a text file.</p>
 :param pd.Series pred: Predicted target values.</p>
 <p>:return: The computed accuracy per class metrics for the model.
 :rtype: pd.DataFrame</p>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_model_performance.parse_metrics_file" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_metrics_file</span><span class="p">(</span><span class="n">metrics_file</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Reads performance metrics files that are written by <code>factory_write_results.write_multilabel_models_and_metrics</code>.
+Creates a pd.DataFrame with the precision, recall, f1_score, and support for each label, which can be filtered and sorted more easily.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>metrics_file</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Path to the metrics file to be parsed.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>labels</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>List of the target labels used in the metrics file.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>DataFrame containing the precision, recall, f1_score, and support for each label, as detailed in the performance metrics file.</p></td>
+        </tr>
+    </tbody>
+  </table>
 
   </div>
 

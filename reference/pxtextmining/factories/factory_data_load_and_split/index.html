@@ -75,6 +75,10 @@
     <ul class="current">
                 <li class="toctree-l3 current"><a class="reference internal current" href="./">Factory data load and split</a>
     <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.df">df</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.merge_categories">merge_categories()</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.bert_data_to_dataset">bert_data_to_dataset()</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.load_multilabel_data">load_multilabel_data()</a>
@@ -166,7 +170,106 @@
 
 
 
+<div class="doc doc-object doc-attribute">
 
+
+
+<h5 id="pxtextmining.factories.factory_data_load_and_split.df" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">df</span> <span class="o">=</span> <span class="n">load_multilabel_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;major_categories&#39;</span><span class="p">)</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_data_load_and_split.merge_categories" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">merge_categories</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">new_cat</span><span class="p">,</span> <span class="n">cats_to_merge</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Merges categories together in a dataset. Assumes all categories are all in the right format, one hot encoded with int values.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>df</code></td>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>DataFrame with labelled data.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>new_cat</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Name for new column of merged data.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>cats_to_merge</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>List containing columns to be merged.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>DataFrame with new columns</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
 
 <div class="doc doc-object doc-function">
 

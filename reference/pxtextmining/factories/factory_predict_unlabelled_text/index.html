@@ -81,7 +81,13 @@
                 </li>
                 <li class="toctree-l3 current"><a class="reference internal current" href="./">Factory predict unlabelled text</a>
     <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.process_text">process_text()</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_sklearn">predict_multilabel_sklearn()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_with_probs">predict_with_probs()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.get_probabilities">get_probabilities()</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.get_labels">get_labels()</a>
     </li>
@@ -168,19 +174,15 @@
 
 
 
-<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_sklearn" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_multilabel_sklearn</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">major_cats</span><span class="p">)</span></code>
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.process_text" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">process_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></code>
 
 </h5>
 
 
   <div class="doc doc-contents ">
   
-      <p>Conducts basic preprocessing to remove punctuation and numbers.
-Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
-Also takes the class with the highest predicted probability as the predicted class in cases where no class has
-been predicted. Currently used in API, cannot take additional features.</p>
-<p>Major development needed for API: Ability to keep index numbers from input text. Probably need to change to DataFrame not Series.</p>
+      <p>Enacts same text preprocessing as is found in factory_data_load_and_split when creating training data. Converts to string, removes trailing whitespaces, null values, punctuation and numbers. Converts to lowercase.</p>
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -198,7 +200,70 @@ been predicted. Currently used in API, cannot take additional features.</p>
           <td>
                 <code><span title="pandas">pd</span>.<span title="pandas.Series">Series</span></code>
           </td>
-          <td><p>Series containing text data to be processed and utilised for predictions.</p></td>
+          <td><p>Series containing data to be cleaned.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.Series">Series</span></code>
+          </td>
+          <td><p>Processed text data</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_sklearn" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">predict_multilabel_sklearn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">minor_cats</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">label_fix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enhance_with_probs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Conducts basic preprocessing to remove punctuation and numbers.
+Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
+Also takes the class with the highest predicted probability as the predicted class in cases where no class has
+been predicted, if fix_no_labels = True.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>text</code></td>
+          <td>
+                <code>pd.Series OR pd.DataFrame</code>
+          </td>
+          <td><p>DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True</p></td>
           <td>
               <em>required</em>
           </td>
@@ -220,7 +285,37 @@ been predicted. Currently used in API, cannot take additional features.</p>
           </td>
           <td><p>List containing target labels. Defaults to major_cats.</p></td>
           <td>
-                <code>major_cats</code>
+                <code>minor_cats</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>additional_features</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not FFT_q_standardised is included in data. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>label_fix</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.</p></td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>enhance_with_probs</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not to enhance predicted classes with predictions utilising the model's outputted probabilities.</p></td>
+          <td>
+                <code>True</code>
           </td>
         </tr>
     </tbody>
@@ -239,7 +334,182 @@ been predicted. Currently used in API, cannot take additional features.</p>
           <td>
                 <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
           </td>
-          <td><p>DataFrame containing the labels and predictions.</p></td>
+          <td><p>DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_with_probs" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">predict_with_probs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Given a trained model and some features, makes predictions based on the model's outputted probabilities using the model.predict_proba function.
+Any label with a predicted probability over 0.5 is taken as the predicted label. If no labels are over 0.5 probability then the
+label with the highest probability is taken.
+Converts into one-hot encoded format (similar to what model.predict would output).
+Currently only works with sklearn models.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>x</code></td>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>Features to be used to make the prediction.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>model</code></td>
+          <td>
+                <code>sklearn.<span title="sklearn.base">base</span></code>
+          </td>
+          <td><p>Trained sklearn multilabel classifier.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>labels</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>List of labels for the categories to be predicted.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>Predicted labels in one hot encoded format based on model probability estimates.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.get_probabilities" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_probabilities</span><span class="p">(</span><span class="n">label_series</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">predicted_probabilities</span><span class="p">,</span> <span class="n">model_type</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Given a pd.Series containing labels, the list of labels, and a model's outputted predicted_probabilities for each label,
+create a dictionary containing the label and the predicted probability of that label.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>label_series</code></td>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.Series">Series</span></code>
+          </td>
+          <td><p>Series containing labels in the format <code>['label_one', 'label_two']</code></p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>labels</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>List of the label names</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>predicted_probabilities</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>Predicted probabilities for each label</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>model_type</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Model architecture, if sklearn or otherwise.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.Series">Series</span></code>
+          </td>
+          <td><p>Series, each line containing a dict with the predicted probabilities for each label.</p></td>
         </tr>
     </tbody>
   </table>

@@ -99,6 +99,8 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.search_sklearn_pipelines">search_sklearn_pipelines()</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_and_train_svc_model">create_and_train_svc_model()</a>
+    </li>
     </ul>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../factory_predict_unlabelled_text/">Factory predict unlabelled text</a>
@@ -915,6 +917,76 @@ for multilabel classification task. Number of neurons in last layer depends on n
                 <code>tuple</code>
           </td>
           <td><p>Tuple containing: a <code>list</code> containing the refitted pipelines with the best hyperparameters identified in the search, and a <code>list</code> containing the training times for each of the pipelines.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_pipeline.create_and_train_svc_model" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_and_train_svc_model</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Creates pipeline with a Support Vector Classifier using specific hyperparameters identified through previous gridsearching.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>X_train</code></td>
+          <td>
+                <code>pd.<span title="pd.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>DataFrame containing the features to be fed into the estimator</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>Y_train</code></td>
+          <td>
+                <code>pd.<span title="pd.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>DataFrame containing the targets</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>tuple</code>
+          </td>
+          <td><p>Tuple containing: a fitted <code>pipeline</code> with a MultiOutputClassifier utilising a Support Vector Classifier estimator, and a <code>str</code> of the training time taken for the fitting of the pipeline.</p></td>
         </tr>
     </tbody>
   </table>
