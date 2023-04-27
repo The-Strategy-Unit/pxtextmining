@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset,
     load_multilabel_data,
-    process_and_split_multilabel_data,
+    process_and_split_data,
 )
 from pxtextmining.factories.factory_model_performance import (
     get_multilabel_metrics,
@@ -55,7 +55,7 @@ def run_sklearn_pipeline(
     if target == minor_cats:
         target_name = "minor_categories"
     df = load_multilabel_data(filename=dataset, target=target_name)
-    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(
+    X_train, X_test, Y_train, Y_test = process_and_split_data(
         df,
         target=target,
         additional_features=additional_features,
@@ -111,7 +111,7 @@ def run_svc_pipeline(
     if target == merged_minor_cats:
         target_name = "test"
     df = load_multilabel_data(filename=dataset, target=target_name)
-    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(
+    X_train, X_test, Y_train, Y_test = process_and_split_data(
         df,
         target=target,
         additional_features=additional_features,
@@ -162,7 +162,7 @@ def run_tf_pipeline(target=major_cats, path="test_multilabel/tf"):
     df = load_multilabel_data(
         filename="datasets/multilabeldata_2.csv", target="major_categories"
     )
-    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(
+    X_train, X_test, Y_train, Y_test = process_and_split_data(
         df, target=target, random_state=random_state
     )
     X_train_pad, vocab_size = tf_preprocessing(X_train)
@@ -203,7 +203,7 @@ def run_bert_pipeline(
     if target == minor_cats:
         target_name = "minor_categories"
     df = load_multilabel_data(filename=dataset, target=target_name)
-    X_train_val, X_test, Y_train_val, Y_test = process_and_split_multilabel_data(
+    X_train_val, X_test, Y_train_val, Y_test = process_and_split_data(
         df,
         target=target,
         preprocess_text=False,

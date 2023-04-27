@@ -13,7 +13,7 @@ def test_onehot():
     assert df_onehotted.shape == (6,3)
 
 df = factory_data_load_and_split.load_multilabel_data(filename = 'datasets/testing/test_data.csv', target = 'major_categories')[:500]
-X_train_val, X_test, Y_train_val, Y_test = factory_data_load_and_split.process_and_split_multilabel_data(df, target = major_cats, preprocess_text = False, additional_features = True)
+X_train_val, X_test, Y_train_val, Y_test = factory_data_load_and_split.process_and_split_data(df, target = major_cats, preprocess_text = False, additional_features = True)
 
 def test_bert_data_to_dataset_with_Y(X_train_val = X_train_val, Y_train_val = Y_train_val):
     train_dataset = factory_data_load_and_split.bert_data_to_dataset(X_train_val, Y_train_val, additional_features = True)

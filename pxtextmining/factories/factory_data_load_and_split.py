@@ -175,7 +175,7 @@ def onehot(df, col_to_onehot):
     return col_encoded
 
 
-def process_multilabel_data(
+def process_data(
     df, target, preprocess_text=True, additional_features=False
 ):
     """Utilises remove_punc_and_nums and clean_empty_features functions to clean the text data and
@@ -216,7 +216,7 @@ def process_multilabel_data(
     return X, Y
 
 
-def process_and_split_multilabel_data(
+def process_and_split_data(
     df,
     target,
     preprocess_text=True,
@@ -237,7 +237,7 @@ def process_and_split_multilabel_data(
     Returns:
         (list): List containing train-test split of preprocessed X features and Y targets.
     """
-    X, Y = process_multilabel_data(
+    X, Y = process_data(
         df,
         target,
         preprocess_text=preprocess_text,
