@@ -193,10 +193,7 @@ def process_data(
     Returns:
         (tuple): Tuple containing two pd.DataFrames. The first contains the X features (text, with or without question type depending on additional_features), the second contains the one-hot encoded Y targets
     """
-    if target == 'sentiment':
-        Y = df['Comment sentiment'].map(sentiment_dict)
-    else:
-        Y = df[target].fillna(value=0)
+
     if preprocess_text == True:
         X = df["FFT answer"].astype(str).apply(remove_punc_and_nums)
         X = clean_empty_features(X)
@@ -208,11 +205,16 @@ def process_data(
         X = X.reset_index()
         X = X.drop_duplicates()
         X = X.set_index('Comment ID')
+    if target == 'sentiment':
+        Y = df['Comment sentiment'].map(sentiment_dict)
+    else:
+        Y = df[target].fillna(value=0)
     Y = Y.loc[X.index]
     Y = Y.reset_index()
     Y = Y.drop_duplicates()
     Y = Y.set_index('Comment ID')
-    Y = np.array(Y).astype(int)
+    if type(target) == list:
+        Y = np.array(Y).astype(int)
     return X, Y
 
 
