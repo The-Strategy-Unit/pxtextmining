@@ -1,5 +1,7 @@
 import random
 import pandas as pd
+import os
+import pickle
 
 from sklearn.model_selection import train_test_split
 
@@ -31,7 +33,7 @@ from pxtextmining.params import dataset
 
 def run_sentiment_pipeline(
     additional_features=False,
-    models_to_try=["mnb", "knn", "svm", "rfc"],
+    models_to_try=["svm", "xgb"],
     path="test_multilabel/sentiment",
 ):
     random_state = random.randint(1, 999)
@@ -48,10 +50,18 @@ def run_sentiment_pipeline(
         models_to_try=models_to_try,
         additional_features=additional_features,
     )
-    # model_metrics = []
-    # for i in range(len(models)):
-    #     m = models[i]
-    #     t = training_times[i]
+    if not os.path.exists(path):
+        os.makedirs(path)
+    for i in range(len(models)):
+        m = models[i]
+        t = training_times[i]
+        model_name = models_to_try[i]
+        modelpath = os.path.join(path, model_name + '.sav')
+        pickle.dump(m, open(modelpath, "wb"))
+        txtpath = os.path.join(path, model_name + '.txt')
+        with open(txtpath, "w") as file:
+            file.write(t)
+
     #     model_metrics.append(
     #         get_multilabel_metrics(
     #             X_test,
@@ -64,3 +74,6 @@ def run_sentiment_pipeline(
     #         )
     #     )
     # write_multilabel_models_and_metrics(models, model_metrics, path=path)
+
+if __name__ == '__main__':
+    run_sentiment_pipeline()

@@ -23,6 +23,7 @@ from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from transformers import DistilBertConfig, TFDistilBertForSequenceClassification
+import xgboost as xgb
 
 from pxtextmining.helpers.tokenization import spacy_tokenizer
 from pxtextmining.params import model_name
@@ -40,7 +41,7 @@ def create_sklearn_pipeline_sentiment(model_type, num_classes, tokenizer=None):
             "tfidfvectorizer__max_df": [0.85,0.86,0.87,0.88,0.89,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99],
             "tfidfvectorizer__min_df": [0, 1,2,3,4,5,6,7,8,9,10],
         }
-    if model_type == 'svc':
+    if model_type == 'svm':
         pipe = make_pipeline(
             preproc,
             SVC(
@@ -49,7 +50,7 @@ def create_sklearn_pipeline_sentiment(model_type, num_classes, tokenizer=None):
                     max_iter=1000,
                     cache_size=1000,
                 ),
-            ),
+            )
         params["svc__C"] = stats.uniform(0.1, 20)
         params["svc__kernel"] = [
             "linear",
@@ -380,10 +381,9 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_feature
                     model_type, additional_features=True
                 )
             start_time = time.time()
-            print(f"****SEARCHING {pipe.steps[-1][-1]}")
             search = RandomizedSearchCV(
-                pipe, params, scoring="f1_macro", n_iter=50, cv=4, n_jobs=-2, refit=True
-            )
+                    pipe, params, scoring="f1_macro", n_iter=100, cv=4, n_jobs=-2, refit=True
+                )
             search.fit(X_train, Y_train)
             models.append(search.best_estimator_)
             training_time = round(time.time() - start_time, 0)
