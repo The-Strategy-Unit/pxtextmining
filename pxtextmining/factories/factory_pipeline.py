@@ -29,6 +29,43 @@ from pxtextmining.params import model_name
 
 model_name = model_name
 
+def create_sklearn_pipeline_sentiment(model_type, num_classes, tokenizer=None):
+    """
+    docs go here
+    """
+
+    preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
+    params = {
+            "tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
+            "tfidfvectorizer__max_df": [0.85,0.86,0.87,0.88,0.89,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99],
+            "tfidfvectorizer__min_df": [0, 1,2,3,4,5,6,7,8,9,10],
+        }
+    if model_type == 'svc':
+        pipe = make_pipeline(
+            preproc,
+            SVC(
+                    probability=True,
+                    class_weight="balanced",
+                    max_iter=1000,
+                    cache_size=1000,
+                ),
+            ),
+        params["svc__C"] = stats.uniform(0.1, 20)
+        params["svc__kernel"] = [
+            "linear",
+            "rbf",
+            "sigmoid",
+        ]
+    if model_type == 'xgb':
+        pipe = make_pipeline(preproc, xgb.XGBClassifier(num_class = num_classes,
+                                                        objective='multi:softmax',
+                                                        n_estimators=500))
+        params['xgbclassifier__max_depth'] = [4,5,6,7,8]
+        params['xgbclassifier__min_child_weight'] = [0.5,1,2,5]
+        params['xgbclassifier__gamma'] = [0,0.1,0.2,0.3,0.4,0.5]
+    return pipe, params
+
+
 def create_bert_model(Y_train, model_name=model_name, max_length=150):
     """Creates Transformer based model trained on text data, with last layer added on
     for multilabel classification task. Number of neurons in last layer depends on number of labels in Y target.
@@ -331,10 +368,13 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_feature
                 "Please choose valid model_type. Options are mnb, knn, svm, xgb or rfc"
             )
         else:
-            if additional_features == False:
+            if additional_features == False and Y_train.shape[-1] > 1:
                 pipe, params = create_sklearn_pipeline(
                     model_type, additional_features=False
                 )
+            elif additional_features == False and Y_train.shape[-1] == 1:
+                num_classes = len(Y_train.value_counts())
+                pipe, params = create_sklearn_pipeline_sentiment(model_type, num_classes=num_classes, tokenizer=None)
             elif additional_features == True:
                 pipe, params = create_sklearn_pipeline(
                     model_type, additional_features=True

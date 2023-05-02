@@ -42,12 +42,12 @@ def run_sentiment_pipeline(
         additional_features=additional_features,
         random_state=random_state
     )
-    # models, training_times = search_sklearn_pipelines(
-    #     X_train,
-    #     Y_train,
-    #     models_to_try=models_to_try,
-    #     additional_features=additional_features,
-    # )
+    models, training_times = search_sklearn_pipelines(
+        X_train,
+        Y_train,
+        models_to_try=models_to_try,
+        additional_features=additional_features,
+    )
     # model_metrics = []
     # for i in range(len(models)):
     #     m = models[i]
