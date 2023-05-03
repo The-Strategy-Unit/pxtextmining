@@ -122,7 +122,9 @@ def predict(items: List[ItemIn]):
         columns={"comment_text": "FFT answer", "question_type": "FFT_q_standardised"}
     )
     # Make predictions
-    model_path = os.path.join("api", "svc_minorcats_v5.sav")
+    model_path = "svc_minorcats_v5.sav"
+    if not os.path.isfile(model_path):
+        model_path = os.path.join("api", model_path)
     with open(model_path, "rb") as model:
         loaded_model = pickle.load(model)
     preds_df = predict_multilabel_sklearn(
