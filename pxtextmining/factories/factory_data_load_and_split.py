@@ -206,15 +206,16 @@ def process_data(
         X = X.drop_duplicates()
         X = X.set_index('Comment ID')
     if target == 'sentiment':
-        Y = df['Comment sentiment'].map(sentiment_dict)
+        Y = df['Comment sentiment'].astype(int) - 1
     else:
         Y = df[target].fillna(value=0)
     Y = Y.loc[X.index]
     Y = Y.reset_index()
     Y = Y.drop_duplicates()
     Y = Y.set_index('Comment ID')
-    if type(target) == list:
-        Y = np.array(Y).astype(int)
+    if target == 'sentiment':
+        Y = Y['Comment sentiment']
+    Y = np.array(Y).astype(int)
     return X, Y
 
 

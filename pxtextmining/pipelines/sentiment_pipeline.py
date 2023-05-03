@@ -46,7 +46,7 @@ def run_sentiment_pipeline(
     )
     models, training_times = search_sklearn_pipelines(
         X_train,
-        Y_train,
+        Y_train, target = 'sentiment',
         models_to_try=models_to_try,
         additional_features=additional_features,
     )
@@ -60,7 +60,7 @@ def run_sentiment_pipeline(
         pickle.dump(m, open(modelpath, "wb"))
         txtpath = os.path.join(path, model_name + '.txt')
         with open(txtpath, "w") as file:
-            file.write(t)
+            file.write(f"random state = {random_state} \n\n training time = {t}")
 
     #     model_metrics.append(
     #         get_multilabel_metrics(

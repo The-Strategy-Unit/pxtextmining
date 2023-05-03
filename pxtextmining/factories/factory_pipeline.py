@@ -346,7 +346,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
     return pipe, params
 
 
-def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_features=True):
+def search_sklearn_pipelines(X_train, Y_train, models_to_try, target = None, additional_features=True):
     """Iterates through selected estimators, instantiating the relevant sklearn pipelines and searching for the optimum hyperparameters.
 
     Args:
@@ -369,12 +369,12 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try, additional_feature
                 "Please choose valid model_type. Options are mnb, knn, svm, xgb or rfc"
             )
         else:
-            if additional_features == False and Y_train.shape[-1] > 1:
+            if additional_features == False and len(Y_train.shape) > 1:
                 pipe, params = create_sklearn_pipeline(
                     model_type, additional_features=False
                 )
-            elif additional_features == False and Y_train.shape[-1] == 1:
-                num_classes = len(Y_train.value_counts())
+            if target == 'sentiment':
+                num_classes = 5
                 pipe, params = create_sklearn_pipeline_sentiment(model_type, num_classes=num_classes, tokenizer=None)
             elif additional_features == True:
                 pipe, params = create_sklearn_pipeline(
