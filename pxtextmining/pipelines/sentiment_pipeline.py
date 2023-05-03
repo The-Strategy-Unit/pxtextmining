@@ -4,6 +4,7 @@ import os
 import pickle
 
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
 
 from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset,
@@ -15,14 +16,7 @@ from pxtextmining.factories.factory_model_performance import (
     parse_metrics_file,
 )
 from pxtextmining.factories.factory_pipeline import (
-    calculating_class_weights,
-    create_bert_model,
-    create_bert_model_additional_features,
-    create_tf_model,
-    create_and_train_svc_model,
     search_sklearn_pipelines,
-    train_bert_model,
-    train_tf_model,
 )
 from pxtextmining.factories.factory_write_results import (
     write_multilabel_models_and_metrics,
@@ -59,8 +53,17 @@ def run_sentiment_pipeline(
         modelpath = os.path.join(path, model_name + '.sav')
         pickle.dump(m, open(modelpath, "wb"))
         txtpath = os.path.join(path, model_name + '.txt')
+        y_preds = m.predict(X_test)
         with open(txtpath, "w") as file:
-            file.write(f"random state = {random_state} \n\n training time = {t}")
+            metrics_string = ""
+            metadata = f"random state = {random_state} \n training time = {t}"
+            metrics_string += metadata
+            metrics_string += f"\n\n{m}\n\n"
+            report = classification_report(Y_test, y_preds,
+                                           target_names = ["very positive", "positive", "neutral", "negative", "very negative"],
+                                           zero_division = 0)
+            metrics_string += f"\n\n{report}"
+            file.write(metrics_string)
 
     #     model_metrics.append(
     #         get_multilabel_metrics(
