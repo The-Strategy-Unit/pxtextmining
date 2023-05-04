@@ -16,6 +16,8 @@ The API has been created using FastAPI and will be deployed on RStudio Connect. 
        * `nonspecific`: Any other type of nonspecific question, e.g. "Please can you tell us why you gave your answer?", or "What were you satisfied and/or dissatisfied with?".
 
 ```python
+# In Python
+
 text_data = [
               { 'comment_id': '1', # The comment_id values in each dict must be unique.
                 'comment_text': 'This is the first comment. Nurse was great.',
@@ -29,9 +31,28 @@ text_data = [
             ]
 ```
 
+```R
+# In R
+
+library(jsonlite)
+
+comment_id <- c("1", "2", "3")
+comment_text <- c(
+  "This is the first comment. Nurse was great.",
+  "This is the second comment. The ward was freezing.",
+  ""
+)
+question_type <- c("what_good", "could_improve", "nonspecific")
+df <- data.frame(comment_id, comment_text, question_type)
+text_data <- toJSON(df)
+```
+
+
 2\. Send the JSON containing the text data to the `predict_multilabel` endpoint. In python, this can be done using the `requests` library.
 
 ```python
+# In Python
+
 import requests
 
 url = "API_URL_GOES_HERE"
@@ -41,9 +62,27 @@ response = requests.post(f"{url}/predict_multilabel",
                           json = text_data, headers = headers)
 ```
 
+```R
+# In R
+
+library(httr)
+
+r <- POST(
+  url = "API_URL_GOES_HERE",
+  body = text_data,
+  encode = "json",
+  add_headers(
+    "User-Agent" = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36",
+    "Content-Type" = "application/json"
+  )
+)
+```
+
 3\. After waiting for the data to be processed and passed through the machine learning model, receive predicted labels at the same endpoint, in the example format below. Note that the comment with blank text, with comment_id 3, was assigned the label 'Labelling not possible' as it would have been stripped out during preprocessing.
 
 ```python
+# In Python
+
 print(response.json())
 # Output below
 [
@@ -57,4 +96,10 @@ print(response.json())
     'comment_text': '',
     'labels': ['Labelling not possible'] }
 ]
+```
+
+```R
+# In R
+
+content(r, "text")
 ```
