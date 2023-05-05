@@ -63,6 +63,7 @@ def bert_data_to_dataset(
             return_tensors="tf",
         )
     )
+    data_encoded.pop('attention_mask', None)
     if additional_features == True:
         onehotted = onehot(X, "FFT_q_standardised")
         data_encoded["input_cat"] = onehotted.astype(np.float32)
