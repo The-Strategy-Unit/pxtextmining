@@ -1,8 +1,10 @@
 
 import random
 
+from sklearn.model_selection import train_test_split
+
 from pxtextmining.factories.factory_data_load_and_split import (
-    load_multilabel_data, process_and_split_data)
+    bert_data_to_dataset, load_multilabel_data, process_and_split_data)
 from pxtextmining.factories.factory_model_performance import get_multiclass_metrics
 from pxtextmining.factories.factory_pipeline import search_sklearn_pipelines
 from pxtextmining.factories.factory_write_results import (
@@ -45,6 +47,67 @@ def run_sentiment_pipeline(
         )
         model_metrics.append(metrics)
     write_multilabel_models_and_metrics(models, model_metrics, path)
+
+
+def run_sentiment_bert_pipeline(
+    additional_features=False, path="test_multilabel/sentiment_bert", target="sentiment"
+):
+    """Runs all the functions required to load multilabel data, preprocess it, and split it into training, test and validation sets.
+    Creates tf.keras Transformer model with additional layers specific to the classification task, and trains it on the train set.
+    Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
+    and the performance metrics to a specified folder.
+
+    Args:
+        additional_features (bool, optional): Whether or not additional features (question type and text length) are used. Defaults to False.
+        path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
+    """
+    random_state = random.randint(1, 999)
+    print(f"random_state is: {random_state}")
+    target_names = ["very positive", "positive", "neutral", "negative", "very negative"]
+    random_state = random.randint(1, 999)
+    df = load_multilabel_data(filename=dataset, target="sentiment")
+    X_train_val, X_test, Y_train_val, Y_test = process_and_split_data(
+        df,
+        target="sentiment",
+        additional_features=additional_features,
+        random_state=random_state,
+    )
+    X_train, X_val, Y_train, Y_val = train_test_split(
+        X_train_val, Y_train_val, test_size=0.2, random_state=random_state
+    )
+    train_dataset = bert_data_to_dataset(
+        X_train, Y_train, additional_features=additional_features
+    )
+    val_dataset = bert_data_to_dataset(
+        X_val, Y_val, additional_features=additional_features
+    )
+    test_dataset = bert_data_to_dataset(
+        X_test, Y=None, additional_features=additional_features
+    )
+    class_weights_dict = calculating_class_weights(Y_train_val)
+    if additional_features == True:
+        model = create_bert_model_additional_features(Y_train)
+    else:
+        model = create_bert_model(Y_train)
+    model_trained, training_time = train_bert_model(
+        train_dataset,
+        val_dataset,
+        model,
+        class_weights_dict=class_weights_dict,
+        epochs=25,
+    )
+    model_metrics = get_multilabel_metrics(
+        test_dataset,
+        Y_test,
+        random_state=random_state,
+        labels=target,
+        model_type="bert",
+        model=model_trained,
+        training_time=training_time,
+        additional_features=additional_features,
+        already_encoded=True,
+    )
+    write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
 
 
 if __name__ == "__main__":
