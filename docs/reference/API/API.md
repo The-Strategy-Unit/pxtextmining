@@ -101,5 +101,5 @@ print(response.json())
 ```R
 # In R
 
-content(r, "text")
+r_parsed = fromJSON(content(r, "text"))
 ```
