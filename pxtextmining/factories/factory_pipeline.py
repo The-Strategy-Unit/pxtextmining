@@ -19,7 +19,7 @@ from tensorflow.keras import Sequential, layers
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.initializers import TruncatedNormal
 from tensorflow.keras.layers import Dense, Dropout, Input, concatenate
-from tensorflow.keras.losses import BinaryCrossentropy
+from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from transformers import DistilBertConfig, TFDistilBertForSequenceClassification
@@ -117,7 +117,7 @@ def create_bert_model(Y_train, model_name=model_name, max_length=150):
 
 
 def create_bert_model_additional_features(
-    Y_train, model_name=model_name, max_length=150
+    Y_train, model_name=model_name, max_length=150, multilabel = True
 ):
     """Creates Transformer based model trained on text data, concatenated with an additional Dense layer taking additional inputs, with last layer added on
     for multilabel classification task. Number of neurons in last layer depends on number of labels in Y target.
@@ -147,14 +147,23 @@ def create_bert_model_additional_features(
     cat_dense = cat_dense(input_cat)
     # concatenate both together
     concat_layer = concatenate([bert_output, cat_dense])
-    output = Dense(
-        units=Y_train.shape[1],
-        kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
-        activation="sigmoid",
-        name="output",
-    )(concat_layer)
-    model = Model(inputs=[input_ids, input_cat], outputs=output, name="BERT_MultiLabel")
-    loss = BinaryCrossentropy()
+    if multilabel == True:
+        output = Dense(
+            units=Y_train.shape[1],
+            kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
+            activation="sigmoid",
+            name="output",
+        )(concat_layer)
+        loss = BinaryCrossentropy()
+    else:
+        output = Dense(
+            units=Y_train.shape[1],
+            kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
+            activation="softmax",
+            name="output",
+        )(concat_layer)
+        loss = CategoricalCrossentropy()
+    model = Model(inputs=[input_ids, input_cat], outputs=output)
     optimizer = Adam(5e-5)
     metrics = ["CategoricalAccuracy"]
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
