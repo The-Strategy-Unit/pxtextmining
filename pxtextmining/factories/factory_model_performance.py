@@ -3,12 +3,14 @@ import pandas as pd
 from sklearn import metrics
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import confusion_matrix
+from tensorflow.keras.models import Model
+from sklearn.base import is_classifier
 
 from pxtextmining.factories.factory_predict_unlabelled_text import (
     fix_no_labels,
     predict_with_bert,
     turn_probs_into_binary,
-    predict_with_probs,
+    predict_multiclass_bert,
     predict_multilabel_sklearn
 )
 
@@ -33,12 +35,17 @@ def get_multiclass_metrics(x_test, y_test, labels, random_state, model, training
     metrics_string += (
         f"\n Random state seed for train test split is: {random_state} \n\n"
     )
-    model_metrics = {}
     # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
     # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
-    y_pred = model.predict(x_test)
+    if isinstance(model, Model) == True:
+        metrics_string += f"\n{model.summary()}\n"
+        y_pred = predict_multiclass_bert(x_test, model, additional_features = True, already_encoded = False)
+    elif is_classifier(model) == True:
+        metrics_string += f"\n{model}\n"
+        y_pred = model.predict(x_test)
+    else:
+        raise ValueError('Model type not recognised')
     # Calculate various metrics
-    metrics_string += f"\n{model}\n"
     metrics_string += f"\n\nTraining time: {training_time}\n"
     # Classification report
     metrics_string += "\n\n Classification report:\n"
@@ -47,7 +54,6 @@ def get_multiclass_metrics(x_test, y_test, labels, random_state, model, training
     )
     metrics_string += c_report_str
     return metrics_string
-
 
 def get_multilabel_metrics(
     x_test,
