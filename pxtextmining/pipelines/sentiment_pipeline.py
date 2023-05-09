@@ -60,7 +60,7 @@ def run_sentiment_pipeline(
 
 
 def run_sentiment_bert_pipeline(
-    additional_features=False, path="test_multilabel/sentiment_bert"
+    additional_features=True, path="test_multilabel/sentiment_bert"
 ):
     """Runs all the functions required to load multilabel data, preprocess it, and split it into training, test and validation sets.
     Creates tf.keras Transformer model with additional layers specific to the classification task, and trains it on the train set.
@@ -121,4 +121,4 @@ def run_sentiment_bert_pipeline(
 
 
 if __name__ == "__main__":
-    run_sentiment_pipeline()
+    run_sentiment_bert_pipeline(path="test_multilabel/sentiment_bert")
