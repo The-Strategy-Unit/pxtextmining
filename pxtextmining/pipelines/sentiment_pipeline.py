@@ -1,12 +1,15 @@
 
 import random
+import numpy as np
 
 from sklearn.model_selection import train_test_split
+from sklearn.utils.class_weight import compute_class_weight
+from tensorflow.keras.utils import to_categorical
 
 from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset, load_multilabel_data, process_and_split_data)
 from pxtextmining.factories.factory_model_performance import get_multiclass_metrics
-from pxtextmining.factories.factory_pipeline import search_sklearn_pipelines
+from pxtextmining.factories.factory_pipeline import search_sklearn_pipelines, create_bert_model_additional_features, train_bert_model
 from pxtextmining.factories.factory_write_results import (
     write_multilabel_models_and_metrics)
 from pxtextmining.params import dataset
@@ -72,8 +75,10 @@ def run_sentiment_bert_pipeline(
         additional_features=additional_features,
         random_state=random_state,
     )
+    Y_train_val_oh = to_categorical(Y_train_val)
+    Y_test_oh = to_categorical(Y_test)
     X_train, X_val, Y_train, Y_val = train_test_split(
-        X_train_val, Y_train_val, test_size=0.2, random_state=random_state
+        X_train_val, Y_train_val_oh, test_size=0.2, random_state=random_state
     )
     train_dataset = bert_data_to_dataset(
         X_train, Y_train, additional_features=additional_features
@@ -84,11 +89,15 @@ def run_sentiment_bert_pipeline(
     test_dataset = bert_data_to_dataset(
         X_test, Y=None, additional_features=additional_features
     )
-    class_weights_dict = calculating_class_weights(Y_train_val)
+    cw = compute_class_weight( 'balanced', classes = np.unique(Y_train_val), y = Y_train_val)
+    class_weights_dict = {}
+    for k,v in enumerate(list(cw)):
+        class_weights_dict[k] = v
     if additional_features == True:
-        model = create_bert_model_additional_features(Y_train)
+        model = create_bert_model_additional_features(Y_train, multilabel=False)
     else:
-        model = create_bert_model(Y_train)
+        raise ValueError('Not possible currently')
+        # model = create_bert_model(Y_train)
     model_trained, training_time = train_bert_model(
         train_dataset,
         val_dataset,
@@ -96,18 +105,18 @@ def run_sentiment_bert_pipeline(
         class_weights_dict=class_weights_dict,
         epochs=25,
     )
-    model_metrics = get_multilabel_metrics(
-        test_dataset,
-        Y_test,
-        random_state=random_state,
-        labels=target,
-        model_type="bert",
-        model=model_trained,
-        training_time=training_time,
-        additional_features=additional_features,
-        already_encoded=True,
-    )
-    write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
+    # model_metrics = get_multilabel_metrics(
+    #     test_dataset,
+    #     Y_test,
+    #     random_state=random_state,
+    #     labels=target,
+    #     model_type="bert",
+    #     model=model_trained,
+    #     training_time=training_time,
+    #     additional_features=additional_features,
+    #     already_encoded=True,
+    # )
+    # write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
 
 
 if __name__ == "__main__":
