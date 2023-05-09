@@ -73,10 +73,10 @@ def run_sentiment_bert_pipeline(
         df,
         target="sentiment",
         additional_features=additional_features,
+        preprocess_text=False,
         random_state=random_state,
     )
     Y_train_val_oh = to_categorical(Y_train_val)
-    Y_test_oh = to_categorical(Y_test)
     X_train, X_val, Y_train, Y_val = train_test_split(
         X_train_val, Y_train_val_oh, test_size=0.2, random_state=random_state
     )
@@ -86,9 +86,6 @@ def run_sentiment_bert_pipeline(
     val_dataset = bert_data_to_dataset(
         X_val, Y_val, additional_features=additional_features
     )
-    test_dataset = bert_data_to_dataset(
-        X_test, Y=None, additional_features=additional_features
-    )
     cw = compute_class_weight( 'balanced', classes = np.unique(Y_train_val), y = Y_train_val)
     class_weights_dict = {}
     for k,v in enumerate(list(cw)):
@@ -96,7 +93,7 @@ def run_sentiment_bert_pipeline(
     if additional_features == True:
         model = create_bert_model_additional_features(Y_train, multilabel=False)
     else:
-        raise ValueError('Not possible currently')
+        raise ValueError('Not possible currently, must have additional features')
         # model = create_bert_model(Y_train)
     model_trained, training_time = train_bert_model(
         train_dataset,
@@ -105,18 +102,15 @@ def run_sentiment_bert_pipeline(
         class_weights_dict=class_weights_dict,
         epochs=25,
     )
-    # model_metrics = get_multilabel_metrics(
-    #     test_dataset,
-    #     Y_test,
-    #     random_state=random_state,
-    #     labels=target,
-    #     model_type="bert",
-    #     model=model_trained,
-    #     training_time=training_time,
-    #     additional_features=additional_features,
-    #     already_encoded=True,
-    # )
-    # write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
+    model_metrics = get_multiclass_metrics(
+        X_test,
+        Y_test,
+        random_state=random_state,
+        labels=target_names,
+        model=model_trained,
+        training_time=training_time
+    )
+    write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
 
 
 if __name__ == "__main__":
