@@ -30,7 +30,10 @@ from pxtextmining.params import model_name
 
 model_name = model_name
 
-def create_sklearn_pipeline_sentiment(model_type, num_classes, tokenizer=None, additional_features = False):
+
+def create_sklearn_pipeline_sentiment(
+    model_type, num_classes, tokenizer=None, additional_features=False
+):
     """
     docs go here
     """
@@ -43,39 +46,74 @@ def create_sklearn_pipeline_sentiment(model_type, num_classes, tokenizer=None, a
         )
         params = {
             "columntransformer__tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
-            "columntransformer__tfidfvectorizer__max_df": [0.85,0.86,0.87,0.88,0.89,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99],
+            "columntransformer__tfidfvectorizer__max_df": [
+                0.85,
+                0.86,
+                0.87,
+                0.88,
+                0.89,
+                0.9,
+                0.91,
+                0.92,
+                0.93,
+                0.94,
+                0.95,
+                0.96,
+                0.97,
+                0.98,
+                0.99,
+            ],
             "columntransformer__tfidfvectorizer__min_df": stats.uniform(0, 0.1),
         }
     else:
         preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
         params = {
-                "tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
-                "tfidfvectorizer__max_df": [0.85,0.86,0.87,0.88,0.89,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99],
-                "tfidfvectorizer__min_df": [0, 1,2,3,4,5,6,7,8,9,10],
-            }
-    if model_type == 'svm':
+            "tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
+            "tfidfvectorizer__max_df": [
+                0.85,
+                0.86,
+                0.87,
+                0.88,
+                0.89,
+                0.9,
+                0.91,
+                0.92,
+                0.93,
+                0.94,
+                0.95,
+                0.96,
+                0.97,
+                0.98,
+                0.99,
+            ],
+            "tfidfvectorizer__min_df": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        }
+    if model_type == "svm":
         pipe = make_pipeline(
             preproc,
             SVC(
-                    probability=True,
-                    class_weight="balanced",
-                    max_iter=1000,
-                    cache_size=1000,
-                ),
-            )
+                probability=True,
+                class_weight="balanced",
+                max_iter=1000,
+                cache_size=1000,
+            ),
+        )
         params["svc__C"] = stats.uniform(0.1, 20)
         params["svc__kernel"] = [
             "linear",
             "rbf",
             "sigmoid",
         ]
-    if model_type == 'xgb':
-        pipe = make_pipeline(preproc, xgb.XGBClassifier(num_class = num_classes,
-                                                        objective='multi:softmax',
-                                                        n_estimators=500))
-        params['xgbclassifier__max_depth'] = [4,5,6,7,8]
-        params['xgbclassifier__min_child_weight'] = [0.5,1,2,5]
-        params['xgbclassifier__gamma'] = [0,0.1,0.2,0.3,0.4,0.5]
+    if model_type == "xgb":
+        pipe = make_pipeline(
+            preproc,
+            xgb.XGBClassifier(
+                num_class=num_classes, objective="multi:softmax", n_estimators=500
+            ),
+        )
+        params["xgbclassifier__max_depth"] = [4, 5, 6, 7, 8]
+        params["xgbclassifier__min_child_weight"] = [0.5, 1, 2, 5]
+        params["xgbclassifier__gamma"] = [0, 0.1, 0.2, 0.3, 0.4, 0.5]
     return pipe, params
 
 
@@ -117,7 +155,7 @@ def create_bert_model(Y_train, model_name=model_name, max_length=150):
 
 
 def create_bert_model_additional_features(
-    Y_train, model_name=model_name, max_length=150, multilabel = True
+    Y_train, model_name=model_name, max_length=150, multilabel=True
 ):
     """Creates Transformer based model trained on text data, concatenated with an additional Dense layer taking additional inputs, with last layer added on
     for multilabel classification task. Number of neurons in last layer depends on number of labels in Y target.
@@ -314,7 +352,23 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
         )
         params = {
             "columntransformer__tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
-            "columntransformer__tfidfvectorizer__max_df": [0.85,0.86,0.87,0.88,0.89,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99],
+            "columntransformer__tfidfvectorizer__max_df": [
+                0.85,
+                0.86,
+                0.87,
+                0.88,
+                0.89,
+                0.9,
+                0.91,
+                0.92,
+                0.93,
+                0.94,
+                0.95,
+                0.96,
+                0.97,
+                0.98,
+                0.99,
+            ],
             "columntransformer__tfidfvectorizer__min_df": stats.uniform(0, 0.1),
         }
     else:
@@ -361,13 +415,15 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
         ]
         params["randomforestclassifier__min_samples_leaf"] = stats.randint(1, 10)
         params["randomforestclassifier__max_features"] = ["sqrt", "log2", None, 0.3]
-    if model_type == 'xgb':
+    if model_type == "xgb":
         pipe = make_pipeline(preproc, xgb.XGBClassifier(tree_method="hist"))
 
     return pipe, params
 
 
-def search_sklearn_pipelines(X_train, Y_train, models_to_try, target = None, additional_features=True):
+def search_sklearn_pipelines(
+    X_train, Y_train, models_to_try, target=None, additional_features=True
+):
     """Iterates through selected estimators, instantiating the relevant sklearn pipelines and searching for the optimum hyperparameters.
 
     Args:
@@ -390,21 +446,28 @@ def search_sklearn_pipelines(X_train, Y_train, models_to_try, target = None, add
                 "Please choose valid model_type. Options are mnb, knn, svm, xgb or rfc"
             )
         else:
-            if additional_features == False and len(Y_train.shape) > 1:
-                pipe, params = create_sklearn_pipeline(
-                    model_type, additional_features=False
+            if target == "sentiment":
+                num_classes = len(np.unique(Y_train))
+                pipe, params = create_sklearn_pipeline_sentiment(
+                    model_type,
+                    num_classes=num_classes,
+                    tokenizer=None,
+                    additional_features=additional_features,
                 )
-            if target == 'sentiment':
-                num_classes = 5
-                pipe, params = create_sklearn_pipeline_sentiment(model_type, num_classes=num_classes, tokenizer=None)
-            elif additional_features == True:
+            else:
                 pipe, params = create_sklearn_pipeline(
-                    model_type, additional_features=True
+                    model_type, additional_features=additional_features
                 )
             start_time = time.time()
             search = RandomizedSearchCV(
-                    pipe, params, scoring="f1_macro", n_iter=100, cv=4, n_jobs=-2, refit=True
-                )
+                pipe,
+                params,
+                scoring="f1_macro",
+                n_iter=100,
+                cv=4,
+                n_jobs=-2,
+                refit=True,
+            )
             search.fit(X_train, Y_train)
             models.append(search.best_estimator_)
             training_time = round(time.time() - start_time, 0)
@@ -423,22 +486,23 @@ def create_and_train_svc_model(X_train, Y_train):
         (tuple): Tuple containing: a fitted `pipeline` with a MultiOutputClassifier utilising a Support Vector Classifier estimator, and a `str` of the training time taken for the fitting of the pipeline.
     """
     cat_transformer = OneHotEncoder(handle_unknown="ignore")
-    vectorizer = TfidfVectorizer(max_df = 0.9, min_df = 0, ngram_range=(1, 2))
+    vectorizer = TfidfVectorizer(max_df=0.9, min_df=0, ngram_range=(1, 2))
     preproc = make_column_transformer(
-                (cat_transformer, ["FFT_q_standardised"]),
-                (vectorizer, "FFT answer"),
-            )
+        (cat_transformer, ["FFT_q_standardised"]),
+        (vectorizer, "FFT answer"),
+    )
     pipe = make_pipeline(
-                preproc,
-                MultiOutputClassifier(
-                    SVC(C = 15,
-                        probability=True,
-                        class_weight="balanced",
-                        max_iter=1000,
-                        cache_size=1000,
-                    ),
-                ),
-            )
+        preproc,
+        MultiOutputClassifier(
+            SVC(
+                C=15,
+                probability=True,
+                class_weight="balanced",
+                max_iter=1000,
+                cache_size=1000,
+            ),
+        ),
+    )
     start_time = time.time()
     pipe.fit(X_train, Y_train)
     training_time = round(time.time() - start_time, 0)
