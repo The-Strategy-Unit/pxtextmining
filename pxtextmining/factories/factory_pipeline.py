@@ -117,7 +117,7 @@ def create_sklearn_pipeline_sentiment(
     return pipe, params
 
 
-def create_bert_model(Y_train, model_name=model_name, max_length=150):
+def create_bert_model(Y_train, model_name=model_name, max_length=150, multilabel=True):
     """Creates Transformer based model trained on text data, with last layer added on
     for multilabel classification task. Number of neurons in last layer depends on number of labels in Y target.
 
@@ -139,15 +139,24 @@ def create_bert_model(Y_train, model_name=model_name, max_length=150):
     bert_model = bert(inputs)[0][:, 0, :]
     dropout = Dropout(config.dropout, name="pooled_output")
     pooled_output = dropout(bert_model, training=False)
-    output = Dense(
-        units=Y_train.shape[1],
-        kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
-        activation="sigmoid",
-        name="output",
-    )(pooled_output)
-    model = Model(inputs=inputs, outputs=output, name="BERT_MultiLabel")
+    if multilabel == True:
+        output = Dense(
+            units=Y_train.shape[1],
+            kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
+            activation="sigmoid",
+            name="output",
+        )(pooled_output)
+        loss = BinaryCrossentropy()
+    else:
+        output = Dense(
+            units=Y_train.shape[1],
+            kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
+            activation="softmax",
+            name="output",
+        )(pooled_output)
+        loss = CategoricalCrossentropy()
+    model = Model(inputs=inputs, outputs=output, name="DistilBERT")
     # compile model
-    loss = BinaryCrossentropy()
     optimizer = Adam(5e-5)
     metrics = ["CategoricalAccuracy"]
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
