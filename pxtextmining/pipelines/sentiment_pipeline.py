@@ -122,4 +122,4 @@ def run_sentiment_bert_pipeline(
 
 if __name__ == "__main__":
     run_sentiment_pipeline(additional_features=False)
-    run_sentiment_bert_pipeline(path="test_multilabel/sentiment_bert")
+    run_sentiment_bert_pipeline(additional_features = False, path="test_multilabel/sentiment_bert")
