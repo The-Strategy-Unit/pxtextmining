@@ -8,7 +8,7 @@ from sklearn.preprocessing import OneHotEncoder
 from tensorflow.data import Dataset
 from transformers import AutoTokenizer
 
-from pxtextmining.params import minor_cats,  dataset, major_cat_dict, merged_minor_cats, sentiment_dict
+from pxtextmining.params import minor_cats,  dataset, major_cat_dict, merged_minor_cats, q_map
 
 def merge_categories(df, new_cat, cats_to_merge):
     """Merges categories together in a dataset. Assumes all categories are all in the right format, one hot encoded with int values.
@@ -104,19 +104,6 @@ def load_multilabel_data(filename, target="major_categories"):
     features_df = raw_data.loc[:, features].copy()
     features_df = clean_empty_features(features_df)
     # Standardize FFT qs
-    q_map = {
-        "Please tell us why": "nonspecific",
-        "Please tells us why you gave this answer?": "nonspecific",
-        "FFT Why?": "nonspecific",
-        "What was good?": "what_good",
-        "Is there anything we could have done better?": "could_improve",
-        "How could we improve?": "could_improve",
-        "What could we do better?": "could_improve",
-        "Please can you tell us why you gave your answer and what we could have done better?": "nonspecific",
-        "Please describe any things about the 111 service that\r\nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
-        "Please describe any things about the 111 service that\nyou were particularly satisfied and/or dissatisfied with": 'nonspecific',
-        "Nonspecific": 'nonspecific'
-    }
     features_df.loc[:, "FFT_q_standardised"] = (
         features_df.loc[:, "FFT question"].map(q_map).copy()
     )
