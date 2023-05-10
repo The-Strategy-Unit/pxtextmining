@@ -21,6 +21,7 @@ from pxtextmining.factories.factory_write_results import (
 )
 from pxtextmining.params import dataset
 
+random_state = random.randint(1,999)
 
 def run_sentiment_pipeline(
     additional_features=False,
@@ -28,7 +29,7 @@ def run_sentiment_pipeline(
     path="test_multilabel/sentiment",
 ):
     target_names = ["very positive", "positive", "neutral", "negative", "very negative"]
-    random_state = random.randint(1, 999)
+    random_state = random_state
     df = load_multilabel_data(filename=dataset, target="sentiment")
     X_train, X_test, Y_train, Y_test = process_and_split_data(
         df,
@@ -71,16 +72,15 @@ def run_sentiment_bert_pipeline(
         additional_features (bool, optional): Whether or not additional features (question type and text length) are used. Defaults to False.
         path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
     """
-    random_state = random.randint(1, 999)
+    random_state = random_state
     print(f"random_state is: {random_state}")
     target_names = ["very positive", "positive", "neutral", "negative", "very negative"]
-    random_state = random.randint(1, 999)
     df = load_multilabel_data(filename=dataset, target="sentiment")
     X_train_val, X_test, Y_train_val, Y_test = process_and_split_data(
         df,
         target="sentiment",
         additional_features=additional_features,
-        preprocess_text=False,
+        preprocess_text=True,
         random_state=random_state,
     )
     Y_train_val_oh = to_categorical(Y_train_val)
@@ -121,4 +121,5 @@ def run_sentiment_bert_pipeline(
 
 
 if __name__ == "__main__":
+    run_sentiment_pipeline(additional_features=True)
     run_sentiment_bert_pipeline(path="test_multilabel/sentiment_bert")
