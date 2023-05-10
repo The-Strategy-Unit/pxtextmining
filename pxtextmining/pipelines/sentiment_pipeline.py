@@ -15,6 +15,7 @@ from pxtextmining.factories.factory_pipeline import (
     search_sklearn_pipelines,
     create_bert_model_additional_features,
     train_bert_model,
+    create_bert_model
 )
 from pxtextmining.factories.factory_write_results import (
     write_multilabel_models_and_metrics,
@@ -29,7 +30,6 @@ def run_sentiment_pipeline(
     path="test_multilabel/sentiment",
 ):
     target_names = ["very positive", "positive", "neutral", "negative", "very negative"]
-    random_state = random_state
     df = load_multilabel_data(filename=dataset, target="sentiment")
     X_train, X_test, Y_train, Y_test = process_and_split_data(
         df,
@@ -55,6 +55,7 @@ def run_sentiment_pipeline(
             random_state=random_state,
             model=m,
             training_time=t,
+            additional_features = additional_features
         )
         model_metrics.append(metrics)
     write_multilabel_models_and_metrics(models, model_metrics, path)
@@ -72,7 +73,6 @@ def run_sentiment_bert_pipeline(
         additional_features (bool, optional): Whether or not additional features (question type and text length) are used. Defaults to False.
         path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
     """
-    random_state = random_state
     print(f"random_state is: {random_state}")
     target_names = ["very positive", "positive", "neutral", "negative", "very negative"]
     df = load_multilabel_data(filename=dataset, target="sentiment")
@@ -100,8 +100,7 @@ def run_sentiment_bert_pipeline(
     if additional_features == True:
         model = create_bert_model_additional_features(Y_train, multilabel=False)
     else:
-        raise ValueError("Not possible currently, must have additional features")
-        # model = create_bert_model(Y_train)
+        model = create_bert_model(Y_train, multilabel=False)
     model_trained, training_time = train_bert_model(
         train_dataset,
         val_dataset,
@@ -116,10 +115,11 @@ def run_sentiment_bert_pipeline(
         labels=target_names,
         model=model_trained,
         training_time=training_time,
+        additional_features = additional_features
     )
     write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
 
 
 if __name__ == "__main__":
-    run_sentiment_pipeline(additional_features=True)
+    run_sentiment_pipeline(additional_features=False)
     run_sentiment_bert_pipeline(path="test_multilabel/sentiment_bert")
