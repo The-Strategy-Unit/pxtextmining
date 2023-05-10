@@ -1,6 +1,22 @@
-dataset = "datasets/hidden/multilabel_merged_230420.csv"
+dataset = "datasets/hidden/multilabel_230509.csv"
 
 model_name = "distilbert-base-uncased"
+
+q_map = {
+        "Please tell us why": "nonspecific",
+        "Please tells us why you gave this answer?": "nonspecific",
+        "FFT Why?": "nonspecific",
+        "What was good?": "what_good",
+        "Is there anything we could have done better?": "could_improve",
+        "How could we improve?": "could_improve",
+        "What could we do better?": "could_improve",
+        "Please can you tell us why you gave your answer and what we could have done better?": "nonspecific",
+        "Please describe any things about the 111 service that\r\nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
+        "Please describe any things about the 111 service that \nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
+        "Please describe any things about the 111 service that\nyou were particularly satisfied and/or dissatisfied with": 'nonspecific',
+        "Nonspecific": 'nonspecific',
+        "nonspecific": 'nonspecific'
+    }
 
 major_cat_dict = {
     "General": [
