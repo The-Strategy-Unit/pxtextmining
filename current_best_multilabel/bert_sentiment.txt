@@ -1,0 +1,66 @@
+
+ *****************
+ Random state seed for train test split is: 639
+
+
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to
+==================================================================================================
+ input_ids (InputLayer)         [(None, 150)]        0           []
+
+ distilbert (TFDistilBertMainLa  TFBaseModelOutput(l  66362880   ['input_ids[0][0]']
+ yer)                           ast_hidden_state=(N
+                                one, 150, 768),
+                                 hidden_states=None
+                                , attentions=None)
+
+ tf.__operators__.getitem (Slic  (None, 768)         0           ['distilbert[0][0]']
+ ingOpLambda)
+
+ input_cat (InputLayer)         [(None, 3)]          0           []
+
+ pooled_output (Dropout)        (None, 768)          0           ['tf.__operators__.getitem[0][0]'
+                                                                 ]
+
+ dense (Dense)                  (None, 10)           40          ['input_cat[0][0]']
+
+ concatenate (Concatenate)      (None, 778)          0           ['pooled_output[0][0]',
+                                                                  'dense[0][0]']
+
+ output (Dense)                 (None, 5)            3895        ['concatenate[0][0]']
+
+==================================================================================================
+Total params: 66,366,815
+Trainable params: 66,366,815
+Non-trainable params: 0
+
+
+Training time: 4:02:31
+
+
+ Classification report:
+               precision    recall  f1-score   support
+
+very positive       0.83      0.70      0.76      1253
+     positive       0.61      0.68      0.64       733
+      neutral       0.57      0.65      0.61       350
+     negative       0.68      0.84      0.75       377
+very negative       0.73      0.46      0.56       104
+
+     accuracy                           0.70      2817
+    macro avg       0.68      0.67      0.67      2817
+ weighted avg       0.72      0.70      0.70      2817
+
+
+ Combining 'very positive' and 'positive' together,
+ 'negative' and 'very negative' together:
+
+              precision    recall  f1-score   support
+
+    positive       0.96      0.91      0.94      1986
+     neutral       0.57      0.65      0.61       350
+    negative       0.79      0.87      0.83       481
+
+    accuracy                           0.87      2817
+   macro avg       0.77      0.81      0.79      2817
+weighted avg       0.88      0.87      0.88      2817
