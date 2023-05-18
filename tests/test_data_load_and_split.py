@@ -4,6 +4,9 @@ import pandas as pd
 import numpy as np
 import pytest
 
+# df = factory_data_load_and_split.load_multilabel_data(filename = 'datasets/testing/test_data.csv', target = 'major_categories')[:500]
+# X_train_val, X_test, Y_train_val, Y_test = factory_data_load_and_split.process_and_split_multilabel_data(df, target = major_cats, preprocess_text = False, additional_features = True)
+
 @pytest.fixture
 def grab_test_X_additional_feats():
     data_dict = {'FFT answer': {'Q1': 'Nurses were great',
@@ -38,8 +41,6 @@ def test_onehot():
     df_onehotted = factory_data_load_and_split.onehot(df_to_onehot, 'Categories')
     assert df_onehotted.shape == (6,3)
 
-# df = factory_data_load_and_split.load_multilabel_data(filename = 'datasets/testing/test_data.csv', target = 'major_categories')[:500]
-# X_train_val, X_test, Y_train_val, Y_test = factory_data_load_and_split.process_and_split_multilabel_data(df, target = major_cats, preprocess_text = False, additional_features = True)
 
 def test_bert_data_to_dataset_with_Y(grab_test_X_additional_feats, grab_test_Y):
     train_dataset = factory_data_load_and_split.bert_data_to_dataset(grab_test_X_additional_feats, grab_test_Y, additional_features = True)
