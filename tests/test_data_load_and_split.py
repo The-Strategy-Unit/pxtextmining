@@ -41,7 +41,6 @@ def test_onehot():
     df_onehotted = factory_data_load_and_split.onehot(df_to_onehot, 'Categories')
     assert df_onehotted.shape == (6,3)
 
-
 def test_bert_data_to_dataset_with_Y(grab_test_X_additional_feats, grab_test_Y):
     train_dataset = factory_data_load_and_split.bert_data_to_dataset(grab_test_X_additional_feats, grab_test_Y, additional_features = True)
     assert type(train_dataset._structure) == tuple
