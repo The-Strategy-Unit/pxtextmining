@@ -1,6 +1,15 @@
 from pxtextmining.factories import factory_predict_unlabelled_text
 import pandas as pd
 import numpy as np
+import pytest
+from unittest.mock import Mock
+
+@pytest.fixture
+def mock_sklearn_model(mocker):
+    mock = Mock()
+    mock.predict.return_value = [[]]
+    mock.predict_proba.return_value = [[]]
+    return mock
 
 def test_get_probabilities_bert():
     label_series = pd.Series([['label_one'],['label_two', 'label_three']], name='test')
@@ -32,3 +41,6 @@ def test_get_probabilities_sklearn():
     assert test_probability_s.iloc[1]['label_two'] == 0.9
     assert type(test_probability_s) == pd.Series
     assert len(test_probability_s) == len(label_series)
+
+def test_predict_with_bert(mocker):
+    pass
