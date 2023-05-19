@@ -1,2 +1,2 @@
 coverage:
-	pytest --cov=pxtextmining --cov=api tests/ --cov-report xml:coverage.xml --cov-report term
+	pytest --cov=. tests/ --cov-report xml:coverage.xml --cov-report term
