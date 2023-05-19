@@ -13,6 +13,18 @@ def grab_test_Y():
        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
     return Y_feats
 
+def test_merge_categories():
+    test_df = pd.DataFrame(
+        {'col_1': [0,0,0,0,1],
+         'col_2': [0,1,0,0,1],
+         'col_3': [1,0,0,0,0]}
+    )
+    new_cat = 'new_cat'
+    cats_to_merge = ['col_1', 'col_2']
+    merged_df = factory_data_load_and_split.merge_categories(test_df, new_cat, cats_to_merge)
+    assert list(merged_df.columns) == ['col_3', 'new_cat']
+    assert merged_df['new_cat'].sum() == 2
+
 def test_remove_punc_and_nums():
     text = 'Here is.some TEXT?!?!?! 12345 :)'
     cleaned_text = factory_data_load_and_split.remove_punc_and_nums(text)
