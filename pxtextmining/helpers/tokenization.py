@@ -1,5 +1,11 @@
 import spacy
 
+# load outside of the function otherwise it will load every time
+try:
+    en_nlp = spacy.load('en_core_web_lg', disable=["parser", "ner"])
+except OSError:
+    print('Warning! Have you downloaded the spacy model? Run " python -m spacy download en_core_web_lg " in your terminal')
+
 def spacy_tokenizer(document):
     """Enables use of spacy tokenizer in the sklearn pipeline.
 
@@ -9,9 +15,5 @@ def spacy_tokenizer(document):
     Returns:
         (list): List containing tokenized, lemmatized words from input text.
     """
-    try:
-        en_nlp = spacy.load('en_core_web_lg', disable=["parser", "ner"])# Don't put this inside the function- loading it in every CV iteration would tremendously slow down the pipeline.
-    except OSError:
-        print('Warning! Have you downloaded the spacy model? Run " python -m spacy download en_core_web_lg " in your terminal')
     doc_spacy = en_nlp(document)
     return [token.lemma_ for token in doc_spacy]
