@@ -46,8 +46,10 @@ def test_predict_with_bert(grab_test_X_additional_feats):
             [1.4777037e-03, 5.1493715e-03, 2.8268427e-03, 7.4673461e-04, 9.8979920e-01],
         ]
     )))
+
     #act
     predictions = factory_predict_unlabelled_text.predict_with_bert(data, model, additional_features = True,
                                                       already_encoded=False)
     #assert
+    model.predict.assert_called_once()
     assert type(predictions) == np.ndarray
