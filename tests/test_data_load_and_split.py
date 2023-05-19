@@ -1,5 +1,4 @@
 from pxtextmining.factories import factory_data_load_and_split
-from pxtextmining.params import major_cats, minor_cats
 import pandas as pd
 import numpy as np
 import pytest
@@ -13,6 +12,11 @@ def grab_test_Y():
        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
     return Y_feats
+
+def test_remove_punc_and_nums():
+    text = 'Here is.some TEXT?!?!?! 12345 :)'
+    cleaned_text = factory_data_load_and_split.remove_punc_and_nums(text)
+    assert cleaned_text == 'here is some text'
 
 def test_clean_empty_features():
     df_with_empty_lines = pd.DataFrame({'text': ['Some text', '', ' ', 'More text']})
