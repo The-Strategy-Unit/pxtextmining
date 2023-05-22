@@ -27,7 +27,5 @@ jobs:
         cache: 'poetry'
     - name: Install package
       run: poetry install --with dev
-    - name: Install spacy
-      run: python -m spacy download en_core_web_lg
     - name: Run tests
       run: poetry run pytest tests/* -sx
