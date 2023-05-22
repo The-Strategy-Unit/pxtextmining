@@ -22,6 +22,7 @@ def grab_test_X_additional_feats():
         },
     }
     text_X_additional_feats = pd.DataFrame(data_dict)
+    text_X_additional_feats.index.name = 'Comment ID'
     return text_X_additional_feats
 
 
