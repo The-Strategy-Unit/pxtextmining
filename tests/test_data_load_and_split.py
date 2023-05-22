@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import pytest
 
-
 @pytest.fixture
 def grab_test_Y():
     Y_feats = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -12,6 +11,13 @@ def grab_test_Y():
        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
     return Y_feats
+
+@pytest.mark.parametrize("target", ["major_categories", "minor_categories", "sentiment"])
+def test_load_multilabel_data(mock_read_csv, target):
+    filename = 'None'
+    df = factory_data_load_and_split.load_multilabel_data(filename, target)
+    assert type(df) == pd.DataFrame
+
 
 def test_merge_categories():
     test_df = pd.DataFrame(

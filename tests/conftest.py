@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 import numpy as np
-
+from unittest.mock import Mock
 
 @pytest.fixture
 def grab_test_X_additional_feats():
@@ -24,6 +24,13 @@ def grab_test_X_additional_feats():
     text_X_additional_feats = pd.DataFrame(data_dict)
     text_X_additional_feats.index.name = 'Comment ID'
     return text_X_additional_feats
+
+
+@pytest.fixture
+def mock_read_csv(mocker, test_raw_data):
+    mock = Mock()
+    mocker.patch('pandas.read_csv', return_value=test_raw_data)
+    return mock
 
 
 @pytest.fixture
