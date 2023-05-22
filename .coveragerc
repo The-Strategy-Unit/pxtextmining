@@ -1,0 +1,9 @@
+[run]
+omit = tests\*
+       *\__init__.py
+       *\params.py
+       api\test_api.py
+       setup.py
+
+source =  api
+          pxtextmining
