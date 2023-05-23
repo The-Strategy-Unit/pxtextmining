@@ -5,6 +5,7 @@ import pandas as pd
 
 from pxtextmining.factories.factory_predict_unlabelled_text import get_labels, predict_multilabel_sklearn, predict_with_probs, get_probabilities
 from tensorflow.keras import Model, Sequential
+from pxtextmining.factories.factory_model_performance import parse_metrics_file
 
 
 def write_multilabel_models_and_metrics(models, model_metrics, path):
@@ -65,3 +66,11 @@ def write_model_preds(x, y, model, labels, additional_features = True, path = 'l
     df = df.merge(probs_predicted, left_index = True, right_index = True)
     df.to_excel(path, index = False)
     print(f'Successfully completed, written to {path}')
+
+def write_model_analysis(model_name, labels, dataset, path):
+    metrics_df = parse_metrics_file(f"{path}/{model_name}.txt", labels=labels)
+    label_counts = pd.DataFrame(dataset[labels].sum())
+    label_counts = label_counts.reset_index()
+    label_counts = label_counts.rename(columns={"index": "label", 0: "label_count"})
+    metrics_df = metrics_df.merge(label_counts, on="label")
+    metrics_df.to_excel(f"{path}/{model_name}_perf.xlsx", index=False)
