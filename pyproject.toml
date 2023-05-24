@@ -27,13 +27,13 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.20.0"
-requests = "2.25.1"
 pydantic = "^1.10.4"
 pytest = "^7.2.2"
 fastapi = "^0.94.1"
 httpx = "^0.23.3"
 pytest-cov = "^4.0.0"
 pytest-mock = "^3.10.0"
+requests = "^2.31.0"
 
 [tool.poetry.group.docs]
 optional = true
