@@ -34,8 +34,17 @@ model_name = model_name
 def create_sklearn_pipeline_sentiment(
     model_type, num_classes, tokenizer=None, additional_features=False
 ):
-    """
-    docs go here
+    """Creates sklearn pipeline and hyperparameter grid for searching, for a multiclass target.
+
+    Args:
+        model_type (str): Allows for selection of different estimators. Permitted values are "svm" (Support Vector Classifier), or "xgb" (XGBoost).
+        num_classes (int): Number of target classes.
+        tokenizer (str, optional): Allows for selection of "spacy" tokenizer. Defaults to None, which is the default sklearn tokenizer
+        additional_features (bool, optional): Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.
+
+    Returns:
+        (tuple): Tuple containing the `sklearn.pipeline.Pipeline` with the selected estimator, and a `dict` containing the hyperparameters to be tuned.
+
     """
     if additional_features == True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
@@ -125,6 +134,7 @@ def create_bert_model(Y_train, model_name=model_name, max_length=150, multilabel
         Y_train (pd.DataFrame): DataFrame containing one-hot encoded targets
         model_name (str, optional): Type of pretrained transformer model to load. Defaults to `model_name` set in `pxtextmining.params`
         max_length (int, optional): Maximum length of text to be passed through transformer model. Defaults to 150.
+        multilabel (Bool, optional): Whether the target is multilabel or not. If set to False, target is multiclass. Defaults to True.
 
     Returns:
         (tensorflow.keras.models.Model): Compiled Tensforflow Keras model with pretrained transformer layers and last layer suited for multilabel classification task
@@ -173,6 +183,7 @@ def create_bert_model_additional_features(
         Y_train (pd.DataFrame): DataFrame containing one-hot encoded targets
         model_name (str, optional): Type of pretrained transformer model to load. Defaults to `model_name` set in `pxtextmining.params`
         max_length (int, optional): Maximum length of text to be passed through transformer model. Defaults to 150.
+        multilabel (Bool, optional): Whether the target is multilabel or not. If set to False, target is multiclass. Defaults to True.
 
     Returns:
         (tensorflow.keras.models.Model): Compiled Tensforflow Keras model with pretrained transformer layers, three question_type inputs passed through a Dense layer, and last layer suited for multilabel classification task
