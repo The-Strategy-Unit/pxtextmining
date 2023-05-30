@@ -29,6 +29,16 @@ def run_sentiment_pipeline(
     models_to_try=["svm", "xgb"],
     path="test_multilabel/sentiment",
 ):
+    """Runs all the functions required to load multiclass data, preprocess it, and split it into training, test and validation sets.
+    Creates sklearn model and hyperparameter grid to search, and trains it on the train set.
+    Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
+    and the performance metrics to a specified folder.
+
+    Args:
+        additional_features (bool, optional): Whether or not additional features (question type and text length) are used. Defaults to False.
+        models_to_try (list, optional): Which model types to try. Defaults to ["svm", "xgb"].
+        path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
+    """
     target_names = ["very positive", "positive", "neutral", "negative", "very negative"]
     df = load_multilabel_data(filename=dataset, target="sentiment")
     X_train, X_test, Y_train, Y_test = process_and_split_data(
@@ -64,7 +74,7 @@ def run_sentiment_pipeline(
 def run_sentiment_bert_pipeline(
     additional_features=True, path="test_multilabel/sentiment_bert"
 ):
-    """Runs all the functions required to load multilabel data, preprocess it, and split it into training, test and validation sets.
+    """Runs all the functions required to load multiclass data, preprocess it, and split it into training, test and validation sets.
     Creates tf.keras Transformer model with additional layers specific to the classification task, and trains it on the train set.
     Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
     and the performance metrics to a specified folder.
