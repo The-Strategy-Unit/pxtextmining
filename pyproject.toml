@@ -34,6 +34,7 @@ httpx = "^0.23.3"
 pytest-cov = "^4.0.0"
 pytest-mock = "^3.10.0"
 requests = "^2.31.0"
+jupyter = "^1.0.0"
 
 [tool.poetry.group.docs]
 optional = true
