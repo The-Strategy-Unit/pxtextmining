@@ -68,6 +68,14 @@ def write_model_preds(x, y, model, labels, additional_features = True, path = 'l
     print(f'Successfully completed, written to {path}')
 
 def write_model_analysis(model_name, labels, dataset, path):
+    """Writes an Excel file with the performance metrics of each label, as well as the counts of samples for each label.
+
+    Args:
+        model_name (str): Model name used in the performance metrics file
+        labels (list): List of labels for the categories to be predicted.
+        dataset (pd.DataFrame): Original dataset before train test split
+        path (str): Filepath where model and performance metrics file are saved.
+    """
     metrics_df = parse_metrics_file(f"{path}/{model_name}.txt", labels=labels)
     label_counts = pd.DataFrame(dataset[labels].sum())
     label_counts = label_counts.reset_index()
