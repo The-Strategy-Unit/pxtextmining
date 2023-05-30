@@ -76,6 +76,17 @@ def predict_multilabel_sklearn(
     return preds_df
 
 def predict_multiclass_bert(x, model, additional_features, already_encoded):
+    """Makes multiclass predictions using a transformer-based model. Can encode the data if not already encoded.
+
+    Args:
+        x (pd.DataFrame): DataFrame containing features to be passed through model.
+        model (tf.keras.models.Model): Pretrained transformer based model in tensorflow keras.
+        additional_features (bool, optional): Whether or not additional features (e.g. question type) are included. Defaults to False.
+        already_encoded (bool, optional): Whether or not the input data needs to be encoded. Defaults to False.
+
+    Returns:
+        (np.array): Predicted labels in one-hot encoded format.
+    """
     y_probs = predict_with_bert(x, model, additional_features = additional_features,
                            already_encoded = already_encoded)
     y_binary = turn_probs_into_binary(y_probs)
