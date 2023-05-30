@@ -31,6 +31,24 @@ def get_dummy_model(x_train, y_train):
 
 
 def get_multiclass_metrics(x_test, y_test, labels, random_state, model, additional_features, training_time = None):
+    """Creates a string detailing various performance metrics for a multiclass model, which can then be written to
+    a text file.
+
+    Args:
+        x_test (pd.DataFrame): DataFrame containing test dataset features
+        y_test (pd.DataFrame): DataFrame containing test dataset true target values
+        labels (list): List containing the target labels
+        random_state (int): Seed used to control the shuffling of the data, to enable reproducible results.
+        model (tf.keras or sklearn model): Trained estimator.
+        additional_features (bool, optional): Whether or not additional features (e.g. question type) have been included in training the model. Defaults to False.
+        training_time (str, optional): Amount of time taken for model to train. Defaults to None.
+
+    Raises:
+        ValueError: Only models built with sklearn or tensorflow are allowed.
+
+    Returns:
+        (str): String containing the model architecture/hyperparameters, random state used for the train test split, and classification report.
+    """
     metrics_string = "\n *****************"
     metrics_string += (
         f"\n Random state seed for train test split is: {random_state} \n\n"
@@ -144,11 +162,13 @@ def get_multilabel_metrics(
 def get_accuracy_per_class(y_test, pred):
     """Function to produce accuracy per class for the predicted categories, compared against real values.
 
-    :param pd.Series y_test: Test data (real target values).
-    :param pd.Series pred: Predicted target values.
+    Args:
+        y_test (pd.Series): Test data (real target values).
+        pred (pd.Series): Predicted target values.
 
-    :return: The computed accuracy per class metrics for the model.
-    :rtype: pd.DataFrame
+    Returns:
+        (pd.DataFrame): The computed accuracy per class metrics for the model.
+
     """
     cm = confusion_matrix(y_test, pred)
     accuracy_per_class = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
