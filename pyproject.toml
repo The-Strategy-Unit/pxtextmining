@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pxtextmining"
-version = "0.5.2"
+version = "0.5.3"
 description = "Multilabel text classification of patient experience feedback."
 authors = ['CDU Data Science <cdudatascience@nottshc.nhs.uk>',
 'YiWen Hon <yiwen.hon@nottshc.nhs.uk>']
@@ -20,17 +20,21 @@ scikit-learn = "1.0.2"
 tensorflow = "^2.11.0"
 transformers = "^4.26.1"
 scipy = "^1.10.1"
+xgboost = "^1.7.5"
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.20.0"
-requests = "2.25.1"
 pydantic = "^1.10.4"
 pytest = "^7.2.2"
 fastapi = "^0.94.1"
 httpx = "^0.23.3"
+pytest-cov = "^4.0.0"
+pytest-mock = "^3.10.0"
+requests = "^2.31.0"
+jupyter = "^1.0.0"
 
 [tool.poetry.group.docs]
 optional = true

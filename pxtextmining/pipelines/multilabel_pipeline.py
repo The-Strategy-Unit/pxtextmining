@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset,
     load_multilabel_data,
-    process_and_split_multilabel_data,
+    process_and_split_data,
 )
 from pxtextmining.factories.factory_model_performance import (
     get_multilabel_metrics,
@@ -25,6 +25,7 @@ from pxtextmining.factories.factory_pipeline import (
 from pxtextmining.factories.factory_write_results import (
     write_multilabel_models_and_metrics,
     write_model_preds,
+    write_model_analysis
 )
 from pxtextmining.helpers.text_preprocessor import tf_preprocessing
 from pxtextmining.params import major_cats, minor_cats, dataset, merged_minor_cats
@@ -35,6 +36,7 @@ def run_sklearn_pipeline(
     target=major_cats,
     models_to_try=["mnb", "knn", "svm", "rfc"],
     path="test_multilabel",
+    include_analysis = False
 ):
     """Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
     Creates sklearn pipelines and hyperparameters to search, using specified estimators.
@@ -55,7 +57,7 @@ def run_sklearn_pipeline(
     if target == minor_cats:
         target_name = "minor_categories"
     df = load_multilabel_data(filename=dataset, target=target_name)
-    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(
+    X_train, X_test, Y_train, Y_test = process_and_split_data(
         df,
         target=target,
         additional_features=additional_features,
@@ -65,7 +67,7 @@ def run_sklearn_pipeline(
         X_train,
         Y_train,
         models_to_try=models_to_try,
-        additional_features=additional_features,
+        additional_features=additional_features
     )
     model_metrics = []
     for i in range(len(models)):
@@ -80,9 +82,17 @@ def run_sklearn_pipeline(
                 model_type="sklearn",
                 model=m,
                 training_time=t,
+                additional_features=additional_features
             )
         )
     write_multilabel_models_and_metrics(models, model_metrics, path=path)
+    if include_analysis == True:
+        for i in range(len(models)):
+            model_name = f'model_{i}'
+            write_model_preds(X_test, Y_test, models[i], labels=target,
+                              additional_features=additional_features, path=f"{path}/{model_name}_labels.xlsx")
+            write_model_analysis(model_name, labels=target, dataset=df, path=path)
+    print("Pipeline complete")
 
 
 def run_svc_pipeline(
@@ -111,7 +121,7 @@ def run_svc_pipeline(
     if target == merged_minor_cats:
         target_name = "test"
     df = load_multilabel_data(filename=dataset, target=target_name)
-    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(
+    X_train, X_test, Y_train, Y_test = process_and_split_data(
         df,
         target=target,
         additional_features=additional_features,
@@ -138,13 +148,8 @@ def run_svc_pipeline(
             additional_features=additional_features,
             path=f"{path}/labels.xlsx"
         )
-        metrics_df = parse_metrics_file(f"{path}/model_0.txt", labels=target)
-        label_counts = pd.DataFrame(df[target].sum())
-        label_counts = label_counts.reset_index()
-        label_counts = label_counts.rename(columns={"index": "label", 0: "label_count"})
-        metrics_df = metrics_df.merge(label_counts, on="label")
-        metrics_df.to_excel(f"{path}/perf.xlsx", index=False)
-
+        write_model_analysis(model_name='model_0', labels=target, dataset = df, path = path)
+    print("Pipeline complete!")
 
 def run_tf_pipeline(target=major_cats, path="test_multilabel/tf"):
     """Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
@@ -162,7 +167,7 @@ def run_tf_pipeline(target=major_cats, path="test_multilabel/tf"):
     df = load_multilabel_data(
         filename="datasets/multilabeldata_2.csv", target="major_categories"
     )
-    X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(
+    X_train, X_test, Y_train, Y_test = process_and_split_data(
         df, target=target, random_state=random_state
     )
     X_train_pad, vocab_size = tf_preprocessing(X_train)
@@ -203,7 +208,7 @@ def run_bert_pipeline(
     if target == minor_cats:
         target_name = "minor_categories"
     df = load_multilabel_data(filename=dataset, target=target_name)
-    X_train_val, X_test, Y_train_val, Y_test = process_and_split_multilabel_data(
+    X_train_val, X_test, Y_train_val, Y_test = process_and_split_data(
         df,
         target=target,
         preprocess_text=False,
@@ -250,10 +255,10 @@ def run_bert_pipeline(
 
 if __name__ == "__main__":
     # run_bert_pipeline(additional_features = True, path = 'test_multilabel/bert_minorcats', target = minor_cats)
-    # run_sklearn_pipeline(additional_features = True, target= minor_cats, models_to_try = ["knn", "svm", "rfc"], path = 'test_multilabel/minorcats_sklearn')
+    # run_sklearn_pipeline(additional_features = True, target= minor_cats, models_to_try = ["svm"], path = 'test_multilabel/230522-b')
     run_svc_pipeline(
         additional_features=True,
-        target=merged_minor_cats,
-        path="test_multilabel/minorcats_merged_230420",
+        target=minor_cats,
+        path="test_multilabel/230522",
         include_analysis=True
     )

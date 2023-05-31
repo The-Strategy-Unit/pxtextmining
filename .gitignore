@@ -10,3 +10,5 @@ dist/
 datasets/hidden/*
 test_multilabel/*
 .env
+api/rsconnect-python/*
+.coverage

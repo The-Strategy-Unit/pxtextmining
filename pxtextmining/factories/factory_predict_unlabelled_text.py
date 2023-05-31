@@ -75,6 +75,25 @@ def predict_multilabel_sklearn(
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
     return preds_df
 
+def predict_multiclass_bert(x, model, additional_features, already_encoded):
+    """Makes multiclass predictions using a transformer-based model. Can encode the data if not already encoded.
+
+    Args:
+        x (pd.DataFrame): DataFrame containing features to be passed through model.
+        model (tf.keras.models.Model): Pretrained transformer based model in tensorflow keras.
+        additional_features (bool, optional): Whether or not additional features (e.g. question type) are included. Defaults to False.
+        already_encoded (bool, optional): Whether or not the input data needs to be encoded. Defaults to False.
+
+    Returns:
+        (np.array): Predicted labels in one-hot encoded format.
+    """
+    y_probs = predict_with_bert(x, model, additional_features = additional_features,
+                           already_encoded = already_encoded)
+    y_binary = turn_probs_into_binary(y_probs)
+    y_binary_fixed = fix_no_labels(y_binary, y_probs, model_type = 'bert')
+    y_preds = np.argmax(y_binary_fixed, axis=1)
+    return y_preds
+
 def predict_with_probs(x, model, labels):
     """Given a trained model and some features, makes predictions based on the model's outputted probabilities using the model.predict_proba function.
     Any label with a predicted probability over 0.5 is taken as the predicted label. If no labels are over 0.5 probability then the

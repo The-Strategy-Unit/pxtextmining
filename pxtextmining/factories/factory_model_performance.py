@@ -3,12 +3,14 @@ import pandas as pd
 from sklearn import metrics
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import confusion_matrix
+from tensorflow.keras.models import Model
+from sklearn.base import is_classifier
 
 from pxtextmining.factories.factory_predict_unlabelled_text import (
     fix_no_labels,
     predict_with_bert,
     turn_probs_into_binary,
-    predict_with_probs,
+    predict_multiclass_bert,
     predict_multilabel_sklearn
 )
 
@@ -26,6 +28,53 @@ def get_dummy_model(x_train, y_train):
     model = DummyClassifier(strategy="uniform")
     model.fit(x_train, y_train)
     return model
+
+
+def get_multiclass_metrics(x_test, y_test, labels, random_state, model, additional_features, training_time = None):
+    """Creates a string detailing various performance metrics for a multiclass model, which can then be written to
+    a text file.
+
+    Args:
+        x_test (pd.DataFrame): DataFrame containing test dataset features
+        y_test (pd.DataFrame): DataFrame containing test dataset true target values
+        labels (list): List containing the target labels
+        random_state (int): Seed used to control the shuffling of the data, to enable reproducible results.
+        model (tf.keras or sklearn model): Trained estimator.
+        additional_features (bool, optional): Whether or not additional features (e.g. question type) have been included in training the model. Defaults to False.
+        training_time (str, optional): Amount of time taken for model to train. Defaults to None.
+
+    Raises:
+        ValueError: Only models built with sklearn or tensorflow are allowed.
+
+    Returns:
+        (str): String containing the model architecture/hyperparameters, random state used for the train test split, and classification report.
+    """
+    metrics_string = "\n *****************"
+    metrics_string += (
+        f"\n Random state seed for train test split is: {random_state} \n\n"
+    )
+    # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
+    # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
+    if isinstance(model, Model) == True:
+        stringlist = []
+        model.summary(print_fn=lambda x: stringlist.append(x))
+        model_summary = "\n".join(stringlist)
+        metrics_string += f"\n{model_summary}\n"
+        y_pred = predict_multiclass_bert(x_test, model, additional_features = additional_features, already_encoded = False)
+    elif is_classifier(model) == True:
+        metrics_string += f"\n{model}\n"
+        y_pred = model.predict(x_test)
+    else:
+        raise ValueError('Model type not recognised')
+    # Calculate various metrics
+    metrics_string += f"\n\nTraining time: {training_time}\n"
+    # Classification report
+    metrics_string += "\n\n Classification report:\n"
+    c_report_str = metrics.classification_report(
+        y_test, y_pred, target_names=labels, zero_division=0
+    )
+    metrics_string += c_report_str
+    return metrics_string
 
 def get_multilabel_metrics(
     x_test,
@@ -113,11 +162,13 @@ def get_multilabel_metrics(
 def get_accuracy_per_class(y_test, pred):
     """Function to produce accuracy per class for the predicted categories, compared against real values.
 
-    :param pd.Series y_test: Test data (real target values).
-    :param pd.Series pred: Predicted target values.
+    Args:
+        y_test (pd.Series): Test data (real target values).
+        pred (pd.Series): Predicted target values.
 
-    :return: The computed accuracy per class metrics for the model.
-    :rtype: pd.DataFrame
+    Returns:
+        (pd.DataFrame): The computed accuracy per class metrics for the model.
+
     """
     cm = confusion_matrix(y_test, pred)
     accuracy_per_class = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]

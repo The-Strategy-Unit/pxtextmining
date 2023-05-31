@@ -8,7 +8,14 @@ from sklearn.preprocessing import OneHotEncoder
 from tensorflow.data import Dataset
 from transformers import AutoTokenizer
 
-from pxtextmining.params import minor_cats,  dataset, major_cat_dict, merged_minor_cats
+from pxtextmining.params import (
+    minor_cats,
+    dataset,
+    major_cat_dict,
+    merged_minor_cats,
+    q_map,
+)
+
 
 def merge_categories(df, new_cat, cats_to_merge):
     """Merges categories together in a dataset. Assumes all categories are all in the right format, one hot encoded with int values.
@@ -24,9 +31,9 @@ def merge_categories(df, new_cat, cats_to_merge):
     df[new_cat] = np.NaN
     for cat in cats_to_merge:
         print(f"Number of {cat} labels: {df[cat].sum()}")
-        df[new_cat] = df[new_cat].mask(df[cat] == 1, other = 1)
+        df[new_cat] = df[new_cat].mask(df[cat] == 1, other=1)
     print(f"Number of new label {new_cat}: {df[new_cat].sum()}")
-    df = df.drop(columns = cats_to_merge)
+    df = df.drop(columns=cats_to_merge)
     return df
 
 
@@ -54,15 +61,27 @@ def bert_data_to_dataset(
         (tf.data.Dataset OR dict): `tf.data.Dataset` if Y is provided, `dict` otherwise.
     """
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    data_encoded = dict(
-        tokenizer(
-            list(X["FFT answer"]),
-            truncation=True,
-            padding=True,
-            max_length=max_length,
-            return_tensors="tf",
+    try:
+        data_encoded = dict(
+            tokenizer(
+                list(X["FFT answer"]),
+                truncation=True,
+                padding=True,
+                max_length=max_length,
+                return_tensors="tf",
+            )
         )
-    )
+    except:
+        data_encoded = dict(
+            tokenizer(
+                list(X),
+                truncation=True,
+                padding=True,
+                max_length=max_length,
+                return_tensors="tf",
+            )
+        )
+    data_encoded.pop("attention_mask", None)
     if additional_features == True:
         onehotted = onehot(X, "FFT_q_standardised")
         data_encoded["input_cat"] = onehotted.astype(np.float32)
@@ -95,7 +114,7 @@ def load_multilabel_data(filename, target="major_categories"):
     # For now the labels are hardcoded, these are subject to change as framework is in progress
     if target in ["minor_categories", "major_categories"]:
         cols = minor_cats
-    if target == 'test':
+    if target == "test":
         cols = merged_minor_cats
     elif target == "sentiment":
         cols = ["Comment sentiment"]
@@ -103,26 +122,15 @@ def load_multilabel_data(filename, target="major_categories"):
     features_df = raw_data.loc[:, features].copy()
     features_df = clean_empty_features(features_df)
     # Standardize FFT qs
-    q_map = {
-        "Please tell us why": "nonspecific",
-        "Please tells us why you gave this answer?": "nonspecific",
-        "FFT Why?": "nonspecific",
-        "What was good?": "what_good",
-        "Is there anything we could have done better?": "could_improve",
-        "How could we improve?": "could_improve",
-        "What could we do better?": "could_improve",
-        "Please can you tell us why you gave your answer and what we could have done better?": "nonspecific",
-        "Please describe any things about the 111 service that\r\nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
-        "Please describe any things about the 111 service that\nyou were particularly satisfied and/or dissatisfied with": 'nonspecific',
-        "Nonspecific": 'nonspecific'
-    }
     features_df.loc[:, "FFT_q_standardised"] = (
         features_df.loc[:, "FFT question"].map(q_map).copy()
     )
     if features_df["FFT_q_standardised"].count() != features_df.shape[0]:
-        raise ValueError(f'Check q_map is correct. features_df.shape[0] is {features_df.shape[0]}. \n \
+        raise ValueError(
+            f'Check q_map is correct. features_df.shape[0] is {features_df.shape[0]}. \n \
                          features_df["FFT_q_standardised"].count()  is {features_df["FFT_q_standardised"].count()}. \n\n\
-                         Questions are: {features_df["FFT question"].value_counts()}')
+                         Questions are: {features_df["FFT question"].value_counts()}'
+        )
     features_df.loc[:, "text_length"] = features_df.loc[:, "FFT answer"].apply(
         lambda x: len([word for word in str(x).split(" ") if word != ""])
     )
@@ -141,7 +149,7 @@ def load_multilabel_data(filename, target="major_categories"):
     combined_df = pd.merge(features_df, targets_df, left_index=True, right_index=True)
     combined_df = combined_df.reset_index()
     combined_df = combined_df.drop_duplicates()
-    combined_df = combined_df.set_index('Comment ID')
+    combined_df = combined_df.set_index("Comment ID")
     print(f"Shape of cleaned data is {combined_df.shape}")
     return combined_df
 
@@ -175,9 +183,7 @@ def onehot(df, col_to_onehot):
     return col_encoded
 
 
-def process_multilabel_data(
-    df, target, preprocess_text=True, additional_features=False
-):
+def process_data(df, target, preprocess_text=True, additional_features=False):
     """Utilises remove_punc_and_nums and clean_empty_features functions to clean the text data and
     drop any rows that are only whitespace after cleaning. Also fills one-hot encoded columns with
     0s rather than NaNs so that Y target is not sparse.
@@ -193,7 +199,7 @@ def process_multilabel_data(
     Returns:
         (tuple): Tuple containing two pd.DataFrames. The first contains the X features (text, with or without question type depending on additional_features), the second contains the one-hot encoded Y targets
     """
-    Y = df[target].fillna(value=0)
+
     if preprocess_text == True:
         X = df["FFT answer"].astype(str).apply(remove_punc_and_nums)
         X = clean_empty_features(X)
@@ -201,19 +207,25 @@ def process_multilabel_data(
     if preprocess_text == False:
         X = df["FFT answer"].astype(str)
     if additional_features == True:
-        X = pd.merge(X, df[['FFT_q_standardised']], left_index = True, right_index = True)
+        X = pd.merge(X, df[["FFT_q_standardised"]], left_index=True, right_index=True)
         X = X.reset_index()
         X = X.drop_duplicates()
-        X = X.set_index('Comment ID')
+        X = X.set_index("Comment ID")
+    if target == "sentiment":
+        Y = df["Comment sentiment"].astype(int) - 1
+    else:
+        Y = df[target].fillna(value=0)
     Y = Y.loc[X.index]
     Y = Y.reset_index()
     Y = Y.drop_duplicates()
-    Y = Y.set_index('Comment ID')
+    Y = Y.set_index("Comment ID")
+    if target == "sentiment":
+        Y = Y["Comment sentiment"]
     Y = np.array(Y).astype(int)
     return X, Y
 
 
-def process_and_split_multilabel_data(
+def process_and_split_data(
     df,
     target,
     preprocess_text=True,
@@ -234,7 +246,7 @@ def process_and_split_multilabel_data(
     Returns:
         (list): List containing train-test split of preprocessed X features and Y targets.
     """
-    X, Y = process_multilabel_data(
+    X, Y = process_data(
         df,
         target,
         preprocess_text=preprocess_text,
@@ -275,8 +287,8 @@ def remove_punc_and_nums(text):
     return cleaned_sentence
 
 
-if __name__ == '__main__':
-    df = load_multilabel_data(dataset, target = 'major_categories')
+if __name__ == "__main__":
+    df = load_multilabel_data(dataset, target="major_categories")
     print(df.shape)
     print(df.head())
     for i in df.columns:
