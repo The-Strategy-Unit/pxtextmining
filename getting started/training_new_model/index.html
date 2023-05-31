@@ -142,7 +142,7 @@ df = load_multilabel_data(filename = 'datasets/hidden/multilabeldata_2.csv',
 
 # Step 3: Conduct preprocessing: remove punctuation and numbers, clean whitespace and drop empty lines.
 # Split into train and test using the random_state above.
-X_train, X_test, Y_train, Y_test = process_and_split_multilabel_data(
+X_train, X_test, Y_train, Y_test = process_and_split_data(
                                         df, target = target,
                                         random_state = random_state)
 

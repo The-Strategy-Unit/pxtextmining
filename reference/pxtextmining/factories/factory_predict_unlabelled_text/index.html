@@ -85,6 +85,8 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_sklearn">predict_multilabel_sklearn()</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_multiclass_bert">predict_multiclass_bert()</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_with_probs">predict_with_probs()</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.get_probabilities">get_probabilities()</a>
@@ -335,6 +337,96 @@ been predicted, if fix_no_labels = True.</p>
                 <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
           </td>
           <td><p>DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_multiclass_bert" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">predict_multiclass_bert</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">additional_features</span><span class="p">,</span> <span class="n">already_encoded</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Makes multiclass predictions using a transformer-based model. Can encode the data if not already encoded.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>x</code></td>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>DataFrame containing features to be passed through model.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>model</code></td>
+          <td>
+                <code>tf.<span title="tf.keras">keras</span>.<span title="tf.keras.models">models</span>.<span title="tf.keras.models.Model">Model</span></code>
+          </td>
+          <td><p>Pretrained transformer based model in tensorflow keras.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>additional_features</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not additional features (e.g. question type) are included. Defaults to False.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>already_encoded</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not the input data needs to be encoded. Defaults to False.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>Predicted labels in one-hot encoded format.</p></td>
         </tr>
     </tbody>
   </table>

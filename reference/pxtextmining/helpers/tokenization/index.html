@@ -91,6 +91,8 @@
                 </li>
                 <li class="toctree-l3 current"><a class="reference internal current" href="./">Tokenization</a>
     <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.helpers.tokenization.en_nlp">en_nlp</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.helpers.tokenization.spacy_tokenizer">spacy_tokenizer()</a>
     </li>
     </ul>
@@ -154,6 +156,25 @@
 
 
 
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="pxtextmining.helpers.tokenization.en_nlp" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">en_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_core_web_lg&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;parser&#39;</span><span class="p">,</span> <span class="s1">&#39;ner&#39;</span><span class="p">])</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
 
 
 <div class="doc doc-object doc-function">
@@ -214,13 +235,7 @@
 
       <details class="quote">
         <summary>Source code in <code>pxtextmining/helpers/tokenization.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
 <span class="normal">12</span>
@@ -228,7 +243,9 @@
 <span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span>
-<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">spacy_tokenizer</span><span class="p">(</span><span class="n">document</span><span class="p">):</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">spacy_tokenizer</span><span class="p">(</span><span class="n">document</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Enables use of spacy tokenizer in the sklearn pipeline.</span>
 
 <span class="sd">    Args:</span>
@@ -237,10 +254,6 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        (list): List containing tokenized, lemmatized words from input text.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">en_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_core_web_lg&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;parser&quot;</span><span class="p">,</span> <span class="s2">&quot;ner&quot;</span><span class="p">])</span><span class="c1"># Don&#39;t put this inside the function- loading it in every CV iteration would tremendously slow down the pipeline.</span>
-    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning! Have you downloaded the spacy model? Run &quot; python -m spacy download en_core_web_lg &quot; in your terminal&#39;</span><span class="p">)</span>
     <span class="n">doc_spacy</span> <span class="o">=</span> <span class="n">en_nlp</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">lemma_</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc_spacy</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
