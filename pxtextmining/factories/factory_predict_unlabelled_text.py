@@ -68,7 +68,10 @@ def predict_multilabel_sklearn(
     if enhance_with_probs == True:
         for row in range(predictions.shape[0]):
             for label_index in range(predictions.shape[1]):
-                prob_of_label = pred_probs[label_index, row, 1]
+                if pred_probs.ndim ==3:
+                    prob_of_label = pred_probs[label_index, row, 1]
+                if pred_probs.ndim ==2:
+                    prob_of_label = pred_probs[row, label_index]
                 if prob_of_label > 0.5:
                     predictions[row][label_index] = 1
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
@@ -160,7 +163,10 @@ def get_probabilities(label_series, labels, predicted_probabilities, model_type)
         for each in predicted_labels:
             index_label = labels.index(each)
             if model_type == 'sklearn':
-                prob_of_label = predicted_probabilities[index_label, i, 1]
+                if predicted_probabilities.ndim ==3:
+                    prob_of_label = predicted_probabilities[index_label, i, 1]
+                else:
+                    prob_of_label = predicted_probabilities[i][index_label]
             elif model_type in ('tf', 'bert'):
                 prob_of_label = predicted_probabilities[i][index_label]
             label_probs[each] = round(prob_of_label, 5)
@@ -226,13 +232,17 @@ def fix_no_labels(binary_preds, predicted_probs, model_type="sklearn"):
     Returns:
         (np.array): Predicted labels in one-hot encoded format, with all rows containing at least one predicted label.
     """
+
     for i in range(len(binary_preds)):
         if binary_preds[i].sum() == 0:
             if model_type in ("tf", "bert"):
                 # index_max = list(predicted_probs[i]).index(max(predicted_probs[i])
                 index_max = np.argmax(predicted_probs[i])
             if model_type == "sklearn":
-                index_max = np.argmax(predicted_probs[:, i, 1])
+                if predicted_probs.ndim == 3:
+                    index_max = np.argmax(predicted_probs[:, i, 1])
+                else:
+                    index_max = np.argmax(predicted_probs[i])
             binary_preds[i][index_max] = 1
     return binary_preds
 
