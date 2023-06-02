@@ -28,7 +28,7 @@ from pxtextmining.factories.factory_write_results import (
     write_model_analysis
 )
 from pxtextmining.helpers.text_preprocessor import tf_preprocessing
-from pxtextmining.params import major_cats, minor_cats, dataset, merged_minor_cats
+from pxtextmining.params import major_cats, minor_cats, dataset, merged_minor_cats, major_cat_dict
 
 
 def run_sklearn_pipeline(
@@ -252,13 +252,95 @@ def run_bert_pipeline(
     )
     write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
 
+def run_two_layer_sklearn_pipeline(
+    additional_features=True,
+    models_to_try=["mnb", "knn", "xgb"],
+    path="test_multilabel/230531",
+):
+    random_state = random.randint(1, 999)
+    df_major = load_multilabel_data(filename=dataset, target="major_cats")
+    df_minor = load_multilabel_data(filename=dataset, target="minor_cats")
+    # major cats first
+    X_train, X_test, Y_train, Y_test = process_and_split_data(
+        df_major,
+        target=major_cats,
+        additional_features=additional_features,
+        random_state=random_state,
+    )
+    models, training_times = search_sklearn_pipelines(
+        X_train,
+        Y_train,
+        models_to_try=models_to_try,
+        additional_features=additional_features
+    )
+    svc, svc_time = create_and_train_svc_model(X_train, Y_train)
+    models.append(svc)
+    training_times.append(svc_time)
+    model_metrics = []
+    for i in range(len(models)):
+        m = models[i]
+        t = training_times[i]
+        model_metrics.append(
+            get_multilabel_metrics(
+                X_test,
+                Y_test,
+                random_state=random_state,
+                labels=target,
+                model_type="sklearn",
+                model=m,
+                training_time=t,
+                additional_features=additional_features
+            )
+        )
+    write_multilabel_models_and_metrics(models, model_metrics, path=path)
+    # minor cats
+    for k,v in major_cat_dict.items():
+        if len(v) > 1:
+            print(k)
+            target = v
+            model_name = k
+            path = f'../test_multilabel/230531/{model_name}'
+            X_train, X_test, Y_train, Y_test = process_and_split_data(
+                df_minor,
+                target=target,
+                additional_features=additional_features,
+                random_state=random_state
+                )
+            models, training_times = search_sklearn_pipelines(
+                                        X_train,
+                                        Y_train,
+                                        models_to_try=["mnb", "knn", "xgb"],
+                                        additional_features=additional_features
+                                        )
+            svc, svc_time = create_and_train_svc_model(X_train, Y_train)
+            models.append(svc)
+            training_times.append(svc_time)
+            model_metrics = []
+            for i in range(len(models)):
+                m = models[i]
+                t = training_times[i]
+                model_metrics.append(
+                    get_multilabel_metrics(
+                        X_test,
+                        Y_test,
+                        random_state=random_state,
+                        labels=target,
+                        model_type="sklearn",
+                        model=m,
+                        training_time=t,
+                        additional_features=additional_features
+                    )
+                )
+                write_multilabel_models_and_metrics(models, model_metrics, path=path)
+
 
 if __name__ == "__main__":
     # run_bert_pipeline(additional_features = True, path = 'test_multilabel/bert_minorcats', target = minor_cats)
     # run_sklearn_pipeline(additional_features = True, target= minor_cats, models_to_try = ["svm"], path = 'test_multilabel/230522-b')
-    run_svc_pipeline(
-        additional_features=True,
-        target=minor_cats,
-        path="test_multilabel/230522",
-        include_analysis=True
-    )
+    # run_svc_pipeline(
+    #     additional_features=True,
+    #     target=minor_cats,
+    #     path="test_multilabel/230522",
+    #     include_analysis=True
+    # )
+    run_two_layer_sklearn_pipeline()
