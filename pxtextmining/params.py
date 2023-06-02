@@ -20,6 +20,7 @@ q_map = {
 
 major_cat_dict = {
     "General": [
+        "Labelling not possible",
         "Gratitude/ good experience",
         "Negative experience",
         "Not assigned",
