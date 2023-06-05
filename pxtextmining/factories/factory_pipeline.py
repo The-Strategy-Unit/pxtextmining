@@ -373,23 +373,11 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
         params = {
             "columntransformer__tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
             "columntransformer__tfidfvectorizer__max_df": [
-                0.85,
-                0.86,
-                0.87,
-                0.88,
-                0.89,
                 0.9,
-                0.91,
-                0.92,
-                0.93,
-                0.94,
                 0.95,
-                0.96,
-                0.97,
-                0.98,
                 0.99,
             ],
-            "columntransformer__tfidfvectorizer__min_df": stats.uniform(0, 0.1),
+            "columntransformer__tfidfvectorizer__min_df": [0,0.01,0.02],
         }
     else:
         preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
@@ -403,8 +391,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
         params["multioutputclassifier__estimator__alpha"] = stats.uniform(0.1, 1)
     if model_type == "knn":
         pipe = make_pipeline(preproc, KNeighborsClassifier())
-        params["kneighborsclassifier__n_neighbors"] = stats.randint(1, 50)
-        params["kneighborsclassifier__n_jobs"] = [-1]
+        params["kneighborsclassifier__n_neighbors"] = stats.randint(1, 100)
     if model_type == "svm":
         pipe = make_pipeline(
             preproc,
@@ -418,12 +405,13 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                 n_jobs=-1,
             ),
         )
-        params["multioutputclassifier__estimator__C"] = stats.uniform(0.1, 20)
-        params["multioutputclassifier__estimator__kernel"] = [
-            "linear",
-            "rbf",
-            "sigmoid",
-        ]
+        params["multioutputclassifier__estimator__C"] = [10,15,20]
+        params["multioutputclassifier__estimator__gamma"] = np.logspace(-9, 3, 13)
+        # params["multioutputclassifier__estimator__kernel"] = [
+        #     "linear",
+        #     "rbf",
+        #     "sigmoid",
+        # ]
     if model_type == "rfc":
         pipe = make_pipeline(preproc, RandomForestClassifier(n_jobs=-1))
         params["randomforestclassifier__max_depth"] = stats.randint(5, 50)
@@ -436,8 +424,10 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
         params["randomforestclassifier__min_samples_leaf"] = stats.randint(1, 10)
         params["randomforestclassifier__max_features"] = ["sqrt", "log2", None, 0.3]
     if model_type == "xgb":
-        pipe = make_pipeline(preproc, xgb.XGBClassifier(tree_method="hist"))
-
+        pipe = make_pipeline(preproc, xgb.XGBClassifier(tree_method="hist", n_estimators=200))
+        params["xgbclassifier__max_depth"] = [4, 5, 6, 7, 8]
+        params["xgbclassifier__min_child_weight"] = [0.5, 1, 2, 5]
+        params["xgbclassifier__gamma"] = [0, 0.1, 0.2, 0.3, 0.4, 0.5]
     return pipe, params
 
 

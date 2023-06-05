@@ -122,6 +122,7 @@ def load_multilabel_data(filename, target="major_categories"):
     features_df = raw_data.loc[:, features].copy()
     features_df = clean_empty_features(features_df)
     # Standardize FFT qs
+    features_df['FFT question'] = features_df['FFT question'].fillna('nonspecific')
     features_df.loc[:, "FFT_q_standardised"] = (
         features_df.loc[:, "FFT question"].map(q_map).copy()
     )
