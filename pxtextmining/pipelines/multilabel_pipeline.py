@@ -1,6 +1,12 @@
 import random
 import pandas as pd
 
+# import warnings filter
+from warnings import simplefilter
+# ignore all future warnings
+simplefilter(action='ignore', category=FutureWarning)
+
+
 from sklearn.model_selection import train_test_split
 
 from pxtextmining.factories.factory_data_load_and_split import (
@@ -255,11 +261,11 @@ def run_bert_pipeline(
 def run_two_layer_sklearn_pipeline(
     additional_features=True,
     models_to_try=["mnb", "knn", "xgb"],
-    path="test_multilabel/230531",
+    path="test_multilabel/230605",
 ):
     random_state = random.randint(1, 999)
-    df_major = load_multilabel_data(filename=dataset, target="major_cats")
-    df_minor = load_multilabel_data(filename=dataset, target="minor_cats")
+    df_major = load_multilabel_data(filename=dataset, target="major_categories")
+    df_minor = load_multilabel_data(filename=dataset, target="minor_categories")
     # major cats first
     X_train, X_test, Y_train, Y_test = process_and_split_data(
         df_major,
@@ -267,6 +273,7 @@ def run_two_layer_sklearn_pipeline(
         additional_features=additional_features,
         random_state=random_state,
     )
+    target = major_cats
     models, training_times = search_sklearn_pipelines(
         X_train,
         Y_train,
@@ -299,7 +306,7 @@ def run_two_layer_sklearn_pipeline(
             print(k)
             target = v
             model_name = k
-            path = f'../test_multilabel/230531/{model_name}'
+            path = f'../test_multilabel/230605/{model_name}'
             X_train, X_test, Y_train, Y_test = process_and_split_data(
                 df_minor,
                 target=target,
@@ -331,7 +338,7 @@ def run_two_layer_sklearn_pipeline(
                         additional_features=additional_features
                     )
                 )
-                write_multilabel_models_and_metrics(models, model_metrics, path=path)
+            write_multilabel_models_and_metrics(models, model_metrics, path=path)
 
 
 if __name__ == "__main__":
