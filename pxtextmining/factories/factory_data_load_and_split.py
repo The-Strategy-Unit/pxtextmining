@@ -66,7 +66,7 @@ def bert_data_to_dataset(
             tokenizer(
                 list(X["FFT answer"]),
                 truncation=True,
-                padding=True,
+                padding='max_length',
                 max_length=max_length,
                 return_tensors="tf",
             )
@@ -76,7 +76,7 @@ def bert_data_to_dataset(
             tokenizer(
                 list(X),
                 truncation=True,
-                padding=True,
+                padding='max_length',
                 max_length=max_length,
                 return_tensors="tf",
             )
