@@ -179,7 +179,7 @@ def onehot(df, col_to_onehot):
     Returns:
         (pd.DataFrame): One-hot encoded data
     """
-    encoder = OneHotEncoder(sparse=False)
+    encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
     col_encoded = encoder.fit_transform(df[[col_to_onehot]])
     return col_encoded
 
