@@ -110,3 +110,38 @@ def test_predict_with_bert(grab_test_X_additional_feats):
     #assert
     model.predict.assert_called_once()
     assert type(predictions) == np.ndarray
+
+def test_predict_multiclass_bert(grab_test_X_additional_feats):
+    data = grab_test_X_additional_feats
+    model = Mock(predict=Mock(return_value=np.array(
+        [
+            [0.9, 0.01, 0.07, 0.01, 0.01],
+            [0.01, 0.07, 0.01, 0.01, 0.9],
+            [0.07, 0.9, 0.01, 0.01, 0.01],
+            [0.9, 0.01, 0.07, 0.01, 0.01],
+            [0.9, 0.01, 0.01, 0.01, 0.07],
+        ]
+    )))
+    predictions = factory_predict_unlabelled_text.predict_multiclass_bert(data, model, additional_features=False,
+                                                                          already_encoded=False)
+    assert predictions.sum() == len(data)
+
+def test_predict_with_probs(grab_test_X_additional_feats):
+    # arrange
+    data = grab_test_X_additional_feats[:3]
+    predicted_probs = [[[0.80465788, 0.19534212],
+        [0.94292979, 0.05707021],
+        [0.33439024, 0.66560976]],
+       [[0.33439024, 0.66560976],
+        [0.9949298 , 0.0050702 ],
+        [0.99459238, 0.00540762]],
+       [[0.97472981, 0.02527019],
+        [0.25069129, 0.74930871],
+        [0.33439024, 0.66560976]]]
+    labels = ['first', 'second', 'third']
+    model = Mock(predict_proba = Mock(return_value=predicted_probs))
+    # act
+    predictions = factory_predict_unlabelled_text.predict_with_probs(data, model, labels=labels)
+    # assert
+    assert type(predictions) == np.ndarray
+    assert len(predictions) == len(predicted_probs)
