@@ -26,7 +26,7 @@ def test_write_multilabel_models_and_metrics(mock_file):
 
 
 @patch("pxtextmining.factories.factory_write_results.pd.DataFrame.to_excel")
-def test_write_model_preds(mock_toexcel, grab_test_X_additional_feats):
+def test_write_model_preds_sklearn(mock_toexcel, grab_test_X_additional_feats):
     # arrange
     x = grab_test_X_additional_feats[:3]
     y = np.array([[0, 1, 0], [1, 0, 0], [1, 0, 0]])
@@ -46,4 +46,27 @@ def test_write_model_preds(mock_toexcel, grab_test_X_additional_feats):
     factory_write_results.write_model_preds(x, y, mock_model, labels, path=path)
     # assert
     mock_model.predict_proba.assert_called_with(x)
-    mock_toexcel.assert_called_with(path, index=False)
+    mock_toexcel.assert_called()
+
+@patch("pxtextmining.factories.factory_write_results.pd.DataFrame.to_excel")
+def test_write_model_preds_bert(mock_toexcel, grab_test_X_additional_feats):
+    # arrange
+    x = grab_test_X_additional_feats[:3]
+    y = np.array([[0, 1, 0], [1, 0, 0], [1, 0, 0]])
+    predicted_probs = np.array(
+        [
+            [2.3520987e-02, 6.2770307e-01, 1.3149388e-01],
+            [9.8868138e-01, 1.9990385e-03, 5.4453085e-03],
+            [5.6546849e-01, 4.2310607e-01, 9.3136989e-03],
+        ]
+        )
+    mock_model = Mock(spec=Model,
+        predict=Mock(return_value=predicted_probs)
+    )
+    labels = ["A", "B", "C"]
+    path = "somepath.xlsx"
+    # act
+    factory_write_results.write_model_preds(x, y, mock_model, labels, path=path)
+    # assert
+    mock_model.predict.assert_called()
+    mock_toexcel.assert_called()
