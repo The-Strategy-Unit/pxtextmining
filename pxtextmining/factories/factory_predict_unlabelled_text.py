@@ -97,7 +97,6 @@ def predict_multilabel_bert(
         labels (list, optional): List containing target labels. Defaults to major_cats.
         additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
         label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
-        enhance_with_probs (bool, optional): Whether or not to enhance predicted classes with predictions utilising the model's outputted probabilities.
 
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
