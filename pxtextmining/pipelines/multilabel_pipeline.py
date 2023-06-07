@@ -34,7 +34,7 @@ from pxtextmining.factories.factory_write_results import (
     write_model_analysis
 )
 from pxtextmining.helpers.text_preprocessor import tf_preprocessing
-from pxtextmining.params import major_cats, minor_cats, dataset, merged_minor_cats, major_cat_dict
+from pxtextmining.params import major_cats, minor_cats, dataset, merged_minor_cats, major_cat_dict, random_state
 
 
 def run_sklearn_pipeline(
@@ -57,11 +57,13 @@ def run_sklearn_pipeline(
         models_to_try (list, optional): List of the estimators to try. Defaults to ["mnb", "knn", "svm", "rfc"]. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).
         path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
     """
-    random_state = random.randint(1, 999)
+    # random_state = random.randint(1, 999)
     if target == major_cats:
         target_name = "major_categories"
     if target == minor_cats:
         target_name = "minor_categories"
+    if target == merged_minor_cats:
+        target_name = "test"
     df = load_multilabel_data(filename=dataset, target=target_name)
     X_train, X_test, Y_train, Y_test = process_and_split_data(
         df,
@@ -119,7 +121,7 @@ def run_svc_pipeline(
         include_analysis (bool, optional): Whether or not to create Excel files including further analysis of the model's performance. Defaults to False. If True, writes two Excel files to the specified folder, one containing the labels and the performance metrics for each label, and one containing the predicted labels and the actual labels for the test set, with the model's probabilities for both.
 
     """
-    random_state = random.randint(1, 999)
+    # random_state = random.randint(1, 999)
     if target == major_cats:
         target_name = "major_categories"
     if target == minor_cats:
@@ -196,7 +198,7 @@ def run_tf_pipeline(target=major_cats, path="test_multilabel/tf"):
 
 
 def run_bert_pipeline(
-    additional_features=False, path="test_multilabel/bert", target=major_cats
+    additional_features=False, path="test_multilabel/bert", target=major_cats, include_analysis = False
 ):
     """Runs all the functions required to load multilabel data, preprocess it, and split it into training, test and validation sets.
     Creates tf.keras Transformer model with additional layers specific to the classification task, and trains it on the train set.
@@ -207,12 +209,14 @@ def run_bert_pipeline(
         additional_features (bool, optional): Whether or not additional features (question type and text length) are used. Defaults to False.
         path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
     """
-    random_state = random.randint(1, 999)
+    # random_state = random.randint(1, 999)
     print(f"random_state is: {random_state}")
     if target == major_cats:
         target_name = "major_categories"
     if target == minor_cats:
         target_name = "minor_categories"
+    if target == merged_minor_cats:
+        target_name = "test"
     df = load_multilabel_data(filename=dataset, target=target_name)
     X_train_val, X_test, Y_train_val, Y_test = process_and_split_data(
         df,
@@ -257,6 +261,17 @@ def run_bert_pipeline(
         already_encoded=True,
     )
     write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
+    if include_analysis == True:
+        write_model_preds(
+            X_test,
+            Y_test,
+            model,
+            labels=target,
+            additional_features=additional_features,
+            path=f"{path}/labels.xlsx"
+        )
+        write_model_analysis(model_name='model_0', labels=target, dataset = df, path = path)
+    print("Pipeline complete!")
 
 def run_two_layer_sklearn_pipeline(
     additional_features=True,
@@ -342,12 +357,15 @@ def run_two_layer_sklearn_pipeline(
 
 
 if __name__ == "__main__":
-    # run_bert_pipeline(additional_features = True, path = 'test_multilabel/bert_minorcats', target = minor_cats)
-    # run_sklearn_pipeline(additional_features = True, target= minor_cats, models_to_try = ["svm"], path = 'test_multilabel/230522-b')
-    # run_svc_pipeline(
-    #     additional_features=True,
-    #     target=minor_cats,
-    #     path="test_multilabel/230522",
-    #     include_analysis=True
-    # )
-    run_two_layer_sklearn_pipeline()
+    run_bert_pipeline(additional_features = True, path = 'test_multilabel/merged_cats_0607', target = merged_minor_cats)
+    run_sklearn_pipeline(additional_features = True, target= merged_minor_cats, models_to_try = ["xgb"], path = 'test_multilabel/merged_cats_0607/xgb',
+                         include_analysis=True)
+    run_svc_pipeline(
+        additional_features=True,
+        target=merged_minor_cats,
+        path="test_multilabel/merged_cats_0607/svc",
+        include_analysis=True
+    )
+    run_sklearn_pipeline(additional_features = True, target= merged_minor_cats, models_to_try = ["svm"], path = 'test_multilabel/merged_cats_0607/svc_2',
+                         include_analysis=True)
+    # run_two_layer_sklearn_pipeline()
