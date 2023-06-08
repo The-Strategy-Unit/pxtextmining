@@ -120,7 +120,6 @@ def load_multilabel_data(filename, target="major_categories"):
         cols = ["Comment sentiment"]
     # Sort out the features first
     features_df = raw_data.loc[:, features].copy()
-    features_df = clean_empty_features(features_df)
     # Standardize FFT qs
     features_df['FFT question'] = features_df['FFT question'].fillna('nonspecific')
     features_df.loc[:, "FFT_q_standardised"] = (
@@ -135,6 +134,7 @@ def load_multilabel_data(filename, target="major_categories"):
     features_df.loc[:, "text_length"] = features_df.loc[:, "FFT answer"].apply(
         lambda x: len([word for word in str(x).split(" ") if word != ""])
     )
+    features_df = clean_empty_features(features_df)
     # Sort out the targets
     targets_df = raw_data.loc[:, cols].copy()
     targets_df = targets_df.replace("1", 1)
