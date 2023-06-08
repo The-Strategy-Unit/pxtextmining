@@ -1,4 +1,6 @@
-dataset = "datasets/hidden/multilabel_230522.csv"
+dataset = "datasets/hidden/merged_20230602.csv"
+
+random_state = 99
 
 model_name = "distilbert-base-uncased"
 
@@ -88,13 +90,15 @@ major_cat_dict = {
 
 major_cats = list(major_cat_dict.keys())
 
-# v5 20230420
+# v6 20230602
 merged_minor_cats = [
     "Gratitude/ good experience",
+#     "Negative experience",
     "Not assigned",
     "Organisation & efficiency",
-    "Funding & use of financial resources",
+#     "Funding & use of financial resources",
     "Non-specific praise for staff",
+#     "Non-specific dissatisfaction with staff",
     "Staff manner & personal attributes",
     "Number & deployment of staff",
     "Staff responsiveness",
@@ -105,23 +109,33 @@ merged_minor_cats = [
     "Information directly from staff during care",
     "Information provision & guidance",
     "Being kept informed, clarity & consistency of information",
+#     "Service involvement with family/ carers",
+#     "Patient contact with family/ carers",
     "Contacting services",
     "Appointment arrangements",
     "Appointment method",
     "Timeliness of care",
     "Pain management",
     "Diagnosis & triage",
+    "Referals & continuity of care",
+#     "Length of stay/ duration of care",
+    "Discharge",
     "Care plans",
+#     "Patient records",
+#     "Links with non-NHS organisations",
     "Cleanliness, tidiness & infection control",
-    "Provision of medical equipment",
+    "Safety & security",
+#     "Provision of medical equipment",
     "Service location",
     "Transport to/ from services",
     "Parking",
     "Electronic entertainment",
+    "Feeling safe",
     "Patient appearance & grooming",
     "Mental Health Act",
     "Equality, Diversity & Inclusion",
-    "Collecting patients feedback",
+    "Admission",
+#     "Collecting patients feedback",
     "Labelling not possible",
     "Environment & Facilities",
     "Supplying & understanding medication",
@@ -129,10 +143,8 @@ merged_minor_cats = [
     "Food & drink provision & facilities",
     "Sensory experience",
     "Impact of treatment/ care",
-    "Safety",
-    "Family/ carers",
     "Negative experience/ dissatisfaction",
-    "Patient journey",
+    "Family/ carers"
 ]
 
 # v5 20230419

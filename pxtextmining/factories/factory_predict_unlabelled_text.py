@@ -4,6 +4,7 @@ import pandas as pd
 from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset,
     remove_punc_and_nums,
+    clean_empty_features
 )
 from pxtextmining.params import minor_cats
 
@@ -74,6 +75,48 @@ def predict_multilabel_sklearn(
                     prob_of_label = pred_probs[row, label_index]
                 if prob_of_label > 0.5:
                     predictions[row][label_index] = 1
+    preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
+    preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
+    return preds_df
+
+def predict_multilabel_bert(
+    data,
+    model,
+    labels = minor_cats,
+    additional_features = False,
+    label_fix = True
+):
+    """Conducts basic preprocessing to remove blank text.
+    Utilises a pretrained transformer-based machine learning model to make multilabel predictions on the cleaned text.
+    Also takes the class with the highest predicted probability as the predicted class in cases where no class has
+    been predicted, if fix_no_labels = True.
+
+    Args:
+        text (pd.Series OR pd.DataFrame): DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True
+        model (tf.Model): Trained tensorflow estimator able to perform multilabel classification.
+        labels (list, optional): List containing target labels. Defaults to major_cats.
+        additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
+        label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
+
+    Returns:
+        (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
+    """
+    if additional_features == False:
+        text = pd.Series(data)
+    else:
+        text = data['FFT answer']
+    processed_text = clean_empty_features(text)
+    if additional_features == False:
+        final_data = processed_text
+    else:
+        final_data = pd.merge(processed_text, data['FFT_q_standardised'], how='left', on='Comment ID')
+    y_probs = predict_with_bert(final_data, model, additional_features=additional_features,
+                                    already_encoded=False)
+    y_binary = turn_probs_into_binary(y_probs)
+    if label_fix == True:
+        predictions = fix_no_labels(y_binary, y_probs, model_type = 'bert')
+    else:
+        predictions = y_binary
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
     return preds_df

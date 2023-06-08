@@ -34,6 +34,63 @@ def test_get_probabilities_sklearn():
     assert len(test_probability_s) == len(label_series)
 
 
+def test_predict_multilabel_sklearn():
+    data = pd.DataFrame([
+        {"Comment ID": "99999", "FFT answer": "I liked all of it", 'FFT_q_standardised': 'nonspecific'},
+        {"Comment ID": "A55", "FFT answer": "", 'FFT_q_standardised': 'nonspecific'},
+        {"Comment ID": "A56", "FFT answer": "Truly awful time finding parking", 'FFT_q_standardised': 'could_improve'},
+        {"Comment ID": "4", "FFT answer": "I really enjoyed the session", 'FFT_q_standardised': 'what_good'},
+        {"Comment ID": "5", "FFT answer": "7482367", 'FFT_q_standardised': 'nonspecific'},
+        ]).set_index('Comment ID')
+    predictions = np.array([[0,1,0],
+                            [1,0,1],
+                            [0,0,1]])
+    predicted_probs = [[[0.80465788, 0.19534212],
+        [0.94292979, 0.05707021],
+        [0.33439024, 0.66560976]],
+       [[0.33439024, 0.66560976],
+        [0.9949298 , 0.0050702 ],
+        [0.99459238, 0.00540762]],
+       [[0.97472981, 0.02527019],
+        [0.25069129, 0.74930871],
+        [0.33439024, 0.66560976]]]
+    labels = ['first', 'second', 'third']
+    model = Mock(predict=Mock(return_value=predictions), predict_proba = Mock(return_value=predicted_probs))
+    preds_df = factory_predict_unlabelled_text.predict_multilabel_sklearn(data, model, labels=labels, additional_features = True)
+    assert preds_df.shape == (3,4)
+
+def test_predict_multilabel_sklearn_additional_params(grab_test_X_additional_feats):
+    data = grab_test_X_additional_feats['FFT answer'].iloc[:3]
+    predictions = np.array([[0,1,0],
+                            [1,0,1],
+                            [0,0,1]])
+    labels = ['first', 'second', 'third']
+    model = Mock(predict=Mock(return_value=predictions))
+    preds_df = factory_predict_unlabelled_text.predict_multilabel_sklearn(data, model, labels=labels, additional_features = False,
+                                                                          label_fix = False, enhance_with_probs = False)
+    assert preds_df.shape == (3,4)
+
+def test_predict_multilabel_bert():
+    data = pd.DataFrame([
+        {"Comment ID": "99999", "FFT answer": "I liked all of it", 'FFT_q_standardised': 'nonspecific'},
+        {"Comment ID": "A55", "FFT answer": "", 'FFT_q_standardised': 'nonspecific'},
+        {"Comment ID": "A56", "FFT answer": "Truly awful time finding parking", 'FFT_q_standardised': 'could_improve'},
+        {"Comment ID": "4", "FFT answer": "I really enjoyed the session", 'FFT_q_standardised': 'what_good'},
+        {"Comment ID": "5", "FFT answer": "7482367", 'FFT_q_standardised': 'nonspecific'},
+        ]).set_index('Comment ID')
+    predicted_probs = np.array(
+        [
+            [6.2770307e-01, 2.3520987e-02, 1.3149388e-01, 2.7835215e-02, 1.8944685e-01],
+            [9.8868138e-01, 1.9990385e-03, 5.4453085e-03, 9.0726715e-04, 2.9669846e-03],
+            [4.2310607e-01, 5.6546849e-01, 9.3136989e-03, 1.3205722e-03, 7.9117226e-04],
+            [2.0081511e-01, 7.0609129e-04, 1.1107661e-03, 7.9677838e-01, 5.8961433e-04]
+        ]
+        )
+    labels = ['first', 'second', 'third', 'fourth', 'fifth']
+    model = Mock(predict=Mock(return_value=predicted_probs))
+    preds_df = factory_predict_unlabelled_text.predict_multilabel_bert(data, model, labels=labels, additional_features=True)
+    assert preds_df.shape == (4,6)
+
 def test_predict_with_bert(grab_test_X_additional_feats):
     #arrange
     data = grab_test_X_additional_feats
@@ -53,3 +110,38 @@ def test_predict_with_bert(grab_test_X_additional_feats):
     #assert
     model.predict.assert_called_once()
     assert type(predictions) == np.ndarray
+
+def test_predict_multiclass_bert(grab_test_X_additional_feats):
+    data = grab_test_X_additional_feats
+    model = Mock(predict=Mock(return_value=np.array(
+        [
+            [0.9, 0.01, 0.07, 0.01, 0.01],
+            [0.01, 0.07, 0.01, 0.01, 0.9],
+            [0.07, 0.9, 0.01, 0.01, 0.01],
+            [0.9, 0.01, 0.07, 0.01, 0.01],
+            [0.9, 0.01, 0.01, 0.01, 0.07],
+        ]
+    )))
+    predictions = factory_predict_unlabelled_text.predict_multiclass_bert(data, model, additional_features=False,
+                                                                          already_encoded=False)
+    assert predictions.sum() == len(data)
+
+def test_predict_with_probs(grab_test_X_additional_feats):
+    # arrange
+    data = grab_test_X_additional_feats[:3]
+    predicted_probs = [[[0.80465788, 0.19534212],
+        [0.94292979, 0.05707021],
+        [0.33439024, 0.66560976]],
+       [[0.33439024, 0.66560976],
+        [0.9949298 , 0.0050702 ],
+        [0.99459238, 0.00540762]],
+       [[0.97472981, 0.02527019],
+        [0.25069129, 0.74930871],
+        [0.33439024, 0.66560976]]]
+    labels = ['first', 'second', 'third']
+    model = Mock(predict_proba = Mock(return_value=predicted_probs))
+    # act
+    predictions = factory_predict_unlabelled_text.predict_with_probs(data, model, labels=labels)
+    # assert
+    assert type(predictions) == np.ndarray
+    assert len(predictions) == len(predicted_probs)

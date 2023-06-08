@@ -66,7 +66,7 @@ def bert_data_to_dataset(
             tokenizer(
                 list(X["FFT answer"]),
                 truncation=True,
-                padding=True,
+                padding='max_length',
                 max_length=max_length,
                 return_tensors="tf",
             )
@@ -76,7 +76,7 @@ def bert_data_to_dataset(
             tokenizer(
                 list(X),
                 truncation=True,
-                padding=True,
+                padding='max_length',
                 max_length=max_length,
                 return_tensors="tf",
             )
@@ -179,7 +179,7 @@ def onehot(df, col_to_onehot):
     Returns:
         (pd.DataFrame): One-hot encoded data
     """
-    encoder = OneHotEncoder(sparse=False)
+    encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
     col_encoded = encoder.fit_transform(df[[col_to_onehot]])
     return col_encoded
 
