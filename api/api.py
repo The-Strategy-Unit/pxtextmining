@@ -10,6 +10,60 @@ from pxtextmining.factories.factory_predict_unlabelled_text import (
     predict_multilabel_sklearn,
 )
 
+minor_cats_v5 = [
+    "Gratitude/ good experience",
+    "Negative experience",
+    "Not assigned",
+    "Organisation & efficiency",
+    "Funding & use of financial resources",
+    "Non-specific praise for staff",
+    "Non-specific dissatisfaction with staff",
+    "Staff manner & personal attributes",
+    "Number & deployment of staff",
+    "Staff responsiveness",
+    "Staff continuity",
+    "Competence & training",
+    "Unspecified communication",
+    "Staff listening, understanding & involving patients",
+    "Information directly from staff during care",
+    "Information provision & guidance",
+    "Being kept informed, clarity & consistency of information",
+    "Service involvement with family/ carers",
+    "Patient contact with family/ carers",
+    "Contacting services",
+    "Appointment arrangements",
+    "Appointment method",
+    "Timeliness of care",
+    "Pain management",
+    "Diagnosis & triage",
+    "Referals & continuity of care",
+    "Length of stay/ duration of care",
+    "Discharge",
+    "Care plans",
+    "Patient records",
+    "Links with non-NHS organisations",
+    "Cleanliness, tidiness & infection control",
+    "Safety & security",
+    "Provision of medical equipment",
+    "Service location",
+    "Transport to/ from services",
+    "Parking",
+    "Electronic entertainment",
+    "Feeling safe",
+    "Patient appearance & grooming",
+    "Mental Health Act",
+    "Equality, Diversity & Inclusion",
+    "Admission",
+    "Collecting patients feedback",
+    "Labelling not possible",
+    "Environment & Facilities",
+    "Supplying & understanding medication",
+    "Activities & access to fresh air",
+    "Food & drink provision & facilities",
+    "Sensory experience",
+    "Impact of treatment/ care",
+]
+
 description = """
 This API is for classifying patient experience qualitative data,
 utilising the models trained as part of the pxtextmining project.
@@ -28,11 +82,8 @@ class Test(BaseModel):
     test: str
 
     class Config:
-        schema_extra = {
-            "example": {
-                "test": "Hello"
-            }
-        }
+        schema_extra = {"example": {"test": "Hello"}}
+
 
 class ItemIn(BaseModel):
     comment_id: str
@@ -85,16 +136,16 @@ app = FastAPI(
         "name": "MIT License",
         "url": "https://github.com/CDU-data-science-team/pxtextmining/blob/main/LICENSE",
     },
-    openapi_tags=tags_metadata
+    openapi_tags=tags_metadata,
 )
 
 
-@app.get("/", response_model=Test, tags=['index'])
+@app.get("/", response_model=Test, tags=["index"])
 def index():
     return {"test": "Hello"}
 
 
-@app.post("/predict_multilabel", response_model=List[ItemOut], tags=['predict'])
+@app.post("/predict_multilabel", response_model=List[ItemOut], tags=["predict"])
 def predict(items: List[ItemIn]):
     """Accepts comment ids, comment text and question type as JSON in a POST request. Makes predictions using trained SVC model.
 
@@ -128,7 +179,7 @@ def predict(items: List[ItemIn]):
     with open(model_path, "rb") as model:
         loaded_model = pickle.load(model)
     preds_df = predict_multilabel_sklearn(
-        text_to_predict, loaded_model, additional_features=True
+        text_to_predict, loaded_model, labels=minor_cats_v5, additional_features=True
     )
     # Join predicted labels with received data
     preds_df["comment_id"] = preds_df.index.astype(str)
