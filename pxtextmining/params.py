@@ -20,19 +20,17 @@ q_map = {
     "nonspecific": "nonspecific",
 }
 
+# v6
 major_cat_dict = {
     "General": [
         "Labelling not possible",
-        "Gratitude/ good experience",
-        "Negative experience",
+        "Positive experience & gratitude",
+        "Negative experience & dissatisfaction",
         "Not assigned",
         "Organisation & efficiency",
         "Funding & use of financial resources",
-        "Collecting patients feedback",
     ],
     "Staff": [
-        "Non-specific praise for staff",
-        "Non-specific dissatisfaction with staff",
         "Staff manner & personal attributes",
         "Number & deployment of staff",
         "Staff responsiveness",
@@ -45,8 +43,7 @@ major_cat_dict = {
         "Information directly from staff during care",
         "Information provision & guidance",
         "Being kept informed, clarity & consistency of information",
-        "Service involvement with family/ carers",
-        "Patient contact with family/ carers",
+        "Interaction with family/ carers",
     ],
     "Access to medical care & support": [
         "Contacting services",
@@ -59,12 +56,10 @@ major_cat_dict = {
         "Diagnosis & triage",
         "Referals & continuity of care",
         "Admission",
-        "Length of stay/ duration of care",
         "Discharge",
         "Care plans",
         "Patient records",
         "Impact of treatment/ care",
-        "Links with non-NHS organisations",
     ],
     "Food & diet": ["Food & drink provision & facilities"],
     "Category TBC": [
@@ -77,7 +72,6 @@ major_cat_dict = {
         "Cleanliness, tidiness & infection control",
         "Sensory experience",
         "Environment & Facilities",
-        "Safety & security",
         "Provision of medical equipment",
     ],
     "Mental Health specifics": ["Mental Health Act"],
