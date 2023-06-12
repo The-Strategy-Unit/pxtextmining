@@ -206,7 +206,11 @@ def process_data(df, target, preprocess_text=True, additional_features=False):
         X = clean_empty_features(X)
         print(f"After preprocessing, shape of X is {X.shape}")
     if preprocess_text == False:
-        X = df["FFT answer"].astype(str)
+        X_temp = df["FFT answer"].astype(str).apply(remove_punc_and_nums)
+        X_temp = clean_empty_features(X_temp)
+        print(f"After preprocessing, shape of X is {X_temp.shape}")
+        indices = X_temp.index
+        X = df["FFT answer"].astype(str).filter(indices)
     if additional_features == True:
         X = pd.merge(X, df[["FFT_q_standardised"]], left_index=True, right_index=True)
         X = X.reset_index()
