@@ -1,38 +1,36 @@
-dataset = "datasets/hidden/merged_20230602.csv"
+dataset = "datasets/hidden/merged_230608.csv"
 
-random_state = 99
+random_state = 42
 
 model_name = "distilbert-base-uncased"
 
 q_map = {
-        "Please tell us why": "nonspecific",
-        "Please tells us why you gave this answer?": "nonspecific",
-        "FFT Why?": "nonspecific",
-        "What was good?": "what_good",
-        "Is there anything we could have done better?": "could_improve",
-        "How could we improve?": "could_improve",
-        "What could we do better?": "could_improve",
-        "Please can you tell us why you gave your answer and what we could have done better?": "nonspecific",
-        "Please describe any things about the 111 service that\r\nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
-        "Please describe any things about the 111 service that \nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
-        "Please describe any things about the 111 service that\nyou were particularly satisfied and/or dissatisfied with": 'nonspecific',
-        "Nonspecific": 'nonspecific',
-        "nonspecific": 'nonspecific'
-    }
+    "Please tell us why": "nonspecific",
+    "Please tells us why you gave this answer?": "nonspecific",
+    "FFT Why?": "nonspecific",
+    "What was good?": "what_good",
+    "Is there anything we could have done better?": "could_improve",
+    "How could we improve?": "could_improve",
+    "What could we do better?": "could_improve",
+    "Please can you tell us why you gave your answer and what we could have done better?": "nonspecific",
+    "Please describe any things about the 111 service that\r\nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
+    "Please describe any things about the 111 service that \nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
+    "Please describe any things about the 111 service that\nyou were particularly satisfied and/or dissatisfied with": "nonspecific",
+    "Nonspecific": "nonspecific",
+    "nonspecific": "nonspecific",
+}
 
+# v6
 major_cat_dict = {
     "General": [
         "Labelling not possible",
-        "Gratitude/ good experience",
-        "Negative experience",
+        "Positive experience & gratitude",
+        "Negative experience & dissatisfaction",
         "Not assigned",
         "Organisation & efficiency",
         "Funding & use of financial resources",
-        "Collecting patients feedback",
     ],
     "Staff": [
-        "Non-specific praise for staff",
-        "Non-specific dissatisfaction with staff",
         "Staff manner & personal attributes",
         "Number & deployment of staff",
         "Staff responsiveness",
@@ -45,8 +43,7 @@ major_cat_dict = {
         "Information directly from staff during care",
         "Information provision & guidance",
         "Being kept informed, clarity & consistency of information",
-        "Service involvement with family/ carers",
-        "Patient contact with family/ carers",
+        "Interaction with family/ carers",
     ],
     "Access to medical care & support": [
         "Contacting services",
@@ -59,12 +56,10 @@ major_cat_dict = {
         "Diagnosis & triage",
         "Referals & continuity of care",
         "Admission",
-        "Length of stay/ duration of care",
         "Discharge",
         "Care plans",
         "Patient records",
         "Impact of treatment/ care",
-        "Links with non-NHS organisations",
     ],
     "Food & diet": ["Food & drink provision & facilities"],
     "Category TBC": [
@@ -77,7 +72,6 @@ major_cat_dict = {
         "Cleanliness, tidiness & infection control",
         "Sensory experience",
         "Environment & Facilities",
-        "Safety & security",
         "Provision of medical equipment",
     ],
     "Mental Health specifics": ["Mental Health Act"],
@@ -93,12 +87,12 @@ major_cats = list(major_cat_dict.keys())
 # v6 20230602
 merged_minor_cats = [
     "Gratitude/ good experience",
-#     "Negative experience",
+    #     "Negative experience",
     "Not assigned",
     "Organisation & efficiency",
-#     "Funding & use of financial resources",
+    #     "Funding & use of financial resources",
     "Non-specific praise for staff",
-#     "Non-specific dissatisfaction with staff",
+    #     "Non-specific dissatisfaction with staff",
     "Staff manner & personal attributes",
     "Number & deployment of staff",
     "Staff responsiveness",
@@ -109,8 +103,8 @@ merged_minor_cats = [
     "Information directly from staff during care",
     "Information provision & guidance",
     "Being kept informed, clarity & consistency of information",
-#     "Service involvement with family/ carers",
-#     "Patient contact with family/ carers",
+    #     "Service involvement with family/ carers",
+    #     "Patient contact with family/ carers",
     "Contacting services",
     "Appointment arrangements",
     "Appointment method",
@@ -118,14 +112,14 @@ merged_minor_cats = [
     "Pain management",
     "Diagnosis & triage",
     "Referals & continuity of care",
-#     "Length of stay/ duration of care",
+    #     "Length of stay/ duration of care",
     "Discharge",
     "Care plans",
-#     "Patient records",
-#     "Links with non-NHS organisations",
+    #     "Patient records",
+    #     "Links with non-NHS organisations",
     "Cleanliness, tidiness & infection control",
     "Safety & security",
-#     "Provision of medical equipment",
+    #     "Provision of medical equipment",
     "Service location",
     "Transport to/ from services",
     "Parking",
@@ -135,7 +129,7 @@ merged_minor_cats = [
     "Mental Health Act",
     "Equality, Diversity & Inclusion",
     "Admission",
-#     "Collecting patients feedback",
+    #     "Collecting patients feedback",
     "Labelling not possible",
     "Environment & Facilities",
     "Supplying & understanding medication",
@@ -144,18 +138,14 @@ merged_minor_cats = [
     "Sensory experience",
     "Impact of treatment/ care",
     "Negative experience/ dissatisfaction",
-    "Family/ carers"
+    "Family/ carers",
 ]
 
-# v5 20230419
+# v6 20230806
 minor_cats = [
-    "Gratitude/ good experience",
-    "Negative experience",
     "Not assigned",
     "Organisation & efficiency",
     "Funding & use of financial resources",
-    "Non-specific praise for staff",
-    "Non-specific dissatisfaction with staff",
     "Staff manner & personal attributes",
     "Number & deployment of staff",
     "Staff responsiveness",
@@ -166,8 +156,6 @@ minor_cats = [
     "Information directly from staff during care",
     "Information provision & guidance",
     "Being kept informed, clarity & consistency of information",
-    "Service involvement with family/ carers",
-    "Patient contact with family/ carers",
     "Contacting services",
     "Appointment arrangements",
     "Appointment method",
@@ -175,13 +163,10 @@ minor_cats = [
     "Pain management",
     "Diagnosis & triage",
     "Referals & continuity of care",
-    "Length of stay/ duration of care",
     "Discharge",
     "Care plans",
     "Patient records",
-    "Links with non-NHS organisations",
     "Cleanliness, tidiness & infection control",
-    "Safety & security",
     "Provision of medical equipment",
     "Service location",
     "Transport to/ from services",
@@ -192,7 +177,6 @@ minor_cats = [
     "Mental Health Act",
     "Equality, Diversity & Inclusion",
     "Admission",
-    "Collecting patients feedback",
     "Labelling not possible",
     "Environment & Facilities",
     "Supplying & understanding medication",
@@ -200,6 +184,14 @@ minor_cats = [
     "Food & drink provision & facilities",
     "Sensory experience",
     "Impact of treatment/ care",
+    # "Psychological therapy arrangements",
+    # "Existence of services",
+    # "Choice of services",
+    # "Out of hours support (community services)",
+    # "Learning organisation",
+    "Interaction with family/ carers",
+    "Negative experience & dissatisfaction",
+    "Positive experience & gratitude",
 ]
 
 sentiment_dict = {
