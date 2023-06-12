@@ -189,7 +189,7 @@ minor_cats = [
     "Activities & access to fresh air",
     "Food & drink provision & facilities",
     "Sensory experience",
-    # "Impact of treatment/ care",
+    "Impact of treatment/ care",
     # "Psychological therapy arrangements",
     # "Existence of services",
     # "Choice of services",
