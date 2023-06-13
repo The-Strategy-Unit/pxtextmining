@@ -91,6 +91,28 @@ def test_predict_multilabel_bert():
     preds_df = factory_predict_unlabelled_text.predict_multilabel_bert(data, model, labels=labels, additional_features=True)
     assert preds_df.shape == (4,6)
 
+def test_predict_sentiment_bert():
+    data = pd.DataFrame([
+        {"Comment ID": "99999", "FFT answer": "I liked all of it", 'FFT_q_standardised': 'nonspecific'},
+        {"Comment ID": "A55", "FFT answer": "", 'FFT_q_standardised': 'nonspecific'},
+        {"Comment ID": "A56", "FFT answer": "Truly awful time finding parking", 'FFT_q_standardised': 'could_improve'},
+        {"Comment ID": "4", "FFT answer": "I really enjoyed the session", 'FFT_q_standardised': 'what_good'},
+        {"Comment ID": "5", "FFT answer": "7482367", 'FFT_q_standardised': 'nonspecific'},
+        ]).set_index('Comment ID')
+    predicted_probs = np.array(
+        [
+            [6.2770307e-01, 2.3520987e-02, 1.3149388e-01, 2.7835215e-02, 1.8944685e-01],
+            [9.8868138e-01, 1.9990385e-03, 5.4453085e-03, 9.0726715e-04, 2.9669846e-03],
+            [4.2310607e-01, 5.6546849e-01, 9.3136989e-03, 1.3205722e-03, 7.9117226e-04],
+            [2.0081511e-01, 7.0609129e-04, 1.1107661e-03, 7.9677838e-01, 5.8961433e-04]
+        ]
+        )
+    labels = ['first', 'second', 'third', 'fourth', 'fifth']
+    model = Mock(predict=Mock(return_value=predicted_probs))
+    preds_df = factory_predict_unlabelled_text.predict_sentiment_bert(data, model, labels=labels, preprocess_text = True,
+                                                                      additional_features=True)
+    assert preds_df.shape == (3,4)
+
 def test_predict_with_bert(grab_test_X_additional_feats):
     #arrange
     data = grab_test_X_additional_feats
