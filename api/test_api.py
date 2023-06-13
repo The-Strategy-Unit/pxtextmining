@@ -10,12 +10,13 @@ Then you can run this test_api script to check if the API is behaving as it shou
 
 
 def test_json_predictions(json):
-    response = requests.post("http://127.0.0.1:8000/predict_multilabel", json=json)
+    # response = requests.post("http://127.0.0.1:8000/predict_multilabel", json=json)
+    response = requests.post("http://127.0.0.1:8000/predict_sentiment", json=json)
     return response
 
 
 if __name__ == "__main__":
-    df = pd.read_csv("datasets/hidden/API_test.csv")
+    df = pd.read_csv("datasets/hidden/API_test.csv").dropna()
     df = df[["row_id", "comment_txt"]].copy().set_index("row_id")[:20]
     js = []
     for i in df.index:

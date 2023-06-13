@@ -12,3 +12,4 @@ test_multilabel/*
 .env
 api/rsconnect-python/*
 .coverage
+api/bert*
