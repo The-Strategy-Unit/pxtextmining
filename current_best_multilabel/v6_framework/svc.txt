@@ -1,0 +1,80 @@
+
+ *****************
+ Random state seed for train test split is: 42 
+
+
+Pipeline(steps=[('columntransformer',
+                 ColumnTransformer(transformers=[('onehotencoder',
+                                                  OneHotEncoder(handle_unknown='ignore'),
+                                                  ['FFT_q_standardised']),
+                                                 ('tfidfvectorizer',
+                                                  TfidfVectorizer(max_df=0.9,
+                                                                  min_df=0,
+                                                                  ngram_range=(1,
+                                                                               2)),
+                                                  'FFT answer')])),
+                ('multioutputclassifier',
+                 MultiOutputClassifier(estimator=SVC(C=15, cache_size=1000,
+                                                     class_weight='balanced',
+                                                     max_iter=1000,
+                                                     probability=True)))])
+
+
+Training time: 0:14:33
+
+exact_accuracy: 0.5021707670043415
+hamming_loss: 0.020490724904617813
+macro_jaccard_score: 0.4304916824618433
+
+ Classification report:
+                                                           precision    recall  f1-score   support
+
+                                             Not assigned       0.25      0.37      0.30        89
+                                Organisation & efficiency       0.64      0.50      0.56        88
+                     Funding & use of financial resources       0.63      0.63      0.63        19
+                       Staff manner & personal attributes       0.81      0.86      0.83      1120
+                             Number & deployment of staff       0.60      0.53      0.56        59
+                                     Staff responsiveness       0.70      0.41      0.52       109
+                                         Staff continuity       0.24      0.17      0.20        24
+                                    Competence & training       0.75      0.52      0.62       111
+                                Unspecified communication       0.66      0.72      0.69        29
+      Staff listening, understanding & involving patients       0.59      0.62      0.61       261
+              Information directly from staff during care       0.76      0.71      0.73       245
+                         Information provision & guidance       0.58      0.59      0.58        64
+Being kept informed, clarity & consistency of information       0.35      0.41      0.38       119
+                                      Contacting services       0.67      0.67      0.67        79
+                                 Appointment arrangements       0.68      0.66      0.67       203
+                                       Appointment method       0.86      0.71      0.77        34
+                                       Timeliness of care       0.59      0.70      0.64       380
+                                          Pain management       0.79      0.69      0.73        16
+                                       Diagnosis & triage       0.45      0.22      0.29        46
+                            Referals & continuity of care       0.38      0.35      0.37        57
+                                                Discharge       0.56      0.56      0.56        27
+                                               Care plans       0.50      0.30      0.37        10
+                                          Patient records       0.60      0.21      0.32        14
+                Cleanliness, tidiness & infection control       0.79      0.74      0.76        65
+                           Provision of medical equipment       0.56      0.23      0.32        22
+                                         Service location       0.75      0.51      0.61        35
+                              Transport to/ from services       0.60      0.57      0.58        60
+                                                  Parking       0.85      1.00      0.92        17
+                                 Electronic entertainment       1.00      0.36      0.53        11
+                                             Feeling safe       0.85      0.79      0.81        14
+                            Patient appearance & grooming       0.50      0.40      0.44         5
+                                        Mental Health Act       0.50      0.30      0.37        10
+                          Equality, Diversity & Inclusion       0.63      0.41      0.50        29
+                                                Admission       0.50      0.28      0.36        18
+                                   Labelling not possible       1.00      1.00      1.00       274
+                                 Environment & Facilities       0.69      0.73      0.71       117
+                     Supplying & understanding medication       0.78      0.71      0.74        49
+                         Activities & access to fresh air       0.78      0.68      0.73        63
+                      Food & drink provision & facilities       0.83      0.74      0.78        96
+                                       Sensory experience       0.62      0.78      0.69        41
+                                Impact of treatment/ care       0.44      0.40      0.42        90
+                          Interaction with family/ carers       0.41      0.27      0.33        33
+                    Negative experience & dissatisfaction       0.41      0.39      0.40        38
+                          Positive experience & gratitude       0.71      0.85      0.77       875
+
+                                                micro avg       0.69      0.71      0.70      5165
+                                                macro avg       0.63      0.55      0.58      5165
+                                             weighted avg       0.70      0.71      0.70      5165
+                                              samples avg       0.74      0.76      0.72      5165
