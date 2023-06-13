@@ -104,13 +104,12 @@ def test_predict_sentiment_bert():
             [0.9, 0.01, 0.07, 0.01, 0.01],
             [0.01, 0.07, 0.01, 0.01, 0.9],
             [0.07, 0.9, 0.01, 0.01, 0.01],
-            [0.9, 0.01, 0.07, 0.01, 0.01],
-            [0.9, 0.01, 0.01, 0.01, 0.07],
         ])
     model = Mock(predict=Mock(return_value=predicted_probs))
     preds_df = factory_predict_unlabelled_text.predict_sentiment_bert(data, model, preprocess_text = True,
                                                                       additional_features=True)
-    assert preds_df.shape[1] == 4
+    assert preds_df.shape[1] == 3
+    assert 'sentiment' in list(preds_df.columns)
 
 def test_predict_with_bert(grab_test_X_additional_feats):
     #arrange

@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+from tensorflow.keras.saving import load_model
+
 from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset,
     remove_punc_and_nums,
@@ -119,6 +121,45 @@ def predict_multilabel_bert(
         predictions = y_binary
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
+    return preds_df
+
+def predict_sentiment_bert(
+    data,
+    model,
+    additional_features = False,
+    preprocess_text = False
+):
+    """Conducts basic preprocessing to remove blank text.
+    Utilises a pretrained transformer-based machine learning model to make multilabel predictions on the cleaned text.
+    Also takes the class with the highest predicted probability as the predicted class in cases where no class has
+    been predicted, if fix_no_labels = True.
+
+    Args:
+        text (pd.Series OR pd.DataFrame): DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True
+        model (tf.Model): Trained tensorflow estimator able to perform multilabel classification.
+        additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
+        preprocess_text (bool, optional): Whether or not text is to be preprocessed (punctuation and numbers removed).
+
+    Returns:
+        (pd.DataFrame): DataFrame containing input data and predicted sentiment
+    """
+    if additional_features == False:
+        text = pd.Series(data)
+    else:
+        text = data['FFT answer']
+    if preprocess_text == True:
+        processed_text = text.astype(str).apply(remove_punc_and_nums)
+        processed_text = clean_empty_features(processed_text).dropna()
+    if additional_features == False:
+        final_data = processed_text
+        final_data = clean_empty_features(final_data)
+    else:
+        final_data = pd.merge(processed_text, data['FFT_q_standardised'], how='left', on='Comment ID')
+    final_index = final_data.index
+    predictions = predict_multiclass_bert(final_data, model, additional_features, already_encoded=False)
+    preds_df = data.filter(items =final_index, axis=0)
+    preds_df['sentiment'] = predictions
+    print(preds_df)
     return preds_df
 
 def predict_multiclass_bert(x, model, additional_features, already_encoded):
@@ -303,3 +344,16 @@ def turn_probs_into_binary(predicted_probs):
     """
     preds = np.where(predicted_probs > 0.5, 1, 0)
     return preds
+
+if __name__ == '__main__':
+    model_path = 'api/bert_sentiment'
+    loaded_model = load_model(model_path)
+    test_data = pd.DataFrame([
+        {"Comment ID": "99999", "FFT answer": "I liked all of it", 'FFT_q_standardised': 'nonspecific'},
+        {"Comment ID": "A55", "FFT answer": "", 'FFT_q_standardised': 'nonspecific'},
+        {"Comment ID": "A56", "FFT answer": "Truly awful time finding parking", 'FFT_q_standardised': 'could_improve'},
+        {"Comment ID": "4", "FFT answer": "I really enjoyed the session", 'FFT_q_standardised': 'what_good'},
+        {"Comment ID": "5", "FFT answer": "7482367", 'FFT_q_standardised': 'nonspecific'},
+    ]).set_index('Comment ID')
+    preds_df = predict_sentiment_bert(test_data, loaded_model, preprocess_text = True,
+                                                                additional_features=True)
