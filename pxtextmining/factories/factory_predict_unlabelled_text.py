@@ -6,12 +6,13 @@ from tensorflow.keras.saving import load_model
 from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset,
     remove_punc_and_nums,
-    clean_empty_features
+    clean_empty_features,
 )
 from pxtextmining.params import minor_cats
 
+
 def process_text(text):
-    """ Enacts same text preprocessing as is found in factory_data_load_and_split when creating training data. Converts to string, removes trailing whitespaces, null values, punctuation and numbers. Converts to lowercase.
+    """Enacts same text preprocessing as is found in factory_data_load_and_split when creating training data. Converts to string, removes trailing whitespaces, null values, punctuation and numbers. Converts to lowercase.
 
     Args:
         text (pd.Series): Series containing data to be cleaned.
@@ -21,8 +22,9 @@ def process_text(text):
     """
     text_as_str = text.astype(str)
     text_stripped = text_as_str.str.strip()
-    text_no_whitespace = text_stripped.replace([r"^\s*$", r"(?i)^nan$", r"(?i)^null$", r"(?i)^n\/a$"],
-                                             np.nan, regex=True)
+    text_no_whitespace = text_stripped.replace(
+        [r"^\s*$", r"(?i)^nan$", r"(?i)^null$", r"(?i)^n\/a$"], np.nan, regex=True
+    )
     text_no_nans = text_no_whitespace.dropna()
     text_cleaned = text_no_nans.astype(str).apply(remove_punc_and_nums)
     processed_text = text_cleaned.replace(r"^\s*$", np.nan, regex=True).dropna()
@@ -32,10 +34,10 @@ def process_text(text):
 def predict_multilabel_sklearn(
     data,
     model,
-    labels = minor_cats,
-    additional_features = False,
-    label_fix = True,
-    enhance_with_probs = True
+    labels=minor_cats,
+    additional_features=False,
+    label_fix=True,
+    enhance_with_probs=True,
 ):
     """Conducts basic preprocessing to remove punctuation and numbers.
     Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
@@ -56,12 +58,14 @@ def predict_multilabel_sklearn(
     if additional_features == False:
         text = pd.Series(data)
     else:
-        text = data['FFT answer']
+        text = data["FFT answer"]
     processed_text = process_text(text)
     if additional_features == False:
         final_data = processed_text
     else:
-        final_data = pd.merge(processed_text, data['FFT_q_standardised'], how='left', on='Comment ID')
+        final_data = pd.merge(
+            processed_text, data["FFT_q_standardised"], how="left", on="Comment ID"
+        )
     binary_preds = model.predict(final_data)
     pred_probs = np.array(model.predict_proba(final_data))
     if label_fix == True:
@@ -71,9 +75,9 @@ def predict_multilabel_sklearn(
     if enhance_with_probs == True:
         for row in range(predictions.shape[0]):
             for label_index in range(predictions.shape[1]):
-                if pred_probs.ndim ==3:
+                if pred_probs.ndim == 3:
                     prob_of_label = pred_probs[label_index, row, 1]
-                if pred_probs.ndim ==2:
+                if pred_probs.ndim == 2:
                     prob_of_label = pred_probs[row, label_index]
                 if prob_of_label > 0.5:
                     predictions[row][label_index] = 1
@@ -81,12 +85,9 @@ def predict_multilabel_sklearn(
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
     return preds_df
 
+
 def predict_multilabel_bert(
-    data,
-    model,
-    labels = minor_cats,
-    additional_features = False,
-    label_fix = True
+    data, model, labels=minor_cats, additional_features=False, label_fix=True
 ):
     """Conducts basic preprocessing to remove blank text.
     Utilises a pretrained transformer-based machine learning model to make multilabel predictions on the cleaned text.
@@ -106,28 +107,32 @@ def predict_multilabel_bert(
     if additional_features == False:
         text = pd.Series(data)
     else:
-        text = data['FFT answer']
+        text = data["FFT answer"]
     processed_text = clean_empty_features(text)
     if additional_features == False:
         final_data = processed_text
     else:
-        final_data = pd.merge(processed_text, data['FFT_q_standardised'], how='left', on='Comment ID')
-    y_probs = predict_with_bert(final_data, model, additional_features=additional_features,
-                                    already_encoded=False)
+        final_data = pd.merge(
+            processed_text, data["FFT_q_standardised"], how="left", on="Comment ID"
+        )
+    y_probs = predict_with_bert(
+        final_data,
+        model,
+        additional_features=additional_features,
+        already_encoded=False,
+    )
     y_binary = turn_probs_into_binary(y_probs)
     if label_fix == True:
-        predictions = fix_no_labels(y_binary, y_probs, model_type = 'bert')
+        predictions = fix_no_labels(y_binary, y_probs, model_type="bert")
     else:
         predictions = y_binary
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
     return preds_df
 
+
 def predict_sentiment_bert(
-    data,
-    model,
-    additional_features = False,
-    preprocess_text = False
+    data, model, additional_features=False, preprocess_text=False
 ):
     """Conducts basic preprocessing to remove blank text.
     Utilises a pretrained transformer-based machine learning model to make multilabel predictions on the cleaned text.
@@ -146,7 +151,7 @@ def predict_sentiment_bert(
     if additional_features == False:
         text = pd.Series(data)
     else:
-        text = data['FFT answer']
+        text = data["FFT answer"]
     if preprocess_text == True:
         processed_text = text.astype(str).apply(remove_punc_and_nums)
         processed_text = clean_empty_features(processed_text).dropna()
@@ -154,13 +159,18 @@ def predict_sentiment_bert(
         final_data = processed_text
         final_data = clean_empty_features(final_data)
     else:
-        final_data = pd.merge(processed_text, data['FFT_q_standardised'], how='left', on='Comment ID')
+        final_data = pd.merge(
+            processed_text, data["FFT_q_standardised"], how="left", on="Comment ID"
+        )
     final_index = final_data.index
-    predictions = predict_multiclass_bert(final_data, model, additional_features, already_encoded=False)
-    preds_df = data.filter(items =final_index, axis=0)
-    preds_df['sentiment'] = predictions
+    predictions = predict_multiclass_bert(
+        final_data, model, additional_features, already_encoded=False
+    )
+    preds_df = data.filter(items=final_index, axis=0)
+    preds_df["sentiment"] = predictions
     print(preds_df)
     return preds_df
+
 
 def predict_multiclass_bert(x, model, additional_features, already_encoded):
     """Makes multiclass predictions using a transformer-based model. Can encode the data if not already encoded.
@@ -174,12 +184,17 @@ def predict_multiclass_bert(x, model, additional_features, already_encoded):
     Returns:
         (np.array): Predicted labels in one-hot encoded format.
     """
-    y_probs = predict_with_bert(x, model, additional_features = additional_features,
-                           already_encoded = already_encoded)
+    y_probs = predict_with_bert(
+        x,
+        model,
+        additional_features=additional_features,
+        already_encoded=already_encoded,
+    )
     y_binary = turn_probs_into_binary(y_probs)
-    y_binary_fixed = fix_no_labels(y_binary, y_probs, model_type = 'bert')
+    y_binary_fixed = fix_no_labels(y_binary, y_probs, model_type="bert")
     y_preds = np.argmax(y_binary_fixed, axis=1)
     return y_preds
+
 
 def predict_with_probs(x, model, labels):
     """Given a trained model and some features, makes predictions based on the model's outputted probabilities using the model.predict_proba function.
@@ -212,7 +227,7 @@ def predict_with_probs(x, model, labels):
     prob_preds = []
     for d in range(len(probability_s)):
         row_preds = [0] * len(labels)
-        for k,v in probability_s.iloc[d].items():
+        for k, v in probability_s.iloc[d].items():
             max_val = 0
             if v > max_val:
                 max_k = k
@@ -226,6 +241,7 @@ def predict_with_probs(x, model, labels):
     np.array(prob_preds).shape
     y_pred = np.array(prob_preds)
     return y_pred
+
 
 def get_probabilities(label_series, labels, predicted_probabilities, model_type):
     """Given a pd.Series containing labels, the list of labels, and a model's outputted predicted_probabilities for each label,
@@ -246,19 +262,20 @@ def get_probabilities(label_series, labels, predicted_probabilities, model_type)
         predicted_labels = label_series.iloc[i]
         for each in predicted_labels:
             index_label = labels.index(each)
-            if model_type == 'sklearn':
-                if predicted_probabilities.ndim ==3:
+            if model_type == "sklearn":
+                if predicted_probabilities.ndim == 3:
                     prob_of_label = predicted_probabilities[index_label, i, 1]
                 else:
                     prob_of_label = predicted_probabilities[i][index_label]
-            elif model_type in ('tf', 'bert'):
+            elif model_type in ("tf", "bert"):
                 prob_of_label = predicted_probabilities[i][index_label]
             label_probs[each] = round(prob_of_label, 5)
         probabilities.append(label_probs)
     probability_s = pd.Series(probabilities)
     probability_s.index = label_series.index
-    probability_s.name = f'{label_series.name}_probabilities'
+    probability_s.name = f"{label_series.name}_probabilities"
     return probability_s
+
 
 def get_labels(row, labels):
     """Given a one-hot encoded row of predictions from a dataframe,
@@ -345,15 +362,39 @@ def turn_probs_into_binary(predicted_probs):
     preds = np.where(predicted_probs > 0.5, 1, 0)
     return preds
 
-if __name__ == '__main__':
-    model_path = 'api/bert_sentiment'
+
+if __name__ == "__main__":
+    model_path = "api/bert_sentiment"
     loaded_model = load_model(model_path)
-    test_data = pd.DataFrame([
-        {"Comment ID": "99999", "FFT answer": "I liked all of it", 'FFT_q_standardised': 'nonspecific'},
-        {"Comment ID": "A55", "FFT answer": "", 'FFT_q_standardised': 'nonspecific'},
-        {"Comment ID": "A56", "FFT answer": "Truly awful time finding parking", 'FFT_q_standardised': 'could_improve'},
-        {"Comment ID": "4", "FFT answer": "I really enjoyed the session", 'FFT_q_standardised': 'what_good'},
-        {"Comment ID": "5", "FFT answer": "7482367", 'FFT_q_standardised': 'nonspecific'},
-    ]).set_index('Comment ID')
-    preds_df = predict_sentiment_bert(test_data, loaded_model, preprocess_text = True,
-                                                                additional_features=True)
+    test_data = pd.DataFrame(
+        [
+            {
+                "Comment ID": "99999",
+                "FFT answer": "I liked all of it",
+                "FFT_q_standardised": "nonspecific",
+            },
+            {
+                "Comment ID": "A55",
+                "FFT answer": "",
+                "FFT_q_standardised": "nonspecific",
+            },
+            {
+                "Comment ID": "A56",
+                "FFT answer": "Truly awful time finding parking",
+                "FFT_q_standardised": "could_improve",
+            },
+            {
+                "Comment ID": "4",
+                "FFT answer": "I really enjoyed the session",
+                "FFT_q_standardised": "what_good",
+            },
+            {
+                "Comment ID": "5",
+                "FFT answer": "7482367",
+                "FFT_q_standardised": "nonspecific",
+            },
+        ]
+    ).set_index("Comment ID")
+    preds_df = predict_sentiment_bert(
+        test_data, loaded_model, preprocess_text=True, additional_features=True
+    )
