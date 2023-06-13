@@ -18,7 +18,7 @@ from sklearn.model_selection import cross_validate
 from tensorflow.keras import Sequential, layers
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.initializers import TruncatedNormal
-from tensorflow.keras.layers import Dense, Dropout, Input, concatenate
+from tensorflow.keras.layers import Dense, Dropout, Input, concatenate, CategoryEncoding
 from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
@@ -200,9 +200,11 @@ def create_bert_model_additional_features(
     dropout = Dropout(config.dropout, name="pooled_output")
     bert_output = dropout(bert_model, training=False)
     # Get onehotencoded categories in (3 categories)
-    input_cat = Input(shape=(3,), name="input_cat")
+    input_cat = Input(shape=(1,), name="input_cat")
+    onehot_layer = CategoryEncoding(num_tokens=3, output_mode="one_hot")
+    onehot_layer = onehot_layer(input_cat)
     cat_dense = Dense(units=10, activation="relu")
-    cat_dense = cat_dense(input_cat)
+    cat_dense = cat_dense(onehot_layer)
     # concatenate both together
     concat_layer = concatenate([bert_output, cat_dense])
     if multilabel == True:
@@ -377,7 +379,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                 0.95,
                 0.99,
             ],
-            "columntransformer__tfidfvectorizer__min_df": [0,0.01,0.02],
+            "columntransformer__tfidfvectorizer__min_df": [0, 0.01, 0.02],
         }
     else:
         preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
@@ -405,7 +407,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                 n_jobs=-1,
             ),
         )
-        params["multioutputclassifier__estimator__C"] = [10,15,20]
+        params["multioutputclassifier__estimator__C"] = [10, 15, 20]
         params["multioutputclassifier__estimator__gamma"] = np.logspace(-9, 3, 13)
         # params["multioutputclassifier__estimator__kernel"] = [
         #     "linear",
@@ -424,7 +426,9 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
         params["randomforestclassifier__min_samples_leaf"] = stats.randint(1, 10)
         params["randomforestclassifier__max_features"] = ["sqrt", "log2", None, 0.3]
     if model_type == "xgb":
-        pipe = make_pipeline(preproc, xgb.XGBClassifier(tree_method="hist", n_estimators=200))
+        pipe = make_pipeline(
+            preproc, xgb.XGBClassifier(tree_method="hist", n_estimators=200)
+        )
         params["xgbclassifier__max_depth"] = [4, 5, 6, 7, 8]
         params["xgbclassifier__min_child_weight"] = [0.5, 1, 2, 5]
         params["xgbclassifier__gamma"] = [0, 0.1, 0.2, 0.3, 0.4, 0.5]

@@ -66,7 +66,7 @@ def bert_data_to_dataset(
             tokenizer(
                 list(X["FFT answer"]),
                 truncation=True,
-                padding='max_length',
+                padding="max_length",
                 max_length=max_length,
                 return_tensors="tf",
             )
@@ -76,15 +76,16 @@ def bert_data_to_dataset(
             tokenizer(
                 list(X),
                 truncation=True,
-                padding='max_length',
+                padding="max_length",
                 max_length=max_length,
                 return_tensors="tf",
             )
         )
     data_encoded.pop("attention_mask", None)
     if additional_features == True:
-        onehotted = onehot(X, "FFT_q_standardised")
-        data_encoded["input_cat"] = onehotted.astype(np.float32)
+        data_encoded["input_cat"] = X["FFT_q_standardised"].map(
+            {"what_good": 0, "could_improve": 1, "nonspecific": 2}
+        )
     if Y is not None:
         data_encoded = Dataset.from_tensor_slices((data_encoded, Y))
     return data_encoded
@@ -121,7 +122,7 @@ def load_multilabel_data(filename, target="major_categories"):
     # Sort out the features first
     features_df = raw_data.loc[:, features].copy()
     # Standardize FFT qs
-    features_df['FFT question'] = features_df['FFT question'].fillna('nonspecific')
+    features_df["FFT question"] = features_df["FFT question"].fillna("nonspecific")
     features_df.loc[:, "FFT_q_standardised"] = (
         features_df.loc[:, "FFT question"].map(q_map).copy()
     )
@@ -179,7 +180,7 @@ def onehot(df, col_to_onehot):
     Returns:
         (pd.DataFrame): One-hot encoded data
     """
-    encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
+    encoder = OneHotEncoder(sparse=False, handle_unknown="ignore")
     col_encoded = encoder.fit_transform(df[[col_to_onehot]])
     return col_encoded
 
