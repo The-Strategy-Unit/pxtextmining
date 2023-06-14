@@ -1,6 +1,6 @@
 import os
 import pickle
-from typing import List
+from typing import List, Union
 
 import pandas as pd
 from fastapi import FastAPI
@@ -114,7 +114,7 @@ class ItemIn(BaseModel):
         return v
 
 
-class ItemOut(BaseModel):
+class MultilabelOut(BaseModel):
     comment_id: str
     comment_text: str
     labels: list
@@ -125,6 +125,21 @@ class ItemOut(BaseModel):
                 "comment_id": "01",
                 "comment_text": "Nurses were friendly. Parking was awful.",
                 "labels": ["Staff manner & personal attributes", "Parking"],
+            }
+        }
+
+
+class SentimentOut(BaseModel):
+    comment_id: str
+    comment_text: str
+    sentiment: Union[int, str]
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "comment_id": "01",
+                "comment_text": "Nurses were friendly. Parking was awful.",
+                "sentiment": 3,
             }
         }
 
@@ -151,7 +166,9 @@ def index():
     return {"test": "Hello"}
 
 
-@app.post("/predict_multilabel", response_model=List[ItemOut], tags=["multilabel"])
+@app.post(
+    "/predict_multilabel", response_model=List[MultilabelOut], tags=["multilabel"]
+)
 def predict_multilabel(items: List[ItemIn]):
     """Accepts comment ids, comment text and question type as JSON in a POST request. Makes predictions using trained SVC model.
 
@@ -200,7 +217,7 @@ def predict_multilabel(items: List[ItemIn]):
     return return_dict
 
 
-@app.post("/predict_sentiment", response_model=List[ItemOut], tags=["sentiment"])
+@app.post("/predict_sentiment", response_model=List[SentimentOut], tags=["sentiment"])
 def predict_sentiment(items: List[ItemIn]):
     """Accepts comment ids, comment text and question type as JSON in a POST request. Makes predictions using trained Tensorflow Keras model.
 
