@@ -155,6 +155,8 @@ def predict_sentiment_bert(
     if preprocess_text == True:
         processed_text = text.astype(str).apply(remove_punc_and_nums)
         processed_text = clean_empty_features(processed_text).dropna()
+    else:
+        processed_text = clean_empty_features(text).dropna()
     if additional_features == False:
         final_data = processed_text
         final_data = clean_empty_features(final_data)
