@@ -168,7 +168,7 @@ def predict_sentiment_bert(
     )
     preds_df = data.filter(items=final_index, axis=0)
     preds_df["sentiment"] = predictions
-    print(preds_df)
+    preds_df["sentiment"] = preds_df["sentiment"] + 1
     return preds_df
 
 
