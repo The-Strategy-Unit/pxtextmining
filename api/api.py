@@ -84,6 +84,17 @@ tags_metadata = [
 ]
 
 
+def load_sentiment_model():
+    model_path = "bert_sentiment"
+    if not os.path.exists(model_path):
+        model_path = os.path.join("api", model_path)
+    loaded_model = load_model(model_path)
+    return loaded_model
+
+
+loaded_model = load_sentiment_model()
+
+
 class Test(BaseModel):
     test: str
 
@@ -169,7 +180,7 @@ def index():
 @app.post(
     "/predict_multilabel", response_model=List[MultilabelOut], tags=["multilabel"]
 )
-def predict_multilabel(items: List[ItemIn]):
+async def predict_multilabel(items: List[ItemIn]):
     """Accepts comment ids, comment text and question type as JSON in a POST request. Makes predictions using trained SVC model.
 
     Args:
@@ -218,7 +229,7 @@ def predict_multilabel(items: List[ItemIn]):
 
 
 @app.post("/predict_sentiment", response_model=List[SentimentOut], tags=["sentiment"])
-def predict_sentiment(items: List[ItemIn]):
+async def predict_sentiment(items: List[ItemIn]):
     """Accepts comment ids, comment text and question type as JSON in a POST request. Makes predictions using trained Tensorflow Keras model.
 
     Args:
@@ -244,14 +255,9 @@ def predict_sentiment(items: List[ItemIn]):
     text_to_predict = text_to_predict.rename(
         columns={"comment_text": "FFT answer", "question_type": "FFT_q_standardised"}
     )
-    print(text_to_predict)
     # Make predictions
-    model_path = "bert_sentiment"
-    if not os.path.exists(model_path):
-        model_path = os.path.join("api", model_path)
-    loaded_model = load_model(model_path)
     preds_df = predict_sentiment_bert(
-        text_to_predict, loaded_model, preprocess_text=True, additional_features=True
+        text_to_predict, loaded_model, preprocess_text=False, additional_features=True
     )
     # Join predicted labels with received data
     preds_df["comment_id"] = preds_df.index.astype(str)
