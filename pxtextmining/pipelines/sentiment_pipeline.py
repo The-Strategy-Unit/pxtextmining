@@ -15,14 +15,15 @@ from pxtextmining.factories.factory_pipeline import (
     search_sklearn_pipelines,
     create_bert_model_additional_features,
     train_bert_model,
-    create_bert_model
+    create_bert_model,
 )
 from pxtextmining.factories.factory_write_results import (
     write_multilabel_models_and_metrics,
 )
 from pxtextmining.params import dataset
 
-random_state = random.randint(1,999)
+random_state = random.randint(1, 999)
+
 
 def run_sentiment_pipeline(
     additional_features=False,
@@ -65,7 +66,7 @@ def run_sentiment_pipeline(
             random_state=random_state,
             model=m,
             training_time=t,
-            additional_features = additional_features
+            additional_features=additional_features,
         )
         model_metrics.append(metrics)
     write_multilabel_models_and_metrics(models, model_metrics, path)
@@ -125,11 +126,13 @@ def run_sentiment_bert_pipeline(
         labels=target_names,
         model=model_trained,
         training_time=training_time,
-        additional_features = additional_features
+        additional_features=additional_features,
     )
     write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
 
 
 if __name__ == "__main__":
-    run_sentiment_pipeline(additional_features=False)
-    run_sentiment_bert_pipeline(additional_features = False, path="test_multilabel/sentiment_bert")
+    # run_sentiment_pipeline(additional_features=False)
+    run_sentiment_bert_pipeline(
+        additional_features=True, path="test_multilabel/sentiment_bert"
+    )
