@@ -84,7 +84,7 @@ tags_metadata = [
 ]
 
 
-def load_sentiment_model():
+async def load_sentiment_model():
     model_path = "bert_sentiment"
     if not os.path.exists(model_path):
         model_path = os.path.join("api", model_path)
@@ -92,7 +92,16 @@ def load_sentiment_model():
     return loaded_model
 
 
-loaded_model = load_sentiment_model()
+async def get_sentiment_predictions(
+    text_to_predict, loaded_model, preprocess_text, additional_features
+):
+    predictions = predict_sentiment_bert(
+        text_to_predict,
+        loaded_model,
+        preprocess_text=preprocess_text,
+        additional_features=additional_features,
+    )
+    return predictions
 
 
 class Test(BaseModel):
@@ -246,6 +255,7 @@ async def predict_sentiment(items: List[ItemIn]):
     """
 
     # Process received data
+    loaded_model = await load_sentiment_model()
     df = pd.DataFrame([i.dict() for i in items], dtype=str)
     df_newindex = df.set_index("comment_id")
     if df_newindex.index.duplicated().sum() != 0:
@@ -256,7 +266,7 @@ async def predict_sentiment(items: List[ItemIn]):
         columns={"comment_text": "FFT answer", "question_type": "FFT_q_standardised"}
     )
     # Make predictions
-    preds_df = predict_sentiment_bert(
+    preds_df = await get_sentiment_predictions(
         text_to_predict, loaded_model, preprocess_text=False, additional_features=True
     )
     # Join predicted labels with received data

@@ -40,7 +40,7 @@ if __name__ == "__main__":
     finish = time.time()
     total = finish - start
     print(f"Time taken: {total} seconds")
-    print(returned_json)
+    print(returned_json[:10])
     # json_object = json.dumps(returned_json, indent=4)
     # with open("predictions.json", "w") as outfile:
     #     outfile.write(json_object)
