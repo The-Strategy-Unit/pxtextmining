@@ -1,13 +1,3 @@
-import random
-import os
-
-# import warnings filter
-from warnings import simplefilter
-
-# ignore all future warnings
-simplefilter(action="ignore", category=FutureWarning)
-
-
 from sklearn.model_selection import train_test_split
 
 from pxtextmining.factories.factory_data_load_and_split import (
@@ -43,11 +33,20 @@ from pxtextmining.params import (
     random_state,
 )
 
+import random
+import os
+
+# import warnings filter
+from warnings import simplefilter
+
+# ignore all future warnings
+simplefilter(action="ignore", category=FutureWarning)
+
 
 def run_sklearn_pipeline(
     additional_features=False,
     target=major_cats,
-    models_to_try=["mnb", "knn", "svm", "rfc"],
+    models_to_try=("mnb", "knn", "svm", "rfc"),
     path="test_multilabel",
     include_analysis=False,
 ):
@@ -293,7 +292,7 @@ def run_bert_pipeline(
 
 def run_two_layer_sklearn_pipeline(
     additional_features=True,
-    models_to_try=["mnb", "knn", "xgb"],
+    models_to_try=("mnb", "knn", "xgb"),
     path="test_multilabel/230605",
 ):
     random_state = random.randint(1, 999)
