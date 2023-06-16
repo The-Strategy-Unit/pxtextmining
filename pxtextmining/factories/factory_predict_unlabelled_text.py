@@ -239,7 +239,6 @@ def predict_with_probs(x, model, labels):
             index_max = labels.index(max_k)
             row_preds[index_max] = 1
         prob_preds.append(row_preds)
-    np.array(prob_preds).shape
     y_pred = np.array(prob_preds)
     return y_pred
 

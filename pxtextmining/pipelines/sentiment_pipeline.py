@@ -27,7 +27,7 @@ random_state = random.randint(1, 999)
 
 def run_sentiment_pipeline(
     additional_features=False,
-    models_to_try=["svm", "xgb"],
+    models_to_try=("svm", "xgb"),
     path="test_multilabel/sentiment",
 ):
     """Runs all the functions required to load multiclass data, preprocess it, and split it into training, test and validation sets.
