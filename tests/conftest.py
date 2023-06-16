@@ -57,20 +57,20 @@ def test_raw_data():
         row = []
         if col not in minor_cats:
             if col in ["FFT categorical answer", "Comment sentiment"]:
-                for i in range(5):
+                for _i in range(5):
                     row.append(random.randint(1, 5))
             elif col == "FFT question":
-                for i in range(5):
+                for _i in range(5):
                     row.append(random.choice(list(q_map.keys())))
             else:
-                for i in range(5):
+                for _i in range(5):
                     row.append(
                         "".join(
                             random.choices(string.ascii_uppercase + string.digits, k=5)
                         )
                     )
         else:
-            for i in range(5):
+            for _i in range(5):
                 row.append(random.choice([np.NaN, 1]))
         data_dict[col] = row
     data = pd.DataFrame(data_dict)
