@@ -62,7 +62,7 @@ def bert_data_to_dataset(
         (tf.data.Dataset OR dict): `tf.data.Dataset` if Y is provided, `dict` otherwise.
     """
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    try:
+    if type(X) == pd.DataFrame:
         data_encoded = dict(
             tokenizer(
                 list(X["FFT answer"]),
@@ -72,7 +72,7 @@ def bert_data_to_dataset(
                 return_tensors="tf",
             )
         )
-    except:
+    elif type(X) == pd.Series:
         data_encoded = dict(
             tokenizer(
                 list(X),
