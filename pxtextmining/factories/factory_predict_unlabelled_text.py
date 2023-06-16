@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-from tensorflow.keras.saving import load_model
 
 from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset,
@@ -55,12 +54,12 @@ def predict_multilabel_sklearn(
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
     """
-    if additional_features == False:
+    if additional_features is False:
         text = pd.Series(data)
     else:
         text = data["FFT answer"]
     processed_text = process_text(text)
-    if additional_features == False:
+    if additional_features is False:
         final_data = processed_text
     else:
         final_data = pd.merge(
@@ -68,11 +67,11 @@ def predict_multilabel_sklearn(
         )
     binary_preds = model.predict(final_data)
     pred_probs = np.array(model.predict_proba(final_data))
-    if label_fix == True:
+    if label_fix is True:
         predictions = fix_no_labels(binary_preds, pred_probs, model_type="sklearn")
     else:
         predictions = binary_preds
-    if enhance_with_probs == True:
+    if enhance_with_probs is True:
         for row in range(predictions.shape[0]):
             for label_index in range(predictions.shape[1]):
                 if pred_probs.ndim == 3:
@@ -104,12 +103,12 @@ def predict_multilabel_bert(
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
     """
-    if additional_features == False:
+    if additional_features is False:
         text = pd.Series(data)
     else:
         text = data["FFT answer"]
     processed_text = clean_empty_features(text)
-    if additional_features == False:
+    if additional_features is False:
         final_data = processed_text
     else:
         final_data = pd.merge(
@@ -122,7 +121,7 @@ def predict_multilabel_bert(
         already_encoded=False,
     )
     y_binary = turn_probs_into_binary(y_probs)
-    if label_fix == True:
+    if label_fix is True:
         predictions = fix_no_labels(y_binary, y_probs, model_type="bert")
     else:
         predictions = y_binary
@@ -148,16 +147,16 @@ def predict_sentiment_bert(
     Returns:
         (pd.DataFrame): DataFrame containing input data and predicted sentiment
     """
-    if additional_features == False:
+    if additional_features is False:
         text = pd.Series(data)
     else:
         text = data["FFT answer"]
-    if preprocess_text == True:
+    if preprocess_text is True:
         processed_text = text.astype(str).apply(remove_punc_and_nums)
         processed_text = clean_empty_features(processed_text).dropna()
     else:
         processed_text = clean_empty_features(text).dropna()
-    if additional_features == False:
+    if additional_features is False:
         final_data = processed_text
         final_data = clean_empty_features(final_data)
     else:
@@ -312,7 +311,7 @@ def predict_with_bert(
     Returns:
         (np.array): Predicted probabilities for each label.
     """
-    if already_encoded == False:
+    if already_encoded is False:
         encoded_dataset = bert_data_to_dataset(
             data, Y=None, max_length=max_length, additional_features=additional_features
         )

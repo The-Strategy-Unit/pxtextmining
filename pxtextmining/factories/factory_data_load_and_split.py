@@ -9,16 +9,17 @@ from tensorflow.data import Dataset
 from transformers import AutoTokenizer
 
 from pxtextmining.params import (
-    minor_cats,
     dataset,
     major_cat_dict,
     merged_minor_cats,
+    minor_cats,
     q_map,
 )
 
 
 def merge_categories(df, new_cat, cats_to_merge):
-    """Merges categories together in a dataset. Assumes all categories are all in the right format, one hot encoded with int values.
+    """Merges categories together in a dataset. Assumes all categories are all in the
+    right format, one hot encoded with int values.
 
     Args:
         df (pd.DataFrame): DataFrame with labelled data.
@@ -82,7 +83,7 @@ def bert_data_to_dataset(
             )
         )
     data_encoded.pop("attention_mask", None)
-    if additional_features == True:
+    if additional_features is True:
         data_encoded["input_cat"] = X["FFT_q_standardised"].map(
             {"what_good": 0, "could_improve": 1, "nonspecific": 2}
         )
@@ -202,17 +203,17 @@ def process_data(df, target, preprocess_text=True, additional_features=False):
         (tuple): Tuple containing two pd.DataFrames. The first contains the X features (text, with or without question type depending on additional_features), the second contains the one-hot encoded Y targets
     """
 
-    if preprocess_text == True:
+    if preprocess_text is True:
         X = df["FFT answer"].astype(str).apply(remove_punc_and_nums)
         X = clean_empty_features(X)
         print(f"After preprocessing, shape of X is {X.shape}")
-    if preprocess_text == False:
+    if preprocess_text is False:
         X_temp = df["FFT answer"].astype(str).apply(remove_punc_and_nums)
         X_temp = clean_empty_features(X_temp)
         print(f"After preprocessing, shape of X is {X_temp.shape}")
         indices = X_temp.index
         X = df["FFT answer"].astype(str).filter(indices)
-    if additional_features == True:
+    if additional_features is True:
         X = pd.merge(X, df[["FFT_q_standardised"]], left_index=True, right_index=True)
         X = X.reset_index()
         X = X.drop_duplicates()

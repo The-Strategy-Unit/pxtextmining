@@ -6,15 +6,14 @@ from scipy import stats
 from sklearn.compose import make_column_transformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import OneHotEncoder, RobustScaler
+from sklearn.preprocessing import OneHotEncoder
 from sklearn.svm import SVC
 from sklearn.utils.class_weight import compute_class_weight
-from sklearn.model_selection import cross_validate
 from tensorflow.keras import Sequential, layers
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.initializers import TruncatedNormal
@@ -46,7 +45,7 @@ def create_sklearn_pipeline_sentiment(
         (tuple): Tuple containing the `sklearn.pipeline.Pipeline` with the selected estimator, and a `dict` containing the hyperparameters to be tuned.
 
     """
-    if additional_features == True:
+    if additional_features is True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
         vectorizer = create_sklearn_vectorizer(tokenizer=None)
         preproc = make_column_transformer(
@@ -149,7 +148,7 @@ def create_bert_model(Y_train, model_name=model_name, max_length=150, multilabel
     bert_model = bert(inputs)[0][:, 0, :]
     dropout = Dropout(config.dropout, name="pooled_output")
     pooled_output = dropout(bert_model, training=False)
-    if multilabel == True:
+    if multilabel is True:
         output = Dense(
             units=Y_train.shape[1],
             kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
@@ -207,7 +206,7 @@ def create_bert_model_additional_features(
     cat_dense = cat_dense(onehot_layer)
     # concatenate both together
     concat_layer = concatenate([bert_output, cat_dense])
-    if multilabel == True:
+    if multilabel is True:
         output = Dense(
             units=Y_train.shape[1],
             kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
@@ -363,7 +362,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
     Returns:
         (tuple): Tuple containing the `sklearn.pipeline.Pipeline` with the selected estimator, and a `dict` containing the hyperparameters to be tuned.
     """
-    if additional_features == True:
+    if additional_features is True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
         vectorizer = create_sklearn_vectorizer(tokenizer=None)
         # num_transformer = RobustScaler()

@@ -1,5 +1,4 @@
 import random
-import pandas as pd
 import os
 
 # import warnings filter
@@ -18,7 +17,6 @@ from pxtextmining.factories.factory_data_load_and_split import (
 )
 from pxtextmining.factories.factory_model_performance import (
     get_multilabel_metrics,
-    parse_metrics_file,
 )
 from pxtextmining.factories.factory_pipeline import (
     calculating_class_weights,
@@ -103,7 +101,7 @@ def run_sklearn_pipeline(
             )
         )
     write_multilabel_models_and_metrics(models, model_metrics, path=path)
-    if include_analysis == True:
+    if include_analysis is True:
         for i in range(len(models)):
             model_name = f"model_{i}"
             write_model_preds(
@@ -162,7 +160,7 @@ def run_svc_pipeline(
         additional_features=additional_features,
     )
     write_multilabel_models_and_metrics([model], [model_metrics], path=path)
-    if include_analysis == True:
+    if include_analysis is True:
         write_model_preds(
             X_test,
             Y_test,
@@ -257,7 +255,7 @@ def run_bert_pipeline(
         X_test, Y=None, additional_features=additional_features
     )
     class_weights_dict = calculating_class_weights(Y_train_val)
-    if additional_features == True:
+    if additional_features is True:
         model = create_bert_model_additional_features(Y_train)
     else:
         model = create_bert_model(Y_train)
@@ -280,7 +278,7 @@ def run_bert_pipeline(
         already_encoded=True,
     )
     write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
-    if include_analysis == True:
+    if include_analysis is True:
         write_model_preds(
             X_test,
             Y_test,

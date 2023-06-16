@@ -108,7 +108,7 @@ def run_sentiment_bert_pipeline(
     class_weights_dict = {}
     for k, v in enumerate(list(cw)):
         class_weights_dict[k] = v
-    if additional_features == True:
+    if additional_features is True:
         model = create_bert_model_additional_features(Y_train, multilabel=False)
     else:
         model = create_bert_model(Y_train, multilabel=False)

@@ -55,13 +55,13 @@ def get_multiclass_metrics(x_test, y_test, labels, random_state, model, addition
     )
     # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
     # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
-    if isinstance(model, Model) == True:
+    if isinstance(model, Model) is True:
         stringlist = []
         model.summary(print_fn=lambda x: stringlist.append(x))
         model_summary = "\n".join(stringlist)
         metrics_string += f"\n{model_summary}\n"
         y_pred = predict_multiclass_bert(x_test, model, additional_features = additional_features, already_encoded = False)
-    elif is_classifier(model) == True:
+    elif is_classifier(model) is True:
         metrics_string += f"\n{model}\n"
         y_pred = model.predict(x_test)
     else:
