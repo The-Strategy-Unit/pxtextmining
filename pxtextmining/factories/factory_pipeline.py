@@ -327,7 +327,11 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
         preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
         params = {
             "tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
-            "tfidfvectorizer__max_df": stats.uniform(0.8, 1),
+            "tfidfvectorizer__max_df": [
+                0.9,
+                0.95,
+                0.99,
+            ],
             "tfidfvectorizer__min_df": stats.uniform(0.01, 0.1),
         }
     if model_type == "mnb":

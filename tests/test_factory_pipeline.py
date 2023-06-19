@@ -1,4 +1,4 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import numpy as np
 import pytest
@@ -62,3 +62,59 @@ def test_create_sklearn_pipeline(model_type, tokenizer, additional_features):
     )
     assert is_classifier(pipe) is True
     assert type(params) == dict
+
+
+@patch("sklearn.model_selection.RandomizedSearchCV")
+def test_search_sklearn_pipelines(
+    mock_randomized_search,
+    grab_test_X_additional_feats,
+):
+    mock_model = Mock()
+    mock_randomized_search.fit.return_value = mock_model
+    mock_randomized_search.best_estimator_ = mock_model
+    models_to_try = ["knn"]
+    X_train = grab_test_X_additional_feats
+    Y_train = np.array(
+        [
+            [0, 1, 0, 1, 0],
+            [1, 0, 0, 1, 0],
+            [1, 0, 0, 0, 0],
+            [1, 0, 1, 1, 0],
+            [0, 0, 0, 0, 1],
+        ]
+    )
+    models, training_times = factory_pipeline.search_sklearn_pipelines(
+        X_train,
+        Y_train,
+        models_to_try,
+        additional_features=True,
+    )
+    assert len(models) == len(training_times)
+
+
+@patch("sklearn.model_selection.RandomizedSearchCV")
+def test_search_sklearn_pipelines_addf_false(
+    mock_randomized_search,
+    grab_test_X_additional_feats,
+):
+    mock_model = Mock()
+    mock_randomized_search.fit.return_value = mock_model
+    mock_randomized_search.best_estimator_ = mock_model
+    models_to_try = ["knn"]
+    X_train = grab_test_X_additional_feats["FFT answer"]
+    Y_train = np.array(
+        [
+            [0, 1, 0, 1, 0],
+            [1, 0, 0, 1, 0],
+            [1, 0, 0, 0, 0],
+            [1, 0, 1, 1, 0],
+            [0, 0, 0, 0, 1],
+        ]
+    )
+    models, training_times = factory_pipeline.search_sklearn_pipelines(
+        X_train,
+        Y_train,
+        models_to_try,
+        additional_features=False,
+    )
+    assert len(models) == len(training_times)
