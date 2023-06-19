@@ -43,3 +43,11 @@ def test_train_bert_model():
     )
     model.fit.assert_called_once()
     assert type(training_time) == str
+
+
+def test_calculating_class_weights():
+    Y_train = np.array(
+        [[0, 1, 0], [1, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 0, 0]]
+    )
+    class_weights_dict = factory_pipeline.calculating_class_weights(Y_train)
+    assert type(class_weights_dict) == dict

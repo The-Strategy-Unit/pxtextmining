@@ -2,6 +2,7 @@ import datetime
 import time
 
 import numpy as np
+import xgboost as xgb
 from scipy import stats
 from sklearn.compose import make_column_transformer
 from sklearn.ensemble import RandomForestClassifier
@@ -14,15 +15,13 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.svm import SVC
 from sklearn.utils.class_weight import compute_class_weight
-from tensorflow.keras import Sequential, layers
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.initializers import TruncatedNormal
-from tensorflow.keras.layers import Dense, Dropout, Input, concatenate, CategoryEncoding
+from tensorflow.keras.layers import CategoryEncoding, Dense, Dropout, Input, concatenate
 from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from transformers import DistilBertConfig, TFDistilBertForSequenceClassification
-import xgboost as xgb
 
 from pxtextmining.helpers.tokenization import spacy_tokenizer
 from pxtextmining.params import model_name
@@ -277,62 +276,6 @@ def calculating_class_weights(y_true):
     for i in range(len(weights)):
         class_weights_dict[i] = weights[i][-1]
     return class_weights_dict
-
-
-def create_tf_model(vocab_size=None, embedding_size=100):
-    """Creates LSTM multilabel classification model using tensorflow keras, with a layer of outputs matching what is currently the number of major_categories.
-
-    Args:
-        vocab_size (int, optional): Number of different words in vocabulary, as derived from tokenization process. Defaults to None.
-        embedding_size (int, optional): Size of embedding dimension to be output by embedding layer. Defaults to 100.
-
-    Returns:
-        (tf.keras.models.Model): Compiled tensorflow keras LSTM model.
-    """
-    model = Sequential()
-    model.add(
-        layers.Embedding(
-            input_dim=vocab_size + 1, output_dim=embedding_size, mask_zero=True
-        )
-    )
-    model.add(layers.LSTM(50))
-    model.add(layers.Dense(20, activation="relu"))
-    model.add(layers.Dense(13, activation="sigmoid"))
-    model.compile(
-        loss="binary_crossentropy",
-        optimizer="rmsprop",
-        metrics=["CategoricalAccuracy", "Precision", "Recall"],
-    )
-    return model
-
-
-def train_tf_model(X_train, Y_train, model, class_weights_dict=None):
-    """Trains tensorflow keras model. Some overlap with train_bert_model, could probably be merged.
-
-    Args:
-        X_train (pd.DataFrame): DataFrame containing tokenized text features.
-        Y_train (pd.DataFrame): DataFrame containing one-hot encoded multilabel targets.
-        model (tf.keras.models.Model): Compiled tensorflow keras model.
-        class_weights_dict (dict, optional): Dict containing class weights for target classes. Defaults to None.
-
-    Returns:
-        (tuple): Tuple containing trained model and the training time as a str.
-    """
-    es = EarlyStopping(patience=3, restore_best_weights=True)
-    start_time = time.time()
-    model.fit(
-        X_train,
-        Y_train,
-        epochs=200,
-        batch_size=32,
-        verbose=1,
-        validation_split=0.2,
-        callbacks=[es],
-        class_weight=class_weights_dict,
-    )
-    seconds_taken = round(time.time() - start_time, 0)
-    training_time = str(datetime.timedelta(seconds=seconds_taken))
-    return model, training_time
 
 
 def create_sklearn_vectorizer(tokenizer=None):
