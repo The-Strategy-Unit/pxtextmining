@@ -51,3 +51,14 @@ def test_calculating_class_weights():
     )
     class_weights_dict = factory_pipeline.calculating_class_weights(Y_train)
     assert type(class_weights_dict) == dict
+
+
+@pytest.mark.parametrize("model_type", ["svm", "xgb", "rfc", "mnb", "knn"])
+@pytest.mark.parametrize("additional_features", [True, False])
+@pytest.mark.parametrize("tokenizer", [None, "spacy"])
+def test_create_sklearn_pipeline(model_type, tokenizer, additional_features):
+    pipe, params = factory_pipeline.create_sklearn_pipeline(
+        model_type, tokenizer, additional_features
+    )
+    assert is_classifier(pipe) is True
+    assert type(params) == dict
