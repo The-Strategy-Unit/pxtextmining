@@ -1,9 +1,10 @@
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import numpy as np
 import pytest
 from keras.engine.functional import Functional
 from sklearn.base import is_classifier
+from sklearn.pipeline import Pipeline
 
 from pxtextmining.factories import factory_pipeline
 
@@ -64,15 +65,12 @@ def test_create_sklearn_pipeline(model_type, tokenizer, additional_features):
     assert type(params) == dict
 
 
-@patch("sklearn.model_selection.RandomizedSearchCV")
-def test_search_sklearn_pipelines(
-    mock_randomized_search,
-    grab_test_X_additional_feats,
-):
-    mock_model = Mock()
-    mock_randomized_search.fit.return_value = mock_model
-    mock_randomized_search.best_estimator_ = mock_model
-    models_to_try = ["knn"]
+@pytest.mark.parametrize("target", ["sentiment", None])
+@patch("pxtextmining.factories.factory_pipeline.RandomizedSearchCV")
+def test_search_sklearn_pipelines(mock_search, target, grab_test_X_additional_feats):
+    mock_instance = MagicMock()
+    mock_search.return_value = mock_instance
+    models_to_try = ["svm"]
     X_train = grab_test_X_additional_feats
     Y_train = np.array(
         [
@@ -83,24 +81,28 @@ def test_search_sklearn_pipelines(
             [0, 0, 0, 0, 1],
         ]
     )
+    mock_instance.best_estimator_ = Pipeline([("dummy", None)])
+    mock_instance.best_params_ = {"param1": 10, "param2": 20}
+
     models, training_times = factory_pipeline.search_sklearn_pipelines(
-        X_train,
-        Y_train,
-        models_to_try,
-        additional_features=True,
+        X_train, Y_train, models_to_try, target=target, additional_features=True
     )
-    assert len(models) == len(training_times)
+
+    mock_instance.fit.assert_called()
+    assert len(models) == 1
+    assert isinstance(models[0], Pipeline) is True
+    assert models[0].steps[0][0] == "dummy"
+    assert len(training_times) == 1
 
 
-@patch("sklearn.model_selection.RandomizedSearchCV")
-def test_search_sklearn_pipelines_addf_false(
-    mock_randomized_search,
-    grab_test_X_additional_feats,
+@pytest.mark.parametrize("target", ["sentiment", None])
+@patch("pxtextmining.factories.factory_pipeline.RandomizedSearchCV")
+def test_search_sklearn_pipelines_no_feats(
+    mock_search, target, grab_test_X_additional_feats
 ):
-    mock_model = Mock()
-    mock_randomized_search.fit.return_value = mock_model
-    mock_randomized_search.best_estimator_ = mock_model
-    models_to_try = ["knn"]
+    mock_instance = MagicMock()
+    mock_search.return_value = mock_instance
+    models_to_try = ["svm"]
     X_train = grab_test_X_additional_feats["FFT answer"]
     Y_train = np.array(
         [
@@ -111,10 +113,15 @@ def test_search_sklearn_pipelines_addf_false(
             [0, 0, 0, 0, 1],
         ]
     )
+    mock_instance.best_estimator_ = Pipeline([("dummy", None)])
+    mock_instance.best_params_ = {"param1": 10, "param2": 20}
+
     models, training_times = factory_pipeline.search_sklearn_pipelines(
-        X_train,
-        Y_train,
-        models_to_try,
-        additional_features=False,
+        X_train, Y_train, models_to_try, target=target, additional_features=False
     )
-    assert len(models) == len(training_times)
+
+    mock_instance.fit.assert_called()
+    assert len(models) == 1
+    assert isinstance(models[0], Pipeline) is True
+    assert models[0].steps[0][0] == "dummy"
+    assert len(training_times) == 1
