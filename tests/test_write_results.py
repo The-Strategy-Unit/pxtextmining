@@ -1,7 +1,5 @@
 from pxtextmining.factories import factory_write_results
-import pandas as pd
 import numpy as np
-import pytest
 from unittest.mock import Mock, mock_open, patch
 from tensorflow.keras import Model
 import os

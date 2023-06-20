@@ -1,7 +1,6 @@
 from pxtextmining.factories import factory_predict_unlabelled_text
 import pandas as pd
 import numpy as np
-import pytest
 from unittest.mock import Mock
 
 

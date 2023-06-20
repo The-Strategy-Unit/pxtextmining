@@ -11,7 +11,7 @@ from pxtextmining.factories.factory_predict_unlabelled_text import (
     predict_with_bert,
     turn_probs_into_binary,
     predict_multiclass_bert,
-    predict_multilabel_sklearn
+    predict_multilabel_sklearn,
 )
 
 
@@ -30,7 +30,9 @@ def get_dummy_model(x_train, y_train):
     return model
 
 
-def get_multiclass_metrics(x_test, y_test, labels, random_state, model, additional_features, training_time = None):
+def get_multiclass_metrics(
+    x_test, y_test, labels, random_state, model, additional_features, training_time=None
+):
     """Creates a string detailing various performance metrics for a multiclass model, which can then be written to
     a text file.
 
@@ -55,13 +57,18 @@ def get_multiclass_metrics(x_test, y_test, labels, random_state, model, addition
     )
     # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
     # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
-    if isinstance(model, Model) == True:
+    if isinstance(model, Model) is True:
         stringlist = []
         model.summary(print_fn=lambda x: stringlist.append(x))
         model_summary = "\n".join(stringlist)
         metrics_string += f"\n{model_summary}\n"
-        y_pred = predict_multiclass_bert(x_test, model, additional_features = additional_features, already_encoded = False)
-    elif is_classifier(model) == True:
+        y_pred = predict_multiclass_bert(
+            x_test,
+            model,
+            additional_features=additional_features,
+            already_encoded=False,
+        )
+    elif is_classifier(model) is True:
         metrics_string += f"\n{model}\n"
         y_pred = model.predict(x_test)
     else:
@@ -76,6 +83,7 @@ def get_multiclass_metrics(x_test, y_test, labels, random_state, model, addition
     metrics_string += c_report_str
     return metrics_string
 
+
 def get_multilabel_metrics(
     x_test,
     y_test,
@@ -85,7 +93,7 @@ def get_multilabel_metrics(
     model,
     training_time=None,
     additional_features=False,
-    already_encoded=False
+    already_encoded=False,
 ):
     """Creates a string detailing various performance metrics for a multilabel model, which can then be written to
     a text file.
@@ -128,12 +136,19 @@ def get_multilabel_metrics(
         binary_preds = turn_probs_into_binary(y_probs)
         y_pred = fix_no_labels(binary_preds, y_probs, model_type="tf")
     elif model_type == "sklearn":
-        y_pred_df = predict_multilabel_sklearn(x_test, model, labels = labels,
-                                                additional_features = additional_features,
-                                                label_fix = True, enhance_with_probs = True)
-        y_pred = np.array(y_pred_df)[:,:-1].astype('int64')
+        y_pred_df = predict_multilabel_sklearn(
+            x_test,
+            model,
+            labels=labels,
+            additional_features=additional_features,
+            label_fix=True,
+            enhance_with_probs=True,
+        )
+        y_pred = np.array(y_pred_df)[:, :-1].astype('int64')
     else:
-        raise ValueError('Please select valid model_type. Options are "bert", "tf" or "sklearn"')
+        raise ValueError(
+            'Please select valid model_type. Options are "bert", "tf" or "sklearn"'
+        )
     # Calculate various metrics
     model_metrics["exact_accuracy"] = metrics.accuracy_score(y_test, y_pred)
     model_metrics["hamming_loss"] = metrics.hamming_loss(y_test, y_pred)
@@ -193,17 +208,19 @@ def parse_metrics_file(metrics_file, labels):
     """
     with open(metrics_file, 'r') as file:
         content = file.readlines()
-    for i, l in enumerate(content):
-        if l.strip().startswith(labels[0][:10]):
+    for i, line in enumerate(content):
+        if line.strip().startswith(labels[0][:10]):
             startline = i
-        if l.strip().startswith(labels[-1][:10]):
-            endline = i+1
+        if line.strip().startswith(labels[-1][:10]):
+            endline = i + 1
     lines = [x.strip() for x in content[startline:endline]]
-    metrics_dict = {'label': [],
-                'precision': [],
-                'recall': [],
-                'f1_score': [],
-                'support': []}
+    metrics_dict = {
+        'label': [],
+        'precision': [],
+        'recall': [],
+        'f1_score': [],
+        'support': [],
+    }
     for each in lines:
         splitted = each.split('      ')
         metrics_dict['label'].append(splitted[0].strip())

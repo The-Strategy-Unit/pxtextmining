@@ -1,5 +1,4 @@
 from pxtextmining.factories import factory_model_performance
-import pandas as pd
 import numpy as np
 
 

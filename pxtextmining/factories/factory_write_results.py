@@ -58,7 +58,7 @@ def write_model_preds(
         get_labels, args=(labels,), axis=1
     )
     actual_labels.name = "actual_labels"
-    if isinstance(model, Model) == True:
+    if isinstance(model, Model) is True:
         predicted_labels = predict_multilabel_bert(
             x,
             model,
@@ -77,7 +77,7 @@ def write_model_preds(
         ).reset_index()["labels"]
     predicted_labels.name = "predicted_labels"
     df = x.reset_index()
-    if isinstance(model, Model) == True:
+    if isinstance(model, Model) is True:
         probabilities = predict_with_bert(
             x,
             model,
@@ -87,7 +87,7 @@ def write_model_preds(
         )
     else:
         probabilities = np.array(model.predict_proba(x))
-    if isinstance(model, Model) == True:
+    if isinstance(model, Model) is True:
         model_type = 'bert'
     else:
         model_type = 'sklearn'

@@ -1,13 +1,8 @@
-import random
-import pandas as pd
 import os
+import random
 
 # import warnings filter
 from warnings import simplefilter
-
-# ignore all future warnings
-simplefilter(action="ignore", category=FutureWarning)
-
 
 from sklearn.model_selection import train_test_split
 
@@ -16,40 +11,37 @@ from pxtextmining.factories.factory_data_load_and_split import (
     load_multilabel_data,
     process_and_split_data,
 )
-from pxtextmining.factories.factory_model_performance import (
-    get_multilabel_metrics,
-    parse_metrics_file,
-)
+from pxtextmining.factories.factory_model_performance import get_multilabel_metrics
 from pxtextmining.factories.factory_pipeline import (
     calculating_class_weights,
+    create_and_train_svc_model,
     create_bert_model,
     create_bert_model_additional_features,
-    create_tf_model,
-    create_and_train_svc_model,
     search_sklearn_pipelines,
     train_bert_model,
-    train_tf_model,
 )
 from pxtextmining.factories.factory_write_results import (
-    write_multilabel_models_and_metrics,
-    write_model_preds,
     write_model_analysis,
+    write_model_preds,
+    write_multilabel_models_and_metrics,
 )
-from pxtextmining.helpers.text_preprocessor import tf_preprocessing
 from pxtextmining.params import (
-    major_cats,
-    minor_cats,
     dataset,
-    merged_minor_cats,
     major_cat_dict,
+    major_cats,
+    merged_minor_cats,
+    minor_cats,
     random_state,
 )
+
+# ignore all future warnings
+simplefilter(action="ignore", category=FutureWarning)
 
 
 def run_sklearn_pipeline(
     additional_features=False,
     target=major_cats,
-    models_to_try=["mnb", "knn", "svm", "rfc"],
+    models_to_try=("mnb", "knn", "svm", "rfc"),
     path="test_multilabel",
     include_analysis=False,
 ):
@@ -103,7 +95,7 @@ def run_sklearn_pipeline(
             )
         )
     write_multilabel_models_and_metrics(models, model_metrics, path=path)
-    if include_analysis == True:
+    if include_analysis is True:
         for i in range(len(models)):
             model_name = f"model_{i}"
             write_model_preds(
@@ -162,7 +154,7 @@ def run_svc_pipeline(
         additional_features=additional_features,
     )
     write_multilabel_models_and_metrics([model], [model_metrics], path=path)
-    if include_analysis == True:
+    if include_analysis is True:
         write_model_preds(
             X_test,
             Y_test,
@@ -173,44 +165,6 @@ def run_svc_pipeline(
         )
         write_model_analysis(model_name="model_0", labels=target, dataset=df, path=path)
     print("Pipeline complete!")
-
-
-def run_tf_pipeline(target=major_cats, path="test_multilabel/tf"):
-    """Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
-    Creates tf.keras LSTM model and trains it on the train set.
-    Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
-    and the performance metrics to a specified folder.
-    Cannot currently take additional features, is only designed for text data alone.
-    This model architecture performs very poorly and may be taken out of the model.
-
-    Args:
-        target (list, optional): The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.
-        path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
-    """
-    random_state = random.randint(1, 999)
-    df = load_multilabel_data(
-        filename="datasets/multilabeldata_2.csv", target="major_categories"
-    )
-    X_train, X_test, Y_train, Y_test = process_and_split_data(
-        df, target=target, random_state=random_state
-    )
-    X_train_pad, vocab_size = tf_preprocessing(X_train)
-    X_test_pad, _ = tf_preprocessing(X_test)
-    class_weights_dict = calculating_class_weights(Y_train)
-    model = create_tf_model(vocab_size)
-    model_trained, training_time = train_tf_model(
-        X_train_pad, Y_train, model, class_weights_dict=class_weights_dict
-    )
-    model_metrics = get_multilabel_metrics(
-        X_test_pad,
-        Y_test,
-        random_state=random_state,
-        labels=major_cats,
-        model_type="tf",
-        model=model_trained,
-        training_time=training_time,
-    )
-    write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
 
 
 def run_bert_pipeline(
@@ -257,7 +211,7 @@ def run_bert_pipeline(
         X_test, Y=None, additional_features=additional_features
     )
     class_weights_dict = calculating_class_weights(Y_train_val)
-    if additional_features == True:
+    if additional_features is True:
         model = create_bert_model_additional_features(Y_train)
     else:
         model = create_bert_model(Y_train)
@@ -280,7 +234,7 @@ def run_bert_pipeline(
         already_encoded=True,
     )
     write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
-    if include_analysis == True:
+    if include_analysis is True:
         write_model_preds(
             X_test,
             Y_test,
@@ -295,7 +249,7 @@ def run_bert_pipeline(
 
 def run_two_layer_sklearn_pipeline(
     additional_features=True,
-    models_to_try=["mnb", "knn", "xgb"],
+    models_to_try=("mnb", "knn", "xgb"),
     path="test_multilabel/230605",
 ):
     random_state = random.randint(1, 999)
