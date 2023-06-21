@@ -1,17 +1,17 @@
 import numpy as np
 import pandas as pd
 from sklearn import metrics
+from sklearn.base import is_classifier
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import confusion_matrix
 from tensorflow.keras.models import Model
-from sklearn.base import is_classifier
 
 from pxtextmining.factories.factory_predict_unlabelled_text import (
     fix_no_labels,
-    predict_with_bert,
-    turn_probs_into_binary,
     predict_multiclass_bert,
     predict_multilabel_sklearn,
+    predict_with_bert,
+    turn_probs_into_binary,
 )
 
 
@@ -72,7 +72,7 @@ def get_multiclass_metrics(
         metrics_string += f"\n{model}\n"
         y_pred = model.predict(x_test)
     else:
-        raise ValueError('Model type not recognised')
+        raise ValueError("Model type not recognised")
     # Calculate various metrics
     metrics_string += f"\n\nTraining time: {training_time}\n"
     # Classification report
@@ -103,7 +103,7 @@ def get_multilabel_metrics(
         y_test (pd.DataFrame): DataFrame containing test dataset true target values
         labels (list): List containing the target labels
         random_state (int): Seed used to control the shuffling of the data, to enable reproducible results.
-        model_type (str): Type of model used. Options are 'bert', 'tf', or 'sklearn'. Defaults to None.
+        model_type (str): Type of model used. Options are 'bert', or 'sklearn'. Defaults to None.
         model (tf.keras or sklearn model): Trained estimator.
         training_time (str, optional): Amount of time taken for model to train. Defaults to None.
         additional_features (bool, optional): Whether or not additional features (e.g. question type) have been included in training the model. Defaults to False.
@@ -123,16 +123,13 @@ def get_multilabel_metrics(
     model_metrics = {}
     # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
     # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
-    if model_type in ("bert", "tf"):
-        if model_type == "bert":
-            y_probs = predict_with_bert(
-                x_test,
-                model,
-                additional_features=additional_features,
-                already_encoded=already_encoded,
-            )
-        elif model_type == "tf":
-            y_probs = model.predict(x_test)
+    if model_type == "bert":
+        y_probs = predict_with_bert(
+            x_test,
+            model,
+            additional_features=additional_features,
+            already_encoded=already_encoded,
+        )
         binary_preds = turn_probs_into_binary(y_probs)
         y_pred = fix_no_labels(binary_preds, y_probs, model_type="tf")
     elif model_type == "sklearn":
@@ -144,10 +141,10 @@ def get_multilabel_metrics(
             label_fix=True,
             enhance_with_probs=True,
         )
-        y_pred = np.array(y_pred_df)[:, :-1].astype('int64')
+        y_pred = np.array(y_pred_df)[:, :-1].astype("int64")
     else:
         raise ValueError(
-            'Please select valid model_type. Options are "bert", "tf" or "sklearn"'
+            'Please select valid model_type. Options are "bert" or "sklearn"'
         )
     # Calculate various metrics
     model_metrics["exact_accuracy"] = metrics.accuracy_score(y_test, y_pred)
@@ -206,7 +203,7 @@ def parse_metrics_file(metrics_file, labels):
     Returns:
         (pd.DataFrame): DataFrame containing the precision, recall, f1_score, and support for each label, as detailed in the performance metrics file.
     """
-    with open(metrics_file, 'r') as file:
+    with open(metrics_file, "r") as file:
         content = file.readlines()
     for i, line in enumerate(content):
         if line.strip().startswith(labels[0][:10]):
@@ -215,18 +212,18 @@ def parse_metrics_file(metrics_file, labels):
             endline = i + 1
     lines = [x.strip() for x in content[startline:endline]]
     metrics_dict = {
-        'label': [],
-        'precision': [],
-        'recall': [],
-        'f1_score': [],
-        'support': [],
+        "label": [],
+        "precision": [],
+        "recall": [],
+        "f1_score": [],
+        "support": [],
     }
     for each in lines:
-        splitted = each.split('      ')
-        metrics_dict['label'].append(splitted[0].strip())
-        metrics_dict['precision'].append(splitted[1].strip())
-        metrics_dict['recall'].append(splitted[2].strip())
-        metrics_dict['f1_score'].append(splitted[3].strip())
-        metrics_dict['support'].append(splitted[4].strip())
+        splitted = each.split("      ")
+        metrics_dict["label"].append(splitted[0].strip())
+        metrics_dict["precision"].append(splitted[1].strip())
+        metrics_dict["recall"].append(splitted[2].strip())
+        metrics_dict["f1_score"].append(splitted[3].strip())
+        metrics_dict["support"].append(splitted[4].strip())
     metrics_df = pd.DataFrame.from_dict(metrics_dict)
     return metrics_df
