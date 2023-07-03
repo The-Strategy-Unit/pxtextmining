@@ -1,10 +1,11 @@
-FROM python:3.9.17-alpine3.18
+FROM python:3.10.12-bookworm
 
 COPY docker-requirements.txt requirements.txt
+RUN pip install --upgrade pip setuptools
 RUN pip install -r requirements.txt
 
 COPY api/bert_sentiment bert_sentiment
 COPY docker_run.py docker_run.py
 COPY test_json.json test_json.json
 
-ENTRYPOINT [ "./docker_run.py" ]
+CMD python docker_run.py
