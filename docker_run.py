@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 
@@ -71,8 +72,16 @@ def predict_sentiment(items):
 
 
 def main():
-    with open("test_json.json", "r") as json_file:
-        json_in = json.load(json_file)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "json_file",
+        nargs=1,
+        help="Name of the json file",
+    )
+    args = parser.parse_args()
+    json_file = os.path.join("data", args.json_file[0])
+    with open(json_file, "r") as jf:
+        json_in = json.load(jf)
         predictions = predict_sentiment(json_in)
         print(predictions)
 
