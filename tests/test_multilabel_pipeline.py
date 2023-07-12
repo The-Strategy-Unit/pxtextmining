@@ -168,3 +168,34 @@ def test_bert_pipeline_additional_features(
     mock_trainbert.assert_called_once()
     mock_metrics.assert_called_once()
     mock_write.assert_called_once()
+
+
+@patch("pxtextmining.pipelines.multilabel_pipeline.write_multilabel_models_and_metrics")
+@patch("pxtextmining.pipelines.multilabel_pipeline.get_multilabel_metrics")
+@patch("pxtextmining.pipelines.multilabel_pipeline.search_sklearn_pipelines")
+@patch("pxtextmining.pipelines.multilabel_pipeline.create_and_train_svc_model")
+@patch("pxtextmining.pipelines.multilabel_pipeline.process_and_split_data")
+@patch("pxtextmining.pipelines.multilabel_pipeline.load_multilabel_data")
+def test_twolayer_pipeline(
+    mock_dataload,
+    mock_datasplit,
+    mock_svc,
+    mock_skpipeline,
+    mock_metrics,
+    mock_write,
+):
+    # arrange mocks
+    mock_datasplit.return_value = (1, 2, 3, 4)
+    mock_skpipeline.return_value = (["model"], ["training_time"])
+    mock_svc.return_value = (1, 2)
+
+    # act
+    multilabel_pipeline.run_two_layer_sklearn_pipeline()
+
+    # assert
+    mock_dataload.assert_called()
+    mock_datasplit.assert_called()
+    mock_skpipeline.assert_called()
+    mock_svc.assert_called()
+    mock_metrics.assert_called()
+    mock_write.assert_called()
