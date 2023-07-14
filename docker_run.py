@@ -65,26 +65,41 @@ def predict_sentiment(items):
     preds_df["comment_id"] = preds_df.index.astype(str)
     merged = pd.merge(df, preds_df, how="left", on="comment_id")
     merged["sentiment"] = merged["sentiment"].fillna("Labelling not possible")
-    return_dict = merged[["comment_id", "comment_text", "sentiment"]].to_dict(
-        orient="records"
-    )
+    return_dict = merged[["comment_id", "sentiment"]].to_dict(orient="records")
     return return_dict
 
 
-def main():
+def parse_args():
+    """Parse command line arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "json_file",
         nargs=1,
         help="Name of the json file",
     )
+    parser.add_argument(
+        "--local-storage",
+        "-l",
+        action="store_true",
+        help="Use local storage (instead of Azure)",
+    )
     args = parser.parse_args()
-    json_file = os.path.join("data", args.json_file[0])
+
+    return args
+
+
+def main():
+    args = parse_args()
+    json_file = os.path.join("data", "data_in", args.json_file[0])
     with open(json_file, "r") as jf:
         json_in = json.load(jf)
-        predictions = predict_sentiment(json_in)
-        print(predictions)
+    if not args.local_storage:
+        os.remove(json_file)
+    json_out = predict_sentiment(json_in)
+    print(json_out)
 
+
+# predictions get saved somewhere (in/out folders)
 
 if __name__ == "__main__":
     main()
