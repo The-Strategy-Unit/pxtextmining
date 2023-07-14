@@ -96,10 +96,10 @@ def main():
     if not args.local_storage:
         os.remove(json_file)
     json_out = predict_sentiment(json_in)
-    print(json_out)
+    out_path = os.path.join("data", "data_out", args.json_file[0])
+    with open(out_path, "w+") as jf:
+        json.dump(json_out, jf)
 
-
-# predictions get saved somewhere (in/out folders)
 
 if __name__ == "__main__":
     main()
