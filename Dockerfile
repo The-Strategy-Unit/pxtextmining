@@ -9,4 +9,6 @@ COPY api/bert_sentiment bert_sentiment
 COPY docker_run.py docker_run.py
 RUN chmod +x ./docker_run.py
 
+LABEL org.opencontainers.image.source=https://github.com/cdu-data-science-team/pxtextmining
+
 ENTRYPOINT ["python3", "docker_run.py"]
