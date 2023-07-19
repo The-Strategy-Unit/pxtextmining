@@ -1,5 +1,12 @@
 Please note that the Care Opinion data is being shared under the [CC BY-NC-SA 4.0 licence](https://creativecommons.org/licenses/by-nc-sa/4.0/) and is generated from the [Care Opinion API](https://www.careopinion.org.uk/info/api-v2).
 
+
+Two out of the six participating trusts have agreed to make their data available publicly.
+
+An explanation of the dataset columns for phase 2 is available below.
+
+
+
 Comment ID: ID for the specific comment.
 
 Trust: NHS Trust where comment originated.
@@ -22,4 +29,4 @@ Person identifiable info?: Whether or not the FFT answer contains any person ide
 
 Comment sentiment: The sentiment score applied to the FFT answer by the labeller. 1 is "very positive", 5 is "very negative". Mixed comments have been labelled as "3", neutral.
 
-All other columns are the labels created for the project as part of the qualitative framework, in one hot encoded format.
+All other columns are the qualitative framework labels, in one hot encoded format. The version of the framework being used is reflected in the filename. Full details of the framework are available on the [project documentation website](https://cdu-data-science-team.github.io/PatientExperience-QDC/framework/framework3.html).
