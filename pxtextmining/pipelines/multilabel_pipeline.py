@@ -142,7 +142,9 @@ def run_svc_pipeline(
         additional_features=additional_features,
         random_state=random_state,
     )
-    model, training_time = create_and_train_svc_model(X_train, Y_train)
+    model, training_time = create_and_train_svc_model(
+        X_train, Y_train, additional_features=additional_features
+    )
     model_metrics = get_multilabel_metrics(
         X_test,
         Y_test,
