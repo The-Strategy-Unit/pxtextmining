@@ -331,20 +331,36 @@ def run_two_layer_sklearn_pipeline(
 
 
 if __name__ == "__main__":
-    # run_sklearn_pipeline(additional_features = True, target= minor_cats, models_to_try = ["xgb"], path = 'test_multilabel/v6_230806/xgb',
-    #                      include_analysis=True)
+    # run_sklearn_pipeline(
+    #     additional_features=True,
+    #     target=minor_cats,
+    #     models_to_try=["xgb"],
+    #     path='test_multilabel/v6_230724/xgb',
+    #     include_analysis=True,
+    # )
+    # run_svc_pipeline(
+    #     additional_features=False,
+    #     target=minor_cats,
+    #     path="test_multilabel/v6_230724/svc_nofeats",
+    #     include_analysis=True,
+    # )
     # run_svc_pipeline(
     #     additional_features=True,
     #     target=minor_cats,
-    #     path="test_multilabel/v6_230806/svc",
-    #     include_analysis=True
+    #     path="test_multilabel/v6_230724/svc",
+    #     include_analysis=True,
     # )
     run_bert_pipeline(
         additional_features=True,
-        path="test_multilabel/v6_230806",
+        path="test_multilabel/v6_230724/bert",
         target=minor_cats,
         include_analysis=True,
     )
-    # run_sklearn_pipeline(additional_features = True, target= minor_cats, models_to_try = ["svm"], path = 'test_multilabel/v6_230806/svc_2',
-    #                      include_analysis=True)
+    # run_sklearn_pipeline(
+    #     additional_features=True,
+    #     target=minor_cats,
+    #     models_to_try=["svm"],
+    #     path='test_multilabel/v6_230724/svc_gridsearch',
+    #     include_analysis=True,
+    # )
     # run_two_layer_sklearn_pipeline()
