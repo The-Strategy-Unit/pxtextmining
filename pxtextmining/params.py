@@ -201,3 +201,18 @@ sentiment_dict = {
     4: "negative",
     5: "very negative",
 }
+
+
+rules_dict = {
+    "Care plans": [
+        "plan",
+        "planning",
+        "plans",
+        "treatment",
+        "care",
+        "future",
+        "forward",
+        "forwards",
+        "action",
+    ]
+}
