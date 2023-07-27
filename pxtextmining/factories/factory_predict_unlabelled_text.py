@@ -1,11 +1,10 @@
 import numpy as np
 import pandas as pd
 
-
 from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset,
-    remove_punc_and_nums,
     clean_empty_features,
+    remove_punc_and_nums,
 )
 from pxtextmining.params import minor_cats
 
@@ -37,6 +36,7 @@ def predict_multilabel_sklearn(
     additional_features=False,
     label_fix=True,
     enhance_with_probs=True,
+    enhance_with_rules=True,
 ):
     """Conducts basic preprocessing to remove punctuation and numbers.
     Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
@@ -71,6 +71,8 @@ def predict_multilabel_sklearn(
         predictions = fix_no_labels(binary_preds, pred_probs, model_type="sklearn")
     else:
         predictions = binary_preds
+    if enhance_with_rules is True:
+        pred_probs = rulebased_probs(processed_text, pred_probs)
     if enhance_with_probs is True:
         for row in range(predictions.shape[0]):
             for label_index in range(predictions.shape[1]):
@@ -361,3 +363,27 @@ def turn_probs_into_binary(predicted_probs):
     """
     preds = np.where(predicted_probs > 0.5, 1, 0)
     return preds
+
+
+def rulebased_probs(text, pred_probs):
+    label_index = minor_cats.index("Care plans")
+    for row in range(len(text)):
+        list_one = [
+            "plan",
+            "planning",
+            "plans",
+            "treatment",
+            "care",
+            "future",
+            "forward",
+            "forwards",
+            "action",
+        ]
+        for word in list_one:
+            if word in text.iloc[row]:
+                if pred_probs.ndim == 3:
+                    pred_probs[label_index, row, 1] += 0.3
+                if pred_probs.ndim == 2:
+                    pred_probs[row, label_index] += 0.3
+                break
+    return pred_probs
