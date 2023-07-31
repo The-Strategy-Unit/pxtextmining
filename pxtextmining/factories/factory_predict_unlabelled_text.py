@@ -36,7 +36,7 @@ def predict_multilabel_sklearn(
     additional_features=False,
     label_fix=True,
     enhance_with_probs=True,
-    enhance_with_rules=True,
+    enhance_with_rules=False,
 ):
     """Conducts basic preprocessing to remove punctuation and numbers.
     Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.

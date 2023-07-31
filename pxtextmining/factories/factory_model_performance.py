@@ -94,6 +94,7 @@ def get_multilabel_metrics(
     training_time=None,
     additional_features=False,
     already_encoded=False,
+    enhance_with_rules=False,
 ):
     """Creates a string detailing various performance metrics for a multilabel model, which can then be written to
     a text file.
@@ -140,6 +141,7 @@ def get_multilabel_metrics(
             additional_features=additional_features,
             label_fix=True,
             enhance_with_probs=True,
+            enhance_with_rules=enhance_with_rules,
         )
         y_pred = np.array(y_pred_df)[:, :-1].astype("int64")
     else:
