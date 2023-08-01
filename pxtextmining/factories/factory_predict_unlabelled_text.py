@@ -88,7 +88,13 @@ def predict_multilabel_sklearn(
 
 
 def predict_multilabel_bert(
-    data, model, labels=minor_cats, additional_features=False, label_fix=True
+    data,
+    model,
+    labels=minor_cats,
+    additional_features=False,
+    label_fix=True,
+    enhance_with_rules=False,
+    already_encoded=False,
 ):
     """Conducts basic preprocessing to remove blank text.
     Utilises a pretrained transformer-based machine learning model to make multilabel predictions on the cleaned text.
@@ -105,23 +111,30 @@ def predict_multilabel_bert(
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
     """
-    if additional_features is False:
-        text = pd.Series(data)
-    else:
-        text = data["FFT answer"]
-    processed_text = clean_empty_features(text)
-    if additional_features is False:
-        final_data = processed_text
-    else:
-        final_data = pd.merge(
-            processed_text, data["FFT_q_standardised"], how="left", on="Comment ID"
-        )
+    if already_encoded is False:
+        if additional_features is False:
+            text = pd.Series(data)
+        else:
+            text = data["FFT answer"]
+        processed_text = clean_empty_features(text)
+        if additional_features is False:
+            final_data = processed_text
+        else:
+            final_data = pd.merge(
+                processed_text, data["FFT_q_standardised"], how="left", on="Comment ID"
+            )
     y_probs = predict_with_bert(
         final_data,
         model,
         additional_features=additional_features,
-        already_encoded=False,
+        already_encoded=already_encoded,
     )
+    if enhance_with_rules is True:
+        if type(final_data) == pd.DataFrame:
+            final_text = final_data["FFT answer"]
+        else:
+            final_text = final_data
+        y_probs = rulebased_probs(final_text, y_probs)
     y_binary = turn_probs_into_binary(y_probs)
     if label_fix is True:
         predictions = fix_no_labels(y_binary, y_probs, model_type="bert")
