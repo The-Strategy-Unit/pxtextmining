@@ -6,7 +6,7 @@ from pxtextmining.factories.factory_data_load_and_split import (
     clean_empty_features,
     remove_punc_and_nums,
 )
-from pxtextmining.params import minor_cats, rules_dict
+from pxtextmining.params import minor_cats, probs_dict, rules_dict
 
 
 def process_text(text):
@@ -381,12 +381,13 @@ def turn_probs_into_binary(predicted_probs):
 def rulebased_probs(text, pred_probs):
     for k, v in rules_dict.items():
         label_index = minor_cats.index(k)
+        prob = probs_dict.get(k, 0.3)
         for row in range(len(text)):
             for word in v:
-                if word in text.iloc[row]:
+                if word in text.iloc[row].lower():
                     if pred_probs.ndim == 3:
-                        pred_probs[label_index, row, 1] += 0.3
+                        pred_probs[label_index, row, 1] += prob
                     if pred_probs.ndim == 2:
-                        pred_probs[row, label_index] += 0.3
+                        pred_probs[row, label_index] += prob
                     break
     return pred_probs

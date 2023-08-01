@@ -365,3 +365,11 @@ rules_dict = {
         "unacceptable",
     ],
 }
+
+probs_dict = {
+    "Negative experience & dissatisfaction": 0.4,
+    "Diagnosis & triage": 0.4,
+    "Equality, Diversity & Inclusion": 0.4,
+    "Referals & continuity of care": 0.4,
+    "Staff continuity": 0.4,
+}
