@@ -23,7 +23,6 @@ def test_rules():
     additional_features = True
     target = minor_cats
     target_name = "minor_categories"
-    target_name = "test"
     df = load_multilabel_data(
         filename="datasets/hidden/multilabel_230719.csv", target=target_name
     )
