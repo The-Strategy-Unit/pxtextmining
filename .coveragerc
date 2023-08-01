@@ -4,6 +4,7 @@ omit = tests\*
        *\params.py
        api\test_api.py
        setup.py
+       test_rules.py
 
 source =  api
           pxtextmining

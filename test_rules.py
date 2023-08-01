@@ -88,9 +88,24 @@ def test_rules_bert():
         training_time=training_time,
         additional_features=additional_features,
         already_encoded=False,
-        enhance_with_rules=True,
+        enhance_with_rules=False,
     )
     txtpath = os.path.join(path, "model_0" + ".txt")
+    with open(txtpath, "w") as file:
+        file.write(model_metrics)
+    model_metrics = get_multilabel_metrics(
+        X_test,
+        Y_test,
+        random_state=random_state,
+        labels=target,
+        model_type="bert",
+        model=loaded_model,
+        training_time=training_time,
+        additional_features=additional_features,
+        already_encoded=False,
+        enhance_with_rules=True,
+    )
+    txtpath = os.path.join(path, "model_0_rules" + ".txt")
     with open(txtpath, "w") as file:
         file.write(model_metrics)
     write_model_preds(
@@ -105,4 +120,5 @@ def test_rules_bert():
 
 
 if __name__ == "__main__":
+    test_rules()
     test_rules_bert()
