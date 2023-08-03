@@ -435,7 +435,7 @@ def search_sklearn_pipelines(
     return models, training_times
 
 
-def create_and_train_svc_model(X_train, Y_train):
+def create_and_train_svc_model(X_train, Y_train, additional_features=False):
     """Creates pipeline with a Support Vector Classifier using specific hyperparameters identified through previous gridsearching.
 
     Args:
@@ -447,10 +447,13 @@ def create_and_train_svc_model(X_train, Y_train):
     """
     cat_transformer = OneHotEncoder(handle_unknown="ignore")
     vectorizer = TfidfVectorizer(max_df=0.9, min_df=0, ngram_range=(1, 2))
-    preproc = make_column_transformer(
-        (cat_transformer, ["FFT_q_standardised"]),
-        (vectorizer, "FFT answer"),
-    )
+    if additional_features is True:
+        preproc = make_column_transformer(
+            (cat_transformer, ["FFT_q_standardised"]),
+            (vectorizer, "FFT answer"),
+        )
+    else:
+        preproc = create_sklearn_vectorizer(tokenizer=None)
     pipe = make_pipeline(
         preproc,
         MultiOutputClassifier(
