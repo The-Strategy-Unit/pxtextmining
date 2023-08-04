@@ -67,11 +67,25 @@ def test_predict_multilabel_sklearn():
         ]
     ).set_index("Comment ID")
     predictions = np.array([[0, 1, 0], [1, 0, 1], [0, 0, 1]])
-    predicted_probs = [
-        [[0.80465788, 0.19534212], [0.94292979, 0.05707021], [0.33439024, 0.66560976]],
-        [[0.33439024, 0.66560976], [0.9949298, 0.0050702], [0.99459238, 0.00540762]],
-        [[0.97472981, 0.02527019], [0.25069129, 0.74930871], [0.33439024, 0.66560976]],
-    ]
+    predicted_probs = np.array(
+        [
+            [
+                [0.80465788, 0.19534212],
+                [0.94292979, 0.05707021],
+                [0.33439024, 0.66560976],
+            ],
+            [
+                [0.33439024, 0.66560976],
+                [0.9949298, 0.0050702],
+                [0.99459238, 0.00540762],
+            ],
+            [
+                [0.97472981, 0.02527019],
+                [0.25069129, 0.74930871],
+                [0.33439024, 0.66560976],
+            ],
+        ]
+    )
     labels = ["first", "second", "third"]
     model = Mock(
         predict=Mock(return_value=predictions),
@@ -80,7 +94,8 @@ def test_predict_multilabel_sklearn():
     preds_df = factory_predict_unlabelled_text.predict_multilabel_sklearn(
         data, model, labels=labels, additional_features=True
     )
-    assert preds_df.shape == (3, 4)
+    cols = len(labels) * 2 + 1
+    assert preds_df.shape == (3, cols)
 
 
 def test_predict_multilabel_sklearn_additional_params(grab_test_X_additional_feats):
@@ -96,7 +111,8 @@ def test_predict_multilabel_sklearn_additional_params(grab_test_X_additional_fea
         label_fix=False,
         enhance_with_probs=False,
     )
-    assert preds_df.shape == (3, 4)
+    cols = len(labels) * 2 + 1
+    assert preds_df.shape == (3, cols)
 
 
 def test_predict_multilabel_bert():
