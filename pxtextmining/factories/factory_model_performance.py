@@ -154,6 +154,7 @@ def get_multilabel_metrics(
     model_metrics["macro_jaccard_score"] = metrics.jaccard_score(
         y_test, y_pred, average="macro"
     )
+    # Model summary
     if model_type in ("bert", "tf"):
         stringlist = []
         model.summary(print_fn=lambda x: stringlist.append(x))
@@ -229,3 +230,19 @@ def parse_metrics_file(metrics_file, labels):
         metrics_dict["support"].append(splitted[4].strip())
     metrics_df = pd.DataFrame.from_dict(metrics_dict)
     return metrics_df
+
+
+def get_y_score(probs):
+    """Converts probabilities into format (n_samples, n_classes) so they can be passed into sklearn roc_auc_score function
+
+    Args:
+        probs (np.ndarray): Probability estimates outputted by model
+
+    Returns:
+        np.ndarray: Probability estimates in format (n_samples, n_classes)
+    """
+    if probs.ndim == 3:
+        score = np.transpose([pred[:, 1] for pred in probs])
+    elif probs.ndim == 2:
+        score = probs
+    return score
