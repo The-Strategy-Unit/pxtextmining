@@ -249,3 +249,34 @@ def get_y_score(probs):
     elif probs.ndim == 2:
         score = probs
     return score
+
+
+def additional_analysis(preds_df, y_true, labels):
+    """For given predictions, returns dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
+
+    Args:
+        preds_df (pd.DataFrame): Dataframe containing predicted labels in one-hot encoded format
+        y_true (np.array): One-hot encoded real Y values
+        labels (List): List of the target labels
+
+    Returns:
+        pd.DataFrame: dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
+    """
+    # include threshold?? (later)
+    y_score = preds_df.filter(like="Probability", axis=1)
+    label_rocs = metrics.roc_auc_score(y_true, y_score, average=None, multi_class="ovo")
+    rocs = pd.Series(dict(zip(labels, label_rocs, strict=True)))
+    cm = metrics.multilabel_confusion_matrix(y_true, np.array(preds_df[labels]))
+    cm_dict = {}
+    for i, label in enumerate(labels):
+        cm_meaning = {}
+        tn, fn = cm[i][0]
+        fp, tp = cm[i][1]
+        cm_meaning["True Negative"] = tn
+        cm_meaning["False Negative"] = fn
+        cm_meaning["True Positive"] = tp
+        cm_meaning["False Positive"] = fp
+        cm_dict[label] = cm_meaning
+    df = pd.DataFrame.from_dict(cm_dict, orient="index")
+    df["roc_auc_score"] = rocs
+    return df

@@ -47,6 +47,7 @@ def write_model_preds(
     additional_features=True,
     path="labels.xlsx",
     enhance_with_rules=False,
+    return_df=False,
 ):
     """Writes an Excel file to enable easier analysis of model outputs using the test set. Columns of the Excel file are: comment_id, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.
 
@@ -110,9 +111,11 @@ def write_model_preds(
     )
     df.to_excel(path, index=False)
     print(f"Successfully completed, written to {path}")
+    if return_df is True:
+        return preds_df
 
 
-def write_model_analysis(model_name, labels, dataset, path):
+def write_model_analysis(model_name, labels, dataset, path, additional_analysis=None):
     """Writes an Excel file with the performance metrics of each label, as well as the counts of samples for each label.
 
     Args:
@@ -126,4 +129,6 @@ def write_model_analysis(model_name, labels, dataset, path):
     label_counts = label_counts.reset_index()
     label_counts = label_counts.rename(columns={"index": "label", 0: "label_count"})
     metrics_df = metrics_df.merge(label_counts, on="label")
+    if additional_analysis is not None:
+        pass
     metrics_df.to_excel(f"{path}/{model_name}_perf.xlsx", index=False)
