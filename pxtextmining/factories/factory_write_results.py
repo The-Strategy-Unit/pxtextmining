@@ -1,17 +1,17 @@
-import pickle
 import os
+import pickle
+
 import numpy as np
 import pandas as pd
-
 from tensorflow.keras import Model, Sequential
+
+from pxtextmining.factories.factory_model_performance import parse_metrics_file
 from pxtextmining.factories.factory_predict_unlabelled_text import (
     get_labels,
-    predict_multilabel_sklearn,
-    predict_multilabel_bert,
     get_probabilities,
-    predict_with_bert
+    predict_multilabel_bert,
+    predict_multilabel_sklearn,
 )
-from pxtextmining.factories.factory_model_performance import parse_metrics_file
 
 
 def write_multilabel_models_and_metrics(models, model_metrics, path):
@@ -40,7 +40,13 @@ def write_multilabel_models_and_metrics(models, model_metrics, path):
 
 
 def write_model_preds(
-    x, y, model, labels, additional_features=True, path="labels.xlsx"
+    x,
+    y,
+    model,
+    labels,
+    additional_features=True,
+    path="labels.xlsx",
+    enhance_with_rules=False,
 ):
     """Writes an Excel file to enable easier analysis of model outputs using the test set. Columns of the Excel file are: comment_id, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.
 
@@ -59,38 +65,33 @@ def write_model_preds(
     )
     actual_labels.name = "actual_labels"
     if isinstance(model, Model) is True:
-        predicted_labels = predict_multilabel_bert(
+        preds_df = predict_multilabel_bert(
             x,
             model,
             labels=labels,
             additional_features=additional_features,
             label_fix=True,
-        ).reset_index()["labels"]
+            enhance_with_rules=enhance_with_rules,
+        )
+
     else:
-        predicted_labels = predict_multilabel_sklearn(
+        preds_df = predict_multilabel_sklearn(
             x,
             model,
             labels=labels,
             additional_features=additional_features,
             label_fix=True,
             enhance_with_probs=True,
-        ).reset_index()["labels"]
+            enhance_with_rules=enhance_with_rules,
+        )
+    predicted_labels = preds_df.reset_index()["labels"]
     predicted_labels.name = "predicted_labels"
     df = x.reset_index()
+    probabilities = np.array(preds_df.filter(like="Probability", axis=1))
     if isinstance(model, Model) is True:
-        probabilities = predict_with_bert(
-            x,
-            model,
-            max_length=150,
-            additional_features=additional_features,
-            already_encoded=False,
-        )
+        model_type = "bert"
     else:
-        probabilities = np.array(model.predict_proba(x))
-    if isinstance(model, Model) is True:
-        model_type = 'bert'
-    else:
-        model_type = 'sklearn'
+        model_type = "sklearn"
     probs_actual = get_probabilities(
         actual_labels, labels, probabilities, model_type=model_type
     )
@@ -102,8 +103,11 @@ def write_model_preds(
     df = df.merge(probs_actual, left_index=True, right_index=True)
     df = df.merge(probs_predicted, left_index=True, right_index=True)
     # Deal with any rogue characters
-    df.applymap(lambda x: x.encode('unicode_escape').
-                 decode('utf-8') if isinstance(x, str) else x)
+    df.applymap(
+        lambda x: x.encode("unicode_escape").decode("utf-8")
+        if isinstance(x, str)
+        else x
+    )
     df.to_excel(path, index=False)
     print(f"Successfully completed, written to {path}")
 
