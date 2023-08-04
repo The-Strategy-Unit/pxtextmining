@@ -132,7 +132,6 @@ def get_multilabel_metrics(
             enhance_with_rules=enhance_with_rules,
             already_encoded=already_encoded,
         )
-        y_pred = np.array(y_pred_df)[:, :-1].astype("int64")
     elif model_type == "sklearn":
         y_pred_df = predict_multilabel_sklearn(
             x_test,
@@ -143,16 +142,20 @@ def get_multilabel_metrics(
             enhance_with_probs=True,
             enhance_with_rules=enhance_with_rules,
         )
-        y_pred = np.array(y_pred_df)[:, :-1].astype("int64")
     else:
         raise ValueError(
             'Please select valid model_type. Options are "bert" or "sklearn"'
         )
+    y_pred = np.array(y_pred_df[labels]).astype("int64")
     # Calculate various metrics
     model_metrics["exact_accuracy"] = metrics.accuracy_score(y_test, y_pred)
     model_metrics["hamming_loss"] = metrics.hamming_loss(y_test, y_pred)
     model_metrics["macro_jaccard_score"] = metrics.jaccard_score(
         y_test, y_pred, average="macro"
+    )
+    y_probs = y_pred_df.filter(like="Probability", axis=1)
+    model_metrics["macro_roc_auc"] = metrics.roc_auc_score(
+        y_test, y_probs, multi_class="ovr"
     )
     # Model summary
     if model_type in ("bert", "tf"):
