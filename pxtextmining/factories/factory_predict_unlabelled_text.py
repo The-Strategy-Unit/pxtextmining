@@ -142,6 +142,9 @@ def predict_multilabel_bert(
         predictions = y_binary
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
+    # add probs to df
+    label_list = ['Probability of "' + label + '"' for label in labels]
+    preds_df[label_list] = y_probs
     return preds_df
 
 

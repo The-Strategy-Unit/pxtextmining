@@ -1,7 +1,9 @@
-from pxtextmining.factories import factory_predict_unlabelled_text
-import pandas as pd
-import numpy as np
 from unittest.mock import Mock
+
+import numpy as np
+import pandas as pd
+
+from pxtextmining.factories import factory_predict_unlabelled_text
 
 
 def test_get_probabilities_bert():
@@ -140,7 +142,8 @@ def test_predict_multilabel_bert():
     preds_df = factory_predict_unlabelled_text.predict_multilabel_bert(
         data, model, labels=labels, additional_features=True
     )
-    assert preds_df.shape == (4, 6)
+    cols = len(labels) * 2 + 1
+    assert preds_df.shape == (4, cols)
 
 
 def test_predict_sentiment_bert():
