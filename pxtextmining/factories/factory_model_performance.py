@@ -7,11 +7,9 @@ from sklearn.metrics import confusion_matrix
 from tensorflow.keras.models import Model
 
 from pxtextmining.factories.factory_predict_unlabelled_text import (
-    fix_no_labels,
     predict_multiclass_bert,
+    predict_multilabel_bert,
     predict_multilabel_sklearn,
-    predict_with_bert,
-    turn_probs_into_binary,
 )
 
 
@@ -94,6 +92,7 @@ def get_multilabel_metrics(
     training_time=None,
     additional_features=False,
     already_encoded=False,
+    enhance_with_rules=False,
 ):
     """Creates a string detailing various performance metrics for a multilabel model, which can then be written to
     a text file.
@@ -124,14 +123,16 @@ def get_multilabel_metrics(
     # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
     # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
     if model_type == "bert":
-        y_probs = predict_with_bert(
+        y_pred_df = predict_multilabel_bert(
             x_test,
             model,
+            labels=labels,
             additional_features=additional_features,
+            label_fix=True,
+            enhance_with_rules=enhance_with_rules,
             already_encoded=already_encoded,
         )
-        binary_preds = turn_probs_into_binary(y_probs)
-        y_pred = fix_no_labels(binary_preds, y_probs, model_type="tf")
+        y_pred = np.array(y_pred_df)[:, :-1].astype("int64")
     elif model_type == "sklearn":
         y_pred_df = predict_multilabel_sklearn(
             x_test,
@@ -140,6 +141,7 @@ def get_multilabel_metrics(
             additional_features=additional_features,
             label_fix=True,
             enhance_with_probs=True,
+            enhance_with_rules=enhance_with_rules,
         )
         y_pred = np.array(y_pred_df)[:, :-1].astype("int64")
     else:
