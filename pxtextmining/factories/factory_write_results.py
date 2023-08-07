@@ -5,7 +5,10 @@ import numpy as np
 import pandas as pd
 from tensorflow.keras import Model, Sequential
 
-from pxtextmining.factories.factory_model_performance import parse_metrics_file
+from pxtextmining.factories.factory_model_performance import (
+    additional_analysis,
+    parse_metrics_file,
+)
 from pxtextmining.factories.factory_predict_unlabelled_text import (
     get_labels,
     get_probabilities,
@@ -115,7 +118,7 @@ def write_model_preds(
         return preds_df
 
 
-def write_model_analysis(model_name, labels, dataset, path, additional_analysis=None):
+def write_model_analysis(model_name, labels, dataset, path, preds_df=None, y_true=None):
     """Writes an Excel file with the performance metrics of each label, as well as the counts of samples for each label.
 
     Args:
@@ -128,7 +131,8 @@ def write_model_analysis(model_name, labels, dataset, path, additional_analysis=
     label_counts = pd.DataFrame(dataset[labels].sum())
     label_counts = label_counts.reset_index()
     label_counts = label_counts.rename(columns={"index": "label", 0: "label_count"})
-    metrics_df = metrics_df.merge(label_counts, on="label")
-    if additional_analysis is not None:
-        pass
-    metrics_df.to_excel(f"{path}/{model_name}_perf.xlsx", index=False)
+    metrics_df = metrics_df.merge(label_counts, on="label").set_index("label")
+    if preds_df is not None and y_true is not None:
+        more_metrics = additional_analysis(preds_df, y_true, labels)
+        metrics_df = pd.concat([metrics_df, more_metrics], axis=1)
+    metrics_df.to_excel(f"{path}/{model_name}_perf.xlsx", index=True)

@@ -270,8 +270,8 @@ def additional_analysis(preds_df, y_true, labels):
     cm_dict = {}
     for i, label in enumerate(labels):
         cm_meaning = {}
-        tn, fn = cm[i][0]
-        fp, tp = cm[i][1]
+        tn, fp = cm[i][0]
+        fn, tp = cm[i][1]
         cm_meaning["True Negative"] = tn
         cm_meaning["False Negative"] = fn
         cm_meaning["True Positive"] = tp

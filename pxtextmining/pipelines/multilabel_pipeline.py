@@ -112,7 +112,8 @@ def run_sklearn_pipeline(
                 labels=target,
                 dataset=df,
                 path=path,
-                additional_analysis=preds_df,
+                preds_df=preds_df,
+                y_true=Y_test,
             )
     print("Pipeline complete")
 
@@ -178,7 +179,8 @@ def run_svc_pipeline(
             labels=target,
             dataset=df,
             path=path,
-            additional_analysis=preds_df,
+            preds_df=preds_df,
+            y_true=Y_test,
         )
     print("Pipeline complete!")
 
@@ -265,7 +267,8 @@ def run_bert_pipeline(
             labels=target,
             dataset=df,
             path=path,
-            additional_analysis=preds_df,
+            preds_df=preds_df,
+            y_true=Y_test,
         )
     print("Pipeline complete!")
 
@@ -367,18 +370,18 @@ if __name__ == "__main__":
     #     path="test_multilabel/v6_230724/svc_nofeats",
     #     include_analysis=True,
     # )
-    # run_svc_pipeline(
-    #     additional_features=True,
-    #     target=minor_cats,
-    #     path="test_multilabel/v6_230724/svc",
-    #     include_analysis=True,
-    # )
-    run_bert_pipeline(
+    run_svc_pipeline(
         additional_features=True,
-        path="test_multilabel/v6_230724/bert",
         target=minor_cats,
+        path="test_multilabel/test_roc/svc",
         include_analysis=True,
     )
+    # run_bert_pipeline(
+    #     additional_features=True,
+    #     path="test_multilabel/v6_230724/bert",
+    #     target=minor_cats,
+    #     include_analysis=True,
+    # )
     # run_sklearn_pipeline(
     #     additional_features=True,
     #     target=minor_cats,
