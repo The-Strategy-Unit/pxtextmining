@@ -23,7 +23,7 @@ def test_create_sklearn_pipeline_sentiment(model_type, additional_features):
 def test_create_bert_model(multilabel):
     Y_train = np.array([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
     model = factory_pipeline.create_bert_model(Y_train, multilabel=multilabel)
-    assert type(model) == Functional
+    assert isinstance(model, Functional) is True
 
 
 @pytest.mark.parametrize("multilabel", [True, False])
@@ -32,7 +32,7 @@ def test_create_bert_model_additional_features(multilabel):
     model = factory_pipeline.create_bert_model_additional_features(
         Y_train, multilabel=multilabel
     )
-    assert type(model) == Functional
+    assert isinstance(model, Functional) is True
 
 
 def test_train_bert_model():

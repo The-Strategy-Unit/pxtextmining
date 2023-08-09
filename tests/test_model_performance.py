@@ -78,7 +78,7 @@ def test_multiclass_metrics_sklearn(grab_test_X_additional_feats):
     metrics_string = factory_model_performance.get_multiclass_metrics(
         x, y, labels, random_state, model, additional_features
     )
-    assert type(metrics_string) == str
+    assert isinstance(metrics_string, str) is True
 
 
 def test_multiclass_metrics_bert(
@@ -101,7 +101,7 @@ def test_multiclass_metrics_bert(
     metrics_string = factory_model_performance.get_multiclass_metrics(
         x, y, labels, random_state, model, additional_features
     )
-    assert type(metrics_string) == str
+    assert isinstance(metrics_string, str) is True
 
 
 def test_multilabel_metrics_sklearn(grab_test_X_additional_feats):
@@ -129,7 +129,7 @@ def test_multilabel_metrics_sklearn(grab_test_X_additional_feats):
         model,
         additional_features=additional_features,
     )
-    assert type(metrics_string) == str
+    assert isinstance(metrics_string, str) is True
 
 
 def test_multilabel_metrics_bert(
@@ -159,7 +159,7 @@ def test_multilabel_metrics_bert(
         model,
         additional_features=additional_features,
     )
-    assert type(metrics_string) == str
+    assert isinstance(metrics_string, str) is True
 
 
 def test_accuracy_per_class():
