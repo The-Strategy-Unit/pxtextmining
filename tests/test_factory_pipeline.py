@@ -15,7 +15,7 @@ def test_create_sklearn_pipeline_sentiment(model_type, additional_features):
     pipe, params = factory_pipeline.create_sklearn_pipeline_sentiment(
         model_type, 3, tokenizer=None, additional_features=additional_features
     )
-    assert type(params) == dict
+    assert isinstance(params, dict) is True
     assert is_classifier(pipe) is True
 
 
@@ -43,7 +43,7 @@ def test_train_bert_model():
         train_dataset, test_dataset, model
     )
     model.fit.assert_called_once()
-    assert type(training_time) == str
+    assert isinstance(training_time, str) is True
 
 
 def test_calculating_class_weights():
@@ -51,7 +51,7 @@ def test_calculating_class_weights():
         [[0, 1, 0], [1, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 0, 0]]
     )
     class_weights_dict = factory_pipeline.calculating_class_weights(Y_train)
-    assert type(class_weights_dict) == dict
+    assert isinstance(class_weights_dict, dict) is True
 
 
 @pytest.mark.parametrize("model_type", ["svm", "xgb", "rfc", "mnb", "knn"])
@@ -62,7 +62,7 @@ def test_create_sklearn_pipeline(model_type, tokenizer, additional_features):
         model_type, tokenizer, additional_features
     )
     assert is_classifier(pipe) is True
-    assert type(params) == dict
+    assert isinstance(params, dict) is True
 
 
 @pytest.mark.parametrize("target", ["sentiment", None])
