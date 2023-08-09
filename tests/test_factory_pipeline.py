@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 import numpy as np
 import pytest
-from keras.src.engine.functional import Functional
+from keras.engine.functional import Functional
 from sklearn.base import is_classifier
 from sklearn.pipeline import Pipeline
 
