@@ -132,7 +132,6 @@ def get_multilabel_metrics(
             enhance_with_rules=enhance_with_rules,
             already_encoded=already_encoded,
         )
-        y_pred = np.array(y_pred_df)[:, :-1].astype("int64")
     elif model_type == "sklearn":
         y_pred_df = predict_multilabel_sklearn(
             x_test,
@@ -143,17 +142,28 @@ def get_multilabel_metrics(
             enhance_with_probs=True,
             enhance_with_rules=enhance_with_rules,
         )
-        y_pred = np.array(y_pred_df)[:, :-1].astype("int64")
     else:
         raise ValueError(
             'Please select valid model_type. Options are "bert" or "sklearn"'
         )
+    y_pred = np.array(y_pred_df[labels]).astype("int64")
     # Calculate various metrics
     model_metrics["exact_accuracy"] = metrics.accuracy_score(y_test, y_pred)
     model_metrics["hamming_loss"] = metrics.hamming_loss(y_test, y_pred)
     model_metrics["macro_jaccard_score"] = metrics.jaccard_score(
         y_test, y_pred, average="macro"
     )
+    y_probs = y_pred_df.filter(like="Probability", axis=1)
+    model_metrics["macro_roc_auc"] = metrics.roc_auc_score(
+        y_test, y_probs, multi_class="ovr"
+    )
+    model_metrics[
+        "Label ranking average precision"
+    ] = metrics.label_ranking_average_precision_score(
+        y_test,
+        y_probs,
+    )
+    # Model summary
     if model_type in ("bert", "tf"):
         stringlist = []
         model.summary(print_fn=lambda x: stringlist.append(x))
@@ -218,7 +228,7 @@ def parse_metrics_file(metrics_file, labels):
         "precision": [],
         "recall": [],
         "f1_score": [],
-        "support": [],
+        "support (label count in test data)": [],
     }
     for each in lines:
         splitted = each.split("      ")
@@ -226,6 +236,56 @@ def parse_metrics_file(metrics_file, labels):
         metrics_dict["precision"].append(splitted[1].strip())
         metrics_dict["recall"].append(splitted[2].strip())
         metrics_dict["f1_score"].append(splitted[3].strip())
-        metrics_dict["support"].append(splitted[4].strip())
+        metrics_dict["support (label count in test data)"].append(splitted[4].strip())
     metrics_df = pd.DataFrame.from_dict(metrics_dict)
     return metrics_df
+
+
+def get_y_score(probs):
+    """Converts probabilities into format (n_samples, n_classes) so they can be passed into sklearn roc_auc_score function
+
+    Args:
+        probs (np.ndarray): Probability estimates outputted by model
+
+    Returns:
+        np.ndarray: Probability estimates in format (n_samples, n_classes)
+    """
+    if probs.ndim == 3:
+        score = np.transpose([pred[:, 1] for pred in probs])
+    elif probs.ndim == 2:
+        score = probs
+    return score
+
+
+def additional_analysis(preds_df, y_true, labels):
+    """For given predictions, returns dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
+
+    Args:
+        preds_df (pd.DataFrame): Dataframe containing predicted labels in one-hot encoded format
+        y_true (np.array): One-hot encoded real Y values
+        labels (List): List of the target labels
+
+    Returns:
+        pd.DataFrame: dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
+    """
+    # include threshold?? (later)
+    y_score = np.array(preds_df.filter(like="Probability", axis=1))
+    cm = metrics.multilabel_confusion_matrix(y_true, np.array(preds_df[labels]))
+    cm_dict = {}
+    average_precision = {}
+    for i, label in enumerate(labels):
+        cm_meaning = {}
+        tn, fp = cm[i][0]
+        fn, tp = cm[i][1]
+        cm_meaning["True Negative"] = tn
+        cm_meaning["False Negative"] = fn
+        cm_meaning["True Positive"] = tp
+        cm_meaning["False Positive"] = fp
+        cm_dict[label] = cm_meaning
+        average_precision[label] = metrics.average_precision_score(
+            y_true[:, i], y_score[:, i]
+        )
+    df = pd.DataFrame.from_dict(cm_dict, orient="index")
+    average_precision = pd.Series(average_precision)
+    df["average_precision_score"] = average_precision
+    return df

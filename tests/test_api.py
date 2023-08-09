@@ -1,7 +1,9 @@
-from fastapi.testclient import TestClient
-from api.api import app
 from unittest.mock import AsyncMock, Mock, patch
+
 import numpy as np
+from fastapi.testclient import TestClient
+
+from api.api import app
 
 client = TestClient(app)
 
@@ -76,4 +78,4 @@ def test_sentiment_predictions():
     ]
     response = client.post("/predict_sentiment", json=test_json).json()
     assert len(test_json) == len(response)
-    assert type(response[0]["sentiment"]) == int
+    assert isinstance(response[0]["sentiment"], int) is True

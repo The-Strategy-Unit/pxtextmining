@@ -84,6 +84,11 @@ def predict_multilabel_sklearn(
                     predictions[row][label_index] = 1
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
+    # add probs to df
+    if pred_probs.ndim == 3:
+        pred_probs = np.transpose([pred[:, 1] for pred in pred_probs])
+    label_list = ['Probability of "' + label + '"' for label in labels]
+    preds_df[label_list] = pred_probs
     return preds_df
 
 
@@ -142,6 +147,9 @@ def predict_multilabel_bert(
         predictions = y_binary
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
+    # add probs to df
+    label_list = ['Probability of "' + label + '"' for label in labels]
+    preds_df[label_list] = y_probs
     return preds_df
 
 

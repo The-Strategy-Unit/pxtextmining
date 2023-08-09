@@ -98,15 +98,23 @@ def run_sklearn_pipeline(
     if include_analysis is True:
         for i in range(len(models)):
             model_name = f"model_{i}"
-            write_model_preds(
+            preds_df = write_model_preds(
                 X_test,
                 Y_test,
                 models[i],
                 labels=target,
                 additional_features=additional_features,
                 path=f"{path}/{model_name}_labels.xlsx",
+                return_df=True,
             )
-            write_model_analysis(model_name, labels=target, dataset=df, path=path)
+            write_model_analysis(
+                model_name,
+                labels=target,
+                dataset=df,
+                path=path,
+                preds_df=preds_df,
+                y_true=Y_test,
+            )
     print("Pipeline complete")
 
 
@@ -157,15 +165,23 @@ def run_svc_pipeline(
     )
     write_multilabel_models_and_metrics([model], [model_metrics], path=path)
     if include_analysis is True:
-        write_model_preds(
+        preds_df = write_model_preds(
             X_test,
             Y_test,
             model,
             labels=target,
             additional_features=additional_features,
             path=f"{path}/labels.xlsx",
+            return_df=True,
         )
-        write_model_analysis(model_name="model_0", labels=target, dataset=df, path=path)
+        write_model_analysis(
+            model_name="model_0",
+            labels=target,
+            dataset=df,
+            path=path,
+            preds_df=preds_df,
+            y_true=Y_test,
+        )
     print("Pipeline complete!")
 
 
@@ -237,15 +253,23 @@ def run_bert_pipeline(
     )
     write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
     if include_analysis is True:
-        write_model_preds(
+        preds_df = write_model_preds(
             X_test,
             Y_test,
             model,
             labels=target,
             additional_features=additional_features,
             path=f"{path}/labels.xlsx",
+            return_df=True,
         )
-        write_model_analysis(model_name="model_0", labels=target, dataset=df, path=path)
+        write_model_analysis(
+            model_name="model_0",
+            labels=target,
+            dataset=df,
+            path=path,
+            preds_df=preds_df,
+            y_true=Y_test,
+        )
     print("Pipeline complete!")
 
 
@@ -346,18 +370,18 @@ if __name__ == "__main__":
     #     path="test_multilabel/v6_230724/svc_nofeats",
     #     include_analysis=True,
     # )
-    # run_svc_pipeline(
-    #     additional_features=True,
-    #     target=minor_cats,
-    #     path="test_multilabel/v6_230724/svc",
-    #     include_analysis=True,
-    # )
-    run_bert_pipeline(
+    run_svc_pipeline(
         additional_features=True,
-        path="test_multilabel/v6_230724/bert",
         target=minor_cats,
+        path="test_multilabel/test_roc/svc",
         include_analysis=True,
     )
+    # run_bert_pipeline(
+    #     additional_features=True,
+    #     path="test_multilabel/v6_230724/bert",
+    #     target=minor_cats,
+    #     include_analysis=True,
+    # )
     # run_sklearn_pipeline(
     #     additional_features=True,
     #     target=minor_cats,
