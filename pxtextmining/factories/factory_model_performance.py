@@ -157,6 +157,12 @@ def get_multilabel_metrics(
     model_metrics["macro_roc_auc"] = metrics.roc_auc_score(
         y_test, y_probs, multi_class="ovr"
     )
+    model_metrics[
+        "Label ranking average precision"
+    ] = metrics.label_ranking_average_precision_score(
+        y_test,
+        y_probs,
+    )
     # Model summary
     if model_type in ("bert", "tf"):
         stringlist = []
@@ -230,7 +236,7 @@ def parse_metrics_file(metrics_file, labels):
         metrics_dict["precision"].append(splitted[1].strip())
         metrics_dict["recall"].append(splitted[2].strip())
         metrics_dict["f1_score"].append(splitted[3].strip())
-        metrics_dict["support"].append(splitted[4].strip())
+        metrics_dict["support (label count in test data)"].append(splitted[4].strip())
     metrics_df = pd.DataFrame.from_dict(metrics_dict)
     return metrics_df
 
@@ -263,11 +269,10 @@ def additional_analysis(preds_df, y_true, labels):
         pd.DataFrame: dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
     """
     # include threshold?? (later)
-    y_score = preds_df.filter(like="Probability", axis=1)
-    label_rocs = metrics.roc_auc_score(y_true, y_score, average=None, multi_class="ovo")
-    rocs = pd.Series(dict(zip(labels, label_rocs, strict=True)))
+    y_score = np.array(preds_df.filter(like="Probability", axis=1))
     cm = metrics.multilabel_confusion_matrix(y_true, np.array(preds_df[labels]))
     cm_dict = {}
+    average_precision = {}
     for i, label in enumerate(labels):
         cm_meaning = {}
         tn, fp = cm[i][0]
@@ -277,6 +282,10 @@ def additional_analysis(preds_df, y_true, labels):
         cm_meaning["True Positive"] = tp
         cm_meaning["False Positive"] = fp
         cm_dict[label] = cm_meaning
+        average_precision[label] = metrics.average_precision_score(
+            y_true[:, i], y_score[:, i]
+        )
     df = pd.DataFrame.from_dict(cm_dict, orient="index")
-    df["roc_auc_score"] = rocs
+    average_precision = pd.Series(average_precision)
+    df["average_precision_score"] = average_precision
     return df

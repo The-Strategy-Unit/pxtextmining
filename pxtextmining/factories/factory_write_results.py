@@ -130,7 +130,9 @@ def write_model_analysis(model_name, labels, dataset, path, preds_df=None, y_tru
     metrics_df = parse_metrics_file(f"{path}/{model_name}.txt", labels=labels)
     label_counts = pd.DataFrame(dataset[labels].sum())
     label_counts = label_counts.reset_index()
-    label_counts = label_counts.rename(columns={"index": "label", 0: "label_count"})
+    label_counts = label_counts.rename(
+        columns={"index": "label", 0: "label_count_in_full_dataset"}
+    )
     metrics_df = metrics_df.merge(label_counts, on="label").set_index("label")
     if preds_df is not None and y_true is not None:
         more_metrics = additional_analysis(preds_df, y_true, labels)
