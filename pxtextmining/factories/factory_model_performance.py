@@ -228,7 +228,7 @@ def parse_metrics_file(metrics_file, labels):
         "precision": [],
         "recall": [],
         "f1_score": [],
-        "support": [],
+        "support (label count in test data)": [],
     }
     for each in lines:
         splitted = each.split("      ")
