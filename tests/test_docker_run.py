@@ -23,7 +23,8 @@ def test_get_sentiment_predictions(mock_predict):
 
 
 @patch("docker_run.get_sentiment_predictions")
-def test_predict_sentiment(mock_get_predictions):
+@patch("docker_run.load_model")
+def test_predict_sentiment(mock_load_model, mock_get_predictions):
     input_text = [
         {
             "comment_id": "1",
@@ -44,6 +45,7 @@ def test_predict_sentiment(mock_get_predictions):
     ).set_index("Comment ID")
     mock_get_predictions.return_value = output
     return_dict = docker_run.predict_sentiment(input_text)
+    mock_load_model.assert_called_once()
     assert len(return_dict) == len(input_text)
     assert "sentiment" in return_dict[0].keys()
 
