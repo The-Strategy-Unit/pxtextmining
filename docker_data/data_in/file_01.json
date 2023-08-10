@@ -1,0 +1,22 @@
+[
+  {
+    "comment_id": "1",
+    "comment_text": "Nurse was great.",
+    "question_type": "what_good"
+  },
+  {
+    "comment_id": "2",
+    "comment_text": "The ward was freezing.",
+    "question_type": "could_improve"
+  },
+  {
+    "comment_id": "3",
+    "comment_text": "",
+    "question_type": "nonspecific"
+  },
+  {
+    "comment_id": "4",
+    "comment_text": "Thank you so much",
+    "question_type": "nonspecific"
+  }
+]
