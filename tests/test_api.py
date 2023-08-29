@@ -36,7 +36,7 @@ def test_multilabel_predictions():
     ]
     response = client.post("/predict_multilabel", json=test_json).json()
     assert len(test_json) == len(response)
-    assert type(response[0]["labels"]) == list
+    assert isinstance(response[0]["labels"], list)
 
 
 @patch(

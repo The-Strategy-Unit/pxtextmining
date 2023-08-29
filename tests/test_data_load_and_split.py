@@ -66,14 +66,14 @@ def test_bert_data_to_dataset_with_Y(grab_test_X_additional_feats, grab_test_Y):
     train_dataset = factory_data_load_and_split.bert_data_to_dataset(
         grab_test_X_additional_feats, grab_test_Y, additional_features=True
     )
-    assert type(train_dataset._structure) == tuple
+    assert isinstance(train_dataset._structure, tuple)
 
 
 def test_bert_data_to_dataset_without_Y(grab_test_X_additional_feats):
     test_dataset = factory_data_load_and_split.bert_data_to_dataset(
         grab_test_X_additional_feats, Y=None, additional_features=True
     )
-    assert type(test_dataset) == dict
+    assert isinstance(test_dataset, dict)
 
 
 @pytest.mark.parametrize("target", [minor_cats, "sentiment"])
