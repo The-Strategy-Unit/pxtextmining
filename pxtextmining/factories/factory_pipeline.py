@@ -427,6 +427,7 @@ def search_sklearn_pipelines(
                 cv=4,
                 n_jobs=-2,
                 refit=True,
+                verbose=1,
             )
             search.fit(X_train, Y_train)
             models.append(search.best_estimator_)
