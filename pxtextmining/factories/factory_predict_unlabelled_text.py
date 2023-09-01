@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn.metrics import precision_recall_curve
 
 from pxtextmining.factories.factory_data_load_and_split import (
     bert_data_to_dataset,
@@ -411,3 +412,23 @@ def rulebased_probs(text, pred_probs):
                         pred_probs[row, label_index] += prob
                     break
     return pred_probs
+
+
+def get_thresholds(y_true, y_probs, labels):
+    if y_probs.ndim == 3:
+        y_probs = y_probs[:, :, 1].T
+    assert y_probs.shape == y_true.shape
+    threshold_dict = {}
+    for i, label in enumerate(labels):
+        class_probs = y_probs[:, i]
+        class_y_true = y_true[:, i]
+        precision, recall, thresholds = precision_recall_curve(
+            class_y_true, class_probs
+        )
+        f1 = 2 * precision * recall / (precision + recall)
+        best_idx = np.argmax(f1)
+        if thresholds[best_idx] > 0.9:
+            threshold_dict[label] = 0.5
+        else:
+            threshold_dict[label] = thresholds[best_idx]
+    return threshold_dict
