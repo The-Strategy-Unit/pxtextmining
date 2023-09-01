@@ -91,10 +91,6 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.calculating_class_weights">calculating_class_weights()</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_tf_model">create_tf_model()</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.train_tf_model">train_tf_model()</a>
-    </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_sklearn_vectorizer">create_sklearn_vectorizer()</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_sklearn_pipeline">create_sklearn_pipeline()</a>
@@ -122,6 +118,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="#">Pipelines</a>
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../../pipelines/multilabel_pipeline/">Multilabel pipeline</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../pipelines/sentiment_pipeline/">Sentiment pipeline</a>
                 </li>
     </ul>
                 </li>
@@ -633,166 +631,6 @@ for multilabel classification task. Number of neurons in last layer depends on n
 
 
 
-<h5 id="pxtextmining.factories.factory_pipeline.create_tf_model" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_tf_model</span><span class="p">(</span><span class="n">vocab_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">embedding_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span></code>
-
-</h5>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Creates LSTM multilabel classification model using tensorflow keras, with a layer of outputs matching what is currently the number of major_categories.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>vocab_size</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td><p>Number of different words in vocabulary, as derived from tokenization process. Defaults to None.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>embedding_size</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td><p>Size of embedding dimension to be output by embedding layer. Defaults to 100.</p></td>
-          <td>
-                <code>100</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code>tf.<span title="tf.keras">keras</span>.<span title="tf.keras.models">models</span>.<span title="tf.keras.models.Model">Model</span></code>
-          </td>
-          <td><p>Compiled tensorflow keras LSTM model.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-
-<h5 id="pxtextmining.factories.factory_pipeline.train_tf_model" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">train_tf_model</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">class_weights_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-</h5>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Trains tensorflow keras model. Some overlap with train_bert_model, could probably be merged.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>X_train</code></td>
-          <td>
-                <code>pd.<span title="pd.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing tokenized text features.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>Y_train</code></td>
-          <td>
-                <code>pd.<span title="pd.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing one-hot encoded multilabel targets.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model</code></td>
-          <td>
-                <code>tf.<span title="tf.keras">keras</span>.<span title="tf.keras.models">models</span>.<span title="tf.keras.models.Model">Model</span></code>
-          </td>
-          <td><p>Compiled tensorflow keras model.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>class_weights_dict</code></td>
-          <td>
-                <code>dict</code>
-          </td>
-          <td><p>Dict containing class weights for target classes. Defaults to None.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code>tuple</code>
-          </td>
-          <td><p>Tuple containing trained model and the training time as a str.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-
 <h5 id="pxtextmining.factories.factory_pipeline.create_sklearn_vectorizer" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">create_sklearn_vectorizer</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
@@ -1042,7 +880,7 @@ for multilabel classification task. Number of neurons in last layer depends on n
 
 
 <h5 id="pxtextmining.factories.factory_pipeline.create_and_train_svc_model" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_and_train_svc_model</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">create_and_train_svc_model</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h5>
 

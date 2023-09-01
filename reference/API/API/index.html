@@ -101,6 +101,8 @@
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../../pxtextmining/pipelines/multilabel_pipeline/">Multilabel pipeline</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../pxtextmining/pipelines/sentiment_pipeline/">Sentiment pipeline</a>
+                </li>
     </ul>
                 </li>
     </ul>
@@ -180,10 +182,9 @@ text_data &lt;- toJSON(df)
 import requests
 
 url = &quot;API_URL_GOES_HERE&quot;
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
 
 response = requests.post(f&quot;{url}/predict_multilabel&quot;,
-                          json = text_data, headers = headers)
+                          json = text_data)
 </code></pre>
 <pre><code class="language-R"># In R
 
@@ -194,7 +195,6 @@ r &lt;- POST(
   body = text_data,
   encode = &quot;json&quot;,
   add_headers(
-    &quot;User-Agent&quot; = &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36&quot;,
     &quot;Content-Type&quot; = &quot;application/json&quot;
   )
 )

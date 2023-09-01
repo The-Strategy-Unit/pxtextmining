@@ -105,6 +105,8 @@
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../../pipelines/multilabel_pipeline/">Multilabel pipeline</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../pipelines/sentiment_pipeline/">Sentiment pipeline</a>
+                </li>
     </ul>
                 </li>
     </ul>
@@ -227,7 +229,7 @@
 
 
 <h5 id="pxtextmining.factories.factory_write_results.write_model_preds" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_model_preds</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;labels.xlsx&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_model_preds</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;labels.xlsx&#39;</span><span class="p">,</span> <span class="n">enhance_with_rules</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_df</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h5>
 
@@ -320,7 +322,7 @@
 
 
 <h5 id="pxtextmining.factories.factory_write_results.write_model_analysis" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_model_analysis</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_model_analysis</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">preds_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_true</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h5>
 

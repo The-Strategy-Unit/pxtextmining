@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pxtextmining/helpers/text_preprocessor/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pxtextmining/pipelines/sentiment_pipeline/" />
       <link rel="shortcut icon" href="../../../../img/favicon.ico" />
-    <title>Text preprocessor - pxtextmining</title>
+    <title>Sentiment pipeline - pxtextmining</title>
     <link rel="stylesheet" href="../../../../css/theme.css" />
     <link rel="stylesheet" href="../../../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
@@ -14,9 +14,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Text preprocessor";
-        var mkdocs_page_input_path = "reference/pxtextmining/helpers/text_preprocessor.md";
-        var mkdocs_page_url = "/pxtextmining/reference/pxtextmining/helpers/text_preprocessor/";
+        var mkdocs_page_name = "Sentiment pipeline";
+        var mkdocs_page_input_path = "reference/pxtextmining/pipelines/sentiment_pipeline.md";
+        var mkdocs_page_url = "/pxtextmining/reference/pxtextmining/pipelines/sentiment_pipeline/";
       </script>
     
     <script src="../../../../js/jquery-3.6.0.min.js" defer></script>
@@ -85,23 +85,27 @@
                 </li>
     </ul>
                 </li>
-                <li class="toctree-l2 current"><a class="reference internal current" href="#">Helpers</a>
+                <li class="toctree-l2"><a class="reference internal" href="#">Helpers</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../helpers/text_preprocessor/">Text preprocessor</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../helpers/tokenization/">Tokenization</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Pipelines</a>
     <ul class="current">
-                <li class="toctree-l3 current"><a class="reference internal current" href="./">Text preprocessor</a>
+                <li class="toctree-l3"><a class="reference internal" href="../multilabel_pipeline/">Multilabel pipeline</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Sentiment pipeline</a>
     <ul class="current">
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.helpers.text_preprocessor.tf_preprocessing">tf_preprocessing()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.sentiment_pipeline.random_state">random_state</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.sentiment_pipeline.run_sentiment_pipeline">run_sentiment_pipeline()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.sentiment_pipeline.run_sentiment_bert_pipeline">run_sentiment_bert_pipeline()</a>
     </li>
     </ul>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../tokenization/">Tokenization</a>
-                </li>
-    </ul>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="#">Pipelines</a>
-    <ul>
-                <li class="toctree-l3"><a class="reference internal" href="../../pipelines/multilabel_pipeline/">Multilabel pipeline</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../../pipelines/sentiment_pipeline/">Sentiment pipeline</a>
                 </li>
     </ul>
                 </li>
@@ -124,8 +128,8 @@
     <li><a href="../../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>Reference &raquo;</li>
           <li>Pxtextmining &raquo;</li>
-          <li>Helpers &raquo;</li>
-      <li>Text preprocessor</li>
+          <li>Pipelines &raquo;</li>
+      <li>Sentiment pipeline</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -138,8 +142,8 @@
 
 
 
-<h4 id="pxtextmining.helpers.text_preprocessor" class="doc doc-heading">
-          <code>text_preprocessor</code>
+<h4 id="pxtextmining.pipelines.sentiment_pipeline" class="doc doc-heading">
+          <code>sentiment_pipeline</code>
 
 
 </h4>
@@ -156,21 +160,43 @@
 
 
 
+<div class="doc doc-object doc-attribute">
+
+
+
+<h5 id="pxtextmining.pipelines.sentiment_pipeline.random_state" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">random_state</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
 
 
 <div class="doc doc-object doc-function">
 
 
 
-<h5 id="pxtextmining.helpers.text_preprocessor.tf_preprocessing" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">tf_preprocessing</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">max_sentence_length</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span></code>
+<h5 id="pxtextmining.pipelines.sentiment_pipeline.run_sentiment_pipeline" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">run_sentiment_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">models_to_try</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;svm&#39;</span><span class="p">,</span> <span class="s1">&#39;xgb&#39;</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/sentiment&#39;</span><span class="p">)</span></code>
 
 </h5>
 
 
   <div class="doc doc-contents ">
   
-      <p>Conducts preprocessing with tensorflow tokenizer which vectorizes text and standardizes length.</p>
+      <p>Runs all the functions required to load multiclass data, preprocess it, and split it into training, test and validation sets.
+Creates sklearn model and hyperparameter grid to search, and trains it on the train set.
+Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
+and the performance metrics to a specified folder.</p>
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -184,85 +210,93 @@
     </thead>
     <tbody>
         <tr>
-          <td><code>X</code></td>
+          <td><code>additional_features</code></td>
           <td>
-                <code>pd.<span title="pd.Series">Series</span></code>
+                <code>bool</code>
           </td>
-          <td><p>Series containing the text to be processed</p></td>
+          <td><p>Whether or not additional features (question type and text length) are used. Defaults to False.</p></td>
           <td>
-              <em>required</em>
+                <code>False</code>
           </td>
         </tr>
         <tr>
-          <td><code>max_sentence_length</code></td>
+          <td><code>models_to_try</code></td>
           <td>
-                <code>int</code>
+                <code>list</code>
           </td>
-          <td><p>Maximum number of words. Defaults to 150.</p></td>
+          <td><p>Which model types to try. Defaults to ["svm", "xgb"].</p></td>
           <td>
-                <code>150</code>
+                <code>(&#39;svm&#39;, &#39;xgb&#39;)</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>path</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
+          <td>
+                <code>&#39;test_multilabel/sentiment&#39;</code>
           </td>
         </tr>
     </tbody>
   </table>
 
-  <p><strong>Returns:</strong></p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.pipelines.sentiment_pipeline.run_sentiment_bert_pipeline" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">run_sentiment_bert_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/sentiment_bert&#39;</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Runs all the functions required to load multiclass data, preprocess it, and split it into training, test and validation sets.
+Creates tf.keras Transformer model with additional layers specific to the classification task, and trains it on the train set.
+Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
+and the performance metrics to a specified folder.</p>
+
+  <p><strong>Parameters:</strong></p>
   <table>
     <thead>
       <tr>
+        <th>Name</th>
         <th>Type</th>
         <th>Description</th>
+        <th>Default</th>
       </tr>
     </thead>
     <tbody>
         <tr>
+          <td><code>additional_features</code></td>
           <td>
-                <code>tuple</code>
+                <code>bool</code>
           </td>
-          <td><p>Tuple containing <code>np.array</code> of padded, tokenized, vectorized texts, and <code>int</code> showing number of unique words in vocabulary.</p></td>
+          <td><p>Whether or not additional features (question type and text length) are used. Defaults to False.</p></td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>path</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
+          <td>
+                <code>&#39;test_multilabel/sentiment_bert&#39;</code>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>pxtextmining/helpers/text_preprocessor.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">tf_preprocessing</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">max_sentence_length</span> <span class="o">=</span> <span class="mi">150</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Conducts preprocessing with tensorflow tokenizer which vectorizes text and standardizes length.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        X (pd.Series): Series containing the text to be processed</span>
-<span class="sd">        max_sentence_length (int, optional): Maximum number of words. Defaults to 150.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        (tuple): Tuple containing `np.array` of padded, tokenized, vectorized texts, and `int` showing number of unique words in vocabulary.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">tk</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">()</span>
-    <span class="n">tk</span><span class="o">.</span><span class="n">fit_on_texts</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="n">vocab_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">word_index</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;There are </span><span class="si">{</span><span class="n">vocab_size</span><span class="si">}</span><span class="s1"> different words in your corpus&#39;</span><span class="p">)</span>
-    <span class="n">X_token</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">texts_to_sequences</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="c1">### Pad the inputs</span>
-    <span class="n">X_pad</span> <span class="o">=</span> <span class="n">pad_sequences</span><span class="p">(</span><span class="n">X_token</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="n">maxlen</span> <span class="o">=</span> <span class="n">max_sentence_length</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">X_pad</span><span class="p">,</span> <span class="n">vocab_size</span>
-</code></pre></div></td></tr></table></div>
-      </details>
   </div>
 
 </div>
@@ -278,8 +312,7 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../factories/factory_write_results/" class="btn btn-neutral float-left" title="Factory write results"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../tokenization/" class="btn btn-neutral float-right" title="Tokenization">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../multilabel_pipeline/" class="btn btn-neutral float-left" title="Multilabel pipeline"><span class="icon icon-circle-arrow-left"></span> Previous</a>
     </div>
 
   <hr/>
@@ -302,10 +335,8 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../../factories/factory_write_results/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../multilabel_pipeline/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
-    
-      <span><a href="../tokenization/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

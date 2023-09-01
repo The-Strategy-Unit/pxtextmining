@@ -87,6 +87,10 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_model_performance.parse_metrics_file">parse_metrics_file()</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_model_performance.get_y_score">get_y_score()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_model_performance.additional_analysis">additional_analysis()</a>
+    </li>
     </ul>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../factory_pipeline/">Factory pipeline</a>
@@ -108,6 +112,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="#">Pipelines</a>
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../../pipelines/multilabel_pipeline/">Multilabel pipeline</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../pipelines/sentiment_pipeline/">Sentiment pipeline</a>
                 </li>
     </ul>
                 </li>
@@ -378,7 +384,7 @@ a text file.</p>
 
 
 <h5 id="pxtextmining.factories.factory_model_performance.get_multilabel_metrics" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_multilabel_metrics</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">random_state</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">training_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">already_encoded</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_multilabel_metrics</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">random_state</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">training_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">already_encoded</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">enhance_with_rules</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h5>
 
@@ -444,7 +450,7 @@ a text file.</p>
           <td>
                 <code>str</code>
           </td>
-          <td><p>Type of model used. Options are 'bert', 'tf', or 'sklearn'. Defaults to None.</p></td>
+          <td><p>Type of model used. Options are 'bert', or 'sklearn'. Defaults to None.</p></td>
           <td>
               <em>required</em>
           </td>
@@ -665,6 +671,146 @@ Creates a pd.DataFrame with the precision, recall, f1_score, and support for eac
                 <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
           </td>
           <td><p>DataFrame containing the precision, recall, f1_score, and support for each label, as detailed in the performance metrics file.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_model_performance.get_y_score" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_y_score</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Converts probabilities into format (n_samples, n_classes) so they can be passed into sklearn roc_auc_score function</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>probs</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td><p>Probability estimates outputted by model</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td><p>Probability estimates in format (n_samples, n_classes)</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_model_performance.additional_analysis" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">additional_analysis</span><span class="p">(</span><span class="n">preds_df</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>For given predictions, returns dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>preds_df</code></td>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>Dataframe containing predicted labels in one-hot encoded format</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>y_true</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>One-hot encoded real Y values</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>labels</code></td>
+          <td>
+                <code>List</code>
+          </td>
+          <td><p>List of the target labels</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.</p></td>
         </tr>
     </tbody>
   </table>

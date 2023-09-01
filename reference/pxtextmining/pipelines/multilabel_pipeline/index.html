@@ -101,11 +101,13 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_svc_pipeline">run_svc_pipeline()</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_tf_pipeline">run_tf_pipeline()</a>
-    </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_bert_pipeline">run_bert_pipeline()</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_two_layer_sklearn_pipeline">run_two_layer_sklearn_pipeline()</a>
+    </li>
     </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../sentiment_pipeline/">Sentiment pipeline</a>
                 </li>
     </ul>
                 </li>
@@ -167,7 +169,7 @@
 
 
 <h5 id="pxtextmining.pipelines.multilabel_pipeline.run_sklearn_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_sklearn_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">models_to_try</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mnb&#39;</span><span class="p">,</span> <span class="s1">&#39;knn&#39;</span><span class="p">,</span> <span class="s1">&#39;svm&#39;</span><span class="p">,</span> <span class="s1">&#39;rfc&#39;</span><span class="p">],</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel&#39;</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">run_sklearn_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">models_to_try</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;mnb&#39;</span><span class="p">,</span> <span class="s1">&#39;knn&#39;</span><span class="p">,</span> <span class="s1">&#39;svm&#39;</span><span class="p">,</span> <span class="s1">&#39;rfc&#39;</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel&#39;</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h5>
 
@@ -219,7 +221,7 @@ and the performance metrics to a specified folder.</p>
           </td>
           <td><p>List of the estimators to try. Defaults to ["mnb", "knn", "svm", "rfc"]. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).</p></td>
           <td>
-                <code>[&#39;mnb&#39;, &#39;knn&#39;, &#39;svm&#39;, &#39;rfc&#39;]</code>
+                <code>(&#39;mnb&#39;, &#39;knn&#39;, &#39;svm&#39;, &#39;rfc&#39;)</code>
           </td>
         </tr>
         <tr>
@@ -318,65 +320,8 @@ Evaluates the performance of the refitted estimator with the best hyperparameter
 
 
 
-<h5 id="pxtextmining.pipelines.multilabel_pipeline.run_tf_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_tf_pipeline</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/tf&#39;</span><span class="p">)</span></code>
-
-</h5>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
-Creates tf.keras LSTM model and trains it on the train set.
-Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
-and the performance metrics to a specified folder.
-Cannot currently take additional features, is only designed for text data alone.
-This model architecture performs very poorly and may be taken out of the model.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>target</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.</p></td>
-          <td>
-                <code>major_cats</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>path</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
-          <td>
-                <code>&#39;test_multilabel/tf&#39;</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-
 <h5 id="pxtextmining.pipelines.multilabel_pipeline.run_bert_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_bert_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/bert&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">run_bert_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/bert&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h5>
 
@@ -426,6 +371,22 @@ and the performance metrics to a specified folder.</p>
 
 </div>
 
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.pipelines.multilabel_pipeline.run_two_layer_sklearn_pipeline" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">run_two_layer_sklearn_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">models_to_try</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;mnb&#39;</span><span class="p">,</span> <span class="s1">&#39;knn&#39;</span><span class="p">,</span> <span class="s1">&#39;xgb&#39;</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/230605&#39;</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+
+  </div>
+
+</div>
+
 
 
   </div>
@@ -438,6 +399,7 @@ and the performance metrics to a specified folder.</p>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../../helpers/tokenization/" class="btn btn-neutral float-left" title="Tokenization"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../sentiment_pipeline/" class="btn btn-neutral float-right" title="Sentiment pipeline">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -462,6 +424,8 @@ and the performance metrics to a specified folder.</p>
     
       <span><a href="../../helpers/tokenization/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
+    
+      <span><a href="../sentiment_pipeline/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
