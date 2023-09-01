@@ -128,6 +128,8 @@ def predict_multilabel_bert(
             final_data = pd.merge(
                 processed_text, data["FFT_q_standardised"], how="left", on="Comment ID"
             )
+    elif already_encoded is True:
+        final_data = data
     y_probs = predict_with_bert(
         final_data,
         model,

@@ -1,9 +1,6 @@
 import os
 import random
 
-# import warnings filter
-from warnings import simplefilter
-
 from sklearn.model_selection import train_test_split
 
 from pxtextmining.factories.factory_data_load_and_split import (
@@ -33,9 +30,6 @@ from pxtextmining.params import (
     minor_cats,
     random_state,
 )
-
-# ignore all future warnings
-simplefilter(action="ignore", category=FutureWarning)
 
 
 def run_sklearn_pipeline(
@@ -357,36 +351,42 @@ def run_two_layer_sklearn_pipeline(
 
 
 if __name__ == "__main__":
-    # run_sklearn_pipeline(
-    #     additional_features=True,
-    #     target=minor_cats,
-    #     models_to_try=["xgb"],
-    #     path='test_multilabel/v6_230724/xgb',
-    #     include_analysis=True,
-    # )
-    # run_svc_pipeline(
-    #     additional_features=False,
-    #     target=minor_cats,
-    #     path="test_multilabel/v6_230724/svc_nofeats",
-    #     include_analysis=True,
-    # )
+    run_svc_pipeline(
+        additional_features=False,
+        target=minor_cats,
+        path="test_multilabel/v6_230831/svc_noq",
+        include_analysis=True,
+    )
     run_svc_pipeline(
         additional_features=True,
         target=minor_cats,
-        path="test_multilabel/test_roc/svc",
+        path="test_multilabel/v6_230831/svc",
         include_analysis=True,
     )
-    # run_bert_pipeline(
-    #     additional_features=True,
-    #     path="test_multilabel/v6_230724/bert",
-    #     target=minor_cats,
-    #     include_analysis=True,
-    # )
-    # run_sklearn_pipeline(
-    #     additional_features=True,
-    #     target=minor_cats,
-    #     models_to_try=["svm"],
-    #     path='test_multilabel/v6_230724/svc_gridsearch',
-    #     include_analysis=True,
-    # )
+    run_sklearn_pipeline(
+        additional_features=True,
+        target=minor_cats,
+        models_to_try=["xgb"],
+        path="test_multilabel/v6_230831/xgb",
+        include_analysis=True,
+    )
+    run_bert_pipeline(
+        additional_features=True,
+        path="test_multilabel/v6_230831/bert",
+        target=minor_cats,
+        include_analysis=True,
+    )
+    run_bert_pipeline(
+        additional_features=False,
+        path="test_multilabel/v6_230831/bert_noq",
+        target=minor_cats,
+        include_analysis=True,
+    )
+    run_sklearn_pipeline(
+        additional_features=True,
+        target=minor_cats,
+        models_to_try=["svm"],
+        path="test_multilabel/v6_230831/svc_gridsearch",
+        include_analysis=True,
+    )
     # run_two_layer_sklearn_pipeline()
