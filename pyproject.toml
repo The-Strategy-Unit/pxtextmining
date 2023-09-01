@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "pxtextmining"
-version = "0.5.4"
-description = "Multilabel text classification of patient experience feedback."
+version = "0.5.5"
+description = "Text classification of patient experience feedback."
 authors = ['CDU Data Science <cdudatascience@nottshc.nhs.uk>',
 'YiWen Hon <yiwen.hon@nottshc.nhs.uk>']
 readme = "README.md"
@@ -37,6 +37,7 @@ requests = "^2.31.0"
 jupyter = "^1.0.0"
 ruff = "^0.0.272"
 pre-commit = "^3.3.3"
+tornado = "^6.3.3"
 
 [tool.poetry.group.docs]
 optional = true

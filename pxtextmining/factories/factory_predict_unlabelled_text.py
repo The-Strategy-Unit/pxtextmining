@@ -44,12 +44,13 @@ def predict_multilabel_sklearn(
     been predicted, if fix_no_labels = True.
 
     Args:
-        text (pd.Series OR pd.DataFrame): DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True
+        data (pd.Series OR pd.DataFrame): DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True
         model (sklearn.base): Trained sklearn estimator able to perform multilabel classification.
         labels (list, optional): List containing target labels. Defaults to major_cats.
         additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
         label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
         enhance_with_probs (bool, optional): Whether or not to enhance predicted classes with predictions utilising the model's outputted probabilities.
+        enhance_with_rules (bool, optional): Whether or not to use custom rules which boost probability of specific classes if specific words are seen. This is based on the rules_dict found in params.py
 
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
@@ -107,11 +108,13 @@ def predict_multilabel_bert(
     been predicted, if fix_no_labels = True.
 
     Args:
-        text (pd.Series OR pd.DataFrame): DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True
+        data (pd.Series, pd.DataFrame, or tf.data.Dataset): DataFrame, Series, or Tensorflow Dataset containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True
         model (tf.Model): Trained tensorflow estimator able to perform multilabel classification.
         labels (list, optional): List containing target labels. Defaults to major_cats.
         additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
         label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
+        enhance_with_rules (bool, optional): Whether or not to use custom rules which boost probability of specific classes if specific words are seen. This is based on the rules_dict found in params.py
+        already_encoded (bool, optional): Whether or not the data has already been encoded into a Tensorflow.
 
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
@@ -164,7 +167,7 @@ def predict_sentiment_bert(
     been predicted, if fix_no_labels = True.
 
     Args:
-        text (pd.Series OR pd.DataFrame): DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True
+        data (pd.Series OR pd.DataFrame): DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True
         model (tf.Model): Trained tensorflow estimator able to perform multilabel classification.
         additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
         preprocess_text (bool, optional): Whether or not text is to be preprocessed (punctuation and numbers removed).
@@ -389,6 +392,15 @@ def turn_probs_into_binary(predicted_probs):
 
 
 def rulebased_probs(text, pred_probs):
+    """Uses the `rules_dict` in `pxtextmining.params` to boost the probabilities of specific classes, given the appearance of specific words.
+
+    Args:
+        text (pd.Series): Series containing the text
+        pred_probs (np.ndarray): Numpy array containing the outputted predicted probabilities for the text.
+
+    Returns:
+        (np.ndarray): Numpy array with the modified predicted probabilities of the text.
+    """
     for k, v in rules_dict.items():
         label_index = minor_cats.index(k)
         prob = probs_dict.get(k, 0.3)

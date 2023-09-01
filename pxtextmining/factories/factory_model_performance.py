@@ -248,7 +248,7 @@ def get_y_score(probs):
         probs (np.ndarray): Probability estimates outputted by model
 
     Returns:
-        np.ndarray: Probability estimates in format (n_samples, n_classes)
+        (np.ndarray): Probability estimates in format (n_samples, n_classes)
     """
     if probs.ndim == 3:
         score = np.transpose([pred[:, 1] for pred in probs])
@@ -266,7 +266,7 @@ def additional_analysis(preds_df, y_true, labels):
         labels (List): List of the target labels
 
     Returns:
-        pd.DataFrame: dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
+        (pd.DataFrame): dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
     """
     # include threshold?? (later)
     y_score = np.array(preds_df.filter(like="Probability", axis=1))
