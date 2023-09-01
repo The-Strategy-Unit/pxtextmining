@@ -1,0 +1,30 @@
+exclude: '(build|datasets|current_best_multilabel|docs)/.*'
+
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.3.0
+  hooks:
+    - id: check-added-large-files
+      name: Check for files larger than 75 MB
+      args: [ "--maxkb=750000" ]
+    - id: end-of-file-fixer
+      name: Check for a blank line at the end of scripts (auto-fixes)
+      exclude: 'json'
+    - id: trailing-whitespace
+      name: Check for trailing whitespaces (auto-fixes)
+- repo: https://github.com/pycqa/isort
+  rev: 5.12.0
+  hooks:
+    - id: isort
+      name: isort - Sort Python imports (auto-fixes)
+      args: [ "--profile", "black", "--filter-files" ]
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.0.272
+  hooks:
+    - id: ruff
+      name: Ruff linting
+- repo: https://github.com/psf/black
+  rev: 22.10.0
+  hooks:
+    - id: black
+      name: black - consistent Python code formatting (auto-fixes)

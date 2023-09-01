@@ -4,6 +4,11 @@ omit = tests\*
        *\params.py
        api\test_api.py
        setup.py
+       test_rules.py
 
 source =  api
           pxtextmining
+
+[report]
+exclude_lines =
+    if __name__ == .__main__.:

@@ -1,17 +1,15 @@
 import numpy as np
 import pandas as pd
 from sklearn import metrics
+from sklearn.base import is_classifier
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import confusion_matrix
 from tensorflow.keras.models import Model
-from sklearn.base import is_classifier
 
 from pxtextmining.factories.factory_predict_unlabelled_text import (
-    fix_no_labels,
-    predict_with_bert,
-    turn_probs_into_binary,
     predict_multiclass_bert,
-    predict_multilabel_sklearn
+    predict_multilabel_bert,
+    predict_multilabel_sklearn,
 )
 
 
@@ -30,7 +28,9 @@ def get_dummy_model(x_train, y_train):
     return model
 
 
-def get_multiclass_metrics(x_test, y_test, labels, random_state, model, additional_features, training_time = None):
+def get_multiclass_metrics(
+    x_test, y_test, labels, random_state, model, additional_features, training_time=None
+):
     """Creates a string detailing various performance metrics for a multiclass model, which can then be written to
     a text file.
 
@@ -55,17 +55,22 @@ def get_multiclass_metrics(x_test, y_test, labels, random_state, model, addition
     )
     # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
     # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
-    if isinstance(model, Model) == True:
+    if isinstance(model, Model) is True:
         stringlist = []
         model.summary(print_fn=lambda x: stringlist.append(x))
         model_summary = "\n".join(stringlist)
         metrics_string += f"\n{model_summary}\n"
-        y_pred = predict_multiclass_bert(x_test, model, additional_features = additional_features, already_encoded = False)
-    elif is_classifier(model) == True:
+        y_pred = predict_multiclass_bert(
+            x_test,
+            model,
+            additional_features=additional_features,
+            already_encoded=False,
+        )
+    elif is_classifier(model) is True:
         metrics_string += f"\n{model}\n"
         y_pred = model.predict(x_test)
     else:
-        raise ValueError('Model type not recognised')
+        raise ValueError("Model type not recognised")
     # Calculate various metrics
     metrics_string += f"\n\nTraining time: {training_time}\n"
     # Classification report
@@ -76,6 +81,7 @@ def get_multiclass_metrics(x_test, y_test, labels, random_state, model, addition
     metrics_string += c_report_str
     return metrics_string
 
+
 def get_multilabel_metrics(
     x_test,
     y_test,
@@ -85,7 +91,8 @@ def get_multilabel_metrics(
     model,
     training_time=None,
     additional_features=False,
-    already_encoded=False
+    already_encoded=False,
+    enhance_with_rules=False,
 ):
     """Creates a string detailing various performance metrics for a multilabel model, which can then be written to
     a text file.
@@ -95,7 +102,7 @@ def get_multilabel_metrics(
         y_test (pd.DataFrame): DataFrame containing test dataset true target values
         labels (list): List containing the target labels
         random_state (int): Seed used to control the shuffling of the data, to enable reproducible results.
-        model_type (str): Type of model used. Options are 'bert', 'tf', or 'sklearn'. Defaults to None.
+        model_type (str): Type of model used. Options are 'bert', or 'sklearn'. Defaults to None.
         model (tf.keras or sklearn model): Trained estimator.
         training_time (str, optional): Amount of time taken for model to train. Defaults to None.
         additional_features (bool, optional): Whether or not additional features (e.g. question type) have been included in training the model. Defaults to False.
@@ -115,31 +122,48 @@ def get_multilabel_metrics(
     model_metrics = {}
     # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
     # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
-    if model_type in ("bert", "tf"):
-        if model_type == "bert":
-            y_probs = predict_with_bert(
-                x_test,
-                model,
-                additional_features=additional_features,
-                already_encoded=already_encoded,
-            )
-        elif model_type == "tf":
-            y_probs = model.predict(x_test)
-        binary_preds = turn_probs_into_binary(y_probs)
-        y_pred = fix_no_labels(binary_preds, y_probs, model_type="tf")
+    if model_type == "bert":
+        y_pred_df = predict_multilabel_bert(
+            x_test,
+            model,
+            labels=labels,
+            additional_features=additional_features,
+            label_fix=True,
+            enhance_with_rules=enhance_with_rules,
+            already_encoded=already_encoded,
+        )
     elif model_type == "sklearn":
-        y_pred_df = predict_multilabel_sklearn(x_test, model, labels = labels,
-                                                additional_features = additional_features,
-                                                label_fix = True, enhance_with_probs = True)
-        y_pred = np.array(y_pred_df)[:,:-1].astype('int64')
+        y_pred_df = predict_multilabel_sklearn(
+            x_test,
+            model,
+            labels=labels,
+            additional_features=additional_features,
+            label_fix=True,
+            enhance_with_probs=True,
+            enhance_with_rules=enhance_with_rules,
+        )
     else:
-        raise ValueError('Please select valid model_type. Options are "bert", "tf" or "sklearn"')
+        raise ValueError(
+            'Please select valid model_type. Options are "bert" or "sklearn"'
+        )
+    y_pred = np.array(y_pred_df[labels]).astype("int64")
     # Calculate various metrics
     model_metrics["exact_accuracy"] = metrics.accuracy_score(y_test, y_pred)
     model_metrics["hamming_loss"] = metrics.hamming_loss(y_test, y_pred)
     model_metrics["macro_jaccard_score"] = metrics.jaccard_score(
         y_test, y_pred, average="macro"
     )
+    y_probs = y_pred_df.filter(like="Probability", axis=1)
+    model_metrics["macro_roc_auc"] = metrics.roc_auc_score(
+        y_test, y_probs, multi_class="ovr"
+    )
+    model_metrics[
+        "Label ranking average precision"
+    ] = metrics.label_ranking_average_precision_score(
+        y_test,
+        y_probs,
+    )
+    # Model summary
     if model_type in ("bert", "tf"):
         stringlist = []
         model.summary(print_fn=lambda x: stringlist.append(x))
@@ -191,25 +215,77 @@ def parse_metrics_file(metrics_file, labels):
     Returns:
         (pd.DataFrame): DataFrame containing the precision, recall, f1_score, and support for each label, as detailed in the performance metrics file.
     """
-    with open(metrics_file, 'r') as file:
+    with open(metrics_file, "r") as file:
         content = file.readlines()
-    for i, l in enumerate(content):
-        if l.strip().startswith(labels[0][:10]):
+    for i, line in enumerate(content):
+        if line.strip().startswith(labels[0][:10]):
             startline = i
-        if l.strip().startswith(labels[-1][:10]):
-            endline = i+1
+        if line.strip().startswith(labels[-1][:10]):
+            endline = i + 1
     lines = [x.strip() for x in content[startline:endline]]
-    metrics_dict = {'label': [],
-                'precision': [],
-                'recall': [],
-                'f1_score': [],
-                'support': []}
+    metrics_dict = {
+        "label": [],
+        "precision": [],
+        "recall": [],
+        "f1_score": [],
+        "support (label count in test data)": [],
+    }
     for each in lines:
-        splitted = each.split('      ')
-        metrics_dict['label'].append(splitted[0].strip())
-        metrics_dict['precision'].append(splitted[1].strip())
-        metrics_dict['recall'].append(splitted[2].strip())
-        metrics_dict['f1_score'].append(splitted[3].strip())
-        metrics_dict['support'].append(splitted[4].strip())
+        splitted = each.split("      ")
+        metrics_dict["label"].append(splitted[0].strip())
+        metrics_dict["precision"].append(splitted[1].strip())
+        metrics_dict["recall"].append(splitted[2].strip())
+        metrics_dict["f1_score"].append(splitted[3].strip())
+        metrics_dict["support (label count in test data)"].append(splitted[4].strip())
     metrics_df = pd.DataFrame.from_dict(metrics_dict)
     return metrics_df
+
+
+def get_y_score(probs):
+    """Converts probabilities into format (n_samples, n_classes) so they can be passed into sklearn roc_auc_score function
+
+    Args:
+        probs (np.ndarray): Probability estimates outputted by model
+
+    Returns:
+        (np.ndarray): Probability estimates in format (n_samples, n_classes)
+    """
+    if probs.ndim == 3:
+        score = np.transpose([pred[:, 1] for pred in probs])
+    elif probs.ndim == 2:
+        score = probs
+    return score
+
+
+def additional_analysis(preds_df, y_true, labels):
+    """For given predictions, returns dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
+
+    Args:
+        preds_df (pd.DataFrame): Dataframe containing predicted labels in one-hot encoded format
+        y_true (np.array): One-hot encoded real Y values
+        labels (List): List of the target labels
+
+    Returns:
+        (pd.DataFrame): dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
+    """
+    # include threshold?? (later)
+    y_score = np.array(preds_df.filter(like="Probability", axis=1))
+    cm = metrics.multilabel_confusion_matrix(y_true, np.array(preds_df[labels]))
+    cm_dict = {}
+    average_precision = {}
+    for i, label in enumerate(labels):
+        cm_meaning = {}
+        tn, fp = cm[i][0]
+        fn, tp = cm[i][1]
+        cm_meaning["True Negative"] = tn
+        cm_meaning["False Negative"] = fn
+        cm_meaning["True Positive"] = tp
+        cm_meaning["False Positive"] = fp
+        cm_dict[label] = cm_meaning
+        average_precision[label] = metrics.average_precision_score(
+            y_true[:, i], y_score[:, i]
+        )
+    df = pd.DataFrame.from_dict(cm_dict, orient="index")
+    average_precision = pd.Series(average_precision)
+    df["average_precision_score"] = average_precision
+    return df

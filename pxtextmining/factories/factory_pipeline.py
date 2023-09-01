@@ -2,28 +2,26 @@ import datetime
 import time
 
 import numpy as np
+import xgboost as xgb
 from scipy import stats
 from sklearn.compose import make_column_transformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import OneHotEncoder, RobustScaler
+from sklearn.preprocessing import OneHotEncoder
 from sklearn.svm import SVC
 from sklearn.utils.class_weight import compute_class_weight
-from sklearn.model_selection import cross_validate
-from tensorflow.keras import Sequential, layers
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.initializers import TruncatedNormal
-from tensorflow.keras.layers import Dense, Dropout, Input, concatenate, CategoryEncoding
+from tensorflow.keras.layers import CategoryEncoding, Dense, Dropout, Input, concatenate
 from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from transformers import DistilBertConfig, TFDistilBertForSequenceClassification
-import xgboost as xgb
 
 from pxtextmining.helpers.tokenization import spacy_tokenizer
 from pxtextmining.params import model_name
@@ -46,7 +44,7 @@ def create_sklearn_pipeline_sentiment(
         (tuple): Tuple containing the `sklearn.pipeline.Pipeline` with the selected estimator, and a `dict` containing the hyperparameters to be tuned.
 
     """
-    if additional_features == True:
+    if additional_features is True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
         vectorizer = create_sklearn_vectorizer(tokenizer=None)
         preproc = make_column_transformer(
@@ -149,7 +147,7 @@ def create_bert_model(Y_train, model_name=model_name, max_length=150, multilabel
     bert_model = bert(inputs)[0][:, 0, :]
     dropout = Dropout(config.dropout, name="pooled_output")
     pooled_output = dropout(bert_model, training=False)
-    if multilabel == True:
+    if multilabel is True:
         output = Dense(
             units=Y_train.shape[1],
             kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
@@ -207,7 +205,7 @@ def create_bert_model_additional_features(
     cat_dense = cat_dense(onehot_layer)
     # concatenate both together
     concat_layer = concatenate([bert_output, cat_dense])
-    if multilabel == True:
+    if multilabel is True:
         output = Dense(
             units=Y_train.shape[1],
             kernel_initializer=TruncatedNormal(stddev=config.initializer_range),
@@ -280,62 +278,6 @@ def calculating_class_weights(y_true):
     return class_weights_dict
 
 
-def create_tf_model(vocab_size=None, embedding_size=100):
-    """Creates LSTM multilabel classification model using tensorflow keras, with a layer of outputs matching what is currently the number of major_categories.
-
-    Args:
-        vocab_size (int, optional): Number of different words in vocabulary, as derived from tokenization process. Defaults to None.
-        embedding_size (int, optional): Size of embedding dimension to be output by embedding layer. Defaults to 100.
-
-    Returns:
-        (tf.keras.models.Model): Compiled tensorflow keras LSTM model.
-    """
-    model = Sequential()
-    model.add(
-        layers.Embedding(
-            input_dim=vocab_size + 1, output_dim=embedding_size, mask_zero=True
-        )
-    )
-    model.add(layers.LSTM(50))
-    model.add(layers.Dense(20, activation="relu"))
-    model.add(layers.Dense(13, activation="sigmoid"))
-    model.compile(
-        loss="binary_crossentropy",
-        optimizer="rmsprop",
-        metrics=["CategoricalAccuracy", "Precision", "Recall"],
-    )
-    return model
-
-
-def train_tf_model(X_train, Y_train, model, class_weights_dict=None):
-    """Trains tensorflow keras model. Some overlap with train_bert_model, could probably be merged.
-
-    Args:
-        X_train (pd.DataFrame): DataFrame containing tokenized text features.
-        Y_train (pd.DataFrame): DataFrame containing one-hot encoded multilabel targets.
-        model (tf.keras.models.Model): Compiled tensorflow keras model.
-        class_weights_dict (dict, optional): Dict containing class weights for target classes. Defaults to None.
-
-    Returns:
-        (tuple): Tuple containing trained model and the training time as a str.
-    """
-    es = EarlyStopping(patience=3, restore_best_weights=True)
-    start_time = time.time()
-    model.fit(
-        X_train,
-        Y_train,
-        epochs=200,
-        batch_size=32,
-        verbose=1,
-        validation_split=0.2,
-        callbacks=[es],
-        class_weight=class_weights_dict,
-    )
-    seconds_taken = round(time.time() - start_time, 0)
-    training_time = str(datetime.timedelta(seconds=seconds_taken))
-    return model, training_time
-
-
 def create_sklearn_vectorizer(tokenizer=None):
     """Creates vectorizer for use with sklearn models, either using sklearn tokenizer or the spacy tokenizer
 
@@ -363,7 +305,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
     Returns:
         (tuple): Tuple containing the `sklearn.pipeline.Pipeline` with the selected estimator, and a `dict` containing the hyperparameters to be tuned.
     """
-    if additional_features == True:
+    if additional_features is True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
         vectorizer = create_sklearn_vectorizer(tokenizer=None)
         # num_transformer = RobustScaler()
@@ -385,7 +327,11 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
         preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
         params = {
             "tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
-            "tfidfvectorizer__max_df": stats.uniform(0.8, 1),
+            "tfidfvectorizer__max_df": [
+                0.9,
+                0.95,
+                0.99,
+            ],
             "tfidfvectorizer__min_df": stats.uniform(0.01, 0.1),
         }
     if model_type == "mnb":
@@ -489,7 +435,7 @@ def search_sklearn_pipelines(
     return models, training_times
 
 
-def create_and_train_svc_model(X_train, Y_train):
+def create_and_train_svc_model(X_train, Y_train, additional_features=False):
     """Creates pipeline with a Support Vector Classifier using specific hyperparameters identified through previous gridsearching.
 
     Args:
@@ -501,10 +447,13 @@ def create_and_train_svc_model(X_train, Y_train):
     """
     cat_transformer = OneHotEncoder(handle_unknown="ignore")
     vectorizer = TfidfVectorizer(max_df=0.9, min_df=0, ngram_range=(1, 2))
-    preproc = make_column_transformer(
-        (cat_transformer, ["FFT_q_standardised"]),
-        (vectorizer, "FFT answer"),
-    )
+    if additional_features is True:
+        preproc = make_column_transformer(
+            (cat_transformer, ["FFT_q_standardised"]),
+            (vectorizer, "FFT answer"),
+        )
+    else:
+        preproc = create_sklearn_vectorizer(tokenizer=None)
     pipe = make_pipeline(
         preproc,
         MultiOutputClassifier(

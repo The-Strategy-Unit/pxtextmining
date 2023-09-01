@@ -56,10 +56,9 @@ text_data <- toJSON(df)
 import requests
 
 url = "API_URL_GOES_HERE"
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
 
 response = requests.post(f"{url}/predict_multilabel",
-                          json = text_data, headers = headers)
+                          json = text_data)
 ```
 
 ```R
@@ -72,7 +71,6 @@ r <- POST(
   body = text_data,
   encode = "json",
   add_headers(
-    "User-Agent" = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36",
     "Content-Type" = "application/json"
   )
 )
