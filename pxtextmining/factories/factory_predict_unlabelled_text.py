@@ -131,6 +131,8 @@ def predict_multilabel_bert(
             final_data = pd.merge(
                 processed_text, data["FFT_q_standardised"], how="left", on="Comment ID"
             )
+    elif already_encoded is True:
+        final_data = data
     y_probs = predict_with_bert(
         final_data,
         model,
@@ -148,7 +150,10 @@ def predict_multilabel_bert(
         predictions = fix_no_labels(y_binary, y_probs, model_type="bert")
     else:
         predictions = y_binary
-    preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
+    if already_encoded is False:
+        preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
+    else:
+        preds_df = pd.DataFrame(predictions, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
     # add probs to df
     label_list = ['Probability of "' + label + '"' for label in labels]
