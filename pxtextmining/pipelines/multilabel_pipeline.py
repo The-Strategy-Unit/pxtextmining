@@ -351,37 +351,37 @@ def run_two_layer_sklearn_pipeline(
 
 
 if __name__ == "__main__":
-    run_svc_pipeline(
-        additional_features=False,
-        target=minor_cats,
-        path="test_multilabel/v6_230831/svc_noq",
-        include_analysis=True,
-    )
-    run_svc_pipeline(
-        additional_features=True,
-        target=minor_cats,
-        path="test_multilabel/v6_230831/svc",
-        include_analysis=True,
-    )
-    run_sklearn_pipeline(
-        additional_features=True,
-        target=minor_cats,
-        models_to_try=["xgb"],
-        path="test_multilabel/v6_230831/xgb",
-        include_analysis=True,
-    )
-    run_bert_pipeline(
-        additional_features=True,
-        path="test_multilabel/v6_230831/bert",
-        target=minor_cats,
-        include_analysis=True,
-    )
-    run_bert_pipeline(
-        additional_features=False,
-        path="test_multilabel/v6_230831/bert_noq",
-        target=minor_cats,
-        include_analysis=True,
-    )
+    # run_svc_pipeline(
+    #     additional_features=False,
+    #     target=minor_cats,
+    #     path="test_multilabel/v6_230831/svc_noq",
+    #     include_analysis=True,
+    # )
+    # run_svc_pipeline(
+    #     additional_features=True,
+    #     target=minor_cats,
+    #     path="test_multilabel/v6_230831/svc",
+    #     include_analysis=True,
+    # )
+    # run_sklearn_pipeline(
+    #     additional_features=True,
+    #     target=minor_cats,
+    #     models_to_try=["xgb"],
+    #     path="test_multilabel/v6_230831/xgb",
+    #     include_analysis=True,
+    # )
+    # run_bert_pipeline(
+    #     additional_features=True,
+    #     path="test_multilabel/v6_230831/bert",
+    #     target=minor_cats,
+    #     include_analysis=True,
+    # )
+    # run_bert_pipeline(
+    #     additional_features=False,
+    #     path="test_multilabel/v6_230831/bert_noq",
+    #     target=minor_cats,
+    #     include_analysis=True,
+    # )
     run_sklearn_pipeline(
         additional_features=True,
         target=minor_cats,
