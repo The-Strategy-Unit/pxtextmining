@@ -9,8 +9,6 @@ from pxtextmining.factories.factory_data_load_and_split import (
 )
 from pxtextmining.params import minor_cats, probs_dict, rules_dict
 
-np.seterr(divide="ignore", invalid="ignore")
-
 
 def process_text(text):
     """Enacts same text preprocessing as is found in factory_data_load_and_split when creating training data. Converts to string, removes trailing whitespaces, null values, punctuation and numbers. Converts to lowercase.
@@ -432,6 +430,7 @@ def get_thresholds(y_true, y_probs, labels):
         y_probs = y_probs[:, :, 1].T
     assert y_probs.shape == y_true.shape
     threshold_dict = {}
+    np.seterr(divide="ignore", invalid="ignore")
     for i, label in enumerate(labels):
         class_probs = y_probs[:, i]
         class_y_true = y_true[:, i]
@@ -444,4 +443,5 @@ def get_thresholds(y_true, y_probs, labels):
             threshold_dict[label] = 0.5
         else:
             threshold_dict[label] = thresholds[best_idx]
+    np.seterr(divide="warn", invalid="warn")
     return threshold_dict
