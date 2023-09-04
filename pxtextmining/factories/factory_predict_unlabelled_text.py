@@ -9,6 +9,8 @@ from pxtextmining.factories.factory_data_load_and_split import (
 )
 from pxtextmining.params import minor_cats, probs_dict, rules_dict
 
+np.seterr(divide="ignore", invalid="ignore")
+
 
 def process_text(text):
     """Enacts same text preprocessing as is found in factory_data_load_and_split when creating training data. Converts to string, removes trailing whitespaces, null values, punctuation and numbers. Converts to lowercase.
@@ -415,6 +417,17 @@ def rulebased_probs(text, pred_probs):
 
 
 def get_thresholds(y_true, y_probs, labels):
+    """Uses `sklearn.metrics.precision_recall_curve` to calculate the best threshold to use to maximise F1 score for each of the labels, on a binary one-vs-rest basis.
+    If zero division error occurs, the threshold is set to 0.5 automatically.
+
+    Args:
+        y_true (np.array): Array containing true one-hot encoded labels, of shape (num_samples, num_labels)
+        y_probs (np.array): Array containing predicted probabilities labels. Can be 2d or 3d depending on whether sklearn or tensorflow.keras output.
+        labels (list): List of labels in target class.
+
+    Returns:
+        (dict): Dict with key value pairs (label, recommended threshold) for maximising the F1 score.
+    """
     if y_probs.ndim == 3:
         y_probs = y_probs[:, :, 1].T
     assert y_probs.shape == y_true.shape

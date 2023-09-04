@@ -301,3 +301,79 @@ def test_predict_with_probs(grab_test_X_additional_feats):
     # assert
     assert type(predictions) == np.ndarray
     assert len(predictions) == len(predicted_probs)
+
+
+def test_get_thresholds_3d():
+    three_dim_probs = np.array(
+        [
+            [
+                [0.80465788, 0.19534212],
+                [0.94292979, 0.05707021],
+                [0.33439024, 0.66560976],
+            ],
+            [
+                [0.33439024, 0.66560976],
+                [0.9949298, 0.0050702],
+                [0.99459238, 0.00540762],
+            ],
+            [
+                [0.97472981, 0.02527019],
+                [0.25069129, 0.74930871],
+                [0.33439024, 0.66560976],
+            ],
+        ]
+    )
+    y_true = np.array([[1, 0, 1], [1, 0, 0], [0, 0, 1]])
+    labels = ["one", "two", "three"]
+    thresholds = factory_predict_unlabelled_text.get_thresholds(
+        y_true, three_dim_probs, labels
+    )
+    assert isinstance(thresholds, dict) is True
+
+
+def test_get_thresholds_2d():
+    two_dim_probs = np.array(
+        [
+            [
+                6.2770307e-01,
+                2.3520987e-02,
+                1.3149388e-01,
+                2.7835215e-02,
+                1.8944685e-01,
+            ],
+            [
+                9.8868138e-01,
+                1.9990385e-03,
+                5.4453085e-03,
+                9.0726715e-04,
+                2.9669846e-03,
+            ],
+            [
+                4.2310607e-01,
+                5.6546849e-01,
+                9.3136989e-03,
+                1.3205722e-03,
+                7.9117226e-04,
+            ],
+            [
+                2.0081511e-01,
+                7.0609129e-04,
+                1.1107661e-03,
+                7.9677838e-01,
+                5.8961433e-04,
+            ],
+            [
+                1.4777037e-03,
+                5.1493715e-03,
+                2.8268427e-03,
+                7.4673461e-04,
+                9.8979920e-01,
+            ],
+        ]
+    )
+    y_true = np.where(two_dim_probs > 0.2, 1, 0)
+    labels = ["one", "two", "three", "four", "five"]
+    thresholds = factory_predict_unlabelled_text.get_thresholds(
+        y_true, two_dim_probs, labels
+    )
+    assert isinstance(thresholds, dict) is True
