@@ -256,7 +256,7 @@ def test_predict_with_bert(grab_test_X_additional_feats):
 
     # act
     predictions = factory_predict_unlabelled_text.predict_with_bert(
-        data, model, additional_features=True, already_encoded=False
+        data, model, additional_features=True
     )
     # assert
     model.predict.assert_called_once()
@@ -279,7 +279,7 @@ def test_predict_multiclass_bert(grab_test_X_additional_feats):
         )
     )
     predictions = factory_predict_unlabelled_text.predict_multiclass_bert(
-        data, model, additional_features=False, already_encoded=False
+        data, model, additional_features=False
     )
     assert predictions.sum() == len(data)
 

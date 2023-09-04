@@ -101,7 +101,6 @@ def predict_multilabel_bert(
     additional_features=False,
     label_fix=True,
     enhance_with_rules=False,
-    already_encoded=False,
 ):
     """Conducts basic preprocessing to remove blank text.
     Utilises a pretrained transformer-based machine learning model to make multilabel predictions on the cleaned text.
@@ -115,12 +114,12 @@ def predict_multilabel_bert(
         additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
         label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
         enhance_with_rules (bool, optional): Whether or not to use custom rules which boost probability of specific classes if specific words are seen. This is based on the rules_dict found in params.py
-        already_encoded (bool, optional): Whether or not the data has already been encoded into a Tensorflow.
 
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
     """
-    if already_encoded is False:
+    if isinstance(data, (pd.DataFrame, pd.Series)) is True:
+        already_encoded = False
         if additional_features is False:
             text = pd.Series(data)
         else:
@@ -132,13 +131,11 @@ def predict_multilabel_bert(
             final_data = pd.merge(
                 processed_text, data["FFT_q_standardised"], how="left", on="Comment ID"
             )
-    elif already_encoded is True:
+    else:
         final_data = data
+        already_encoded = True
     y_probs = predict_with_bert(
-        final_data,
-        model,
-        additional_features=additional_features,
-        already_encoded=already_encoded,
+        final_data, model, additional_features=additional_features
     )
     if enhance_with_rules is True:
         if type(final_data) == pd.DataFrame:
@@ -196,23 +193,20 @@ def predict_sentiment_bert(
             processed_text, data["FFT_q_standardised"], how="left", on="Comment ID"
         )
     final_index = final_data.index
-    predictions = predict_multiclass_bert(
-        final_data, model, additional_features, already_encoded=False
-    )
+    predictions = predict_multiclass_bert(final_data, model, additional_features)
     preds_df = data.filter(items=final_index, axis=0)
     preds_df["sentiment"] = predictions
     preds_df["sentiment"] = preds_df["sentiment"] + 1
     return preds_df
 
 
-def predict_multiclass_bert(x, model, additional_features, already_encoded):
+def predict_multiclass_bert(x, model, additional_features):
     """Makes multiclass predictions using a transformer-based model. Can encode the data if not already encoded.
 
     Args:
         x (pd.DataFrame): DataFrame containing features to be passed through model.
         model (tf.keras.models.Model): Pretrained transformer based model in tensorflow keras.
         additional_features (bool, optional): Whether or not additional features (e.g. question type) are included. Defaults to False.
-        already_encoded (bool, optional): Whether or not the input data needs to be encoded. Defaults to False.
 
     Returns:
         (np.array): Predicted labels in one-hot encoded format.
@@ -221,7 +215,6 @@ def predict_multiclass_bert(x, model, additional_features, already_encoded):
         x,
         model,
         additional_features=additional_features,
-        already_encoded=already_encoded,
     )
     y_binary = turn_probs_into_binary(y_probs)
     y_binary_fixed = fix_no_labels(y_binary, y_probs, model_type="bert")
@@ -327,9 +320,7 @@ def get_labels(row, labels):
     return label_list
 
 
-def predict_with_bert(
-    data, model, max_length=150, additional_features=False, already_encoded=False
-):
+def predict_with_bert(data, model, max_length=150, additional_features=False):
     """Makes predictions using a transformer-based model. Can encode the data if not already encoded.
 
     Args:
@@ -337,12 +328,11 @@ def predict_with_bert(
         model (tf.keras.models.Model): Pretrained transformer based model in tensorflow keras.
         max_length (int, optional): If encoding is required, maximum length of input text. Defaults to 150.
         additional_features (bool, optional): Whether or not additional features (e.g. question type) are included. Defaults to False.
-        already_encoded (bool, optional): Whether or not the input data needs to be encoded. Defaults to False.
 
     Returns:
         (np.array): Predicted probabilities for each label.
     """
-    if already_encoded is False:
+    if isinstance(data, (pd.DataFrame, pd.Series)) is True:
         encoded_dataset = bert_data_to_dataset(
             data, Y=None, max_length=max_length, additional_features=additional_features
         )

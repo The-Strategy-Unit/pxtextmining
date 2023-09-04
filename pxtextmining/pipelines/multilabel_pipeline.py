@@ -243,7 +243,6 @@ def run_bert_pipeline(
         model=model_trained,
         training_time=training_time,
         additional_features=additional_features,
-        already_encoded=True,
     )
     write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
     if include_analysis is True:

@@ -64,7 +64,6 @@ def get_multiclass_metrics(
             x_test,
             model,
             additional_features=additional_features,
-            already_encoded=False,
         )
     elif is_classifier(model) is True:
         metrics_string += f"\n{model}\n"
@@ -91,7 +90,6 @@ def get_multilabel_metrics(
     model,
     training_time=None,
     additional_features=False,
-    already_encoded=False,
     enhance_with_rules=False,
 ):
     """Creates a string detailing various performance metrics for a multilabel model, which can then be written to
@@ -106,7 +104,6 @@ def get_multilabel_metrics(
         model (tf.keras or sklearn model): Trained estimator.
         training_time (str, optional): Amount of time taken for model to train. Defaults to None.
         additional_features (bool, optional): Whether or not additional features (e.g. question type) have been included in training the model. Defaults to False.
-        already_encoded (bool, optional): Whether or not, if a `bert` model was used, x_test has already been encoded. Defaults to False.
 
     Raises:
         ValueError: Only model_type 'bert', 'tf' or 'sklearn' are allowed.
@@ -130,7 +127,6 @@ def get_multilabel_metrics(
             additional_features=additional_features,
             label_fix=True,
             enhance_with_rules=enhance_with_rules,
-            already_encoded=already_encoded,
         )
     elif model_type == "sklearn":
         y_pred_df = predict_multilabel_sklearn(
