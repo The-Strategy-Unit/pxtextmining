@@ -377,3 +377,100 @@ def test_get_thresholds_2d():
         y_true, two_dim_probs, labels
     )
     assert isinstance(thresholds, dict) is True
+
+
+def test_turn_probs_into_binary_nodict():
+    test_probs = np.array(
+        [
+            [
+                6.2770307e-01,
+                2.3520987e-02,
+                1.3149388e-01,
+                2.7835215e-02,
+                1.8944685e-01,
+            ],
+            [
+                9.8868138e-01,
+                1.9990385e-03,
+                5.4453085e-03,
+                9.0726715e-04,
+                2.9669846e-03,
+            ],
+            [
+                4.2310607e-01,
+                5.6546849e-01,
+                9.3136989e-03,
+                1.3205722e-03,
+                7.9117226e-04,
+            ],
+            [
+                2.0081511e-01,
+                7.0609129e-04,
+                1.1107661e-03,
+                7.9677838e-01,
+                5.8961433e-04,
+            ],
+            [
+                1.4777037e-03,
+                5.1493715e-03,
+                2.8268427e-03,
+                7.4673461e-04,
+                9.8979920e-01,
+            ],
+        ]
+    )
+    preds = factory_predict_unlabelled_text.turn_probs_into_binary(test_probs)
+    assert test_probs.shape == preds.shape
+
+
+def test_turn_probs_into_binary_dict():
+    test_probs = np.array(
+        [
+            [
+                6.2770307e-01,
+                2.3520987e-02,
+                1.3149388e-01,
+                2.7835215e-02,
+                1.8944685e-01,
+            ],
+            [
+                9.8868138e-01,
+                1.9990385e-03,
+                5.4453085e-03,
+                9.0726715e-04,
+                2.9669846e-03,
+            ],
+            [
+                4.2310607e-01,
+                5.6546849e-01,
+                9.3136989e-03,
+                1.3205722e-03,
+                7.9117226e-04,
+            ],
+            [
+                2.0081511e-01,
+                7.0609129e-04,
+                1.1107661e-03,
+                7.9677838e-01,
+                5.8961433e-04,
+            ],
+            [
+                1.4777037e-03,
+                5.1493715e-03,
+                2.8268427e-03,
+                7.4673461e-04,
+                9.8979920e-01,
+            ],
+        ]
+    )
+    custom_threshold_dict = {
+        "one": 0.2,
+        "two": 0.5,
+        "three": 0.1,
+        "four": 0.5,
+        "five": 0.8,
+    }
+    preds = factory_predict_unlabelled_text.turn_probs_into_binary(
+        test_probs, custom_threshold_dict
+    )
+    assert test_probs.shape == preds.shape

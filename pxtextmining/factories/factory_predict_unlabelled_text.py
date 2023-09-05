@@ -370,18 +370,28 @@ def fix_no_labels(binary_preds, predicted_probs, model_type="sklearn"):
     return binary_preds
 
 
-def turn_probs_into_binary(predicted_probs):
+def turn_probs_into_binary(predicted_probs, custom_threshold_dict=None):
     """Takes predicted probabilities (floats between 0 and 1) and converts these to binary outcomes.
     Scope to finetune this in later iterations of the project depending on the label and whether recall/precision
     is prioritised for that label.
 
     Args:
-        predicted_probs (np.array): Array containing the predicted probabilities for each class. Shape of array corresponds to the number of inputs and the number of target classes; if shape is (100, 13) then there are 100 datapoints, and 13 target classes. Predicted probabilities should range from 0 to 1.
+        predicted_probs (np.array): Array containing the predicted probabilities for each class. Shape of array should be (num_samples, num_classes). Predicted probabilities should range from 0 to 1.
 
     Returns:
         (np.array): Array containing binary outcomes for each label. Shape should remain the same as input, but values will be either 0 or 1.
     """
-    preds = np.where(predicted_probs > 0.5, 1, 0)
+    if custom_threshold_dict is None:
+        preds = np.where(predicted_probs > 0.5, 1, 0)
+    else:
+        assert predicted_probs.shape[-1] == len(custom_threshold_dict)
+        new_preds = np.zeros(predicted_probs.shape)
+        for i, label in enumerate(custom_threshold_dict):
+            threshold = custom_threshold_dict[label]
+            label_probs = predicted_probs[:, i]
+            label_preds = np.where(label_probs > threshold, 1, 0)
+            new_preds[:, i] = label_preds
+        preds = new_preds
     return preds
 
 
