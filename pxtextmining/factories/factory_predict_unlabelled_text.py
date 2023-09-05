@@ -70,7 +70,7 @@ def predict_multilabel_sklearn(
     binary_preds = model.predict(final_data)
     pred_probs = np.array(model.predict_proba(final_data))
     if label_fix is True:
-        predictions = fix_no_labels(binary_preds, pred_probs, model_type="sklearn")
+        predictions = fix_no_labels(binary_preds, pred_probs)
     else:
         predictions = binary_preds
     if enhance_with_rules is True:
@@ -101,6 +101,7 @@ def predict_multilabel_bert(
     additional_features=False,
     label_fix=True,
     enhance_with_rules=False,
+    custom_threshold_dict=None,
 ):
     """Conducts basic preprocessing to remove blank text.
     Utilises a pretrained transformer-based machine learning model to make multilabel predictions on the cleaned text.
@@ -143,9 +144,11 @@ def predict_multilabel_bert(
         else:
             final_text = final_data
         y_probs = rulebased_probs(final_text, y_probs)
-    y_binary = turn_probs_into_binary(y_probs)
+    y_binary = turn_probs_into_binary(
+        y_probs, custom_threshold_dict=custom_threshold_dict
+    )
     if label_fix is True:
-        predictions = fix_no_labels(y_binary, y_probs, model_type="bert")
+        predictions = fix_no_labels(y_binary, y_probs)
     else:
         predictions = y_binary
     if already_encoded is False:
@@ -217,7 +220,7 @@ def predict_multiclass_bert(x, model, additional_features):
         additional_features=additional_features,
     )
     y_binary = turn_probs_into_binary(y_probs)
-    y_binary_fixed = fix_no_labels(y_binary, y_probs, model_type="bert")
+    y_binary_fixed = fix_no_labels(y_binary, y_probs)
     y_preds = np.argmax(y_binary_fixed, axis=1)
     return y_preds
 
@@ -268,7 +271,7 @@ def predict_with_probs(x, model, labels):
     return y_pred
 
 
-def get_probabilities(label_series, labels, predicted_probabilities, model_type):
+def get_probabilities(label_series, labels, predicted_probabilities):
     """Given a pd.Series containing labels, the list of labels, and a model's outputted predicted_probabilities for each label,
     create a dictionary containing the label and the predicted probability of that label.
 
@@ -276,7 +279,6 @@ def get_probabilities(label_series, labels, predicted_probabilities, model_type)
         label_series (pd.Series): Series containing labels in the format `['label_one', 'label_two']`
         labels (list): List of the label names
         predicted_probabilities (np.array): Predicted probabilities for each label
-        model_type (str): Model architecture, if sklearn or otherwise.
 
     Returns:
         (pd.Series): Series, each line containing a dict with the predicted probabilities for each label.
@@ -287,12 +289,9 @@ def get_probabilities(label_series, labels, predicted_probabilities, model_type)
         predicted_labels = label_series.iloc[i]
         for each in predicted_labels:
             index_label = labels.index(each)
-            if model_type == "sklearn":
-                if predicted_probabilities.ndim == 3:
-                    prob_of_label = predicted_probabilities[index_label, i, 1]
-                else:
-                    prob_of_label = predicted_probabilities[i][index_label]
-            elif model_type in ("tf", "bert"):
+            if predicted_probabilities.ndim == 3:
+                prob_of_label = predicted_probabilities[index_label, i, 1]
+            else:
                 prob_of_label = predicted_probabilities[i][index_label]
             label_probs[each] = round(prob_of_label, 5)
         probabilities.append(label_probs)
@@ -342,7 +341,7 @@ def predict_with_bert(data, model, max_length=150, additional_features=False):
     return predictions
 
 
-def fix_no_labels(binary_preds, predicted_probs, model_type="sklearn"):
+def fix_no_labels(binary_preds, predicted_probs):
     """Function that takes in the binary predicted labels for a particular input, and the predicted probabilities for
     all the labels classes. Where no labels have been predicted for a particular input, takes the label with the highest predicted probability
     as the predicted label.
@@ -350,7 +349,6 @@ def fix_no_labels(binary_preds, predicted_probs, model_type="sklearn"):
     Args:
         binary_preds (np.array): Predicted labels, in a one-hot encoded binary format. Some rows may not have any predicted labels.
         predicted_probs (np.array): Predicted probability of each label.
-        model_type (str, optional): Whether the model is a sklearn or tensorflow keras model; options are 'tf', 'bert', or 'sklearn. Defaults to "sklearn".
 
     Returns:
         (np.array): Predicted labels in one-hot encoded format, with all rows containing at least one predicted label.
@@ -358,14 +356,10 @@ def fix_no_labels(binary_preds, predicted_probs, model_type="sklearn"):
 
     for i in range(len(binary_preds)):
         if binary_preds[i].sum() == 0:
-            if model_type in ("tf", "bert"):
-                # index_max = list(predicted_probs[i]).index(max(predicted_probs[i])
+            if predicted_probs.ndim == 3:
+                index_max = np.argmax(predicted_probs[:, i, 1])
+            else:
                 index_max = np.argmax(predicted_probs[i])
-            if model_type == "sklearn":
-                if predicted_probs.ndim == 3:
-                    index_max = np.argmax(predicted_probs[:, i, 1])
-                else:
-                    index_max = np.argmax(predicted_probs[i])
             binary_preds[i][index_max] = 1
     return binary_preds
 

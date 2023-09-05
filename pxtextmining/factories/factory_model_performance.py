@@ -86,7 +86,6 @@ def get_multilabel_metrics(
     y_test,
     labels,
     random_state,
-    model_type,
     model,
     training_time=None,
     additional_features=False,
@@ -100,7 +99,6 @@ def get_multilabel_metrics(
         y_test (pd.DataFrame): DataFrame containing test dataset true target values
         labels (list): List containing the target labels
         random_state (int): Seed used to control the shuffling of the data, to enable reproducible results.
-        model_type (str): Type of model used. Options are 'bert', or 'sklearn'. Defaults to None.
         model (tf.keras or sklearn model): Trained estimator.
         training_time (str, optional): Amount of time taken for model to train. Defaults to None.
         additional_features (bool, optional): Whether or not additional features (e.g. question type) have been included in training the model. Defaults to False.
@@ -119,7 +117,7 @@ def get_multilabel_metrics(
     model_metrics = {}
     # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
     # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
-    if model_type == "bert":
+    if isinstance(model, Model) is True:
         y_pred_df = predict_multilabel_bert(
             x_test,
             model,
@@ -128,7 +126,10 @@ def get_multilabel_metrics(
             label_fix=True,
             enhance_with_rules=enhance_with_rules,
         )
-    elif model_type == "sklearn":
+        stringlist = []
+        model.summary(print_fn=lambda x: stringlist.append(x))
+        model_summary = "\n".join(stringlist)
+    elif is_classifier(model) is True:
         y_pred_df = predict_multilabel_sklearn(
             x_test,
             model,
@@ -138,10 +139,9 @@ def get_multilabel_metrics(
             enhance_with_probs=True,
             enhance_with_rules=enhance_with_rules,
         )
+        model_summary = model
     else:
-        raise ValueError(
-            'Please select valid model_type. Options are "bert" or "sklearn"'
-        )
+        raise ValueError("invalid model type")
     y_pred = np.array(y_pred_df[labels]).astype("int64")
     # Calculate various metrics
     model_metrics["exact_accuracy"] = metrics.accuracy_score(y_test, y_pred)
@@ -160,13 +160,7 @@ def get_multilabel_metrics(
         y_probs,
     )
     # Model summary
-    if model_type in ("bert", "tf"):
-        stringlist = []
-        model.summary(print_fn=lambda x: stringlist.append(x))
-        model_summary = "\n".join(stringlist)
-        metrics_string += f"\n{model_summary}\n"
-    else:
-        metrics_string += f"\n{model}\n"
+    metrics_string += f"\n{model_summary}\n"
     metrics_string += f"\n\nTraining time: {training_time}\n"
     for k, v in model_metrics.items():
         metrics_string += f"\n{k}: {v}"

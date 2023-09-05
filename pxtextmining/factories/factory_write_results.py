@@ -92,16 +92,8 @@ def write_model_preds(
     predicted_labels.name = "predicted_labels"
     df = x.reset_index()
     probabilities = np.array(preds_df.filter(like="Probability", axis=1))
-    if isinstance(model, Model) is True:
-        model_type = "bert"
-    else:
-        model_type = "sklearn"
-    probs_actual = get_probabilities(
-        actual_labels, labels, probabilities, model_type=model_type
-    )
-    probs_predicted = get_probabilities(
-        predicted_labels, labels, probabilities, model_type=model_type
-    )
+    probs_actual = get_probabilities(actual_labels, labels, probabilities)
+    probs_predicted = get_probabilities(predicted_labels, labels, probabilities)
     df = df.merge(actual_labels, left_index=True, right_index=True)
     df = df.merge(predicted_labels, left_index=True, right_index=True)
     df = df.merge(probs_actual, left_index=True, right_index=True)

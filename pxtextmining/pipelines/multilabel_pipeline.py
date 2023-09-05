@@ -82,7 +82,6 @@ def run_sklearn_pipeline(
                 Y_test,
                 random_state=random_state,
                 labels=target,
-                model_type="sklearn",
                 model=m,
                 training_time=t,
                 additional_features=additional_features,
@@ -152,7 +151,6 @@ def run_svc_pipeline(
         Y_test,
         random_state=random_state,
         labels=target,
-        model_type="sklearn",
         model=model,
         training_time=training_time,
         additional_features=additional_features,
@@ -184,6 +182,7 @@ def run_bert_pipeline(
     path="test_multilabel/bert",
     target=major_cats,
     include_analysis=False,
+    custom_threshold=False,
 ):
     """Runs all the functions required to load multilabel data, preprocess it, and split it into training, test and validation sets.
     Creates tf.keras Transformer model with additional layers specific to the classification task, and trains it on the train set.
@@ -239,7 +238,6 @@ def run_bert_pipeline(
         Y_test,
         random_state=random_state,
         labels=target,
-        model_type="bert",
         model=model_trained,
         training_time=training_time,
         additional_features=additional_features,
@@ -301,7 +299,6 @@ def run_two_layer_sklearn_pipeline(
                 Y_test,
                 random_state=random_state,
                 labels=target,
-                model_type="sklearn",
                 model=m,
                 training_time=t,
                 additional_features=additional_features,
@@ -340,7 +337,6 @@ def run_two_layer_sklearn_pipeline(
                         Y_test,
                         random_state=random_state,
                         labels=target,
-                        model_type="sklearn",
                         model=m,
                         training_time=t,
                         additional_features=additional_features,

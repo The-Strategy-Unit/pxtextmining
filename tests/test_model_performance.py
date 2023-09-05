@@ -117,7 +117,6 @@ def test_multilabel_metrics_sklearn(grab_test_X_additional_feats):
     )
     labels = ["A", "B", "C", "D", "E"]
     random_state = 42
-    model_type = "sklearn"
     additional_features = True
     model = factory_model_performance.get_dummy_model(x, y)
     metrics_string = factory_model_performance.get_multilabel_metrics(
@@ -125,7 +124,6 @@ def test_multilabel_metrics_sklearn(grab_test_X_additional_feats):
         y,
         labels,
         random_state,
-        model_type,
         model,
         additional_features=additional_features,
     )
@@ -147,7 +145,6 @@ def test_multilabel_metrics_bert(
     )
     labels = ["A", "B", "C", "D", "E"]
     random_state = 42
-    model_type = "bert"
     additional_features = True
     model = grab_test_bert_multilabel
     metrics_string = factory_model_performance.get_multilabel_metrics(
@@ -155,7 +152,6 @@ def test_multilabel_metrics_bert(
         y,
         labels,
         random_state,
-        model_type,
         model,
         additional_features=additional_features,
     )
