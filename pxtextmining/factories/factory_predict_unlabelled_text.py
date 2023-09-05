@@ -36,8 +36,8 @@ def predict_multilabel_sklearn(
     labels=minor_cats,
     additional_features=False,
     label_fix=True,
-    enhance_with_probs=True,
     enhance_with_rules=False,
+    custom_threshold_dict=None,
 ):
     """Conducts basic preprocessing to remove punctuation and numbers.
     Utilises a pretrained sklearn machine learning model to make multilabel predictions on the cleaned text.
@@ -50,7 +50,6 @@ def predict_multilabel_sklearn(
         labels (list, optional): List containing target labels. Defaults to major_cats.
         additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
         label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
-        enhance_with_probs (bool, optional): Whether or not to enhance predicted classes with predictions utilising the model's outputted probabilities.
         enhance_with_rules (bool, optional): Whether or not to use custom rules which boost probability of specific classes if specific words are seen. This is based on the rules_dict found in params.py
 
     Returns:
@@ -69,26 +68,20 @@ def predict_multilabel_sklearn(
         )
     binary_preds = model.predict(final_data)
     pred_probs = np.array(model.predict_proba(final_data))
+    if pred_probs.ndim == 3:
+        pred_probs = pred_probs[:, :, 1].T
     if label_fix is True:
         predictions = fix_no_labels(binary_preds, pred_probs)
     else:
         predictions = binary_preds
     if enhance_with_rules is True:
         pred_probs = rulebased_probs(processed_text, pred_probs)
-    if enhance_with_probs is True:
-        for row in range(predictions.shape[0]):
-            for label_index in range(predictions.shape[1]):
-                if pred_probs.ndim == 3:
-                    prob_of_label = pred_probs[label_index, row, 1]
-                if pred_probs.ndim == 2:
-                    prob_of_label = pred_probs[row, label_index]
-                if prob_of_label > 0.5:
-                    predictions[row][label_index] = 1
+    enhanced_predictions = turn_probs_into_binary(pred_probs, custom_threshold_dict)
+    combined_predictions = predictions + enhanced_predictions
+    predictions = np.where(combined_predictions == 0, combined_predictions, 1)
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
     # add probs to df
-    if pred_probs.ndim == 3:
-        pred_probs = np.transpose([pred[:, 1] for pred in pred_probs])
     label_list = ['Probability of "' + label + '"' for label in labels]
     preds_df[label_list] = pred_probs
     return preds_df

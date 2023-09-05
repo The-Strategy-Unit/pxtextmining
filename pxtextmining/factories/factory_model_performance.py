@@ -139,8 +139,8 @@ def get_multilabel_metrics(
             labels=labels,
             additional_features=additional_features,
             label_fix=True,
-            enhance_with_probs=True,
             enhance_with_rules=enhance_with_rules,
+            custom_threshold_dict=custom_threshold_dict,
         )
         model_summary = model
     else:

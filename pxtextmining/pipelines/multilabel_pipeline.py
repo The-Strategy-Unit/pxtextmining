@@ -39,6 +39,7 @@ def run_sklearn_pipeline(
     models_to_try=("mnb", "knn", "svm", "rfc"),
     path="test_multilabel",
     include_analysis=False,
+    custom_threshold=False,
 ):
     """Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
     Creates sklearn pipelines and hyperparameters to search, using specified estimators.
@@ -61,12 +62,24 @@ def run_sklearn_pipeline(
     if target == merged_minor_cats:
         target_name = "test"
     df = load_multilabel_data(filename=dataset, target=target_name)
-    X_train, X_test, Y_train, Y_test = process_and_split_data(
-        df,
-        target=target,
-        additional_features=additional_features,
-        random_state=random_state,
-    )
+    if custom_threshold is True:
+        X_train_val, X_test, Y_train_val, Y_test = process_and_split_data(
+            df,
+            target=target,
+            preprocess_text=False,
+            additional_features=additional_features,
+            random_state=random_state,
+        )
+        X_train, X_val, Y_train, Y_val = train_test_split(
+            X_train_val, Y_train_val, test_size=0.2, random_state=random_state
+        )
+    else:
+        X_train, X_test, Y_train, Y_test = process_and_split_data(
+            df,
+            target=target,
+            additional_features=additional_features,
+            random_state=random_state,
+        )
     models, training_times = search_sklearn_pipelines(
         X_train,
         Y_train,
@@ -77,6 +90,11 @@ def run_sklearn_pipeline(
     for i in range(len(models)):
         m = models[i]
         t = training_times[i]
+        if custom_threshold is True:
+            val_preds = m.predict(X_val)
+            custom_threshold_dict = get_thresholds(Y_val, val_preds, labels=target)
+        else:
+            custom_threshold_dict = None
         model_metrics.append(
             get_multilabel_metrics(
                 X_test,
@@ -86,6 +104,7 @@ def run_sklearn_pipeline(
                 model=m,
                 training_time=t,
                 additional_features=additional_features,
+                custom_threshold_dict=custom_threshold_dict,
             )
         )
     write_multilabel_models_and_metrics(models, model_metrics, path=path)

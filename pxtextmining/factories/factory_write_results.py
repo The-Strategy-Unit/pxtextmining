@@ -85,7 +85,6 @@ def write_model_preds(
             labels=labels,
             additional_features=additional_features,
             label_fix=True,
-            enhance_with_probs=True,
             enhance_with_rules=enhance_with_rules,
         )
     predicted_labels = preds_df.reset_index()["labels"]
