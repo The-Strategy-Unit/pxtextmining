@@ -1,6 +1,3 @@
-import os
-import random
-
 from sklearn.model_selection import train_test_split
 
 from pxtextmining.factories.factory_data_load_and_split import (
@@ -25,7 +22,6 @@ from pxtextmining.factories.factory_write_results import (
 )
 from pxtextmining.params import (
     dataset,
-    major_cat_dict,
     major_cats,
     merged_minor_cats,
     minor_cats,
@@ -136,6 +132,7 @@ def run_svc_pipeline(
     target=major_cats,
     path="test_multilabel",
     include_analysis=False,
+    custom_threshold=False,
 ):
     """Runs all the functions required to load multilabel data, preprocess it, and split it into training and test sets.
     Creates sklearn pipeline using a MultiOutputClassifier and Support Vector Classifier estimator, with specific hyperparameters.
@@ -157,15 +154,32 @@ def run_svc_pipeline(
     if target == merged_minor_cats:
         target_name = "test"
     df = load_multilabel_data(filename=dataset, target=target_name)
-    X_train, X_test, Y_train, Y_test = process_and_split_data(
-        df,
-        target=target,
-        additional_features=additional_features,
-        random_state=random_state,
-    )
+    if custom_threshold is True:
+        X_train_val, X_test, Y_train_val, Y_test = process_and_split_data(
+            df,
+            target=target,
+            preprocess_text=False,
+            additional_features=additional_features,
+            random_state=random_state,
+        )
+        X_train, X_val, Y_train, Y_val = train_test_split(
+            X_train_val, Y_train_val, test_size=0.2, random_state=random_state
+        )
+    else:
+        X_train, X_test, Y_train, Y_test = process_and_split_data(
+            df,
+            target=target,
+            additional_features=additional_features,
+            random_state=random_state,
+        )
     model, training_time = create_and_train_svc_model(
         X_train, Y_train, additional_features=additional_features
     )
+    if custom_threshold is True:
+        val_preds = model.predict(X_val)
+        custom_threshold_dict = get_thresholds(Y_val, val_preds, labels=target)
+    else:
+        custom_threshold_dict = None
     model_metrics = get_multilabel_metrics(
         X_test,
         Y_test,
@@ -174,6 +188,7 @@ def run_svc_pipeline(
         model=model,
         training_time=training_time,
         additional_features=additional_features,
+        custom_threshold_dict=custom_threshold_dict,
     )
     write_multilabel_models_and_metrics([model], [model_metrics], path=path)
     if include_analysis is True:
@@ -289,87 +304,6 @@ def run_bert_pipeline(
             y_true=Y_test,
         )
     print("Pipeline complete!")
-
-
-def run_two_layer_sklearn_pipeline(
-    additional_features=True,
-    models_to_try=("mnb", "knn", "xgb"),
-    path="test_multilabel/230605",
-):
-    random_state = random.randint(1, 999)
-    df_major = load_multilabel_data(filename=dataset, target="major_categories")
-    df_minor = load_multilabel_data(filename=dataset, target="minor_categories")
-    # major cats first
-    X_train, X_test, Y_train, Y_test = process_and_split_data(
-        df_major,
-        target=major_cats,
-        additional_features=additional_features,
-        random_state=random_state,
-    )
-    target = major_cats
-    models, training_times = search_sklearn_pipelines(
-        X_train,
-        Y_train,
-        models_to_try=models_to_try,
-        additional_features=additional_features,
-    )
-    svc, svc_time = create_and_train_svc_model(X_train, Y_train)
-    models.append(svc)
-    training_times.append(svc_time)
-    model_metrics = []
-    for i in range(len(models)):
-        m = models[i]
-        t = training_times[i]
-        model_metrics.append(
-            get_multilabel_metrics(
-                X_test,
-                Y_test,
-                random_state=random_state,
-                labels=target,
-                model=m,
-                training_time=t,
-                additional_features=additional_features,
-            )
-        )
-    write_multilabel_models_and_metrics(models, model_metrics, path=path)
-    # minor cats
-    for k, v in major_cat_dict.items():
-        if len(v) > 1:
-            print(k)
-            target = v
-            model_name = k
-            minipath = os.path.join(path, model_name)
-            X_train, X_test, Y_train, Y_test = process_and_split_data(
-                df_minor,
-                target=target,
-                additional_features=additional_features,
-                random_state=random_state,
-            )
-            models, training_times = search_sklearn_pipelines(
-                X_train,
-                Y_train,
-                models_to_try=["mnb", "knn", "xgb"],
-                additional_features=additional_features,
-            )
-            svc, svc_time = create_and_train_svc_model(X_train, Y_train)
-            models.append(svc)
-            training_times.append(svc_time)
-            model_metrics = []
-            for i in range(len(models)):
-                m = models[i]
-                t = training_times[i]
-                model_metrics.append(
-                    get_multilabel_metrics(
-                        X_test,
-                        Y_test,
-                        random_state=random_state,
-                        labels=target,
-                        model=m,
-                        training_time=t,
-                        additional_features=additional_features,
-                    )
-                )
-            write_multilabel_models_and_metrics(models, model_metrics, path=minipath)
 
 
 if __name__ == "__main__":
