@@ -90,6 +90,7 @@ def get_multilabel_metrics(
     training_time=None,
     additional_features=False,
     enhance_with_rules=False,
+    custom_threshold_dict=None,
 ):
     """Creates a string detailing various performance metrics for a multilabel model, which can then be written to
     a text file.
@@ -102,9 +103,10 @@ def get_multilabel_metrics(
         model (tf.keras or sklearn model): Trained estimator.
         training_time (str, optional): Amount of time taken for model to train. Defaults to None.
         additional_features (bool, optional): Whether or not additional features (e.g. question type) have been included in training the model. Defaults to False.
+        custom_threshold_dict (dict, optional): If custom thresholds for each label probability should be used. If none provided, default of 0.5 is used where a label is given if the probability is > 0.5. Keys of dict should correspond to labels.
 
     Raises:
-        ValueError: Only model_type 'bert', 'tf' or 'sklearn' are allowed.
+        ValueError: Only sklearn and tensorflow keras models allowed.
 
     Returns:
         (str): String containing the model architecture/hyperparameters, random state used for the train test split, and performance metrics including: exact accuracy, hamming loss, macro jaccard score, and classification report.
@@ -125,6 +127,7 @@ def get_multilabel_metrics(
             additional_features=additional_features,
             label_fix=True,
             enhance_with_rules=enhance_with_rules,
+            custom_threshold_dict=custom_threshold_dict,
         )
         stringlist = []
         model.summary(print_fn=lambda x: stringlist.append(x))

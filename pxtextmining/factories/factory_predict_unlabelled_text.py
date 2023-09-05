@@ -115,6 +115,7 @@ def predict_multilabel_bert(
         additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
         label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
         enhance_with_rules (bool, optional): Whether or not to use custom rules which boost probability of specific classes if specific words are seen. This is based on the rules_dict found in params.py
+        custom_threshold_dict (dict, optional): If custom thresholds for each label probability should be used. If none provided, default of 0.5 is used where a label is given if the probability is > 0.5. Keys of dict should correspond to labels.
 
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.

@@ -17,6 +17,7 @@ from pxtextmining.factories.factory_pipeline import (
     search_sklearn_pipelines,
     train_bert_model,
 )
+from pxtextmining.factories.factory_predict_unlabelled_text import get_thresholds
 from pxtextmining.factories.factory_write_results import (
     write_model_analysis,
     write_model_preds,
@@ -233,6 +234,12 @@ def run_bert_pipeline(
         class_weights_dict=class_weights_dict,
         epochs=25,
     )
+    if custom_threshold is True:
+        val = bert_data_to_dataset(X_val, additional_features=additional_features)
+        val_preds = model_trained.predict(val)
+        custom_threshold_dict = get_thresholds(Y_val, val_preds, labels=target)
+    else:
+        custom_threshold_dict = None
     model_metrics = get_multilabel_metrics(
         test_dataset,
         Y_test,
@@ -241,6 +248,7 @@ def run_bert_pipeline(
         model=model_trained,
         training_time=training_time,
         additional_features=additional_features,
+        custom_threshold_dict=custom_threshold_dict,
     )
     write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
     if include_analysis is True:
