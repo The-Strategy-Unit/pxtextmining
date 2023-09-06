@@ -123,6 +123,7 @@ def run_sklearn_pipeline(
                 path=path,
                 preds_df=preds_df,
                 y_true=Y_test,
+                custom_threshold_dict=custom_threshold_dict,
             )
     print("Pipeline complete")
 
@@ -208,6 +209,7 @@ def run_svc_pipeline(
             path=path,
             preds_df=preds_df,
             y_true=Y_test,
+            custom_threshold_dict=custom_threshold_dict,
         )
     print("Pipeline complete!")
 
@@ -302,6 +304,7 @@ def run_bert_pipeline(
             path=path,
             preds_df=preds_df,
             y_true=Y_test,
+            custom_threshold_dict=custom_threshold_dict,
         )
     print("Pipeline complete!")
 

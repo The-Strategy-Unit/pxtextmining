@@ -109,7 +109,15 @@ def write_model_preds(
         return preds_df
 
 
-def write_model_analysis(model_name, labels, dataset, path, preds_df=None, y_true=None):
+def write_model_analysis(
+    model_name,
+    labels,
+    dataset,
+    path,
+    preds_df=None,
+    y_true=None,
+    custom_threshold_dict=None,
+):
     """Writes an Excel file with the performance metrics of each label, as well as the counts of samples for each label.
 
     Args:
@@ -126,6 +134,8 @@ def write_model_analysis(model_name, labels, dataset, path, preds_df=None, y_tru
     )
     metrics_df = metrics_df.merge(label_counts, on="label").set_index("label")
     if preds_df is not None and y_true is not None:
-        more_metrics = additional_analysis(preds_df, y_true, labels)
+        more_metrics = additional_analysis(
+            preds_df, y_true, labels, custom_threshold_dict
+        )
         metrics_df = pd.concat([metrics_df, more_metrics], axis=1)
     metrics_df.to_excel(f"{path}/{model_name}_perf.xlsx", index=True)
