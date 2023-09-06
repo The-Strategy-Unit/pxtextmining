@@ -53,6 +53,7 @@ def write_model_preds(
 
     Args:
     """
+    assert len(x) == len(y_true) == len(preds_df)
     actual_labels = pd.DataFrame(y_true, columns=labels).apply(
         get_labels, args=(labels,), axis=1
     )
