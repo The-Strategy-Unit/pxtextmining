@@ -11,6 +11,7 @@ from pxtextmining.pipelines import multilabel_pipeline
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_model_preds")
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_multilabel_models_and_metrics")
 @patch("pxtextmining.pipelines.multilabel_pipeline.get_multilabel_metrics")
+@patch("pxtextmining.pipelines.multilabel_pipeline.predict_multilabel_sklearn")
 @patch("pxtextmining.pipelines.multilabel_pipeline.search_sklearn_pipelines")
 @patch("pxtextmining.pipelines.multilabel_pipeline.process_and_split_data", create=True)
 @patch("pxtextmining.pipelines.multilabel_pipeline.load_multilabel_data")
@@ -18,6 +19,7 @@ def test_sklearn_pipeline(
     mock_dataload,
     mock_datasplit,
     mock_skpipeline,
+    mock_predict,
     mock_metrics,
     mock_write,
     mock_writepreds,
@@ -36,6 +38,7 @@ def test_sklearn_pipeline(
     mock_datasplit.assert_called_once()
     mock_skpipeline.assert_called_once()
     mock_metrics.assert_called_once()
+    mock_predict.assert_called_once()
     mock_write.assert_called_once()
     mock_writepreds.assert_called_once()
     mock_writeanalysis.assert_called_once()
@@ -46,6 +49,7 @@ def test_sklearn_pipeline(
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_model_preds")
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_multilabel_models_and_metrics")
 @patch("pxtextmining.pipelines.multilabel_pipeline.get_multilabel_metrics")
+@patch("pxtextmining.pipelines.multilabel_pipeline.predict_multilabel_sklearn")
 @patch("pxtextmining.pipelines.multilabel_pipeline.create_and_train_svc_model")
 @patch("pxtextmining.pipelines.multilabel_pipeline.process_and_split_data", create=True)
 @patch("pxtextmining.pipelines.multilabel_pipeline.load_multilabel_data")
@@ -53,6 +57,7 @@ def test_svc_pipeline(
     mock_dataload,
     mock_datasplit,
     mock_skpipeline,
+    mock_predict,
     mock_metrics,
     mock_write,
     mock_writepreds,
@@ -70,6 +75,7 @@ def test_svc_pipeline(
     mock_dataload.assert_called_once()
     mock_datasplit.assert_called_once()
     mock_skpipeline.assert_called_once()
+    mock_predict.assert_called_once()
     mock_metrics.assert_called_once()
     mock_write.assert_called_once()
     mock_writepreds.assert_called_once()
@@ -81,6 +87,7 @@ def test_svc_pipeline(
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_model_preds")
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_multilabel_models_and_metrics")
 @patch("pxtextmining.pipelines.multilabel_pipeline.get_multilabel_metrics")
+@patch("pxtextmining.pipelines.multilabel_pipeline.predict_multilabel_bert")
 @patch("pxtextmining.pipelines.multilabel_pipeline.train_bert_model")
 @patch("pxtextmining.pipelines.multilabel_pipeline.create_bert_model")
 @patch("pxtextmining.pipelines.multilabel_pipeline.calculating_class_weights")
@@ -96,6 +103,7 @@ def test_bert_pipeline(
     mock_classweights,
     mock_createbert,
     mock_trainbert,
+    mock_predict,
     mock_metrics,
     mock_write,
     mock_writepreds,
@@ -118,6 +126,7 @@ def test_bert_pipeline(
     mock_classweights.assert_called_once()
     mock_createbert.assert_called_once()
     mock_trainbert.assert_called_once()
+    mock_predict.assert_called_once()
     mock_metrics.assert_called_once()
     mock_write.assert_called_once()
     mock_writepreds.assert_called_once()
@@ -127,6 +136,7 @@ def test_bert_pipeline(
 @pytest.mark.parametrize("target", [major_cats, minor_cats, merged_minor_cats])
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_multilabel_models_and_metrics")
 @patch("pxtextmining.pipelines.multilabel_pipeline.get_multilabel_metrics")
+@patch("pxtextmining.pipelines.multilabel_pipeline.predict_multilabel_bert")
 @patch("pxtextmining.pipelines.multilabel_pipeline.train_bert_model")
 @patch(
     "pxtextmining.pipelines.multilabel_pipeline.create_bert_model_additional_features"
@@ -144,6 +154,7 @@ def test_bert_pipeline_additional_features(
     mock_classweights,
     mock_createbert,
     mock_trainbert,
+    mock_predict,
     mock_metrics,
     mock_write,
     target,
@@ -166,5 +177,6 @@ def test_bert_pipeline_additional_features(
     mock_classweights.assert_called_once()
     mock_createbert.assert_called_once()
     mock_trainbert.assert_called_once()
+    mock_predict.assert_called_once()
     mock_metrics.assert_called_once()
     mock_write.assert_called_once()

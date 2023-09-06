@@ -8,8 +8,6 @@ from tensorflow.keras.models import Model
 
 from pxtextmining.factories.factory_predict_unlabelled_text import (
     predict_multiclass_bert,
-    predict_multilabel_bert,
-    predict_multilabel_sklearn,
 )
 
 
@@ -82,28 +80,23 @@ def get_multiclass_metrics(
 
 
 def get_multilabel_metrics(
-    x_test,
+    preds_df,
     y_test,
     labels,
     random_state,
     model,
     training_time=None,
-    additional_features=False,
-    enhance_with_rules=False,
-    custom_threshold_dict=None,
 ):
     """Creates a string detailing various performance metrics for a multilabel model, which can then be written to
     a text file.
 
     Args:
-        x_test (pd.DataFrame): DataFrame containing test dataset features
+        preds_df (pd.DataFrame): DataFrame containing model predictions
         y_test (pd.DataFrame): DataFrame containing test dataset true target values
         labels (list): List containing the target labels
         random_state (int): Seed used to control the shuffling of the data, to enable reproducible results.
         model (tf.keras or sklearn model): Trained estimator.
         training_time (str, optional): Amount of time taken for model to train. Defaults to None.
-        additional_features (bool, optional): Whether or not additional features (e.g. question type) have been included in training the model. Defaults to False.
-        custom_threshold_dict (dict, optional): If custom thresholds for each label probability should be used. If none provided, default of 0.5 is used where a label is given if the probability is > 0.5. Keys of dict should correspond to labels.
 
     Raises:
         ValueError: Only sklearn and tensorflow keras models allowed.
@@ -117,42 +110,22 @@ def get_multilabel_metrics(
         f"\n Random state seed for train test split is: {random_state} \n\n"
     )
     model_metrics = {}
-    # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
-    # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
     if isinstance(model, Model) is True:
-        y_pred_df = predict_multilabel_bert(
-            x_test,
-            model,
-            labels=labels,
-            additional_features=additional_features,
-            label_fix=True,
-            enhance_with_rules=enhance_with_rules,
-            custom_threshold_dict=custom_threshold_dict,
-        )
         stringlist = []
         model.summary(print_fn=lambda x: stringlist.append(x))
         model_summary = "\n".join(stringlist)
     elif is_classifier(model) is True:
-        y_pred_df = predict_multilabel_sklearn(
-            x_test,
-            model,
-            labels=labels,
-            additional_features=additional_features,
-            label_fix=True,
-            enhance_with_rules=enhance_with_rules,
-            custom_threshold_dict=custom_threshold_dict,
-        )
         model_summary = model
     else:
         raise ValueError("invalid model type")
-    y_pred = np.array(y_pred_df[labels]).astype("int64")
+    y_pred = np.array(preds_df[labels]).astype("int64")
     # Calculate various metrics
     model_metrics["exact_accuracy"] = metrics.accuracy_score(y_test, y_pred)
     model_metrics["hamming_loss"] = metrics.hamming_loss(y_test, y_pred)
     model_metrics["macro_jaccard_score"] = metrics.jaccard_score(
         y_test, y_pred, average="macro"
     )
-    y_probs = y_pred_df.filter(like="Probability", axis=1)
+    y_probs = preds_df.filter(like="Probability", axis=1)
     model_metrics["macro_roc_auc"] = metrics.roc_auc_score(
         y_test, y_probs, multi_class="ovr"
     )

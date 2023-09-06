@@ -14,7 +14,11 @@ from pxtextmining.factories.factory_pipeline import (
     search_sklearn_pipelines,
     train_bert_model,
 )
-from pxtextmining.factories.factory_predict_unlabelled_text import get_thresholds
+from pxtextmining.factories.factory_predict_unlabelled_text import (
+    get_thresholds,
+    predict_multilabel_bert,
+    predict_multilabel_sklearn,
+)
 from pxtextmining.factories.factory_write_results import (
     write_model_analysis,
     write_model_preds,
@@ -83,6 +87,7 @@ def run_sklearn_pipeline(
         additional_features=additional_features,
     )
     model_metrics = []
+    preds = []
     for i in range(len(models)):
         m = models[i]
         t = training_times[i]
@@ -91,9 +96,19 @@ def run_sklearn_pipeline(
             custom_threshold_dict = get_thresholds(Y_val, val_preds, labels=target)
         else:
             custom_threshold_dict = None
+        preds_df = predict_multilabel_sklearn(
+            X_test,
+            m,
+            labels=target,
+            additional_features=additional_features,
+            label_fix=True,
+            enhance_with_rules=False,
+            custom_threshold_dict=custom_threshold_dict,
+        )
+        preds.append(preds_df)
         model_metrics.append(
             get_multilabel_metrics(
-                X_test,
+                preds_df,
                 Y_test,
                 random_state=random_state,
                 labels=target,
@@ -107,21 +122,19 @@ def run_sklearn_pipeline(
     if include_analysis is True:
         for i in range(len(models)):
             model_name = f"model_{i}"
-            preds_df = write_model_preds(
+            write_model_preds(
                 X_test,
                 Y_test,
-                models[i],
+                preds[i],
                 labels=target,
-                additional_features=additional_features,
                 path=f"{path}/{model_name}_labels.xlsx",
-                return_df=True,
             )
             write_model_analysis(
                 model_name,
                 labels=target,
                 dataset=df,
                 path=path,
-                preds_df=preds_df,
+                preds_df=preds[i],
                 y_true=Y_test,
                 custom_threshold_dict=custom_threshold_dict,
             )
@@ -181,26 +194,31 @@ def run_svc_pipeline(
         custom_threshold_dict = get_thresholds(Y_val, val_preds, labels=target)
     else:
         custom_threshold_dict = None
-    model_metrics = get_multilabel_metrics(
+    preds_df = predict_multilabel_sklearn(
         X_test,
-        Y_test,
-        random_state=random_state,
+        model=model,
         labels=target,
+        additional_features=additional_features,
+        label_fix=True,
+        enhance_with_rules=False,
+        custom_threshold_dict=custom_threshold_dict,
+    )
+    model_metrics = get_multilabel_metrics(
+        preds_df,
+        Y_test,
+        labels=target,
+        random_state=random_state,
         model=model,
         training_time=training_time,
-        additional_features=additional_features,
-        custom_threshold_dict=custom_threshold_dict,
     )
     write_multilabel_models_and_metrics([model], [model_metrics], path=path)
     if include_analysis is True:
-        preds_df = write_model_preds(
+        write_model_preds(
             X_test,
             Y_test,
-            model,
+            preds_df,
             labels=target,
-            additional_features=additional_features,
             path=f"{path}/labels.xlsx",
-            return_df=True,
         )
         write_model_analysis(
             model_name="model_0",
@@ -276,26 +294,31 @@ def run_bert_pipeline(
         custom_threshold_dict = get_thresholds(Y_val, val_preds, labels=target)
     else:
         custom_threshold_dict = None
-    model_metrics = get_multilabel_metrics(
+    preds_df = predict_multilabel_bert(
         test_dataset,
-        Y_test,
-        random_state=random_state,
+        model=model_trained,
         labels=target,
+        additional_features=additional_features,
+        label_fix=True,
+        enhance_with_rules=False,
+        custom_threshold_dict=custom_threshold_dict,
+    )
+    model_metrics = get_multilabel_metrics(
+        preds_df,
+        Y_test,
+        labels=target,
+        random_state=random_state,
         model=model_trained,
         training_time=training_time,
-        additional_features=additional_features,
-        custom_threshold_dict=custom_threshold_dict,
     )
     write_multilabel_models_and_metrics([model_trained], [model_metrics], path=path)
     if include_analysis is True:
-        preds_df = write_model_preds(
+        write_model_preds(
             X_test,
             Y_test,
-            model,
+            preds_df,
             labels=target,
-            additional_features=additional_features,
             path=f"{path}/labels.xlsx",
-            return_df=True,
         )
         write_model_analysis(
             model_name="model_0",
