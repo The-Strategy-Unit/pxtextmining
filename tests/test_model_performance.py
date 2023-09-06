@@ -170,3 +170,41 @@ def test_parse_metrics_file():
     labels = ["very positive", "positive", "neutral", "negative", "very negative"]
     metrics_df = factory_model_performance.parse_metrics_file(metrics_file, labels)
     assert metrics_df.shape == (5, 5)
+
+
+@pytest.mark.parametrize(
+    "custom_threshold_dict",
+    [None, {"one": 0.6, "two": 0.5, "three": 0.75, "four": 0.6, "five": 0.5}],
+)
+def test_additional_analysis(custom_threshold_dict):
+    y_true = np.array(
+        [
+            [0.0, 1.0, 0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0, 1.0, 1.0],
+            [1.0, 0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 1.0],
+        ]
+    )
+    labels = ["one", "two", "three", "four", "five"]
+    probs_labels = ["Probability of " + x for x in labels]
+    preds_df = pd.DataFrame(
+        np.array(
+            [
+                [0.0, 1.0, 0.0, 1.0, 0.0, 0.1, 0.6, 0.2, 0.7, 0.05],
+                [1.0, 0.0, 0.0, 1.0, 0.0, 0.55, 0.2, 0.3, 0.8, 0.4],
+                [1.0, 0.0, 0.0, 0.0, 0.0, 0.8, 0.3, 0.2, 0.3, 0.1],
+                [1.0, 0.0, 1.0, 1.0, 0.0, 0.7, 0.2, 0.8, 0.9, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 1.0, 0.2, 0.4, 0.2, 0.1, 0.6],
+            ]
+        ),
+        columns=labels + probs_labels,
+    )
+    analysis_df = factory_model_performance.additional_analysis(
+        preds_df, y_true, labels, custom_threshold_dict
+    )
+    assert list(analysis_df.index) == labels
+    if custom_threshold_dict is None:
+        assert len(analysis_df.columns) == 5
+    else:
+        assert len(analysis_df.columns) == 6

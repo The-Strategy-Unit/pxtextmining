@@ -250,7 +250,7 @@ def get_y_score(probs):
     return score
 
 
-def additional_analysis(preds_df, y_true, labels):
+def additional_analysis(preds_df, y_true, labels, custom_threshold_dict=None):
     """For given predictions, returns dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
 
     Args:
@@ -261,7 +261,6 @@ def additional_analysis(preds_df, y_true, labels):
     Returns:
         (pd.DataFrame): dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
     """
-    # include threshold?? (later)
     y_score = np.array(preds_df.filter(like="Probability", axis=1))
     cm = metrics.multilabel_confusion_matrix(y_true, np.array(preds_df[labels]))
     cm_dict = {}
@@ -281,4 +280,6 @@ def additional_analysis(preds_df, y_true, labels):
     df = pd.DataFrame.from_dict(cm_dict, orient="index")
     average_precision = pd.Series(average_precision)
     df["average_precision_score"] = average_precision
+    if custom_threshold_dict is not None:
+        df["custom_threshold"] = custom_threshold_dict
     return df
