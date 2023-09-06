@@ -12,8 +12,6 @@ from pxtextmining.factories.factory_model_performance import (
 from pxtextmining.factories.factory_predict_unlabelled_text import (
     get_labels,
     get_probabilities,
-    predict_multilabel_bert,
-    predict_multilabel_sklearn,
 )
 
 
@@ -44,50 +42,22 @@ def write_multilabel_models_and_metrics(models, model_metrics, path):
 
 def write_model_preds(
     x,
-    y,
-    model,
+    y_true,
+    preds_df,
     labels,
-    additional_features=True,
     path="labels.xlsx",
-    enhance_with_rules=False,
-    return_df=False,
 ):
     """Writes an Excel file to enable easier analysis of model outputs using the test set. Columns of the Excel file are: comment_id, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.
 
     Currently only works with sklearn models.
 
     Args:
-        x (pd.DataFrame): Features to be used to make the prediction.
-        y (np.array): Numpy array containing the targets, in one-hot encoded format
-        model (sklearn.base): Trained sklearn multilabel classifier.
-        labels (list): List of labels for the categories to be predicted.
-        additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to True.
-        path (str, optional): Filename for the outputted file. Defaults to 'labels.xlsx'.
     """
-    actual_labels = pd.DataFrame(y, columns=labels).apply(
+    actual_labels = pd.DataFrame(y_true, columns=labels).apply(
         get_labels, args=(labels,), axis=1
     )
     actual_labels.name = "actual_labels"
-    if isinstance(model, Model) is True:
-        preds_df = predict_multilabel_bert(
-            x,
-            model,
-            labels=labels,
-            additional_features=additional_features,
-            label_fix=True,
-            enhance_with_rules=enhance_with_rules,
-        )
-
-    else:
-        preds_df = predict_multilabel_sklearn(
-            x,
-            model,
-            labels=labels,
-            additional_features=additional_features,
-            label_fix=True,
-            enhance_with_rules=enhance_with_rules,
-        )
-    predicted_labels = preds_df.reset_index()["labels"]
+    predicted_labels = preds_df["labels"]
     predicted_labels.name = "predicted_labels"
     df = x.reset_index()
     probabilities = np.array(preds_df.filter(like="Probability", axis=1))
@@ -105,8 +75,6 @@ def write_model_preds(
     )
     df.to_excel(path, index=False)
     print(f"Successfully completed, written to {path}")
-    if return_df is True:
-        return preds_df
 
 
 def write_model_analysis(
