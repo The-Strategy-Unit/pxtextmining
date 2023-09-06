@@ -87,13 +87,15 @@ def run_sklearn_pipeline(
         additional_features=additional_features,
     )
     model_metrics = []
+    threshold_dicts = []
     preds = []
     for i in range(len(models)):
         m = models[i]
         t = training_times[i]
         if custom_threshold is True:
-            val_preds = m.predict(X_val)
-            custom_threshold_dict = get_thresholds(Y_val, val_preds, labels=target)
+            val_probs = m.predict_proba(X_val)
+            custom_threshold_dict = get_thresholds(Y_val, val_probs, labels=target)
+            threshold_dicts.append(custom_threshold_dict)
         else:
             custom_threshold_dict = None
         preds_df = predict_multilabel_sklearn(
@@ -136,7 +138,7 @@ def run_sklearn_pipeline(
                 path=path,
                 preds_df=preds[i],
                 y_true=Y_test,
-                custom_threshold_dict=custom_threshold_dict,
+                custom_threshold_dict=threshold_dicts[i],
             )
     print("Pipeline complete")
 
@@ -190,8 +192,8 @@ def run_svc_pipeline(
         X_train, Y_train, additional_features=additional_features
     )
     if custom_threshold is True:
-        val_preds = model.predict(X_val)
-        custom_threshold_dict = get_thresholds(Y_val, val_preds, labels=target)
+        val_probs = model.predict_proba(X_val)
+        custom_threshold_dict = get_thresholds(Y_val, val_probs, labels=target)
     else:
         custom_threshold_dict = None
     preds_df = predict_multilabel_sklearn(
@@ -290,8 +292,8 @@ def run_bert_pipeline(
     )
     if custom_threshold is True:
         val = bert_data_to_dataset(X_val, additional_features=additional_features)
-        val_preds = model_trained.predict(val)
-        custom_threshold_dict = get_thresholds(Y_val, val_preds, labels=target)
+        val_probs = model_trained.predict(val)
+        custom_threshold_dict = get_thresholds(Y_val, val_probs, labels=target)
     else:
         custom_threshold_dict = None
     preds_df = predict_multilabel_bert(

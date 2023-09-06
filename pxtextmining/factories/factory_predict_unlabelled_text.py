@@ -419,6 +419,8 @@ def get_thresholds(y_true, y_probs, labels):
     Returns:
         (dict): Dict with key value pairs (label, recommended threshold) for maximising the F1 score.
     """
+    if isinstance(y_probs, list) is True:
+        y_probs = np.array(y_probs)
     if y_probs.ndim == 3:
         y_probs = y_probs[:, :, 1].T
     assert y_probs.shape == y_true.shape
