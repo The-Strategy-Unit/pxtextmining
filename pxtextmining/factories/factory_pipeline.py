@@ -353,13 +353,12 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                 n_jobs=-1,
             ),
         )
-        params["multioutputclassifier__estimator__C"] = [10, 15, 20]
-        params["multioutputclassifier__estimator__gamma"] = np.logspace(-9, 3, 13)
-        # params["multioutputclassifier__estimator__kernel"] = [
-        #     "linear",
-        #     "rbf",
-        #     "sigmoid",
-        # ]
+        params["multioutputclassifier__estimator__C"] = [1, 5, 10, 15, 20]
+        params["multioutputclassifier__estimator__kernel"] = [
+            "linear",
+            "rbf",
+            "sigmoid",
+        ]
     if model_type == "rfc":
         pipe = make_pipeline(preproc, RandomForestClassifier(n_jobs=-1))
         params["randomforestclassifier__max_depth"] = stats.randint(5, 50)
@@ -422,7 +421,7 @@ def search_sklearn_pipelines(
             search = RandomizedSearchCV(
                 pipe,
                 params,
-                scoring="f1_macro",
+                scoring="average_precision",
                 n_iter=100,
                 cv=4,
                 n_jobs=-2,
