@@ -138,13 +138,17 @@ def predict_multilabel_bert(
         else:
             final_text = final_data
         y_probs = rulebased_probs(final_text, y_probs)
-    y_binary = turn_probs_into_binary(
-        y_probs, custom_threshold_dict=custom_threshold_dict
-    )
+    y_binary_raw = turn_probs_into_binary(y_probs, custom_threshold_dict=None)
     if label_fix is True:
-        predictions = fix_no_labels(y_binary, y_probs)
+        predictions = fix_no_labels(y_binary_raw, y_probs)
     else:
-        predictions = y_binary
+        predictions = y_binary_raw
+    if custom_threshold_dict is not None:
+        custom_threshold_predictions = turn_probs_into_binary(
+            y_probs, custom_threshold_dict=custom_threshold_dict
+        )
+        combined_preds = predictions + custom_threshold_predictions
+        predictions = np.where(combined_preds == 0, combined_preds, 1)
     if already_encoded is False:
         preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     else:
