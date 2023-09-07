@@ -379,7 +379,7 @@ def turn_probs_into_binary(predicted_probs, custom_threshold_dict=None):
         assert predicted_probs.shape[-1] == len(custom_threshold_dict)
         new_preds = np.zeros(predicted_probs.shape)
         for i, label in enumerate(custom_threshold_dict):
-            threshold = custom_threshold_dict[label]
+            threshold = custom_threshold_dict.get(label, 0.5)
             label_probs = predicted_probs[:, i]
             label_preds = np.where(label_probs > threshold, 1, 0)
             new_preds[:, i] = label_preds
