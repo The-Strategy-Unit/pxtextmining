@@ -95,9 +95,9 @@ def run_sklearn_pipeline(
         if custom_threshold is True:
             val_probs = m.predict_proba(X_val)
             custom_threshold_dict = get_thresholds(Y_val, val_probs, labels=target)
-            threshold_dicts.append(custom_threshold_dict)
         else:
             custom_threshold_dict = None
+        threshold_dicts.append(custom_threshold_dict)
         preds_df = predict_multilabel_sklearn(
             X_test,
             m,
