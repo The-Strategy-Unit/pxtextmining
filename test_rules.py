@@ -39,7 +39,6 @@ def test_rules():
         Y_test,
         random_state=random_state,
         labels=target,
-        model_type="sklearn",
         model=loaded_model,
         training_time=training_time,
         additional_features=additional_features,
@@ -83,11 +82,9 @@ def test_rules_bert():
         Y_test,
         random_state=random_state,
         labels=target,
-        model_type="bert",
         model=loaded_model,
         training_time=training_time,
         additional_features=additional_features,
-        already_encoded=False,
         enhance_with_rules=False,
     )
     txtpath = os.path.join(path, "model_0" + ".txt")
@@ -98,11 +95,9 @@ def test_rules_bert():
         Y_test,
         random_state=random_state,
         labels=target,
-        model_type="bert",
         model=loaded_model,
         training_time=training_time,
         additional_features=additional_features,
-        already_encoded=False,
         enhance_with_rules=True,
     )
     txtpath = os.path.join(path, "model_0_rules" + ".txt")

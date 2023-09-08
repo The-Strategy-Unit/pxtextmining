@@ -9,6 +9,32 @@ from pxtextmining.factories import factory_model_performance
 
 
 @pytest.fixture
+def grab_preds_df():
+    labels = ["one", "two", "three", "four", "five"]
+    probs_labels = ["Probability of " + x for x in labels]
+    preds_df = pd.DataFrame(
+        np.array(
+            [
+                [0.0, 1.0, 0.0, 1.0, 0.0, 0.1, 0.6, 0.2, 0.7, 0.05],
+                [1.0, 0.0, 0.0, 1.0, 0.0, 0.55, 0.2, 0.3, 0.8, 0.4],
+                [1.0, 0.0, 0.0, 0.0, 0.0, 0.8, 0.3, 0.2, 0.3, 0.1],
+                [1.0, 0.0, 1.0, 1.0, 0.0, 0.7, 0.2, 0.8, 0.9, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 1.0, 0.2, 0.4, 0.2, 0.1, 0.6],
+            ]
+        ),
+        columns=labels + probs_labels,
+    )
+    preds_df["labels"] = [
+        ["two", "four"],
+        ["one", "four"],
+        ["one"],
+        ["one", "three", "four"],
+        ["five"],
+    ]
+    return preds_df
+
+
+@pytest.fixture
 def grab_test_bert_multiclass():
     predicted_probs = np.array(
         [
@@ -104,7 +130,8 @@ def test_multiclass_metrics_bert(
     assert isinstance(metrics_string, str) is True
 
 
-def test_multilabel_metrics_sklearn(grab_test_X_additional_feats):
+def test_multilabel_metrics_sklearn(grab_preds_df, grab_test_X_additional_feats):
+    preds_df = grab_preds_df
     x = grab_test_X_additional_feats
     y = np.array(
         [
@@ -115,27 +142,21 @@ def test_multilabel_metrics_sklearn(grab_test_X_additional_feats):
             [0, 0, 0, 0, 1],
         ]
     )
-    labels = ["A", "B", "C", "D", "E"]
+    labels = ["one", "two", "three", "four", "five"]
     random_state = 42
-    model_type = "sklearn"
-    additional_features = True
     model = factory_model_performance.get_dummy_model(x, y)
     metrics_string = factory_model_performance.get_multilabel_metrics(
-        x,
+        preds_df,
         y,
         labels,
         random_state,
-        model_type,
         model,
-        additional_features=additional_features,
     )
     assert isinstance(metrics_string, str) is True
 
 
-def test_multilabel_metrics_bert(
-    grab_test_X_additional_feats, grab_test_bert_multilabel
-):
-    x = grab_test_X_additional_feats
+def test_multilabel_metrics_bert(grab_test_bert_multilabel, grab_preds_df):
+    preds_df = grab_preds_df
     y = np.array(
         [
             [0, 1, 0, 1, 0],
@@ -145,19 +166,15 @@ def test_multilabel_metrics_bert(
             [0, 0, 0, 0, 1],
         ]
     )
-    labels = ["A", "B", "C", "D", "E"]
+    labels = ["one", "two", "three", "four", "five"]
     random_state = 42
-    model_type = "bert"
-    additional_features = True
     model = grab_test_bert_multilabel
     metrics_string = factory_model_performance.get_multilabel_metrics(
-        x,
+        preds_df,
         y,
         labels,
         random_state,
-        model_type,
         model,
-        additional_features=additional_features,
     )
     assert isinstance(metrics_string, str) is True
 
@@ -174,3 +191,29 @@ def test_parse_metrics_file():
     labels = ["very positive", "positive", "neutral", "negative", "very negative"]
     metrics_df = factory_model_performance.parse_metrics_file(metrics_file, labels)
     assert metrics_df.shape == (5, 5)
+
+
+@pytest.mark.parametrize(
+    "custom_threshold_dict",
+    [None, {"one": 0.6, "two": 0.5, "three": 0.75, "four": 0.6, "five": 0.5}],
+)
+def test_additional_analysis(custom_threshold_dict, grab_preds_df):
+    y_true = np.array(
+        [
+            [0.0, 1.0, 0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0, 1.0, 1.0],
+            [1.0, 0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 1.0],
+        ]
+    )
+    labels = ["one", "two", "three", "four", "five"]
+    preds_df = grab_preds_df
+    analysis_df = factory_model_performance.additional_analysis(
+        preds_df, y_true, labels, custom_threshold_dict
+    )
+    assert list(analysis_df.index) == labels
+    if custom_threshold_dict is None:
+        assert len(analysis_df.columns) == 5
+    else:
+        assert len(analysis_df.columns) == 6
