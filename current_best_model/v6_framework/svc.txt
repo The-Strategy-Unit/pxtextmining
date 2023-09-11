@@ -1,6 +1,6 @@
 
  *****************
- Random state seed for train test split is: 42 
+ Random state seed for train test split is: 42
 
 
 Pipeline(steps=[('columntransformer',
