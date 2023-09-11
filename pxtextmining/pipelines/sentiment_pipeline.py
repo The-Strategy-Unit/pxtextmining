@@ -1,6 +1,4 @@
-import random
 import numpy as np
-
 from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
 from tensorflow.keras.utils import to_categorical
@@ -12,17 +10,17 @@ from pxtextmining.factories.factory_data_load_and_split import (
 )
 from pxtextmining.factories.factory_model_performance import get_multiclass_metrics
 from pxtextmining.factories.factory_pipeline import (
-    search_sklearn_pipelines,
-    create_bert_model_additional_features,
-    train_bert_model,
     create_bert_model,
+    create_bert_model_additional_features,
+    search_sklearn_pipelines,
+    train_bert_model,
 )
 from pxtextmining.factories.factory_write_results import (
     write_multilabel_models_and_metrics,
 )
 from pxtextmining.params import dataset
 
-random_state = random.randint(1, 999)
+random_state = 75
 
 
 def run_sentiment_pipeline(
@@ -134,5 +132,5 @@ def run_sentiment_bert_pipeline(
 if __name__ == "__main__":
     # run_sentiment_pipeline(additional_features=False)
     run_sentiment_bert_pipeline(
-        additional_features=True, path="test_multilabel/sentiment_bert"
+        additional_features=True, path="test_multilabel/230908_sentiment_bert"
     )

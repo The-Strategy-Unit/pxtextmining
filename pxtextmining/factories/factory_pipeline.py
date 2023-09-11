@@ -350,7 +350,6 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                     max_iter=1000,
                     cache_size=1000,
                 ),
-                n_jobs=-1,
             ),
         )
         params["multioutputclassifier__estimator__C"] = [1, 5, 10, 15, 20]
@@ -418,16 +417,27 @@ def search_sklearn_pipelines(
                     model_type, additional_features=additional_features
                 )
             start_time = time.time()
-            search = RandomizedSearchCV(
-                pipe,
-                params,
-                scoring="average_precision",
-                n_iter=100,
-                cv=4,
-                n_jobs=-2,
-                refit=True,
-                verbose=1,
-            )
+            if model_type == "svm":
+                search = RandomizedSearchCV(
+                    pipe,
+                    params,
+                    scoring="average_precision",
+                    n_iter=100,
+                    cv=4,
+                    refit=True,
+                    verbose=1,
+                )
+            else:
+                search = RandomizedSearchCV(
+                    pipe,
+                    params,
+                    scoring="average_precision",
+                    n_iter=100,
+                    cv=4,
+                    n_jobs=-2,
+                    refit=True,
+                    verbose=1,
+                )
             search.fit(X_train, Y_train)
             models.append(search.best_estimator_)
             training_time = round(time.time() - start_time, 0)
