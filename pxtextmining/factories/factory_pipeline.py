@@ -7,7 +7,7 @@ from scipy import stats
 from sklearn.compose import make_column_transformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -358,6 +358,10 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
             "rbf",
             "sigmoid",
         ]
+        if "columntransformer__tfidfvectorizer__min_df" in params:
+            params["columntransformer__tfidfvectorizer__min_df"] = [0, 1, 2, 3, 4, 5]
+        else:
+            params["tfidfvectorizer__min_df"] = [0, 1, 2, 3, 4, 5]
     if model_type == "rfc":
         pipe = make_pipeline(preproc, RandomForestClassifier(n_jobs=-1))
         params["randomforestclassifier__max_depth"] = stats.randint(5, 50)
@@ -418,11 +422,10 @@ def search_sklearn_pipelines(
                 )
             start_time = time.time()
             if model_type == "svm":
-                search = RandomizedSearchCV(
+                search = GridSearchCV(
                     pipe,
                     params,
                     scoring="average_precision",
-                    n_iter=100,
                     cv=4,
                     refit=True,
                     verbose=1,
