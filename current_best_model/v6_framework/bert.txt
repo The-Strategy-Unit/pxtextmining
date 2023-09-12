@@ -1,35 +1,35 @@
 
  *****************
- Random state seed for train test split is: 42 
+ Random state seed for train test split is: 42
 
 
 Model: "model"
 __________________________________________________________________________________________________
- Layer (type)                   Output Shape         Param #     Connected to                     
+ Layer (type)                   Output Shape         Param #     Connected to
 ==================================================================================================
- input_ids (InputLayer)         [(None, 150)]        0           []                               
-                                                                                                  
- distilbert (TFDistilBertMainLa  TFBaseModelOutput(l  66362880   ['input_ids[0][0]']              
- yer)                           ast_hidden_state=(N                                               
-                                one, 150, 768),                                                   
-                                 hidden_states=None                                               
-                                , attentions=None)                                                
-                                                                                                  
- tf.__operators__.getitem (Slic  (None, 768)         0           ['distilbert[0][0]']             
- ingOpLambda)                                                                                     
-                                                                                                  
- input_cat (InputLayer)         [(None, 3)]          0           []                               
-                                                                                                  
+ input_ids (InputLayer)         [(None, 150)]        0           []
+
+ distilbert (TFDistilBertMainLa  TFBaseModelOutput(l  66362880   ['input_ids[0][0]']
+ yer)                           ast_hidden_state=(N
+                                one, 150, 768),
+                                 hidden_states=None
+                                , attentions=None)
+
+ tf.__operators__.getitem (Slic  (None, 768)         0           ['distilbert[0][0]']
+ ingOpLambda)
+
+ input_cat (InputLayer)         [(None, 3)]          0           []
+
  pooled_output (Dropout)        (None, 768)          0           ['tf.__operators__.getitem[0][0]'
-                                                                 ]                                
-                                                                                                  
- dense (Dense)                  (None, 10)           40          ['input_cat[0][0]']              
-                                                                                                  
- concatenate (Concatenate)      (None, 778)          0           ['pooled_output[0][0]',          
-                                                                  'dense[0][0]']                  
-                                                                                                  
- output (Dense)                 (None, 44)           34276       ['concatenate[0][0]']            
-                                                                                                  
+                                                                 ]
+
+ dense (Dense)                  (None, 10)           40          ['input_cat[0][0]']
+
+ concatenate (Concatenate)      (None, 778)          0           ['pooled_output[0][0]',
+                                                                  'dense[0][0]']
+
+ output (Dense)                 (None, 44)           34276       ['concatenate[0][0]']
+
 ==================================================================================================
 Total params: 66,397,196
 Trainable params: 66,397,196
