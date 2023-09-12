@@ -9,32 +9,6 @@ from pxtextmining.factories import factory_model_performance
 
 
 @pytest.fixture
-def grab_preds_df():
-    labels = ["one", "two", "three", "four", "five"]
-    probs_labels = ["Probability of " + x for x in labels]
-    preds_df = pd.DataFrame(
-        np.array(
-            [
-                [0.0, 1.0, 0.0, 1.0, 0.0, 0.1, 0.6, 0.2, 0.7, 0.05],
-                [1.0, 0.0, 0.0, 1.0, 0.0, 0.55, 0.2, 0.3, 0.8, 0.4],
-                [1.0, 0.0, 0.0, 0.0, 0.0, 0.8, 0.3, 0.2, 0.3, 0.1],
-                [1.0, 0.0, 1.0, 1.0, 0.0, 0.7, 0.2, 0.8, 0.9, 0.0],
-                [0.0, 0.0, 0.0, 0.0, 1.0, 0.2, 0.4, 0.2, 0.1, 0.6],
-            ]
-        ),
-        columns=labels + probs_labels,
-    )
-    preds_df["labels"] = [
-        ["two", "four"],
-        ["one", "four"],
-        ["one"],
-        ["one", "three", "four"],
-        ["five"],
-    ]
-    return preds_df
-
-
-@pytest.fixture
 def grab_test_bert_multiclass():
     predicted_probs = np.array(
         [
