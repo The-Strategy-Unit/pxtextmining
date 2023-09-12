@@ -187,7 +187,7 @@ def test_accuracy_per_class():
 
 
 def test_parse_metrics_file():
-    metrics_file = "current_best_multilabel/bert_sentiment.txt"
+    metrics_file = "current_best_model/sentiment/bert_sentiment.txt"
     labels = ["very positive", "positive", "neutral", "negative", "very negative"]
     metrics_df = factory_model_performance.parse_metrics_file(metrics_file, labels)
     assert metrics_df.shape == (5, 5)

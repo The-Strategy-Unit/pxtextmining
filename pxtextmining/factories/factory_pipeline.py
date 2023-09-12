@@ -105,7 +105,7 @@ def create_sklearn_pipeline_sentiment(
                 cache_size=1000,
             ),
         )
-        params["svc__C"] = stats.uniform(0.1, 20)
+        params["svc__C"] = [1, 5, 10, 15, 20]
         params["svc__kernel"] = [
             "linear",
             "rbf",
