@@ -444,3 +444,20 @@ def get_thresholds(y_true, y_probs, labels):
             threshold_dict[label] = thresholds[best_idx]
     np.seterr(divide="warn", invalid="warn")
     return threshold_dict
+
+
+def combine_predictions(df_list, labels):
+    for i, df in enumerate(df_list):
+        if i == 0:
+            main_df = df
+        else:
+            main_df = main_df + df
+    binary_combined = main_df[labels]
+    binary_combined = binary_combined.mask(binary_combined != 0, 1)
+    probs_combined = main_df.filter(like="Probability", axis=1)
+    probs_combined = probs_combined / 3
+    combined_preds = pd.concat([binary_combined, probs_combined], axis=1)
+    combined_preds["labels"] = combined_preds[labels].apply(
+        get_labels, args=(labels,), axis=1
+    )
+    return combined_preds
