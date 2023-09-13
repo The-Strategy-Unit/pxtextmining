@@ -447,13 +447,23 @@ def get_thresholds(y_true, y_probs, labels):
 
 
 def combine_predictions(df_list, labels, method="probabilities"):
+    """Combines outputted prediction dataframes from different models, using different methods.
+
+    Args:
+        df_list (list): List of predictions in pd.DataFrame format, produced with either `predict_multilabel_sklearn` or `predict_multilabel_bert`
+        labels (list): List of labels in the prediction dataframes.
+        method (str, optional): Method to use for combining the predictions. Defaults to "probabilities", which uses the average of predicted probabilities from all models. This results in higher precision, lower recall, and the prediction threshold is lowered to 0.3. Otherwise, takes all predicted classes from all models (high recall, low precision).
+
+    Returns:
+        (pd.DataFrame): New predictions.
+    """
     for i, df in enumerate(df_list):
         if i == 0:
             main_df = df
         else:
             main_df = main_df + df
     probs_combined = main_df.filter(like="Probability", axis=1)
-    probs_combined = probs_combined / 3
+    probs_combined = probs_combined / len(df_list)
     if method == "probabilities":
         probs_np = np.array(probs_combined)
         temp_threshold = {}
