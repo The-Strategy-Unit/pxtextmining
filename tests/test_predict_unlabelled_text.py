@@ -2,6 +2,7 @@ from unittest.mock import Mock
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from pxtextmining.factories import factory_predict_unlabelled_text
 
@@ -136,7 +137,17 @@ def test_predict_multilabel_sklearn_additional_params(grab_test_X_additional_fea
     assert preds_df.shape == (3, cols)
 
 
-def test_predict_multilabel_bert():
+@pytest.mark.parametrize(
+    "custom_threshold_dict",
+    [None, {"one": 0.6, "two": 0.5, "three": 0.75, "four": 0.6, "five": 0.5}],
+)
+@pytest.mark.parametrize("additional_features", [True, False])
+@pytest.mark.parametrize("label_fix", [True, False])
+def test_predict_multilabel_bert(
+    additional_features,
+    custom_threshold_dict,
+    label_fix,
+):
     data = pd.DataFrame(
         [
             {
@@ -174,10 +185,18 @@ def test_predict_multilabel_bert():
             [2.0081511e-01, 7.0609129e-04, 1.1107661e-03, 7.9677838e-01, 5.8961433e-04],
         ]
     )
+    if additional_features is False:
+        data = data["FFT answer"]
     labels = ["first", "second", "third", "fourth", "fifth"]
     model = Mock(predict=Mock(return_value=predicted_probs))
+
     preds_df = factory_predict_unlabelled_text.predict_multilabel_bert(
-        data, model, labels=labels, additional_features=True
+        data,
+        model,
+        labels=labels,
+        label_fix=label_fix,
+        additional_features=additional_features,
+        custom_threshold_dict=custom_threshold_dict,
     )
     cols = len(labels) * 2 + 1
     assert preds_df.shape == (4, cols)
