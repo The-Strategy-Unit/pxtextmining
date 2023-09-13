@@ -523,3 +523,36 @@ def test_combine_predictions(grab_preds_df):
         [test_df_1, test_df_2], labels=["one", "two", "three", "four", "five"]
     )
     assert df.shape == test_df_1.shape
+
+
+def test_rules_dict():
+    text = pd.DataFrame(
+        [
+            {
+                "Comment ID": "99999",
+                "FFT answer": "I liked all of it",
+            },
+            {
+                "Comment ID": "A56",
+                "FFT answer": "Truly awful time finding parking",
+            },
+            {
+                "Comment ID": "4",
+                "FFT answer": "I really enjoyed the session",
+            },
+        ]
+    ).set_index("Comment ID")["FFT answer"]
+    probs = np.array(
+        [
+            [6.2770307e-01, 2.3520987e-02, 1.3149388e-01, 2.7835215e-02, 1.8944685e-01],
+            [9.8868138e-01, 1.9990385e-03, 5.4453085e-03, 9.0726715e-04, 2.9669846e-03],
+            [4.2310607e-01, 5.6546849e-01, 9.3136989e-03, 1.3205722e-03, 7.9117226e-04],
+        ]
+    )
+    labels = ["one", "two", "Negative experience", "three", "four", "five"]
+    rules_dict = {"Negative experience": ["awful"]}
+    improved_probs = factory_predict_unlabelled_text.rulebased_probs(
+        text=text, pred_probs=probs, labels=labels, rules_dict=rules_dict
+    )
+    assert improved_probs.shape == probs.shape
+    assert improved_probs[1][2] >= 0.3

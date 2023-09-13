@@ -75,7 +75,7 @@ def predict_multilabel_sklearn(
     else:
         predictions = binary_preds
     if enhance_with_rules is True:
-        pred_probs = rulebased_probs(processed_text, pred_probs)
+        pred_probs = rulebased_probs(processed_text, pred_probs, labels)
     enhanced_predictions = turn_probs_into_binary(pred_probs, custom_threshold_dict)
     combined_predictions = predictions + enhanced_predictions
     predictions = np.where(combined_predictions == 0, combined_predictions, 1)
@@ -137,7 +137,7 @@ def predict_multilabel_bert(
             final_text = final_data["FFT answer"]
         else:
             final_text = final_data
-        y_probs = rulebased_probs(final_text, y_probs)
+        y_probs = rulebased_probs(final_text, y_probs, labels)
     y_binary_raw = turn_probs_into_binary(y_probs, custom_threshold_dict=None)
     if label_fix is True:
         predictions = fix_no_labels(y_binary_raw, y_probs)
@@ -387,7 +387,7 @@ def turn_probs_into_binary(predicted_probs, custom_threshold_dict=None):
     return preds
 
 
-def rulebased_probs(text, pred_probs):
+def rulebased_probs(text, pred_probs, labels, rules_dict=rules_dict):
     """Uses the `rules_dict` in `pxtextmining.params` to boost the probabilities of specific classes, given the appearance of specific words.
 
     Args:
@@ -398,7 +398,7 @@ def rulebased_probs(text, pred_probs):
         (np.ndarray): Numpy array with the modified predicted probabilities of the text.
     """
     for k, v in rules_dict.items():
-        label_index = minor_cats.index(k)
+        label_index = labels.index(k)
         prob = probs_dict.get(k, 0.3)
         for row in range(len(text)):
             for word in v:
