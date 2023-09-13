@@ -516,11 +516,14 @@ def test_turn_probs_into_binary_dict():
     assert test_probs.shape == preds.shape
 
 
-def test_combine_predictions(grab_preds_df):
+@pytest.mark.parametrize("method", ["probabilities", "categories"])
+def test_combine_predictions(grab_preds_df, method):
     test_df_1 = grab_preds_df
     test_df_2 = grab_preds_df.copy()
     df = factory_predict_unlabelled_text.combine_predictions(
-        [test_df_1, test_df_2], labels=["one", "two", "three", "four", "five"]
+        [test_df_1, test_df_2],
+        labels=["one", "two", "three", "four", "five"],
+        method=method,
     )
     assert df.shape == test_df_1.shape
 
