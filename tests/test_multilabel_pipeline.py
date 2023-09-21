@@ -2,11 +2,11 @@ from unittest.mock import patch
 
 import pytest
 
-from pxtextmining.params import major_cats, merged_minor_cats, minor_cats
+from pxtextmining.params import major_cats, minor_cats
 from pxtextmining.pipelines import multilabel_pipeline
 
 
-@pytest.mark.parametrize("target", [major_cats, minor_cats, merged_minor_cats])
+@pytest.mark.parametrize("target", [major_cats, minor_cats])
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_model_analysis")
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_model_preds")
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_multilabel_models_and_metrics")
@@ -44,7 +44,7 @@ def test_sklearn_pipeline(
     mock_writeanalysis.assert_called_once()
 
 
-@pytest.mark.parametrize("target", [major_cats, minor_cats, merged_minor_cats])
+@pytest.mark.parametrize("target", [major_cats, minor_cats])
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_model_analysis")
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_model_preds")
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_multilabel_models_and_metrics")
@@ -82,7 +82,7 @@ def test_svc_pipeline(
     mock_writeanalysis.assert_called_once()
 
 
-@pytest.mark.parametrize("target", [major_cats, minor_cats, merged_minor_cats])
+@pytest.mark.parametrize("target", [major_cats, minor_cats])
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_model_analysis")
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_model_preds")
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_multilabel_models_and_metrics")
@@ -133,7 +133,7 @@ def test_bert_pipeline(
     mock_writeanalysis.assert_called_once()
 
 
-@pytest.mark.parametrize("target", [major_cats, minor_cats, merged_minor_cats])
+@pytest.mark.parametrize("target", [major_cats, minor_cats])
 @patch("pxtextmining.pipelines.multilabel_pipeline.write_multilabel_models_and_metrics")
 @patch("pxtextmining.pipelines.multilabel_pipeline.get_multilabel_metrics")
 @patch("pxtextmining.pipelines.multilabel_pipeline.predict_multilabel_bert")

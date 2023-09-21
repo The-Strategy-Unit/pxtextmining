@@ -24,13 +24,7 @@ from pxtextmining.factories.factory_write_results import (
     write_model_preds,
     write_multilabel_models_and_metrics,
 )
-from pxtextmining.params import (
-    dataset,
-    major_cats,
-    merged_minor_cats,
-    minor_cats,
-    random_state,
-)
+from pxtextmining.params import dataset, major_cats, minor_cats, random_state
 
 
 def run_sklearn_pipeline(
@@ -59,8 +53,6 @@ def run_sklearn_pipeline(
         target_name = "major_categories"
     if target == minor_cats:
         target_name = "minor_categories"
-    if target == merged_minor_cats:
-        target_name = "test"
     df = load_multilabel_data(filename=dataset, target=target_name)
     if custom_threshold is True:
         X_train_val, X_test, Y_train_val, Y_test = process_and_split_data(
@@ -165,8 +157,6 @@ def run_svc_pipeline(
         target_name = "major_categories"
     if target == minor_cats:
         target_name = "minor_categories"
-    if target == merged_minor_cats:
-        target_name = "test"
     df = load_multilabel_data(filename=dataset, target=target_name)
     if custom_threshold is True:
         X_train_val, X_test, Y_train_val, Y_test = process_and_split_data(
@@ -254,8 +244,6 @@ def run_bert_pipeline(
         target_name = "major_categories"
     if target == minor_cats:
         target_name = "minor_categories"
-    if target == merged_minor_cats:
-        target_name = "test"
     df = load_multilabel_data(filename=dataset, target=target_name)
     X_train_val, X_test, Y_train_val, Y_test = process_and_split_data(
         df,
