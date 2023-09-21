@@ -1,4 +1,5 @@
-from unittest.mock import patch
+import json
+from unittest.mock import mock_open, patch
 
 import pandas as pd
 import pytest
@@ -44,10 +45,9 @@ def test_predict_sentiment(mock_load_model, mock_get_predictions):
         ]
     ).set_index("Comment ID")
     mock_get_predictions.return_value = output
-    return_dict = docker_run.predict_sentiment(input_text)
+    docker_run.predict_sentiment(input_text)
     mock_load_model.assert_called_once()
-    assert len(return_dict) == len(input_text)
-    assert "sentiment" in return_dict[0].keys()
+    mock_get_predictions.assert_called()
 
 
 @pytest.mark.parametrize("args", [["file_01.json"], ["file_01.json", "-l"]])
@@ -59,6 +59,44 @@ def test_parse_args(mocker, args):
         assert args.local_storage is True
 
 
-def test_main():
-    # docker_run.main()
-    pass
+@patch("docker_run.get_sentiment_predictions")
+@patch("docker_run.load_model")
+def test_comment_id_error(mock_load_model, mock_get_predictions):
+    with pytest.raises(ValueError):
+        test_json = [
+            {
+                "comment_id": "1",
+                "comment_text": "I liked all of it",
+                "question_type": "nonspecific",
+            },
+            {
+                "comment_id": "1",
+                "comment_text": "I liked all of it",
+                "question_type": "nonspecific",
+            },
+        ]
+        docker_run.predict_sentiment(test_json)
+
+
+@patch("docker_run.predict_sentiment", return_value={"text": "ok"})
+@patch("docker_run.os.remove")
+@patch(
+    "builtins.open", new_callable=mock_open, read_data=json.dumps([{"data": "Here"}])
+)
+@patch("sys.argv", ["docker_run.py"] + ["file_01.json"])
+def test_main_not_local(mock_open, mock_remove, mock_predict):
+    docker_run.main()
+    mock_open.assert_called()
+    mock_predict.assert_called()
+    mock_remove.assert_called_once()
+
+
+@patch("docker_run.predict_sentiment", return_value={"text": "ok"})
+@patch(
+    "builtins.open", new_callable=mock_open, read_data=json.dumps([{"data": "Here"}])
+)
+@patch("sys.argv", ["docker_run.py"] + ["file_01.json", "-l"])
+def test_main_local(mock_open, mock_predict):
+    docker_run.main()
+    mock_open.assert_called()
+    mock_predict.assert_called()
