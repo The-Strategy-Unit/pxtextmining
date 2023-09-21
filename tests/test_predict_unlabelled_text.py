@@ -2,6 +2,7 @@ from unittest.mock import Mock
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from pxtextmining.factories import factory_predict_unlabelled_text
 
@@ -136,7 +137,17 @@ def test_predict_multilabel_sklearn_additional_params(grab_test_X_additional_fea
     assert preds_df.shape == (3, cols)
 
 
-def test_predict_multilabel_bert():
+@pytest.mark.parametrize(
+    "custom_threshold_dict",
+    [None, {"one": 0.6, "two": 0.5, "three": 0.75, "four": 0.6, "five": 0.5}],
+)
+@pytest.mark.parametrize("additional_features", [True, False])
+@pytest.mark.parametrize("label_fix", [True, False])
+def test_predict_multilabel_bert(
+    additional_features,
+    custom_threshold_dict,
+    label_fix,
+):
     data = pd.DataFrame(
         [
             {
@@ -174,10 +185,18 @@ def test_predict_multilabel_bert():
             [2.0081511e-01, 7.0609129e-04, 1.1107661e-03, 7.9677838e-01, 5.8961433e-04],
         ]
     )
+    if additional_features is False:
+        data = data["FFT answer"]
     labels = ["first", "second", "third", "fourth", "fifth"]
     model = Mock(predict=Mock(return_value=predicted_probs))
+
     preds_df = factory_predict_unlabelled_text.predict_multilabel_bert(
-        data, model, labels=labels, additional_features=True
+        data,
+        model,
+        labels=labels,
+        label_fix=label_fix,
+        additional_features=additional_features,
+        custom_threshold_dict=custom_threshold_dict,
     )
     cols = len(labels) * 2 + 1
     assert preds_df.shape == (4, cols)
@@ -495,3 +514,48 @@ def test_turn_probs_into_binary_dict():
         test_probs, custom_threshold_dict
     )
     assert test_probs.shape == preds.shape
+
+
+@pytest.mark.parametrize("method", ["probabilities", "categories"])
+def test_combine_predictions(grab_preds_df, method):
+    test_df_1 = grab_preds_df
+    test_df_2 = grab_preds_df.copy()
+    df = factory_predict_unlabelled_text.combine_predictions(
+        [test_df_1, test_df_2],
+        labels=["one", "two", "three", "four", "five"],
+        method=method,
+    )
+    assert df.shape == test_df_1.shape
+
+
+def test_rules_dict():
+    text = pd.DataFrame(
+        [
+            {
+                "Comment ID": "99999",
+                "FFT answer": "I liked all of it",
+            },
+            {
+                "Comment ID": "A56",
+                "FFT answer": "Truly awful time finding parking",
+            },
+            {
+                "Comment ID": "4",
+                "FFT answer": "I really enjoyed the session",
+            },
+        ]
+    ).set_index("Comment ID")["FFT answer"]
+    probs = np.array(
+        [
+            [6.2770307e-01, 2.3520987e-02, 1.3149388e-01, 2.7835215e-02, 1.8944685e-01],
+            [9.8868138e-01, 1.9990385e-03, 5.4453085e-03, 9.0726715e-04, 2.9669846e-03],
+            [4.2310607e-01, 5.6546849e-01, 9.3136989e-03, 1.3205722e-03, 7.9117226e-04],
+        ]
+    )
+    labels = ["one", "two", "Negative experience", "three", "four", "five"]
+    rules_dict = {"Negative experience": ["awful"]}
+    improved_probs = factory_predict_unlabelled_text.rulebased_probs(
+        text=text, pred_probs=probs, labels=labels, rules_dict=rules_dict
+    )
+    assert improved_probs.shape == probs.shape
+    assert improved_probs[1][2] >= 0.3

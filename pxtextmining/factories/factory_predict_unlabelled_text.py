@@ -75,7 +75,7 @@ def predict_multilabel_sklearn(
     else:
         predictions = binary_preds
     if enhance_with_rules is True:
-        pred_probs = rulebased_probs(processed_text, pred_probs)
+        pred_probs = rulebased_probs(processed_text, pred_probs, labels)
     enhanced_predictions = turn_probs_into_binary(pred_probs, custom_threshold_dict)
     combined_predictions = predictions + enhanced_predictions
     predictions = np.where(combined_predictions == 0, combined_predictions, 1)
@@ -137,7 +137,7 @@ def predict_multilabel_bert(
             final_text = final_data["FFT answer"]
         else:
             final_text = final_data
-        y_probs = rulebased_probs(final_text, y_probs)
+        y_probs = rulebased_probs(final_text, y_probs, labels)
     y_binary_raw = turn_probs_into_binary(y_probs, custom_threshold_dict=None)
     if label_fix is True:
         predictions = fix_no_labels(y_binary_raw, y_probs)
@@ -387,7 +387,7 @@ def turn_probs_into_binary(predicted_probs, custom_threshold_dict=None):
     return preds
 
 
-def rulebased_probs(text, pred_probs):
+def rulebased_probs(text, pred_probs, labels, rules_dict=rules_dict):
     """Uses the `rules_dict` in `pxtextmining.params` to boost the probabilities of specific classes, given the appearance of specific words.
 
     Args:
@@ -398,7 +398,7 @@ def rulebased_probs(text, pred_probs):
         (np.ndarray): Numpy array with the modified predicted probabilities of the text.
     """
     for k, v in rules_dict.items():
-        label_index = minor_cats.index(k)
+        label_index = labels.index(k)
         prob = probs_dict.get(k, 0.3)
         for row in range(len(text)):
             for word in v:
@@ -444,3 +444,40 @@ def get_thresholds(y_true, y_probs, labels):
             threshold_dict[label] = thresholds[best_idx]
     np.seterr(divide="warn", invalid="warn")
     return threshold_dict
+
+
+def combine_predictions(df_list, labels, method="probabilities"):
+    """Combines outputted prediction dataframes from different models, using different methods.
+
+    Args:
+        df_list (list): List of predictions in pd.DataFrame format, produced with either `predict_multilabel_sklearn` or `predict_multilabel_bert`
+        labels (list): List of labels in the prediction dataframes.
+        method (str, optional): Method to use for combining the predictions. Defaults to "probabilities", which uses the average of predicted probabilities from all models. This results in higher precision, lower recall, and the prediction threshold is lowered to 0.3. Otherwise, takes all predicted classes from all models (high recall, low precision).
+
+    Returns:
+        (pd.DataFrame): New predictions.
+    """
+    for i, df in enumerate(df_list):
+        if i == 0:
+            main_df = df
+        else:
+            main_df = main_df + df
+    probs_combined = main_df.filter(like="Probability", axis=1)
+    probs_combined = probs_combined / len(df_list)
+    if method == "probabilities":
+        probs_np = np.array(probs_combined)
+        temp_threshold = {}
+        for i in labels:
+            temp_threshold[i] = 0.3
+        binary_combined = turn_probs_into_binary(probs_np, temp_threshold)
+        binary_combined = pd.DataFrame(
+            binary_combined, columns=labels, index=probs_combined.index
+        )
+    else:
+        binary_combined = main_df[labels]
+        binary_combined = binary_combined.mask(binary_combined != 0, 1)
+    combined_preds = pd.concat([binary_combined, probs_combined], axis=1)
+    combined_preds["labels"] = combined_preds[labels].apply(
+        get_labels, args=(labels,), axis=1
+    )
+    return combined_preds
