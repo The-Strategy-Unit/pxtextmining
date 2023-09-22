@@ -198,6 +198,8 @@ def predict_sentiment_bert(
     final_index = final_data.index
     predictions = predict_multiclass_bert(final_data, model, additional_features)
     preds_df = data.filter(items=final_index, axis=0)
+    if isinstance(preds_df, pd.Series):
+        preds_df = pd.DataFrame(preds_df)
     preds_df["sentiment"] = predictions
     preds_df["sentiment"] = preds_df["sentiment"] + 1
     return preds_df

@@ -5,6 +5,7 @@ import pandas as pd
 import pytest
 
 from pxtextmining.factories import factory_predict_unlabelled_text
+from pxtextmining.factories.factory_data_load_and_split import bert_data_to_dataset
 
 
 def test_get_probabilities_bert():
@@ -203,7 +204,7 @@ def test_predict_multilabel_bert(
     assert preds_df.shape == (4, cols)
 
 
-def test_predict_sentiment_bert():
+def test_predict_multilabel_bert_already_encoded():
     data = pd.DataFrame(
         [
             {
@@ -233,6 +234,66 @@ def test_predict_sentiment_bert():
             },
         ]
     ).set_index("Comment ID")
+    dataset = bert_data_to_dataset(data)
+
+    predicted_probs = np.array(
+        [
+            [6.2770307e-01, 2.3520987e-02, 1.3149388e-01, 2.7835215e-02, 1.8944685e-01],
+            [9.8868138e-01, 1.9990385e-03, 5.4453085e-03, 9.0726715e-04, 2.9669846e-03],
+            [4.2310607e-01, 5.6546849e-01, 9.3136989e-03, 1.3205722e-03, 7.9117226e-04],
+            [2.0081511e-01, 7.0609129e-04, 1.1107661e-03, 7.9677838e-01, 5.8961433e-04],
+        ]
+    )
+
+    labels = ["first", "second", "third", "fourth", "fifth"]
+    model = Mock(predict=Mock(return_value=predicted_probs))
+
+    preds_df = factory_predict_unlabelled_text.predict_multilabel_bert(
+        dataset,
+        model,
+        labels=labels,
+        label_fix=False,
+        additional_features=False,
+        custom_threshold_dict=None,
+        rules_dict=None,
+    )
+    cols = len(labels) * 2 + 1
+    assert preds_df.shape == (4, cols)
+
+
+@pytest.mark.parametrize("additional_features", [True, False])
+def test_predict_sentiment_bert(additional_features):
+    data = pd.DataFrame(
+        [
+            {
+                "Comment ID": "99999",
+                "FFT answer": "I liked all of it",
+                "FFT_q_standardised": "nonspecific",
+            },
+            {
+                "Comment ID": "A55",
+                "FFT answer": "",
+                "FFT_q_standardised": "nonspecific",
+            },
+            {
+                "Comment ID": "A56",
+                "FFT answer": "Truly awful time finding parking",
+                "FFT_q_standardised": "could_improve",
+            },
+            {
+                "Comment ID": "4",
+                "FFT answer": "I really enjoyed the session",
+                "FFT_q_standardised": "what_good",
+            },
+            {
+                "Comment ID": "5",
+                "FFT answer": "7482367",
+                "FFT_q_standardised": "nonspecific",
+            },
+        ]
+    ).set_index("Comment ID")
+    if additional_features is False:
+        data = data["FFT answer"]
     predicted_probs = np.array(
         [
             [0.9, 0.01, 0.07, 0.01, 0.01],
@@ -242,9 +303,9 @@ def test_predict_sentiment_bert():
     )
     model = Mock(predict=Mock(return_value=predicted_probs))
     preds_df = factory_predict_unlabelled_text.predict_sentiment_bert(
-        data, model, preprocess_text=True, additional_features=True
+        data, model, preprocess_text=True, additional_features=additional_features
     )
-    assert preds_df.shape[1] == 3
+    assert preds_df.shape[0] == 3
     assert "sentiment" in list(preds_df.columns)
 
 
