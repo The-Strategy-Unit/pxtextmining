@@ -36,7 +36,7 @@ def predict_multilabel_sklearn(
     labels=minor_cats,
     additional_features=False,
     label_fix=True,
-    enhance_with_rules=False,
+    rules_dict=None,
     custom_threshold_dict=None,
 ):
     """Conducts basic preprocessing to remove punctuation and numbers.
@@ -50,7 +50,7 @@ def predict_multilabel_sklearn(
         labels (list, optional): List containing target labels. Defaults to major_cats.
         additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
         label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
-        enhance_with_rules (bool, optional): Whether or not to use custom rules which boost probability of specific classes if specific words are seen. This is based on the rules_dict found in params.py
+        rules_dict
 
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
@@ -74,8 +74,10 @@ def predict_multilabel_sklearn(
         predictions = fix_no_labels(binary_preds, pred_probs)
     else:
         predictions = binary_preds
-    if enhance_with_rules is True:
-        pred_probs = rulebased_probs(processed_text, pred_probs, labels)
+    if rules_dict is not None:
+        pred_probs = rulebased_probs(
+            processed_text, pred_probs, labels, rules_dict=rules_dict
+        )
     enhanced_predictions = turn_probs_into_binary(pred_probs, custom_threshold_dict)
     combined_predictions = predictions + enhanced_predictions
     predictions = np.where(combined_predictions == 0, combined_predictions, 1)
@@ -93,8 +95,8 @@ def predict_multilabel_bert(
     labels=minor_cats,
     additional_features=False,
     label_fix=True,
-    enhance_with_rules=False,
     custom_threshold_dict=None,
+    rules_dict=None,
 ):
     """Conducts basic preprocessing to remove blank text.
     Utilises a pretrained transformer-based machine learning model to make multilabel predictions on the cleaned text.
@@ -107,8 +109,8 @@ def predict_multilabel_bert(
         labels (list, optional): List containing target labels. Defaults to major_cats.
         additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
         label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
-        enhance_with_rules (bool, optional): Whether or not to use custom rules which boost probability of specific classes if specific words are seen. This is based on the rules_dict found in params.py
         custom_threshold_dict (dict, optional): If custom thresholds for each label probability should be used. If none provided, default of 0.5 is used where a label is given if the probability is > 0.5. Keys of dict should correspond to labels.
+        rules_dict
 
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
@@ -132,12 +134,12 @@ def predict_multilabel_bert(
     y_probs = predict_with_bert(
         final_data, model, additional_features=additional_features
     )
-    if enhance_with_rules is True:
+    if rules_dict is not None:
         if type(final_data) == pd.DataFrame:
             final_text = final_data["FFT answer"]
         else:
             final_text = final_data
-        y_probs = rulebased_probs(final_text, y_probs, labels)
+        y_probs = rulebased_probs(final_text, y_probs, labels, rules_dict=rules_dict)
     y_binary_raw = turn_probs_into_binary(y_probs, custom_threshold_dict=None)
     if label_fix is True:
         predictions = fix_no_labels(y_binary_raw, y_probs)

@@ -96,7 +96,6 @@ def run_sklearn_pipeline(
             labels=target,
             additional_features=additional_features,
             label_fix=True,
-            enhance_with_rules=False,
             custom_threshold_dict=custom_threshold_dict,
         )
         preds.append(preds_df)
@@ -190,7 +189,6 @@ def run_svc_pipeline(
         labels=target,
         additional_features=additional_features,
         label_fix=True,
-        enhance_with_rules=False,
         custom_threshold_dict=custom_threshold_dict,
     )
     model_metrics = get_multilabel_metrics(
@@ -288,7 +286,6 @@ def run_bert_pipeline(
         labels=target,
         additional_features=additional_features,
         label_fix=True,
-        enhance_with_rules=False,
         custom_threshold_dict=custom_threshold_dict,
     )
     model_metrics = get_multilabel_metrics(

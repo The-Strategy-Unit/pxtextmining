@@ -37,7 +37,8 @@ def test_get_probabilities_sklearn():
     assert len(test_probability_s) == len(label_series)
 
 
-def test_predict_multilabel_sklearn():
+@pytest.mark.parametrize("rules_dict", [None, {"first": ["liked"]}])
+def test_predict_multilabel_sklearn(rules_dict):
     data = pd.DataFrame(
         [
             {
@@ -93,7 +94,7 @@ def test_predict_multilabel_sklearn():
         predict_proba=Mock(return_value=predicted_probs),
     )
     preds_df = factory_predict_unlabelled_text.predict_multilabel_sklearn(
-        data, model, labels=labels, additional_features=True
+        data, model, labels=labels, additional_features=True, rules_dict=rules_dict
     )
     cols = len(labels) * 2 + 1
     assert preds_df.shape == (3, cols)
@@ -137,6 +138,7 @@ def test_predict_multilabel_sklearn_additional_params(grab_test_X_additional_fea
     assert preds_df.shape == (3, cols)
 
 
+@pytest.mark.parametrize("rules_dict", [None, {"first": ["liked"]}])
 @pytest.mark.parametrize(
     "custom_threshold_dict",
     [None, {"one": 0.6, "two": 0.5, "three": 0.75, "four": 0.6, "five": 0.5}],
@@ -144,9 +146,7 @@ def test_predict_multilabel_sklearn_additional_params(grab_test_X_additional_fea
 @pytest.mark.parametrize("additional_features", [True, False])
 @pytest.mark.parametrize("label_fix", [True, False])
 def test_predict_multilabel_bert(
-    additional_features,
-    custom_threshold_dict,
-    label_fix,
+    additional_features, custom_threshold_dict, label_fix, rules_dict
 ):
     data = pd.DataFrame(
         [
@@ -197,6 +197,7 @@ def test_predict_multilabel_bert(
         label_fix=label_fix,
         additional_features=additional_features,
         custom_threshold_dict=custom_threshold_dict,
+        rules_dict=rules_dict,
     )
     cols = len(labels) * 2 + 1
     assert preds_df.shape == (4, cols)
