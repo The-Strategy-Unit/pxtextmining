@@ -408,7 +408,7 @@ def rulebased_probs(text, pred_probs, labels, rules_dict=rules_dict):
             for word in v:
                 if word in text.iloc[row].lower():
                     if pred_probs.ndim == 3:
-                        pred_probs[label_index, row, 1] += prob
+                        pred_probs[row, label_index, 1] += prob
                     if pred_probs.ndim == 2:
                         pred_probs[row, label_index] += prob
                     break
