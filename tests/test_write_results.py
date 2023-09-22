@@ -3,17 +3,23 @@ from unittest.mock import Mock, mock_open, patch
 
 import numpy as np
 import pandas as pd
+import pytest
+from sklearn.dummy import DummyClassifier
 from tensorflow.keras import Model
 
 from pxtextmining.factories import factory_write_results
 
 
-@patch("pickle.dump", Mock())
-@patch("builtins.open", new_callable=mock_open, read_data="somestr")
-def test_write_multilabel_models_and_metrics(mock_file, tmp_path_factory):
+@patch("pxtextmining.factories.factory_write_results.pickle.dump", Mock())
+@patch(
+    "builtins.open",
+    new_callable=mock_open,
+    read_data="somestr",
+)
+@pytest.mark.parametrize("models", [[Mock(spec=Model)], [Mock(spec=DummyClassifier)]])
+def test_write_multilabel_models_and_metrics(mock_file, tmp_path_factory, models):
     # arrange
-    mock_model = Mock(spec=Model)
-    models = [mock_model]
+    models = models
     model_metrics = ["somestr"]
     path = tmp_path_factory.mktemp("somepath")
     # act
@@ -21,9 +27,31 @@ def test_write_multilabel_models_and_metrics(mock_file, tmp_path_factory):
         models, model_metrics, path
     )
     # assert
-    mock_model.save.assert_called_once()
+    if isinstance(models[0], Model):
+        models[0].save.assert_called_once()
     mock_file.assert_called_with(os.path.join(path, "model_0.txt"), "w")
     assert open(os.path.join("somepath", "model_0.txt")).read() == "somestr"
+
+
+@patch(
+    "builtins.open",
+    new_callable=mock_open,
+    read_data="somestr",
+)
+@patch("pxtextmining.factories.factory_write_results.os.makedirs")
+def test_write_multilabel_models_and_metrics_nopath(
+    mock_makedirs, mock_file_open, tmp_path
+):
+    # arrange
+    models = [Mock(spec=Model)]
+    model_metrics = ["somestr"]
+    path = "somepath"
+    # act
+    factory_write_results.write_multilabel_models_and_metrics(
+        models, model_metrics, path
+    )
+    # assert
+    mock_makedirs.assert_called_once_with(path)
 
 
 @patch("pxtextmining.factories.factory_write_results.pd.DataFrame.to_excel")
@@ -66,3 +94,42 @@ def test_write_model_preds_sklearn(mock_toexcel, grab_test_X_additional_feats):
     factory_write_results.write_model_preds(x, y_true, preds_df, labels, path=path)
     # assert
     mock_toexcel.assert_called()
+
+
+@patch("pxtextmining.factories.factory_write_results.pd.DataFrame.to_excel")
+@patch("pxtextmining.factories.factory_write_results.parse_metrics_file")
+def test_write_model_analysis(
+    mock_parsemetrics,
+    mock_toexcel,
+    grab_preds_df,
+):
+    mock_parsemetrics.return_value = pd.DataFrame(
+        {
+            "label": {0: "one", 1: "two", 2: "three", 3: "four", 4: "five"},
+            "precision": {0: 0.46, 1: 0.54, 2: 0.52, 3: 0.54, 4: 0.52},
+            "recall": {0: 0.43, 1: 0.82, 2: 0.65, 3: 0.82, 4: 0.65},
+            "f1_score": {0: 0.44, 1: 0.65, 2: 0.58, 3: 0.65, 4: 0.58},
+            "support (label count in test data)": {
+                0: 129,
+                1: 115,
+                2: 20,
+                3: 115,
+                4: 20,
+            },
+        }
+    )
+    labels = ["one", "two", "three", "four", "five"]
+    dataset = grab_preds_df.copy()
+    preds_df = grab_preds_df
+    y_true = np.array(grab_preds_df[labels])
+
+    factory_write_results.write_model_analysis(
+        "model_name",
+        labels=labels,
+        dataset=dataset,
+        path="somepath",
+        preds_df=preds_df,
+        y_true=y_true,
+        custom_threshold_dict=None,
+    )
+    mock_toexcel.assert_called_once()
