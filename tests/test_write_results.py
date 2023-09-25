@@ -91,8 +91,11 @@ def test_write_model_preds_sklearn(mock_toexcel, grab_test_X_additional_feats):
     ]
     path = "somepath.xlsx"
     # act
-    factory_write_results.write_model_preds(x, y_true, preds_df, labels, path=path)
+    df = factory_write_results.write_model_preds(
+        x, y_true, preds_df, labels, path=path, return_df=True
+    )
     # assert
+    assert df.shape[0] == len(x)
     mock_toexcel.assert_called()
 
 
