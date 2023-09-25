@@ -8,13 +8,7 @@ from sklearn.preprocessing import OneHotEncoder
 from tensorflow.data import Dataset
 from transformers import AutoTokenizer
 
-from pxtextmining.params import (
-    dataset,
-    major_cat_dict,
-    merged_minor_cats,
-    minor_cats,
-    q_map,
-)
+from pxtextmining.params import dataset, major_cat_dict, minor_cats, q_map
 
 
 def merge_categories(df, new_cat, cats_to_merge):
@@ -116,8 +110,6 @@ def load_multilabel_data(filename, target="major_categories"):
     # For now the labels are hardcoded, these are subject to change as framework is in progress
     if target in ["minor_categories", "major_categories"]:
         cols = minor_cats
-    if target == "test":
-        cols = merged_minor_cats
     elif target == "sentiment":
         cols = ["Comment sentiment"]
     # Sort out the features first

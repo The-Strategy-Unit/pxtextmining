@@ -66,15 +66,15 @@ def test_create_sklearn_pipeline(model_type, tokenizer, additional_features):
 
 
 @pytest.mark.parametrize("target", ["sentiment", None])
+@pytest.mark.parametrize("model_type", [["svm"], ["xgb"]])
 @patch("pxtextmining.factories.factory_pipeline.RandomizedSearchCV")
 @patch("pxtextmining.factories.factory_pipeline.GridSearchCV")
 def test_search_sklearn_pipelines(
-    mock_gridsearch, mock_randomsearch, target, grab_test_X_additional_feats
+    mock_gridsearch, mock_randomsearch, target, model_type, grab_test_X_additional_feats
 ):
     mock_instance = MagicMock()
     mock_gridsearch.return_value = mock_instance
     mock_randomsearch.return_value = mock_instance
-    models_to_try = ["svm"]
     X_train = grab_test_X_additional_feats
     Y_train = np.array(
         [
@@ -89,7 +89,11 @@ def test_search_sklearn_pipelines(
     mock_instance.best_params_ = {"param1": 10, "param2": 20}
 
     models, training_times = factory_pipeline.search_sklearn_pipelines(
-        X_train, Y_train, models_to_try, target=target, additional_features=True
+        X_train,
+        Y_train,
+        models_to_try=model_type,
+        target=target,
+        additional_features=True,
     )
 
     mock_instance.fit.assert_called()
@@ -97,6 +101,15 @@ def test_search_sklearn_pipelines(
     assert isinstance(models[0], Pipeline) is True
     assert models[0].steps[0][0] == "dummy"
     assert len(training_times) == 1
+
+    with pytest.raises(ValueError):
+        factory_pipeline.search_sklearn_pipelines(
+            X_train,
+            Y_train,
+            models_to_try=["nonsense"],
+            target=target,
+            additional_features=True,
+        )
 
 
 @pytest.mark.parametrize("target", ["sentiment", None])
@@ -131,3 +144,45 @@ def test_search_sklearn_pipelines_no_feats(
     assert isinstance(models[0], Pipeline) is True
     assert models[0].steps[0][0] == "dummy"
     assert len(training_times) == 1
+
+
+@patch("pxtextmining.factories.factory_pipeline.make_pipeline")
+def test_create_and_train_svc_model(mock_pipeline, grab_test_X_additional_feats):
+    mock_pipe = Mock()
+    mock_pipeline.return_value = mock_pipe
+    X_train = grab_test_X_additional_feats
+    Y_train = np.array(
+        [
+            [0, 1, 0, 1, 0],
+            [1, 0, 0, 1, 0],
+            [1, 0, 0, 0, 0],
+            [1, 0, 1, 1, 0],
+            [0, 0, 0, 0, 1],
+        ]
+    )
+    factory_pipeline.create_and_train_svc_model(
+        X_train, Y_train, additional_features=True
+    )
+    mock_pipe.fit.assert_called_with(X_train, Y_train)
+
+
+@patch("pxtextmining.factories.factory_pipeline.make_pipeline")
+def test_create_and_train_svc_model_no_feats(
+    mock_pipeline, grab_test_X_additional_feats
+):
+    mock_pipe = Mock()
+    mock_pipeline.return_value = mock_pipe
+    X_train = grab_test_X_additional_feats["FFT answer"]
+    Y_train = np.array(
+        [
+            [0, 1, 0, 1, 0],
+            [1, 0, 0, 1, 0],
+            [1, 0, 0, 0, 0],
+            [1, 0, 1, 1, 0],
+            [0, 0, 0, 0, 1],
+        ]
+    )
+    factory_pipeline.create_and_train_svc_model(
+        X_train, Y_train, additional_features=False
+    )
+    mock_pipe.fit.assert_called_with(X_train, Y_train)

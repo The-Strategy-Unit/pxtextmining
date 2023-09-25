@@ -12,7 +12,7 @@ from pxtextmining.factories.factory_write_results import (
     write_model_analysis,
     write_model_preds,
 )
-from pxtextmining.params import minor_cats, random_state
+from pxtextmining.params import minor_cats, random_state, rules_dict
 
 
 def test_rules():
@@ -42,7 +42,7 @@ def test_rules():
         model=loaded_model,
         training_time=training_time,
         additional_features=additional_features,
-        enhance_with_rules=True,
+        rules_dict=rules_dict,
     )
     txtpath = os.path.join(path, "model_0" + ".txt")
     with open(txtpath, "w") as file:
@@ -85,7 +85,7 @@ def test_rules_bert():
         model=loaded_model,
         training_time=training_time,
         additional_features=additional_features,
-        enhance_with_rules=False,
+        rules_dict=None,
     )
     txtpath = os.path.join(path, "model_0" + ".txt")
     with open(txtpath, "w") as file:
@@ -98,7 +98,7 @@ def test_rules_bert():
         model=loaded_model,
         training_time=training_time,
         additional_features=additional_features,
-        enhance_with_rules=True,
+        rules_dict=rules_dict,
     )
     txtpath = os.path.join(path, "model_0_rules" + ".txt")
     with open(txtpath, "w") as file:

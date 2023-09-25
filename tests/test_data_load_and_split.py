@@ -1,4 +1,5 @@
 import random
+from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
@@ -6,6 +7,18 @@ import pytest
 
 from pxtextmining.factories import factory_data_load_and_split
 from pxtextmining.params import minor_cats
+
+
+@pytest.fixture
+def grab_test_df(grab_test_X_additional_feats):
+    df = grab_test_X_additional_feats
+    df["Comment sentiment"] = 0
+    df[minor_cats] = 0
+    for i in range(df.shape[0]):
+        df.loc[i, "Comment sentiment"] = random.randint(1, 5)
+        for cat in minor_cats:
+            df.loc[i, cat] = random.randint(0, 1)
+    return df
 
 
 @pytest.fixture
@@ -29,6 +42,17 @@ def test_load_multilabel_data(mock_read_csv, target):
     filename = "None"
     df = factory_data_load_and_split.load_multilabel_data(filename, target)
     assert type(df) == pd.DataFrame
+
+
+@patch("pandas.read_csv")
+def test_load_multilabel_data_error(mock_bad_csv, test_raw_data):
+    test_raw_data["FFT question"] = "Nonsense question"
+    mock_bad_csv.return_value = test_raw_data
+    filename = "None"
+    with pytest.raises(ValueError):
+        factory_data_load_and_split.load_multilabel_data(
+            filename, target="minor_categories"
+        )
 
 
 def test_merge_categories():
@@ -79,17 +103,24 @@ def test_bert_data_to_dataset_without_Y(grab_test_X_additional_feats):
 @pytest.mark.parametrize("target", [minor_cats, "sentiment"])
 @pytest.mark.parametrize("additional_features", [True, False])
 @pytest.mark.parametrize("preprocess_text", [True, False])
-def test_process_data(
-    grab_test_X_additional_feats, target, preprocess_text, additional_features
-):
-    df = grab_test_X_additional_feats
-    df["Comment sentiment"] = 0
-    df[minor_cats] = 0
-    for i in range(df.shape[0]):
-        df.loc[i, "Comment sentiment"] = random.randint(1, 5)
-        for cat in minor_cats:
-            df.loc[i, cat] = random.randint(0, 1)
+def test_process_data(grab_test_df, target, preprocess_text, additional_features):
     X, Y = factory_data_load_and_split.process_data(
-        df, target, preprocess_text, additional_features
+        grab_test_df, target, preprocess_text, additional_features
     )
     assert X.shape[0] == Y.shape[0]
+
+
+def test_process_and_split_data(grab_test_df):
+    (
+        X_train,
+        X_test,
+        Y_train,
+        Y_test,
+    ) = factory_data_load_and_split.process_and_split_data(
+        grab_test_df,
+        target=minor_cats,
+        preprocess_text=False,
+        additional_features=True,
+    )
+    assert len(X_train) == len(Y_train)
+    assert len(X_test) == len(Y_test)

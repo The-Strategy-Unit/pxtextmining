@@ -1,6 +1,7 @@
 from unittest.mock import AsyncMock, Mock, patch
 
 import numpy as np
+import pytest
 from fastapi.testclient import TestClient
 
 from api.api import app
@@ -79,3 +80,32 @@ def test_sentiment_predictions():
     response = client.post("/predict_sentiment", json=test_json).json()
     assert len(test_json) == len(response)
     assert isinstance(response[0]["sentiment"], int) is True
+
+
+def test_q_type_error():
+    test_json = [
+        {
+            "comment_id": "99999",
+            "comment_text": "I liked all of it",
+            "question_type": "NOT A QUESTION",
+        }
+    ]
+    response = client.post("/predict_multilabel", json=test_json).json()
+    assert response["detail"][0]["type"] == "value_error"
+
+
+def test_comment_id_error():
+    with pytest.raises(ValueError):
+        test_json = [
+            {
+                "comment_id": "1",
+                "comment_text": "I liked all of it",
+                "question_type": "nonspecific",
+            },
+            {
+                "comment_id": "1",
+                "comment_text": "I liked all of it",
+                "question_type": "nonspecific",
+            },
+        ]
+        client.post("/predict_multilabel", json=test_json).json()
