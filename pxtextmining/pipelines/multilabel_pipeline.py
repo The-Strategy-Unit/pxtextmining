@@ -235,6 +235,9 @@ def run_bert_pipeline(
     Args:
         additional_features (bool, optional): Whether or not additional features (question type and text length) are used. Defaults to False.
         path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
+        target
+        include_analysis
+        custom_threshold
     """
     # random_state = random.randint(1, 999)
     print(f"random_state is: {random_state}")
@@ -318,48 +321,48 @@ def run_bert_pipeline(
 
 
 if __name__ == "__main__":
-    # run_svc_pipeline(
-    #     additional_features=False,
+    run_svc_pipeline(
+        additional_features=False,
+        target=minor_cats,
+        path="test_multilabel/v7_test/svc_noq_nothresh",
+        include_analysis=True,
+        custom_threshold=False,
+    )
+    run_svc_pipeline(
+        additional_features=True,
+        target=minor_cats,
+        path="test_multilabel/v7_test/svc_nothresh",
+        include_analysis=True,
+        custom_threshold=False,
+    )
+    # run_sklearn_pipeline(
+    #     additional_features=True,
     #     target=minor_cats,
-    #     path="test_multilabel/0906threshold/svc_noq",
+    #     models_to_try=["xgb", "knn"],
+    #     path="test_multilabel/v7_test/xgb",
     #     include_analysis=True,
     #     custom_threshold=True,
     # )
-    # run_svc_pipeline(
+    # run_bert_pipeline(
     #     additional_features=True,
+    #     path="test_multilabel/v7_test/bert",
     #     target=minor_cats,
-    #     path="test_multilabel/0906threshold/svc",
+    #     include_analysis=True,
+    #     custom_threshold=True,
+    # )
+    # run_bert_pipeline(
+    #     additional_features=False,
+    #     path="test_multilabel/v7_test/bert_noq",
+    #     target=minor_cats,
     #     include_analysis=True,
     #     custom_threshold=True,
     # )
     # run_sklearn_pipeline(
     #     additional_features=True,
     #     target=minor_cats,
-    #     models_to_try=["xgb", "knn"],
-    #     path="test_multilabel/0906threshold/xgb",
+    #     models_to_try=["svm"],
+    #     path="test_multilabel/v7_test/svc_gridsearch",
     #     include_analysis=True,
     #     custom_threshold=True,
     # )
-    # run_bert_pipeline(
-    #     additional_features=True,
-    #     path="test_multilabel/0906threshold/bert",
-    #     target=minor_cats,
-    #     include_analysis=True,
-    #     custom_threshold=True,
-    # )
-    # run_bert_pipeline(
-    #     additional_features=False,
-    #     path="test_multilabel/0906threshold/bert_noq",
-    #     target=minor_cats,
-    #     include_analysis=True,
-    #     custom_threshold=True,
-    # )
-    run_sklearn_pipeline(
-        additional_features=True,
-        target=minor_cats,
-        models_to_try=["svm"],
-        path="test_multilabel/0906threshold/svc_gridsearch",
-        include_analysis=True,
-        custom_threshold=True,
-    )
     # run_two_layer_sklearn_pipeline()
