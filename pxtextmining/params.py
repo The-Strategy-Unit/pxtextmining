@@ -20,22 +20,25 @@ q_map = {
     "nonspecific": "nonspecific",
 }
 
-# v6
+# v7
 major_cat_dict = {
     "General": [
-        "Labelling not possible",
         "Positive experience & gratitude",
-        "Negative experience & dissatisfaction",
-        "Not assigned",
         "Organisation & efficiency",
         "Funding & use of financial resources",
+        "Feeling safe",
+        "Labelling not possible",
     ],
     "Staff": [
         "Staff manner & personal attributes",
-        "Number & deployment of staff",
-        "Staff responsiveness",
-        "Staff continuity",
         "Competence & training",
+        "Staffing levels & responsiveness",
+    ],
+    "Access to medical care & support": [
+        "Contacting services",
+        "Appointment arrangements",
+        "Appointment method",
+        "Timeliness of care",
     ],
     "Communication & involvement": [
         "Unspecified communication",
@@ -45,36 +48,16 @@ major_cat_dict = {
         "Being kept informed, clarity & consistency of information",
         "Interaction with family/ carers",
     ],
-    "Access to medical care & support": [
-        "Contacting services",
-        "Appointment arrangements",
-        "Appointment method",
-        "Timeliness of care",
-    ],
-    "Medication": ["Supplying & understanding medication", "Pain management"],
-    "Patient journey & service coordination": [
-        "Diagnosis & triage",
-        "Referals & continuity of care",
-        "Admission",
-        "Discharge",
-        "Care plans",
-        "Patient records",
-        "Impact of treatment/ care",
-    ],
-    "Food & diet": ["Food & drink provision & facilities"],
-    "Category TBC": [
-        "Feeling safe",
-        "Patient appearance & grooming",
-        "Equality, Diversity & Inclusion",
-    ],
+    "Mental Health specifics": ["Mental Health Act"],
+    "Patient journey & service coordination": ["Continuity of care", "Discharge"],
+    "Medication & pain": ["Supplying & understanding medication", "Pain management"],
     "Activities": ["Activities & access to fresh air", "Electronic entertainment"],
-    "Environment & equipment": [
+    "Environment, equipment & catering": [
         "Cleanliness, tidiness & infection control",
         "Sensory experience",
-        "Environment & Facilities",
-        "Provision of medical equipment",
+        "Environment, facilities & equipment",
+        "Food & drink provision & facilities",
     ],
-    "Mental Health specifics": ["Mental Health Act"],
     "Service location, travel & transport": [
         "Service location",
         "Transport to/ from services",
@@ -107,7 +90,6 @@ minor_cats = [
     "Parking",
     "Electronic entertainment",
     "Feeling safe",
-    "Patient appearance & grooming",
     "Mental Health Act",
     "Labelling not possible",
     "Supplying & understanding medication",
@@ -130,6 +112,7 @@ sentiment_dict = {
 }
 
 
+# Note that some of these categories no longer exist since v7 of the framework
 rules_dict = {
     "Care plans": [
         "plan",
