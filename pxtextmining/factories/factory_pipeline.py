@@ -70,7 +70,19 @@ def create_sklearn_pipeline_sentiment(
                 0.98,
                 0.99,
             ],
-            "columntransformer__tfidfvectorizer__min_df": stats.uniform(0, 0.1),
+            "columntransformer__tfidfvectorizer__min_df": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+            ],
         }
     else:
         preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
@@ -321,7 +333,21 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                 0.95,
                 0.99,
             ],
-            "columntransformer__tfidfvectorizer__min_df": [0, 0.01, 0.02],
+            "columntransformer__tfidfvectorizer__min_df": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                0.005,
+                0.01,
+            ],
         }
     else:
         preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
@@ -332,7 +358,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                 0.95,
                 0.99,
             ],
-            "tfidfvectorizer__min_df": stats.uniform(0.01, 0.1),
+            "tfidfvectorizer__min_df": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         }
     if model_type == "mnb":
         pipe = make_pipeline(preproc, MultiOutputClassifier(MultinomialNB()))
