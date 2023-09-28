@@ -345,14 +345,14 @@ if __name__ == "__main__":
     #     include_analysis=True,
     #     custom_threshold=False,
     # )
-    run_sklearn_pipeline(
-        additional_features=False,
-        target=minor_cats,
-        models_to_try=["xgb"],
-        path="test_multilabel/v7_final/xgb_noq",
-        include_analysis=True,
-        custom_threshold=False,
-    )
+    # run_sklearn_pipeline(
+    #     additional_features=False,
+    #     target=minor_cats,
+    #     models_to_try=["xgb"],
+    #     path="test_multilabel/v7_final/xgb_noq",
+    #     include_analysis=True,
+    #     custom_threshold=False,
+    # )
     # run_bert_pipeline(
     #     additional_features=True,
     #     path="test_multilabel/v7_final/bert",
@@ -360,13 +360,13 @@ if __name__ == "__main__":
     #     include_analysis=True,
     #     custom_threshold=False,
     # )
-    run_bert_pipeline(
-        additional_features=False,
-        path="test_multilabel/v7_final/bert_noq",
-        target=minor_cats,
-        include_analysis=True,
-        custom_threshold=False,
-    )
+    # run_bert_pipeline(
+    #     additional_features=False,
+    #     path="test_multilabel/v7_final/bert_noq",
+    #     target=minor_cats,
+    #     include_analysis=True,
+    #     custom_threshold=False,
+    # )
     run_sklearn_pipeline(
         additional_features=False,
         target=minor_cats,
