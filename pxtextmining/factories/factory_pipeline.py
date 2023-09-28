@@ -55,19 +55,8 @@ def create_sklearn_pipeline_sentiment(
             "columntransformer__tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
             "columntransformer__tfidfvectorizer__max_df": [
                 0.85,
-                0.86,
-                0.87,
-                0.88,
-                0.89,
                 0.9,
-                0.91,
-                0.92,
-                0.93,
-                0.94,
                 0.95,
-                0.96,
-                0.97,
-                0.98,
                 0.99,
             ],
             "columntransformer__tfidfvectorizer__min_df": [
@@ -89,20 +78,8 @@ def create_sklearn_pipeline_sentiment(
         params = {
             "tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
             "tfidfvectorizer__max_df": [
-                0.85,
-                0.86,
-                0.87,
-                0.88,
-                0.89,
                 0.9,
-                0.91,
-                0.92,
-                0.93,
-                0.94,
                 0.95,
-                0.96,
-                0.97,
-                0.98,
                 0.99,
             ],
             "tfidfvectorizer__min_df": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -454,7 +431,7 @@ def search_sklearn_pipelines(
                     scoring="average_precision",
                     cv=4,
                     refit=True,
-                    verbose=1,
+                    verbose=3,
                 )
             else:
                 search = RandomizedSearchCV(
