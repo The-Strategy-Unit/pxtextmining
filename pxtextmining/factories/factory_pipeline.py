@@ -23,21 +23,19 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from transformers import DistilBertConfig, TFDistilBertForSequenceClassification
 
-from pxtextmining.helpers.tokenization import spacy_tokenizer
 from pxtextmining.params import model_name
 
 model_name = model_name
 
 
 def create_sklearn_pipeline_sentiment(
-    model_type, num_classes, tokenizer=None, additional_features=False
+    model_type, num_classes, additional_features=False
 ):
     """Creates sklearn pipeline and hyperparameter grid for searching, for a multiclass target.
 
     Args:
         model_type (str): Allows for selection of different estimators. Permitted values are "svm" (Support Vector Classifier), or "xgb" (XGBoost).
         num_classes (int): Number of target classes.
-        tokenizer (str, optional): Allows for selection of "spacy" tokenizer. Defaults to None, which is the default sklearn tokenizer
         additional_features (bool, optional): Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.
 
     Returns:
@@ -46,7 +44,7 @@ def create_sklearn_pipeline_sentiment(
     """
     if additional_features is True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
-        vectorizer = create_sklearn_vectorizer(tokenizer=None)
+        vectorizer = create_sklearn_vectorizer()
         preproc = make_column_transformer(
             (cat_transformer, ["FFT_q_standardised"]),
             (vectorizer, "FFT answer"),
@@ -74,7 +72,7 @@ def create_sklearn_pipeline_sentiment(
             ],
         }
     else:
-        preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
+        preproc = create_sklearn_vectorizer()
         params = {
             "tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
             "tfidfvectorizer__max_df": [
@@ -267,28 +265,21 @@ def calculating_class_weights(y_true):
     return class_weights_dict
 
 
-def create_sklearn_vectorizer(tokenizer=None):
-    """Creates vectorizer for use with sklearn models, either using sklearn tokenizer or the spacy tokenizer
-
-    Args:
-        tokenizer (str, optional): Enables selection of spacy tokenizer. Defaults to None, which is sklearn default tokenizer.
+def create_sklearn_vectorizer():
+    """Creates vectorizer for use with sklearn models, using sklearn tokenizer
 
     Returns:
-        (sklearn.feature_extraction.text.TfidfVectorizer): sklearn TfidfVectorizer with either spacy or sklearn tokenizer
+        (sklearn.feature_extraction.text.TfidfVectorizer): sklearn TfidfVectorizer
     """
-    if tokenizer == "spacy":
-        vectorizer = TfidfVectorizer(tokenizer=spacy_tokenizer)
-    else:
-        vectorizer = TfidfVectorizer()
+    vectorizer = TfidfVectorizer()
     return vectorizer
 
 
-def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True):
+def create_sklearn_pipeline(model_type, additional_features=True):
     """Creates sklearn pipeline and hyperparameter grid for searching, depending on model_type selected.
 
     Args:
         model_type (str): Allows for selection of different estimators. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).
-        tokenizer (str, optional): Allows for selection of "spacy" tokenizer. Defaults to None, which is the default sklearn tokenizer
         additional_features (bool, optional): Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.
 
     Returns:
@@ -296,7 +287,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
     """
     if additional_features is True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
-        vectorizer = create_sklearn_vectorizer(tokenizer=None)
+        vectorizer = create_sklearn_vectorizer()
         # num_transformer = RobustScaler()
         preproc = make_column_transformer(
             (cat_transformer, ["FFT_q_standardised"]),
@@ -327,7 +318,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
             ],
         }
     else:
-        preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
+        preproc = create_sklearn_vectorizer()
         params = {
             "tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
             "tfidfvectorizer__max_df": [
@@ -416,7 +407,6 @@ def search_sklearn_pipelines(
                 pipe, params = create_sklearn_pipeline_sentiment(
                     model_type,
                     num_classes=num_classes,
-                    tokenizer=None,
                     additional_features=additional_features,
                 )
             else:
@@ -470,7 +460,7 @@ def create_and_train_svc_model(X_train, Y_train, additional_features=False):
             (vectorizer, "FFT answer"),
         )
     else:
-        preproc = create_sklearn_vectorizer(tokenizer=None)
+        preproc = create_sklearn_vectorizer()
     pipe = make_pipeline(
         preproc,
         MultiOutputClassifier(
