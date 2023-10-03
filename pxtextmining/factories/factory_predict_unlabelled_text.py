@@ -487,6 +487,8 @@ def combine_predictions(df_list, labels, method="probabilities"):
     )
     # Anything with no labels gets 'Not assigned'
     no_labels = combined_preds[combined_preds["labels"].str.len() == 0].index
-    not_assigned = pd.Series([["Not assigned"]] * len(no_labels), index=no_labels)
+    not_assigned = pd.Series(
+        [["Not assigned"]] * len(no_labels), index=no_labels, dtype=object
+    )
     combined_preds.loc[no_labels, "labels"] = not_assigned
     return combined_preds
