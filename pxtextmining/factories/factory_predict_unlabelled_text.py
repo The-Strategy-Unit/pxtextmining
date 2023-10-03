@@ -83,6 +83,12 @@ def predict_multilabel_sklearn(
     predictions = np.where(combined_predictions == 0, combined_predictions, 1)
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
+    if label_fix is True:
+        for i in preds_df.index:
+            preds_list = preds_df.loc[i, "labels"]
+            if "Labelling not possible" in preds_list:
+                if len(preds_list) > 1:
+                    preds_df.loc[i, "labels"] = ["Labelling not possible"]
     # add probs to df
     label_list = ['Probability of "' + label + '"' for label in labels]
     preds_df[label_list] = pred_probs
@@ -188,6 +194,7 @@ def predict_sentiment_bert(
         processed_text = clean_empty_features(processed_text).dropna()
     else:
         processed_text = clean_empty_features(text).dropna()
+        print(processed_text)
     if additional_features is False:
         final_data = processed_text
         final_data = clean_empty_features(final_data)
@@ -196,6 +203,8 @@ def predict_sentiment_bert(
             processed_text, data["FFT_q_standardised"], how="left", on="Comment ID"
         )
     final_index = final_data.index
+    if preprocess_text is False:
+        print(final_index)
     predictions = predict_multiclass_bert(final_data, model, additional_features)
     preds_df = data.filter(items=final_index, axis=0)
     if isinstance(preds_df, pd.Series):
