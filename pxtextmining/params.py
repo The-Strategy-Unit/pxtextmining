@@ -1,4 +1,4 @@
-dataset = "datasets/hidden/multilabel_230831.csv"
+dataset = "datasets/hidden/v7_230925.csv"
 
 random_state = 42
 
@@ -20,22 +20,25 @@ q_map = {
     "nonspecific": "nonspecific",
 }
 
-# v6
+# v7
 major_cat_dict = {
     "General": [
-        "Labelling not possible",
         "Positive experience & gratitude",
-        "Negative experience & dissatisfaction",
-        "Not assigned",
         "Organisation & efficiency",
         "Funding & use of financial resources",
+        "Feeling safe",
+        "Labelling not possible",
     ],
     "Staff": [
         "Staff manner & personal attributes",
-        "Number & deployment of staff",
-        "Staff responsiveness",
-        "Staff continuity",
         "Competence & training",
+        "Staffing levels & responsiveness",
+    ],
+    "Access to medical care & support": [
+        "Contacting services",
+        "Appointment arrangements",
+        "Appointment method",
+        "Timeliness of care",
     ],
     "Communication & involvement": [
         "Unspecified communication",
@@ -45,36 +48,16 @@ major_cat_dict = {
         "Being kept informed, clarity & consistency of information",
         "Interaction with family/ carers",
     ],
-    "Access to medical care & support": [
-        "Contacting services",
-        "Appointment arrangements",
-        "Appointment method",
-        "Timeliness of care",
-    ],
-    "Medication": ["Supplying & understanding medication", "Pain management"],
-    "Patient journey & service coordination": [
-        "Diagnosis & triage",
-        "Referals & continuity of care",
-        "Admission",
-        "Discharge",
-        "Care plans",
-        "Patient records",
-        "Impact of treatment/ care",
-    ],
-    "Food & diet": ["Food & drink provision & facilities"],
-    "Category TBC": [
-        "Feeling safe",
-        "Patient appearance & grooming",
-        "Equality, Diversity & Inclusion",
-    ],
+    "Mental Health specifics": ["Mental Health Act"],
+    "Patient journey & service coordination": ["Continuity of care", "Discharge"],
+    "Medication & pain": ["Supplying & understanding medication", "Pain management"],
     "Activities": ["Activities & access to fresh air", "Electronic entertainment"],
-    "Environment & equipment": [
+    "Environment, equipment & catering": [
         "Cleanliness, tidiness & infection control",
         "Sensory experience",
-        "Environment & Facilities",
-        "Provision of medical equipment",
+        "Environment, facilities & equipment",
+        "Food & drink provision & facilities",
     ],
-    "Mental Health specifics": ["Mental Health Act"],
     "Service location, travel & transport": [
         "Service location",
         "Transport to/ from services",
@@ -84,72 +67,11 @@ major_cat_dict = {
 
 major_cats = list(major_cat_dict.keys())
 
-# v6 20230602
-merged_minor_cats = [
-    "Gratitude/ good experience",
-    #     "Negative experience",
-    "Not assigned",
-    "Organisation & efficiency",
-    #     "Funding & use of financial resources",
-    "Non-specific praise for staff",
-    #     "Non-specific dissatisfaction with staff",
-    "Staff manner & personal attributes",
-    "Number & deployment of staff",
-    "Staff responsiveness",
-    "Staff continuity",
-    "Competence & training",
-    "Unspecified communication",
-    "Staff listening, understanding & involving patients",
-    "Information directly from staff during care",
-    "Information provision & guidance",
-    "Being kept informed, clarity & consistency of information",
-    #     "Service involvement with family/ carers",
-    #     "Patient contact with family/ carers",
-    "Contacting services",
-    "Appointment arrangements",
-    "Appointment method",
-    "Timeliness of care",
-    "Pain management",
-    "Diagnosis & triage",
-    "Referals & continuity of care",
-    #     "Length of stay/ duration of care",
-    "Discharge",
-    "Care plans",
-    #     "Patient records",
-    #     "Links with non-NHS organisations",
-    "Cleanliness, tidiness & infection control",
-    "Safety & security",
-    #     "Provision of medical equipment",
-    "Service location",
-    "Transport to/ from services",
-    "Parking",
-    "Electronic entertainment",
-    "Feeling safe",
-    "Patient appearance & grooming",
-    "Mental Health Act",
-    "Equality, Diversity & Inclusion",
-    "Admission",
-    #     "Collecting patients feedback",
-    "Labelling not possible",
-    "Environment & Facilities",
-    "Supplying & understanding medication",
-    "Activities & access to fresh air",
-    "Food & drink provision & facilities",
-    "Sensory experience",
-    "Impact of treatment/ care",
-    "Negative experience/ dissatisfaction",
-    "Family/ carers",
-]
-
-# v6 20230806
+# v7 20230925
 minor_cats = [
-    "Not assigned",
     "Organisation & efficiency",
     "Funding & use of financial resources",
     "Staff manner & personal attributes",
-    "Number & deployment of staff",
-    "Staff responsiveness",
-    "Staff continuity",
     "Competence & training",
     "Unspecified communication",
     "Staff listening, understanding & involving patients",
@@ -161,37 +83,24 @@ minor_cats = [
     "Appointment method",
     "Timeliness of care",
     "Pain management",
-    "Diagnosis & triage",
-    "Referals & continuity of care",
     "Discharge",
-    "Care plans",
-    "Patient records",
     "Cleanliness, tidiness & infection control",
-    "Provision of medical equipment",
     "Service location",
     "Transport to/ from services",
     "Parking",
     "Electronic entertainment",
     "Feeling safe",
-    "Patient appearance & grooming",
     "Mental Health Act",
-    "Equality, Diversity & Inclusion",
-    "Admission",
     "Labelling not possible",
-    "Environment & Facilities",
     "Supplying & understanding medication",
     "Activities & access to fresh air",
     "Food & drink provision & facilities",
     "Sensory experience",
-    "Impact of treatment/ care",
-    # "Psychological therapy arrangements",
-    # "Existence of services",
-    # "Choice of services",
-    # "Out of hours support (community services)",
-    # "Learning organisation",
     "Interaction with family/ carers",
-    "Negative experience & dissatisfaction",
     "Positive experience & gratitude",
+    "Continuity of care",
+    "Environment, facilities & equipment",
+    "Staffing levels & responsiveness",
 ]
 
 sentiment_dict = {
@@ -203,6 +112,7 @@ sentiment_dict = {
 }
 
 
+# Note that some of these categories no longer exist since v7 of the framework
 rules_dict = {
     "Care plans": [
         "plan",

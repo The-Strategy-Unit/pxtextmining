@@ -40,13 +40,7 @@ def write_multilabel_models_and_metrics(models, model_metrics, path):
     print(f"{len(models)} models have been written to {path}")
 
 
-def write_model_preds(
-    x,
-    y_true,
-    preds_df,
-    labels,
-    path="labels.xlsx",
-):
+def write_model_preds(x, y_true, preds_df, labels, path="labels.xlsx", return_df=False):
     """Writes an Excel file to enable easier analysis of model outputs using the test set. Columns of the Excel file are: comment_id, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.
 
     Currently only works with sklearn models.
@@ -65,9 +59,9 @@ def write_model_preds(
     probs_actual = get_probabilities(actual_labels, labels, probabilities)
     probs_predicted = get_probabilities(predicted_labels, labels, probabilities)
     df = df.merge(actual_labels, left_index=True, right_index=True)
-    df = df.merge(predicted_labels, left_index=True, right_index=True)
+    df = df.merge(predicted_labels, left_on="Comment ID", right_index=True)
     df = df.merge(probs_actual, left_index=True, right_index=True)
-    df = df.merge(probs_predicted, left_index=True, right_index=True)
+    df = df.merge(probs_predicted, left_on="Comment ID", right_index=True)
     # Deal with any rogue characters
     df.applymap(
         lambda x: x.encode("unicode_escape").decode("utf-8")
@@ -75,6 +69,8 @@ def write_model_preds(
         else x
     )
     df.to_excel(path, index=False)
+    if return_df is True:
+        return df
     print(f"Successfully completed, written to {path}")
 
 

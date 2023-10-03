@@ -290,12 +290,13 @@ def get_probabilities(label_series, labels, predicted_probabilities):
         label_probs = {}
         predicted_labels = label_series.iloc[i]
         for each in predicted_labels:
-            index_label = labels.index(each)
-            if predicted_probabilities.ndim == 3:
-                prob_of_label = predicted_probabilities[index_label, i, 1]
-            else:
-                prob_of_label = predicted_probabilities[i][index_label]
-            label_probs[each] = round(prob_of_label, 5)
+            if each in labels:
+                index_label = labels.index(each)
+                if predicted_probabilities.ndim == 3:
+                    prob_of_label = predicted_probabilities[index_label, i, 1]
+                else:
+                    prob_of_label = predicted_probabilities[i][index_label]
+                label_probs[each] = round(prob_of_label, 5)
         probabilities.append(label_probs)
     probability_s = pd.Series(probabilities)
     probability_s.index = label_series.index
@@ -484,4 +485,10 @@ def combine_predictions(df_list, labels, method="probabilities"):
     combined_preds["labels"] = combined_preds[labels].apply(
         get_labels, args=(labels,), axis=1
     )
+    # Anything with no labels gets 'Not assigned'
+    no_labels = combined_preds[combined_preds["labels"].str.len() == 0].index
+    not_assigned = pd.Series(
+        [["Not assigned"]] * len(no_labels), index=no_labels, dtype=object
+    )
+    combined_preds.loc[no_labels, "labels"] = not_assigned
     return combined_preds

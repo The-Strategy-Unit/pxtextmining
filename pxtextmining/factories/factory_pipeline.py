@@ -7,7 +7,7 @@ from scipy import stats
 from sklearn.compose import make_column_transformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -55,45 +55,34 @@ def create_sklearn_pipeline_sentiment(
             "columntransformer__tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
             "columntransformer__tfidfvectorizer__max_df": [
                 0.85,
-                0.86,
-                0.87,
-                0.88,
-                0.89,
                 0.9,
-                0.91,
-                0.92,
-                0.93,
-                0.94,
                 0.95,
-                0.96,
-                0.97,
-                0.98,
                 0.99,
             ],
-            "columntransformer__tfidfvectorizer__min_df": stats.uniform(0, 0.1),
+            "columntransformer__tfidfvectorizer__min_df": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+            ],
         }
     else:
         preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
         params = {
             "tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
             "tfidfvectorizer__max_df": [
-                0.85,
-                0.86,
-                0.87,
-                0.88,
-                0.89,
                 0.9,
-                0.91,
-                0.92,
-                0.93,
-                0.94,
                 0.95,
-                0.96,
-                0.97,
-                0.98,
                 0.99,
             ],
-            "tfidfvectorizer__min_df": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            "tfidfvectorizer__min_df": [0, 1, 3, 5, 0.005],
         }
     if model_type == "svm":
         pipe = make_pipeline(
@@ -321,7 +310,21 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                 0.95,
                 0.99,
             ],
-            "columntransformer__tfidfvectorizer__min_df": [0, 0.01, 0.02],
+            "columntransformer__tfidfvectorizer__min_df": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                0.005,
+                0.01,
+            ],
         }
     else:
         preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
@@ -332,7 +335,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                 0.95,
                 0.99,
             ],
-            "tfidfvectorizer__min_df": stats.uniform(0.01, 0.1),
+            "tfidfvectorizer__min_df": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         }
     if model_type == "mnb":
         pipe = make_pipeline(preproc, MultiOutputClassifier(MultinomialNB()))
@@ -359,9 +362,9 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
             "sigmoid",
         ]
         if "columntransformer__tfidfvectorizer__min_df" in params:
-            params["columntransformer__tfidfvectorizer__min_df"] = [0, 1, 2, 3, 4, 5]
+            params["columntransformer__tfidfvectorizer__min_df"] = [0, 1, 3, 5, 0.005]
         else:
-            params["tfidfvectorizer__min_df"] = [0, 1, 2, 3, 4, 5]
+            params["tfidfvectorizer__min_df"] = [0, 1, 3, 5, 0.005]
     if model_type == "rfc":
         pipe = make_pipeline(preproc, RandomForestClassifier(n_jobs=-1))
         params["randomforestclassifier__max_depth"] = stats.randint(5, 50)
@@ -422,13 +425,14 @@ def search_sklearn_pipelines(
                 )
             start_time = time.time()
             if model_type == "svm":
-                search = GridSearchCV(
+                search = RandomizedSearchCV(
                     pipe,
                     params,
                     scoring="average_precision",
+                    n_iter=100,
                     cv=4,
                     refit=True,
-                    verbose=1,
+                    verbose=3,
                 )
             else:
                 search = RandomizedSearchCV(

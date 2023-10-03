@@ -68,12 +68,10 @@ def test_create_sklearn_pipeline(model_type, tokenizer, additional_features):
 @pytest.mark.parametrize("target", ["sentiment", None])
 @pytest.mark.parametrize("model_type", [["svm"], ["xgb"]])
 @patch("pxtextmining.factories.factory_pipeline.RandomizedSearchCV")
-@patch("pxtextmining.factories.factory_pipeline.GridSearchCV")
 def test_search_sklearn_pipelines(
-    mock_gridsearch, mock_randomsearch, target, model_type, grab_test_X_additional_feats
+    mock_randomsearch, target, model_type, grab_test_X_additional_feats
 ):
     mock_instance = MagicMock()
-    mock_gridsearch.return_value = mock_instance
     mock_randomsearch.return_value = mock_instance
     X_train = grab_test_X_additional_feats
     Y_train = np.array(
@@ -114,12 +112,10 @@ def test_search_sklearn_pipelines(
 
 @pytest.mark.parametrize("target", ["sentiment", None])
 @patch("pxtextmining.factories.factory_pipeline.RandomizedSearchCV")
-@patch("pxtextmining.factories.factory_pipeline.GridSearchCV")
 def test_search_sklearn_pipelines_no_feats(
-    mock_gridsearch, mock_randomsearch, target, grab_test_X_additional_feats
+    mock_randomsearch, target, grab_test_X_additional_feats
 ):
     mock_instance = MagicMock()
-    mock_gridsearch.return_value = mock_instance
     mock_randomsearch.return_value = mock_instance
     models_to_try = ["svm"]
     X_train = grab_test_X_additional_feats["FFT answer"]

@@ -1,3 +1,6 @@
+from warnings import simplefilter
+
+from sklearn.exceptions import ConvergenceWarning
 from sklearn.model_selection import train_test_split
 
 from pxtextmining.factories.factory_data_load_and_split import (
@@ -25,6 +28,8 @@ from pxtextmining.factories.factory_write_results import (
     write_multilabel_models_and_metrics,
 )
 from pxtextmining.params import dataset, major_cats, minor_cats, random_state
+
+simplefilter("ignore", category=ConvergenceWarning)
 
 
 def run_sklearn_pipeline(
@@ -235,6 +240,9 @@ def run_bert_pipeline(
     Args:
         additional_features (bool, optional): Whether or not additional features (question type and text length) are used. Defaults to False.
         path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
+        target
+        include_analysis
+        custom_threshold
     """
     # random_state = random.randint(1, 999)
     print(f"random_state is: {random_state}")
@@ -259,9 +267,6 @@ def run_bert_pipeline(
     val_dataset = bert_data_to_dataset(
         X_val, Y_val, additional_features=additional_features
     )
-    test_dataset = bert_data_to_dataset(
-        X_test, Y=None, additional_features=additional_features
-    )
     class_weights_dict = calculating_class_weights(Y_train_val)
     if additional_features is True:
         model = create_bert_model_additional_features(Y_train)
@@ -281,7 +286,7 @@ def run_bert_pipeline(
     else:
         custom_threshold_dict = None
     preds_df = predict_multilabel_bert(
-        test_dataset,
+        X_test,
         model=model_trained,
         labels=target,
         additional_features=additional_features,
@@ -321,45 +326,53 @@ if __name__ == "__main__":
     # run_svc_pipeline(
     #     additional_features=False,
     #     target=minor_cats,
-    #     path="test_multilabel/0906threshold/svc_noq",
+    #     path="test_multilabel/v7_final/svc_noq",
     #     include_analysis=True,
-    #     custom_threshold=True,
+    #     custom_threshold=False,
     # )
     # run_svc_pipeline(
     #     additional_features=True,
     #     target=minor_cats,
-    #     path="test_multilabel/0906threshold/svc",
+    #     path="test_multilabel/v7_final/svc",
     #     include_analysis=True,
-    #     custom_threshold=True,
+    #     custom_threshold=False,
     # )
     # run_sklearn_pipeline(
     #     additional_features=True,
     #     target=minor_cats,
-    #     models_to_try=["xgb", "knn"],
-    #     path="test_multilabel/0906threshold/xgb",
+    #     models_to_try=["xgb"],
+    #     path="test_multilabel/v7_final/xgb",
     #     include_analysis=True,
-    #     custom_threshold=True,
+    #     custom_threshold=False,
+    # )
+    # run_sklearn_pipeline(
+    #     additional_features=False,
+    #     target=minor_cats,
+    #     models_to_try=["xgb"],
+    #     path="test_multilabel/v7_final/xgb_noq",
+    #     include_analysis=True,
+    #     custom_threshold=False,
     # )
     # run_bert_pipeline(
     #     additional_features=True,
-    #     path="test_multilabel/0906threshold/bert",
+    #     path="test_multilabel/v7_final/bert",
     #     target=minor_cats,
     #     include_analysis=True,
-    #     custom_threshold=True,
+    #     custom_threshold=False,
     # )
     # run_bert_pipeline(
     #     additional_features=False,
-    #     path="test_multilabel/0906threshold/bert_noq",
+    #     path="test_multilabel/v7_final/bert_noq",
     #     target=minor_cats,
     #     include_analysis=True,
-    #     custom_threshold=True,
+    #     custom_threshold=False,
     # )
     run_sklearn_pipeline(
-        additional_features=True,
+        additional_features=False,
         target=minor_cats,
         models_to_try=["svm"],
-        path="test_multilabel/0906threshold/svc_gridsearch",
+        path="test_multilabel/v7_final/svc_gridsearch",
         include_analysis=True,
-        custom_threshold=True,
+        custom_threshold=False,
     )
     # run_two_layer_sklearn_pipeline()
