@@ -71,7 +71,6 @@ def write_model_preds(x, y_true, preds_df, labels, path="labels.xlsx", return_df
     df.to_excel(path, index=False)
     if return_df is True:
         return df
-    print(f"Successfully completed, written to {path}")
 
 
 def write_model_analysis(
