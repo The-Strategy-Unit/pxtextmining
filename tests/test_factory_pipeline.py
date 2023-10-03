@@ -13,7 +13,7 @@ from pxtextmining.factories import factory_pipeline
 @pytest.mark.parametrize("additional_features", [True, False])
 def test_create_sklearn_pipeline_sentiment(model_type, additional_features):
     pipe, params = factory_pipeline.create_sklearn_pipeline_sentiment(
-        model_type, 3, tokenizer=None, additional_features=additional_features
+        model_type, 3, additional_features=additional_features
     )
     assert isinstance(params, dict) is True
     assert is_classifier(pipe) is True
@@ -56,10 +56,9 @@ def test_calculating_class_weights():
 
 @pytest.mark.parametrize("model_type", ["svm", "xgb", "rfc", "mnb", "knn"])
 @pytest.mark.parametrize("additional_features", [True, False])
-@pytest.mark.parametrize("tokenizer", [None, "spacy"])
-def test_create_sklearn_pipeline(model_type, tokenizer, additional_features):
+def test_create_sklearn_pipeline(model_type, additional_features):
     pipe, params = factory_pipeline.create_sklearn_pipeline(
-        model_type, tokenizer, additional_features
+        model_type, additional_features
     )
     assert is_classifier(pipe) is True
     assert isinstance(params, dict) is True
