@@ -194,7 +194,6 @@ def predict_sentiment_bert(
         processed_text = clean_empty_features(processed_text).dropna()
     else:
         processed_text = clean_empty_features(text).dropna()
-        print(processed_text)
     if additional_features is False:
         final_data = processed_text
         final_data = clean_empty_features(final_data)
@@ -203,8 +202,6 @@ def predict_sentiment_bert(
             processed_text, data["FFT_q_standardised"], how="left", on="Comment ID"
         )
     final_index = final_data.index
-    if preprocess_text is False:
-        print(final_index)
     predictions = predict_multiclass_bert(final_data, model, additional_features)
     preds_df = data.filter(items=final_index, axis=0)
     if isinstance(preds_df, pd.Series):
