@@ -13,3 +13,5 @@ test_multilabel/*
 api/rsconnect-python/*
 .coverage
 api/bert*
+*_labels.xlsx
+current_best_model/final_bert/bert
