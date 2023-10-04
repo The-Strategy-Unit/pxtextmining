@@ -1,10 +1,29 @@
 import json
+import random
 from unittest.mock import mock_open, patch
 
 import pandas as pd
 import pytest
 
 import docker_run
+from pxtextmining.params import minor_cats
+
+
+@pytest.fixture
+def output_df():
+    indices = ["1"]
+    df_list = []
+    for _ in range(len(indices)):
+        data_dict = {}
+        for cat in minor_cats:
+            data_dict[cat] = random.randint(0, 1)
+            key = f"Probability of '{cat}'"
+            data_dict[key] = random.uniform(0.0, 0.99)
+        df_list.append(data_dict)
+    df = pd.DataFrame(df_list)
+    df.index = indices
+    assert len(df.columns) == 64
+    return df
 
 
 @pytest.fixture
@@ -62,17 +81,27 @@ def test_predict_sentiment(mock_load_model, mock_get_predictions, input_data):
     mock_get_predictions.assert_called()
 
 
-@patch("docker_run.combine_predictions")
+@patch("docker_run.predict_multilabel_sklearn")
+@patch("docker_run.predict_multilabel_bert")
+@patch("docker_run.pickle.load")
 @patch("docker_run.load_model")
 def test_get_multilabel_predictions(
-    mock_combine_predictions,
     mock_load_model,
+    mock_pickle_load,
+    mock_predict_bert,
+    mock_predict_sklearn,
+    output_df,
     input_data,
 ):
+    mock_predict_bert.return_value = output_df
+    mock_predict_sklearn.return_value = output_df
     input_text = input_data
-    docker_run.get_multilabel_predictions(input_text)
+    preds = docker_run.get_multilabel_predictions(input_text)
     mock_load_model.assert_called_once()
-    mock_combine_predictions.assert_called_once()
+    mock_pickle_load.assert_called()
+    mock_predict_bert.assert_called_once()
+    mock_predict_sklearn.assert_called()
+    assert isinstance(preds, pd.DataFrame) is True
 
 
 @pytest.mark.parametrize("args", [["file_01.json"], ["file_01.json", "-l"]])
