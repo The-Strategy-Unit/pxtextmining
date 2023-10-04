@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import pickle
 
 import pandas as pd
 from tensorflow.keras.saving import load_model
@@ -10,11 +11,18 @@ from pxtextmining.factories.factory_predict_unlabelled_text import (
 )
 
 
-def load_sentiment_model():
-    model_path = "bert_sentiment"
+def load_bert_model(model_path):
     if not os.path.exists(model_path):
-        model_path = os.path.join("api", model_path)
+        model_path = os.path.join("current_best_model", "sentiment", model_path)
     loaded_model = load_model(model_path)
+    return loaded_model
+
+
+def load_sklearn_model(model_path):
+    if not os.path.exists(model_path):
+        model_path = os.path.join("current_best_model", model_path, f"{model_path}.sav")
+    with open(model_path, "rb") as model:
+        loaded_model = pickle.load(model)
     return loaded_model
 
 
@@ -28,6 +36,12 @@ def get_sentiment_predictions(
         additional_features=additional_features,
     )
     return predictions
+
+
+def get_multilabel_predictions(items):
+    # Function which gets preds_dfs for bert, svc, and xgb, and combines them all
+    load_bert_model("bert_multilabel")
+    pass
 
 
 def predict_sentiment(items):
@@ -47,7 +61,7 @@ def predict_sentiment(items):
     """
 
     # Process received data
-    loaded_model = load_sentiment_model()
+    loaded_model = load_bert_model("bert_sentiment")
     df = pd.DataFrame([i for i in items], dtype=str)
     df_newindex = df.set_index("comment_id")
     if df_newindex.index.duplicated().sum() != 0:

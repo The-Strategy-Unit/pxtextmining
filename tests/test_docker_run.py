@@ -7,10 +7,29 @@ import pytest
 import docker_run
 
 
+@pytest.fixture
+def input_data():
+    input_text = [
+        {
+            "comment_id": "1",
+            "comment_text": "Nurse was great.",
+            "question_type": "what_good",
+        },
+        {"comment_id": "2", "comment_text": "", "question_type": "could_improve"},
+    ]
+    return input_text
+
+
 @patch("docker_run.load_model")
-def test_load_sentiment_model(mock_load):
-    docker_run.load_sentiment_model()
+def test_load_bert_model(mock_load):
+    docker_run.load_bert_model("bert_sentiment")
     mock_load.assert_called_once()
+
+
+@patch("docker_run.pickle.load")
+def test_load_sklearn_model(mock_pickle_load):
+    docker_run.load_sklearn_model("final_svc")
+    mock_pickle_load.assert_called_once()
 
 
 @patch("docker_run.predict_sentiment_bert")
@@ -25,15 +44,8 @@ def test_get_sentiment_predictions(mock_predict):
 
 @patch("docker_run.get_sentiment_predictions")
 @patch("docker_run.load_model")
-def test_predict_sentiment(mock_load_model, mock_get_predictions):
-    input_text = [
-        {
-            "comment_id": "1",
-            "comment_text": "Nurse was great.",
-            "question_type": "what_good",
-        },
-        {"comment_id": "2", "comment_text": "", "question_type": "could_improve"},
-    ]
+def test_predict_sentiment(mock_load_model, mock_get_predictions, input_data):
+    input_text = input_data
     output = pd.DataFrame(
         [
             {
@@ -48,6 +60,19 @@ def test_predict_sentiment(mock_load_model, mock_get_predictions):
     docker_run.predict_sentiment(input_text)
     mock_load_model.assert_called_once()
     mock_get_predictions.assert_called()
+
+
+@patch("docker_run.combine_predictions")
+@patch("docker_run.load_model")
+def test_get_multilabel_predictions(
+    mock_combine_predictions,
+    mock_load_model,
+    input_data,
+):
+    input_text = input_data
+    docker_run.get_multilabel_predictions(input_text)
+    mock_load_model.assert_called_once()
+    mock_combine_predictions.assert_called_once()
 
 
 @pytest.mark.parametrize("args", [["file_01.json"], ["file_01.json", "-l"]])
