@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "pxtextmining"
-version = "0.5.5"
+version = "1.0.0"
 description = "Text classification of patient experience feedback."
-authors = ['CDU Data Science <cdudatascience@nottshc.nhs.uk>',
+authors = ['CDU Data Science <phudatascience@nottshc.nhs.uk>',
 'YiWen Hon <yiwen.hon@nottshc.nhs.uk>']
 readme = "README.md"
 license = "MIT"
@@ -33,7 +33,6 @@ httpx = "^0.23.3"
 pytest-cov = "^4.0.0"
 pytest-mock = "^3.10.0"
 requests = "^2.31.0"
-jupyter = "^1.0.0"
 ruff = "^0.0.272"
 pre-commit = "^3.3.3"
 tornado = "^6.3.3"
