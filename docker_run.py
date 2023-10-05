@@ -93,8 +93,8 @@ def predict_multilabel_ensemble(items):
         [["Labelling not possible"]] * len(nulls), index=nulls, dtype=object
     )
     merged.loc[nulls, "labels"] = lnp
-    return_dict = merged[["comment_id", "labels"]].to_dict(orient="records")
-    return return_dict
+    return_df = merged[["comment_id", "labels"]]
+    return return_df
 
 
 def predict_sentiment(items):
@@ -124,8 +124,8 @@ def predict_sentiment(items):
     preds_df["comment_id"] = preds_df.index.astype(str)
     merged = pd.merge(df, preds_df, how="left", on="comment_id")
     merged["sentiment"] = merged["sentiment"].fillna("Labelling not possible")
-    return_dict = merged[["comment_id", "sentiment"]].to_dict(orient="records")
-    return return_dict
+    return_df = merged[["comment_id", "sentiment"]]
+    return return_df
 
 
 def parse_args():
@@ -142,8 +142,13 @@ def parse_args():
         action="store_true",
         help="Use local storage (instead of Azure)",
     )
+    parser.add_argument(
+        "--target",
+        "-t",
+        default="ms",
+        help="Target of the predictions. m for multilabel, s for sentiment. Defaults to ms for both multilabel and sentiment",
+    )
     args = parser.parse_args()
-
     return args
 
 
@@ -154,16 +159,22 @@ def main():
         json_in = json.load(jf)
     if not args.local_storage:
         os.remove(json_file)
-    json_out = predict_sentiment(json_in)
+    preds_list = []
+    if "s" in args.target:
+        s_preds = predict_sentiment(json_in)
+        preds_list.append(s_preds)
+    if "m" in args.target:
+        m_preds = predict_multilabel_ensemble(json_in)
+        preds_list.append(m_preds)
+    if len(preds_list) == 2:
+        preds = pd.merge(preds_list[0], preds_list[1], on="comment_id")
+    else:
+        preds = preds_list[0]
+    json_out = preds.to_dict(orient="records")
     out_path = os.path.join("data", "data_out", args.json_file[0])
     with open(out_path, "w+") as jf:
         json.dump(json_out, jf)
 
 
 if __name__ == "__main__":
-    # main()
-    json_file = os.path.join("docker_data", "data_in", "file_01.json")
-    with open(json_file, "r") as jf:
-        json_in = json.load(jf)
-    preds = predict_multilabel_ensemble(json_in)
-    print(preds)
+    main()

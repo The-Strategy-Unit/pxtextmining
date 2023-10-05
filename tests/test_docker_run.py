@@ -10,6 +10,28 @@ from pxtextmining.params import minor_cats
 
 
 @pytest.fixture
+def sentiment_output():
+    s_preds = pd.DataFrame(
+        [
+            {"comment_id": "1", "sentiment": 1},
+            {"comment_id": "2", "sentiment": "Labelling not possible"},
+        ]
+    )
+    return s_preds
+
+
+@pytest.fixture
+def multilabel_output():
+    m_preds = pd.DataFrame(
+        [
+            {"comment_id": "1", "labels": ["Positive experience & gratitude"]},
+            {"comment_id": "2", "labels": ["Labelling not possible"]},
+        ]
+    )
+    return m_preds
+
+
+@pytest.fixture
 def output_df():
     indices = ["1"]
     df_list = []
@@ -74,10 +96,10 @@ def test_predict_sentiment(mock_load_model, mock_get_predictions, input_data):
         ]
     ).set_index("Comment ID")
     mock_get_predictions.return_value = output
-    return_dict = docker_run.predict_sentiment(input_text)
+    return_df = docker_run.predict_sentiment(input_text)
     mock_load_model.assert_called_once()
     mock_get_predictions.assert_called()
-    assert len(return_dict) == len(input_text)
+    assert len(return_df) == len(input_text)
 
 
 @patch("docker_run.predict_multilabel_sklearn")
@@ -95,21 +117,29 @@ def test_predict_multilabel_ensemble(
     mock_predict_bert.return_value = output_df
     mock_predict_sklearn.return_value = output_df
     input_text = input_data
-    return_dict = docker_run.predict_multilabel_ensemble(input_text)
+    return_df = docker_run.predict_multilabel_ensemble(input_text)
     mock_load_model.assert_called_once()
     mock_pickle_load.assert_called()
     mock_predict_bert.assert_called_once()
     mock_predict_sklearn.assert_called()
-    assert len(return_dict) == len(input_text)
+    assert len(return_df) == len(input_text)
 
 
-@pytest.mark.parametrize("args", [["file_01.json"], ["file_01.json", "-l"]])
+@pytest.mark.parametrize(
+    "args",
+    [
+        ["file_01.json"],
+        ["file_01.json", "-l", "--target", "m"],
+        ["file_01.json", "-t", "s"],
+    ],
+)
 def test_parse_args(mocker, args):
     mocker.patch("sys.argv", ["docker_run.py"] + args)
     args = docker_run.parse_args()
     assert args.json_file[0] == "file_01.json"
     if args.local_storage:
         assert args.local_storage is True
+    assert args.target in "ms"
 
 
 def test_comment_id_error():
@@ -129,25 +159,37 @@ def test_comment_id_error():
         docker_run.process_text(test_json)
 
 
-@patch("docker_run.predict_sentiment", return_value={"text": "ok"})
+@patch("docker_run.predict_multilabel_ensemble")
+@patch("docker_run.predict_sentiment")
 @patch("docker_run.os.remove")
 @patch(
     "builtins.open", new_callable=mock_open, read_data=json.dumps([{"data": "Here"}])
 )
 @patch("sys.argv", ["docker_run.py"] + ["file_01.json"])
-def test_main_not_local(mock_open, mock_remove, mock_predict):
+def test_main_not_local(
+    mock_open,
+    mock_remove,
+    mock_predict_sentiment,
+    mock_predict_ensemble,
+    sentiment_output,
+    multilabel_output,
+):
+    mock_predict_sentiment.return_value = sentiment_output
+    mock_predict_ensemble.return_value = multilabel_output
     docker_run.main()
     mock_open.assert_called()
-    mock_predict.assert_called()
+    mock_predict_sentiment.assert_called()
+    mock_predict_ensemble.assert_called()
     mock_remove.assert_called_once()
 
 
-@patch("docker_run.predict_sentiment", return_value={"text": "ok"})
+@patch("docker_run.predict_sentiment")
 @patch(
     "builtins.open", new_callable=mock_open, read_data=json.dumps([{"data": "Here"}])
 )
-@patch("sys.argv", ["docker_run.py"] + ["file_01.json", "-l"])
-def test_main_local(mock_open, mock_predict):
+@patch("sys.argv", ["docker_run.py"] + ["file_01.json", "-l", "-t", "s"])
+def test_main_local(mock_open, mock_predict_sentiment, sentiment_output):
+    mock_predict_sentiment.return_value = sentiment_output
     docker_run.main()
     mock_open.assert_called()
-    mock_predict.assert_called()
+    mock_predict_sentiment.assert_called()
