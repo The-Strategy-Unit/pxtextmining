@@ -37,21 +37,7 @@ def load_sklearn_model(model_path):
     return loaded_model
 
 
-def get_sentiment_predictions(
-    text_to_predict, loaded_model, preprocess_text, additional_features
-):
-    predictions = predict_sentiment_bert(
-        text_to_predict,
-        loaded_model,
-        preprocess_text=preprocess_text,
-        additional_features=additional_features,
-    )
-    return predictions
-
-
-def get_multilabel_predictions(items):
-    # Function which gets preds_dfs for bert, svc, and xgb, and combines them all
-    # Process the data
+def process_text(items):
     df = pd.DataFrame([i for i in items], dtype=str)
     df_newindex = df.set_index("comment_id")
     if df_newindex.index.duplicated().sum() != 0:
@@ -61,6 +47,13 @@ def get_multilabel_predictions(items):
     text_to_predict = text_to_predict.rename(
         columns={"comment_text": "FFT answer", "question_type": "FFT_q_standardised"}
     )
+    return df, text_to_predict
+
+
+def predict_multilabel_ensemble(items):
+    # Function which gets preds_dfs for bert, svc, and xgb, and combines them all
+    # Process the data
+    df, text_to_predict = process_text(items)
     text_to_predict = text_to_predict["FFT answer"]
     # Load models
     bert_model = load_bert_model("multilabel")
@@ -89,10 +82,19 @@ def get_multilabel_predictions(items):
         label_fix=False,
     )
     # Combine preds
-    print(svc_preds)
     preds_list = [bert_preds, svc_preds, xgb_preds]
     combined_preds = combine_predictions(preds_list, labels=minor_cats)
-    return combined_preds
+    # Join predicted labels with received data
+    combined_preds["comment_id"] = combined_preds.index.astype(str)
+    merged = pd.merge(df, combined_preds, how="left", on="comment_id")
+    # Fill in anything that got cleaned in preprocessing step
+    nulls = merged[merged.labels.isnull()].index
+    lnp = pd.Series(
+        [["Labelling not possible"]] * len(nulls), index=nulls, dtype=object
+    )
+    merged.loc[nulls, "labels"] = lnp
+    return_dict = merged[["comment_id", "labels"]].to_dict(orient="records")
+    return return_dict
 
 
 def predict_sentiment(items):
@@ -112,18 +114,10 @@ def predict_sentiment(items):
     """
 
     # Process received data
-    loaded_model = load_bert_model("sentiment")
-    df = pd.DataFrame([i for i in items], dtype=str)
-    df_newindex = df.set_index("comment_id")
-    if df_newindex.index.duplicated().sum() != 0:
-        raise ValueError("comment_id must all be unique values")
-    df_newindex.index.rename("Comment ID", inplace=True)
-    text_to_predict = df_newindex[["comment_text", "question_type"]]
-    text_to_predict = text_to_predict.rename(
-        columns={"comment_text": "FFT answer", "question_type": "FFT_q_standardised"}
-    )
+    df, text_to_predict = process_text(items)
     # Make predictions
-    preds_df = get_sentiment_predictions(
+    loaded_model = load_bert_model("sentiment")
+    preds_df = predict_sentiment_bert(
         text_to_predict, loaded_model, preprocess_text=False, additional_features=True
     )
     # Join predicted labels with received data
@@ -167,9 +161,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-    # json_file = os.path.join("docker_data", "data_in", "file_01.json")
-    # with open(json_file, "r") as jf:
-    #     json_in = json.load(jf)
-    # preds = get_multilabel_predictions(json_in)
-    # print(preds)
+    # main()
+    json_file = os.path.join("docker_data", "data_in", "file_01.json")
+    with open(json_file, "r") as jf:
+        json_in = json.load(jf)
+    preds = predict_multilabel_ensemble(json_in)
+    print(preds)

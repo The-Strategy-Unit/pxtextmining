@@ -45,6 +45,14 @@ def test_load_bert_model(mock_load):
     mock_load.assert_called_once()
 
 
+def test_process_text(input_data):
+    df, text_to_predict = docker_run.process_text(input_data)
+    assert len(df.columns) == 3
+    assert len(text_to_predict.columns) == 2
+    assert text_to_predict.index.name == "Comment ID"
+    assert df.shape[0] == text_to_predict.shape[0]
+
+
 @patch("docker_run.pickle.load")
 def test_load_sklearn_model(mock_pickle_load):
     docker_run.load_sklearn_model("final_svc")
@@ -52,16 +60,6 @@ def test_load_sklearn_model(mock_pickle_load):
 
 
 @patch("docker_run.predict_sentiment_bert")
-def test_get_sentiment_predictions(mock_predict):
-    docker_run.get_sentiment_predictions(
-        "text", "model", preprocess_text=True, additional_features=True
-    )
-    mock_predict.assert_called_with(
-        "text", "model", preprocess_text=True, additional_features=True
-    )
-
-
-@patch("docker_run.get_sentiment_predictions")
 @patch("docker_run.load_model")
 def test_predict_sentiment(mock_load_model, mock_get_predictions, input_data):
     input_text = input_data
@@ -76,16 +74,17 @@ def test_predict_sentiment(mock_load_model, mock_get_predictions, input_data):
         ]
     ).set_index("Comment ID")
     mock_get_predictions.return_value = output
-    docker_run.predict_sentiment(input_text)
+    return_dict = docker_run.predict_sentiment(input_text)
     mock_load_model.assert_called_once()
     mock_get_predictions.assert_called()
+    assert len(return_dict) == len(input_text)
 
 
 @patch("docker_run.predict_multilabel_sklearn")
 @patch("docker_run.predict_multilabel_bert")
 @patch("docker_run.pickle.load")
 @patch("docker_run.load_model")
-def test_get_multilabel_predictions(
+def test_predict_multilabel_ensemble(
     mock_load_model,
     mock_pickle_load,
     mock_predict_bert,
@@ -96,12 +95,12 @@ def test_get_multilabel_predictions(
     mock_predict_bert.return_value = output_df
     mock_predict_sklearn.return_value = output_df
     input_text = input_data
-    preds = docker_run.get_multilabel_predictions(input_text)
+    return_dict = docker_run.predict_multilabel_ensemble(input_text)
     mock_load_model.assert_called_once()
     mock_pickle_load.assert_called()
     mock_predict_bert.assert_called_once()
     mock_predict_sklearn.assert_called()
-    assert isinstance(preds, pd.DataFrame) is True
+    assert len(return_dict) == len(input_text)
 
 
 @pytest.mark.parametrize("args", [["file_01.json"], ["file_01.json", "-l"]])
@@ -113,9 +112,7 @@ def test_parse_args(mocker, args):
         assert args.local_storage is True
 
 
-@patch("docker_run.get_sentiment_predictions")
-@patch("docker_run.load_model")
-def test_comment_id_error(mock_load_model, mock_get_predictions):
+def test_comment_id_error():
     with pytest.raises(ValueError):
         test_json = [
             {
@@ -129,7 +126,7 @@ def test_comment_id_error(mock_load_model, mock_get_predictions):
                 "question_type": "nonspecific",
             },
         ]
-        docker_run.predict_sentiment(test_json)
+        docker_run.process_text(test_json)
 
 
 @patch("docker_run.predict_sentiment", return_value={"text": "ok"})
