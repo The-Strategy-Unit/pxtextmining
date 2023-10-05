@@ -16,7 +16,7 @@ from pxtextmining.params import minor_cats
 
 
 def load_bert_model(model_path):
-    if not os.path.exists(model_path):
+    if not os.path.exists(f"bert_{model_path}"):
         if model_path == "sentiment":
             model_path = os.path.join(
                 "current_best_model", model_path, f"bert_{model_path}"
@@ -25,14 +25,14 @@ def load_bert_model(model_path):
             model_path = os.path.join(
                 "current_best_model", "final_bert", f"bert_{model_path}"
             )
-    loaded_model = load_model(model_path)
+    loaded_model = load_model(f"bert_{model_path}")
     return loaded_model
 
 
 def load_sklearn_model(model_path):
-    if not os.path.exists(model_path):
+    if not os.path.exists(f"{model_path}.sav"):
         model_path = os.path.join("current_best_model", model_path, f"{model_path}.sav")
-    with open(model_path, "rb") as model:
+    with open(f"{model_path}.sav", "rb") as model:
         loaded_model = pickle.load(model)
     return loaded_model
 
@@ -157,8 +157,6 @@ def main():
     json_file = os.path.join("data", "data_in", args.json_file[0])
     with open(json_file, "r") as jf:
         json_in = json.load(jf)
-    if not args.local_storage:
-        os.remove(json_file)
     preds_list = []
     if "s" in args.target:
         s_preds = predict_sentiment(json_in)
@@ -170,6 +168,8 @@ def main():
         preds = pd.merge(preds_list[0], preds_list[1], on="comment_id")
     else:
         preds = preds_list[0]
+    if not args.local_storage:
+        os.remove(json_file)
     json_out = preds.to_dict(orient="records")
     out_path = os.path.join("data", "data_out", args.json_file[0])
     with open(out_path, "w+") as jf:
