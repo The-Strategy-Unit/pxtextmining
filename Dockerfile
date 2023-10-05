@@ -3,7 +3,7 @@ VOLUME /data
 
 COPY pxtextmining /pxtextmining
 COPY pyproject.toml /pyproject.toml
-COPY README.md /README.md
+COPY docker_README.md /README.md
 RUN pip install --upgrade pip setuptools \
   && pip install . \
   && rm -rf /root/.cache
