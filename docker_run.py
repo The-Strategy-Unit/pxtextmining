@@ -29,10 +29,11 @@ def load_bert_model(model_path):
     return loaded_model
 
 
-def load_sklearn_model(model_path):
-    if not os.path.exists(f"{model_path}.sav"):
-        model_path = os.path.join("current_best_model", model_path, f"{model_path}.sav")
-    with open(f"{model_path}.sav", "rb") as model:
+def load_sklearn_model(model_name):
+    model_path = f"{model_name}.sav"
+    if not os.path.exists(model_name):
+        model_path = os.path.join("current_best_model", model_name, model_path)
+    with open(model_path, "rb") as model:
         loaded_model = pickle.load(model)
     return loaded_model
 
