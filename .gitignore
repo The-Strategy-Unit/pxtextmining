@@ -2,8 +2,6 @@
 *__pycache__*
 notebooks/*
 my.conf
-test_results_label/*
-test_results_criticality/*
 site/
 dist/
 .vscode/
@@ -12,6 +10,6 @@ test_multilabel/*
 .env
 api/rsconnect-python/*
 .coverage
-api/bert*
 *_labels.xlsx
-current_best_model/final_bert/bert
+current_best_model/final_bert/bert_multilabel
+current_best_model/sentiment/bert_sentiment

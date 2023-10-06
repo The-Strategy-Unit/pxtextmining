@@ -95,7 +95,12 @@ def test_predict_multilabel_sklearn(rules_dict):
         predict_proba=Mock(return_value=predicted_probs),
     )
     preds_df = factory_predict_unlabelled_text.predict_multilabel_sklearn(
-        data, model, labels=labels, additional_features=True, rules_dict=rules_dict
+        data,
+        model,
+        labels=labels,
+        additional_features=True,
+        rules_dict=rules_dict,
+        label_fix=False,
     )
     cols = len(labels) * 2 + 1
     assert preds_df.shape == (3, cols)
@@ -103,12 +108,12 @@ def test_predict_multilabel_sklearn(rules_dict):
 
 def test_predict_multilabel_sklearn_additional_params(grab_test_X_additional_feats):
     data = grab_test_X_additional_feats["FFT answer"].iloc[:3]
-    predictions = np.array([[0, 1, 0], [1, 0, 1], [0, 0, 1]])
+    predictions = np.array([[0, 1, 1], [1, 0, 0], [1, 0, 1]])
     predicted_probs = np.array(
         [
             [
                 [0.80465788, 0.19534212],
-                [0.94292979, 0.05707021],
+                [0.05707021, 0.94292979],
                 [0.33439024, 0.66560976],
             ],
             [
@@ -117,13 +122,13 @@ def test_predict_multilabel_sklearn_additional_params(grab_test_X_additional_fea
                 [0.99459238, 0.00540762],
             ],
             [
-                [0.97472981, 0.02527019],
                 [0.25069129, 0.74930871],
+                [0.97472981, 0.02527019],
                 [0.33439024, 0.66560976],
             ],
         ]
     )
-    labels = ["first", "second", "third"]
+    labels = ["Labelling not possible", "second", "third"]
     model = Mock(
         predict=Mock(return_value=predictions),
         predict_proba=Mock(return_value=predicted_probs),
@@ -133,7 +138,7 @@ def test_predict_multilabel_sklearn_additional_params(grab_test_X_additional_fea
         model,
         labels=labels,
         additional_features=False,
-        label_fix=False,
+        label_fix=True,
     )
     cols = len(labels) * 2 + 1
     assert preds_df.shape == (3, cols)
@@ -261,8 +266,9 @@ def test_predict_multilabel_bert_already_encoded():
     assert preds_df.shape == (4, cols)
 
 
+@pytest.mark.parametrize("preprocess_text", [True, False])
 @pytest.mark.parametrize("additional_features", [True, False])
-def test_predict_sentiment_bert(additional_features):
+def test_predict_sentiment_bert(additional_features, preprocess_text):
     data = pd.DataFrame(
         [
             {
@@ -294,18 +300,33 @@ def test_predict_sentiment_bert(additional_features):
     ).set_index("Comment ID")
     if additional_features is False:
         data = data["FFT answer"]
-    predicted_probs = np.array(
-        [
-            [0.9, 0.01, 0.07, 0.01, 0.01],
-            [0.01, 0.07, 0.01, 0.01, 0.9],
-            [0.07, 0.9, 0.01, 0.01, 0.01],
-        ]
-    )
+    if preprocess_text is True:
+        predicted_probs = np.array(
+            [
+                [0.9, 0.01, 0.07, 0.01, 0.01],
+                [0.01, 0.07, 0.01, 0.01, 0.9],
+                [0.07, 0.9, 0.01, 0.01, 0.01],
+            ]
+        )
+        df_len = 3
+    elif preprocess_text is False:
+        predicted_probs = np.array(
+            [
+                [0.9, 0.01, 0.07, 0.01, 0.01],
+                [0.01, 0.07, 0.01, 0.01, 0.9],
+                [0.07, 0.9, 0.01, 0.01, 0.01],
+                [0.07, 0.9, 0.01, 0.01, 0.01],
+            ]
+        )
+        df_len = 4
     model = Mock(predict=Mock(return_value=predicted_probs))
     preds_df = factory_predict_unlabelled_text.predict_sentiment_bert(
-        data, model, preprocess_text=True, additional_features=additional_features
+        data,
+        model,
+        preprocess_text=preprocess_text,
+        additional_features=additional_features,
     )
-    assert preds_df.shape[0] == 3
+    assert preds_df.shape[0] == df_len
     assert "sentiment" in list(preds_df.columns)
 
 

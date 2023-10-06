@@ -83,6 +83,12 @@ def predict_multilabel_sklearn(
     predictions = np.where(combined_predictions == 0, combined_predictions, 1)
     preds_df = pd.DataFrame(predictions, index=processed_text.index, columns=labels)
     preds_df["labels"] = preds_df.apply(get_labels, args=(labels,), axis=1)
+    if label_fix is True:
+        for i in preds_df.index:
+            preds_list = preds_df.loc[i, "labels"]
+            if "Labelling not possible" in preds_list:
+                if len(preds_list) > 1:
+                    preds_df.loc[i, "labels"] = ["Labelling not possible"]
     # add probs to df
     label_list = ['Probability of "' + label + '"' for label in labels]
     preds_df[label_list] = pred_probs
