@@ -2,7 +2,7 @@
 omit = tests\*
        *\__init__.py
        *\params.py
-       api\test_api.py
+       api\test_api_locally.py
        setup.py
        test_rules.py
 

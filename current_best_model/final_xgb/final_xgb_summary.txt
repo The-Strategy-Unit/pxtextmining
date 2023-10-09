@@ -1,0 +1,73 @@
+
+ *****************
+ Random state seed for train test split is: 42
+
+
+Pipeline(steps=[('tfidfvectorizer',
+                 TfidfVectorizer(max_df=0.99, min_df=6, ngram_range=(1, 2))),
+                ('xgbclassifier',
+                 XGBClassifier(base_score=None, booster=None, callbacks=None,
+                               colsample_bylevel=None, colsample_bynode=None,
+                               colsample_bytree=None,
+                               early_stopping_rounds=None,
+                               enable_categorical=False, eval_metric=None,
+                               feature_types=None, gamma=0.3, gpu_id=None,
+                               grow_policy=None, importance_type=None,
+                               interaction_constraints=None, learning_rate=None,
+                               max_bin=None, max_cat_threshold=None,
+                               max_cat_to_onehot=None, max_delta_step=None,
+                               max_depth=4, max_leaves=None,
+                               min_child_weight=0.5, missing=nan,
+                               monotone_constraints=None, n_estimators=200,
+                               n_jobs=None, num_parallel_tree=None,
+                               predictor=None, random_state=None, ...))])
+
+
+Training time: 4:15:32
+
+exact_accuracy: 0.5547791365111056
+hamming_loss: 0.02501871724482156
+macro_jaccard_score: 0.4596213577953742
+macro_roc_auc: 0.9340739201717683
+Label ranking average precision: 0.8480797054165633
+
+ Classification report:
+                                                           precision    recall  f1-score   support
+
+                                Organisation & efficiency       0.62      0.45      0.52       102
+                     Funding & use of financial resources       0.75      0.24      0.36        25
+                       Staff manner & personal attributes       0.91      0.87      0.89      1431
+                                    Competence & training       0.79      0.39      0.52       164
+                                Unspecified communication       0.56      0.42      0.48        36
+      Staff listening, understanding & involving patients       0.79      0.56      0.65       361
+              Information directly from staff during care       0.78      0.69      0.73       390
+                         Information provision & guidance       0.63      0.36      0.45        90
+Being kept informed, clarity & consistency of information       0.61      0.32      0.42       183
+                                      Contacting services       0.76      0.52      0.62       100
+                                 Appointment arrangements       0.74      0.56      0.64       261
+                                       Appointment method       0.62      0.42      0.50        31
+                                       Timeliness of care       0.71      0.67      0.69       529
+                                          Pain management       0.77      0.56      0.65        43
+                                                Discharge       0.81      0.37      0.51        46
+                Cleanliness, tidiness & infection control       0.95      0.78      0.86       107
+                                         Service location       0.85      0.53      0.66        86
+                              Transport to/ from services       0.69      0.40      0.50        78
+                                                  Parking       0.94      0.89      0.91        18
+                                 Electronic entertainment       0.92      0.52      0.67        23
+                                             Feeling safe       0.73      0.70      0.71        23
+                                        Mental Health Act       0.50      0.08      0.13        13
+                                   Labelling not possible       1.00      1.00      1.00       238
+                     Supplying & understanding medication       0.77      0.58      0.66        59
+                         Activities & access to fresh air       0.88      0.52      0.65        54
+                      Food & drink provision & facilities       0.92      0.67      0.78       106
+                                       Sensory experience       0.77      0.36      0.49        67
+                          Interaction with family/ carers       0.58      0.24      0.34       123
+                          Positive experience & gratitude       0.78      0.86      0.81       938
+                                       Continuity of care       0.62      0.45      0.52       290
+                      Environment, facilities & equipment       0.75      0.45      0.56       202
+                         Staffing levels & responsiveness       0.68      0.40      0.50       194
+
+                                                micro avg       0.80      0.67      0.73      6411
+                                                macro avg       0.76      0.53      0.61      6411
+                                             weighted avg       0.79      0.67      0.71      6411
+                                              samples avg       0.81      0.73      0.75      6411

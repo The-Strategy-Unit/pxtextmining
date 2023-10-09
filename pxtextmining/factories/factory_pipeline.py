@@ -23,21 +23,19 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from transformers import DistilBertConfig, TFDistilBertForSequenceClassification
 
-from pxtextmining.helpers.tokenization import spacy_tokenizer
 from pxtextmining.params import model_name
 
 model_name = model_name
 
 
 def create_sklearn_pipeline_sentiment(
-    model_type, num_classes, tokenizer=None, additional_features=False
+    model_type, num_classes, additional_features=False
 ):
     """Creates sklearn pipeline and hyperparameter grid for searching, for a multiclass target.
 
     Args:
         model_type (str): Allows for selection of different estimators. Permitted values are "svm" (Support Vector Classifier), or "xgb" (XGBoost).
         num_classes (int): Number of target classes.
-        tokenizer (str, optional): Allows for selection of "spacy" tokenizer. Defaults to None, which is the default sklearn tokenizer
         additional_features (bool, optional): Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.
 
     Returns:
@@ -46,7 +44,7 @@ def create_sklearn_pipeline_sentiment(
     """
     if additional_features is True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
-        vectorizer = create_sklearn_vectorizer(tokenizer=None)
+        vectorizer = create_sklearn_vectorizer()
         preproc = make_column_transformer(
             (cat_transformer, ["FFT_q_standardised"]),
             (vectorizer, "FFT answer"),
@@ -55,45 +53,34 @@ def create_sklearn_pipeline_sentiment(
             "columntransformer__tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
             "columntransformer__tfidfvectorizer__max_df": [
                 0.85,
-                0.86,
-                0.87,
-                0.88,
-                0.89,
                 0.9,
-                0.91,
-                0.92,
-                0.93,
-                0.94,
                 0.95,
-                0.96,
-                0.97,
-                0.98,
                 0.99,
             ],
-            "columntransformer__tfidfvectorizer__min_df": stats.uniform(0, 0.1),
+            "columntransformer__tfidfvectorizer__min_df": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+            ],
         }
     else:
-        preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
+        preproc = create_sklearn_vectorizer()
         params = {
             "tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
             "tfidfvectorizer__max_df": [
-                0.85,
-                0.86,
-                0.87,
-                0.88,
-                0.89,
                 0.9,
-                0.91,
-                0.92,
-                0.93,
-                0.94,
                 0.95,
-                0.96,
-                0.97,
-                0.98,
                 0.99,
             ],
-            "tfidfvectorizer__min_df": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            "tfidfvectorizer__min_df": [0, 1, 3, 5, 0.005],
         }
     if model_type == "svm":
         pipe = make_pipeline(
@@ -105,7 +92,7 @@ def create_sklearn_pipeline_sentiment(
                 cache_size=1000,
             ),
         )
-        params["svc__C"] = stats.uniform(0.1, 20)
+        params["svc__C"] = [1, 5, 10, 15, 20]
         params["svc__kernel"] = [
             "linear",
             "rbf",
@@ -278,28 +265,21 @@ def calculating_class_weights(y_true):
     return class_weights_dict
 
 
-def create_sklearn_vectorizer(tokenizer=None):
-    """Creates vectorizer for use with sklearn models, either using sklearn tokenizer or the spacy tokenizer
-
-    Args:
-        tokenizer (str, optional): Enables selection of spacy tokenizer. Defaults to None, which is sklearn default tokenizer.
+def create_sklearn_vectorizer():
+    """Creates vectorizer for use with sklearn models, using sklearn tokenizer
 
     Returns:
-        (sklearn.feature_extraction.text.TfidfVectorizer): sklearn TfidfVectorizer with either spacy or sklearn tokenizer
+        (sklearn.feature_extraction.text.TfidfVectorizer): sklearn TfidfVectorizer
     """
-    if tokenizer == "spacy":
-        vectorizer = TfidfVectorizer(tokenizer=spacy_tokenizer)
-    else:
-        vectorizer = TfidfVectorizer()
+    vectorizer = TfidfVectorizer()
     return vectorizer
 
 
-def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True):
+def create_sklearn_pipeline(model_type, additional_features=True):
     """Creates sklearn pipeline and hyperparameter grid for searching, depending on model_type selected.
 
     Args:
         model_type (str): Allows for selection of different estimators. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).
-        tokenizer (str, optional): Allows for selection of "spacy" tokenizer. Defaults to None, which is the default sklearn tokenizer
         additional_features (bool, optional): Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.
 
     Returns:
@@ -307,7 +287,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
     """
     if additional_features is True:
         cat_transformer = OneHotEncoder(handle_unknown="ignore")
-        vectorizer = create_sklearn_vectorizer(tokenizer=None)
+        vectorizer = create_sklearn_vectorizer()
         # num_transformer = RobustScaler()
         preproc = make_column_transformer(
             (cat_transformer, ["FFT_q_standardised"]),
@@ -321,10 +301,24 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                 0.95,
                 0.99,
             ],
-            "columntransformer__tfidfvectorizer__min_df": [0, 0.01, 0.02],
+            "columntransformer__tfidfvectorizer__min_df": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                0.005,
+                0.01,
+            ],
         }
     else:
-        preproc = create_sklearn_vectorizer(tokenizer=tokenizer)
+        preproc = create_sklearn_vectorizer()
         params = {
             "tfidfvectorizer__ngram_range": ((1, 1), (1, 2), (2, 2)),
             "tfidfvectorizer__max_df": [
@@ -332,7 +326,7 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                 0.95,
                 0.99,
             ],
-            "tfidfvectorizer__min_df": stats.uniform(0.01, 0.1),
+            "tfidfvectorizer__min_df": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         }
     if model_type == "mnb":
         pipe = make_pipeline(preproc, MultiOutputClassifier(MultinomialNB()))
@@ -350,16 +344,18 @@ def create_sklearn_pipeline(model_type, tokenizer=None, additional_features=True
                     max_iter=1000,
                     cache_size=1000,
                 ),
-                n_jobs=-1,
             ),
         )
-        params["multioutputclassifier__estimator__C"] = [10, 15, 20]
-        params["multioutputclassifier__estimator__gamma"] = np.logspace(-9, 3, 13)
-        # params["multioutputclassifier__estimator__kernel"] = [
-        #     "linear",
-        #     "rbf",
-        #     "sigmoid",
-        # ]
+        params["multioutputclassifier__estimator__C"] = [1, 5, 10, 15, 20]
+        params["multioutputclassifier__estimator__kernel"] = [
+            "linear",
+            "rbf",
+            "sigmoid",
+        ]
+        if "columntransformer__tfidfvectorizer__min_df" in params:
+            params["columntransformer__tfidfvectorizer__min_df"] = [0, 1, 3, 5, 0.005]
+        else:
+            params["tfidfvectorizer__min_df"] = [0, 1, 3, 5, 0.005]
     if model_type == "rfc":
         pipe = make_pipeline(preproc, RandomForestClassifier(n_jobs=-1))
         params["randomforestclassifier__max_depth"] = stats.randint(5, 50)
@@ -411,7 +407,6 @@ def search_sklearn_pipelines(
                 pipe, params = create_sklearn_pipeline_sentiment(
                     model_type,
                     num_classes=num_classes,
-                    tokenizer=None,
                     additional_features=additional_features,
                 )
             else:
@@ -419,15 +414,27 @@ def search_sklearn_pipelines(
                     model_type, additional_features=additional_features
                 )
             start_time = time.time()
-            search = RandomizedSearchCV(
-                pipe,
-                params,
-                scoring="f1_macro",
-                n_iter=100,
-                cv=4,
-                n_jobs=-2,
-                refit=True,
-            )
+            if model_type == "svm":
+                search = RandomizedSearchCV(
+                    pipe,
+                    params,
+                    scoring="average_precision",
+                    n_iter=100,
+                    cv=4,
+                    refit=True,
+                    verbose=3,
+                )
+            else:
+                search = RandomizedSearchCV(
+                    pipe,
+                    params,
+                    scoring="average_precision",
+                    n_iter=100,
+                    cv=4,
+                    n_jobs=-2,
+                    refit=True,
+                    verbose=1,
+                )
             search.fit(X_train, Y_train)
             models.append(search.best_estimator_)
             training_time = round(time.time() - start_time, 0)
@@ -453,7 +460,7 @@ def create_and_train_svc_model(X_train, Y_train, additional_features=False):
             (vectorizer, "FFT answer"),
         )
     else:
-        preproc = create_sklearn_vectorizer(tokenizer=None)
+        preproc = create_sklearn_vectorizer()
     pipe = make_pipeline(
         preproc,
         MultiOutputClassifier(

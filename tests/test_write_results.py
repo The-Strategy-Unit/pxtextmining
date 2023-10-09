@@ -2,17 +2,24 @@ import os
 from unittest.mock import Mock, mock_open, patch
 
 import numpy as np
+import pandas as pd
+import pytest
+from sklearn.dummy import DummyClassifier
 from tensorflow.keras import Model
 
 from pxtextmining.factories import factory_write_results
 
 
-@patch("pickle.dump", Mock())
-@patch("builtins.open", new_callable=mock_open, read_data="somestr")
-def test_write_multilabel_models_and_metrics(mock_file, tmp_path_factory):
+@patch("pxtextmining.factories.factory_write_results.pickle.dump", Mock())
+@patch(
+    "builtins.open",
+    new_callable=mock_open,
+    read_data="somestr",
+)
+@pytest.mark.parametrize("models", [[Mock(spec=Model)], [Mock(spec=DummyClassifier)]])
+def test_write_multilabel_models_and_metrics(mock_file, tmp_path_factory, models):
     # arrange
-    mock_model = Mock(spec=Model)
-    models = [mock_model]
+    models = models
     model_metrics = ["somestr"]
     path = tmp_path_factory.mktemp("somepath")
     # act
@@ -20,52 +27,112 @@ def test_write_multilabel_models_and_metrics(mock_file, tmp_path_factory):
         models, model_metrics, path
     )
     # assert
-    mock_model.save.assert_called_once()
+    if isinstance(models[0], Model):
+        models[0].save.assert_called_once()
     mock_file.assert_called_with(os.path.join(path, "model_0.txt"), "w")
     assert open(os.path.join("somepath", "model_0.txt")).read() == "somestr"
 
 
+@patch(
+    "builtins.open",
+    new_callable=mock_open,
+    read_data="somestr",
+)
+@patch("pxtextmining.factories.factory_write_results.os.makedirs")
+def test_write_multilabel_models_and_metrics_nopath(
+    mock_makedirs, mock_file_open, tmp_path
+):
+    # arrange
+    models = [Mock(spec=Model)]
+    model_metrics = ["somestr"]
+    path = "somepath"
+    # act
+    factory_write_results.write_multilabel_models_and_metrics(
+        models, model_metrics, path
+    )
+    # assert
+    mock_makedirs.assert_called_once_with(path)
+
+
 @patch("pxtextmining.factories.factory_write_results.pd.DataFrame.to_excel")
 def test_write_model_preds_sklearn(mock_toexcel, grab_test_X_additional_feats):
+    x = grab_test_X_additional_feats["FFT answer"]
     # arrange
-    x = grab_test_X_additional_feats[:3]
-    y = np.array([[0, 1, 0], [1, 0, 0], [1, 0, 0]])
-    predictions = np.array([[0, 1, 0], [1, 0, 1], [0, 0, 1]])
-    predicted_probs = [
-        [[0.80465788, 0.19534212], [0.94292979, 0.05707021], [0.33439024, 0.66560976]],
-        [[0.33439024, 0.66560976], [0.9949298, 0.0050702], [0.99459238, 0.00540762]],
-        [[0.97472981, 0.02527019], [0.25069129, 0.74930871], [0.33439024, 0.66560976]],
-    ]
-    mock_model = Mock(
-        predict=Mock(return_value=predictions),
-        predict_proba=Mock(return_value=predicted_probs),
+    y_true = np.array(
+        [
+            [0.0, 1.0, 0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0, 1.0, 1.0],
+            [1.0, 0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 1.0],
+        ]
     )
-    labels = ["A", "B", "C"]
+    labels = ["one", "two", "three", "four", "five"]
+    probs_labels = ["Probability of " + x for x in labels]
+    preds_df = pd.DataFrame(
+        np.array(
+            [
+                [0.0, 1.0, 0.0, 1.0, 0.0, 0.1, 0.6, 0.2, 0.7, 0.05],
+                [1.0, 0.0, 0.0, 1.0, 0.0, 0.55, 0.2, 0.3, 0.8, 0.4],
+                [1.0, 0.0, 0.0, 0.0, 0.0, 0.8, 0.3, 0.2, 0.3, 0.1],
+                [1.0, 0.0, 1.0, 1.0, 0.0, 0.7, 0.2, 0.8, 0.9, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 1.0, 0.2, 0.4, 0.2, 0.1, 0.6],
+            ]
+        ),
+        columns=labels + probs_labels,
+        index=grab_test_X_additional_feats.index,
+    )
+    preds_df["labels"] = [
+        ["two", "four"],
+        ["one", "four"],
+        ["one"],
+        ["one", "three", "four"],
+        ["five"],
+    ]
     path = "somepath.xlsx"
     # act
-    factory_write_results.write_model_preds(x, y, mock_model, labels, path=path)
+    df = factory_write_results.write_model_preds(
+        x, y_true, preds_df, labels, path=path, return_df=True
+    )
     # assert
-    mock_model.predict_proba.assert_called()
+    assert df.shape[0] == len(x)
     mock_toexcel.assert_called()
 
 
 @patch("pxtextmining.factories.factory_write_results.pd.DataFrame.to_excel")
-def test_write_model_preds_bert(mock_toexcel, grab_test_X_additional_feats):
-    # arrange
-    x = grab_test_X_additional_feats[:3]
-    y = np.array([[0, 1, 0], [1, 0, 0], [1, 0, 0]])
-    predicted_probs = np.array(
-        [
-            [2.3520987e-02, 6.2770307e-01, 1.3149388e-01],
-            [9.8868138e-01, 1.9990385e-03, 5.4453085e-03],
-            [5.6546849e-01, 4.2310607e-01, 9.3136989e-03],
-        ]
+@patch("pxtextmining.factories.factory_write_results.parse_metrics_file")
+def test_write_model_analysis(
+    mock_parsemetrics,
+    mock_toexcel,
+    grab_preds_df,
+):
+    mock_parsemetrics.return_value = pd.DataFrame(
+        {
+            "label": {0: "one", 1: "two", 2: "three", 3: "four", 4: "five"},
+            "precision": {0: 0.46, 1: 0.54, 2: 0.52, 3: 0.54, 4: 0.52},
+            "recall": {0: 0.43, 1: 0.82, 2: 0.65, 3: 0.82, 4: 0.65},
+            "f1_score": {0: 0.44, 1: 0.65, 2: 0.58, 3: 0.65, 4: 0.58},
+            "support (label count in test data)": {
+                0: 129,
+                1: 115,
+                2: 20,
+                3: 115,
+                4: 20,
+            },
+        }
     )
-    mock_model = Mock(spec=Model, predict=Mock(return_value=predicted_probs))
-    labels = ["A", "B", "C"]
-    path = "somepath.xlsx"
-    # act
-    factory_write_results.write_model_preds(x, y, mock_model, labels, path=path)
-    # assert
-    mock_model.predict.assert_called()
-    mock_toexcel.assert_called()
+    labels = ["one", "two", "three", "four", "five"]
+    dataset = grab_preds_df.copy()
+    preds_df = grab_preds_df
+    y_true = np.array(grab_preds_df[labels])
+
+    factory_write_results.write_model_analysis(
+        "model_name",
+        labels=labels,
+        dataset=dataset,
+        path="somepath",
+        preds_df=preds_df,
+        y_true=y_true,
+        custom_threshold_dict=None,
+    )
+    mock_toexcel.assert_called_once()

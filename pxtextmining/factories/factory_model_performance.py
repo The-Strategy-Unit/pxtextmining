@@ -8,8 +8,6 @@ from tensorflow.keras.models import Model
 
 from pxtextmining.factories.factory_predict_unlabelled_text import (
     predict_multiclass_bert,
-    predict_multilabel_bert,
-    predict_multilabel_sklearn,
 )
 
 
@@ -64,7 +62,6 @@ def get_multiclass_metrics(
             x_test,
             model,
             additional_features=additional_features,
-            already_encoded=False,
         )
     elif is_classifier(model) is True:
         metrics_string += f"\n{model}\n"
@@ -83,33 +80,26 @@ def get_multiclass_metrics(
 
 
 def get_multilabel_metrics(
-    x_test,
+    preds_df,
     y_test,
     labels,
     random_state,
-    model_type,
     model,
     training_time=None,
-    additional_features=False,
-    already_encoded=False,
-    enhance_with_rules=False,
 ):
     """Creates a string detailing various performance metrics for a multilabel model, which can then be written to
     a text file.
 
     Args:
-        x_test (pd.DataFrame): DataFrame containing test dataset features
+        preds_df (pd.DataFrame): DataFrame containing model predictions
         y_test (pd.DataFrame): DataFrame containing test dataset true target values
         labels (list): List containing the target labels
         random_state (int): Seed used to control the shuffling of the data, to enable reproducible results.
-        model_type (str): Type of model used. Options are 'bert', or 'sklearn'. Defaults to None.
         model (tf.keras or sklearn model): Trained estimator.
         training_time (str, optional): Amount of time taken for model to train. Defaults to None.
-        additional_features (bool, optional): Whether or not additional features (e.g. question type) have been included in training the model. Defaults to False.
-        already_encoded (bool, optional): Whether or not, if a `bert` model was used, x_test has already been encoded. Defaults to False.
 
     Raises:
-        ValueError: Only model_type 'bert', 'tf' or 'sklearn' are allowed.
+        ValueError: Only sklearn and tensorflow keras models allowed.
 
     Returns:
         (str): String containing the model architecture/hyperparameters, random state used for the train test split, and performance metrics including: exact accuracy, hamming loss, macro jaccard score, and classification report.
@@ -120,40 +110,22 @@ def get_multilabel_metrics(
         f"\n Random state seed for train test split is: {random_state} \n\n"
     )
     model_metrics = {}
-    # TF Keras models output probabilities with model.predict, whilst sklearn models output binary outcomes
-    # Get them both to output the same (binary outcomes) and take max prob as label if no labels predicted at all
-    if model_type == "bert":
-        y_pred_df = predict_multilabel_bert(
-            x_test,
-            model,
-            labels=labels,
-            additional_features=additional_features,
-            label_fix=True,
-            enhance_with_rules=enhance_with_rules,
-            already_encoded=already_encoded,
-        )
-    elif model_type == "sklearn":
-        y_pred_df = predict_multilabel_sklearn(
-            x_test,
-            model,
-            labels=labels,
-            additional_features=additional_features,
-            label_fix=True,
-            enhance_with_probs=True,
-            enhance_with_rules=enhance_with_rules,
-        )
+    if isinstance(model, Model) is True:
+        stringlist = []
+        model.summary(print_fn=lambda x: stringlist.append(x))
+        model_summary = "\n".join(stringlist)
+    elif is_classifier(model) is True:
+        model_summary = model
     else:
-        raise ValueError(
-            'Please select valid model_type. Options are "bert" or "sklearn"'
-        )
-    y_pred = np.array(y_pred_df[labels]).astype("int64")
+        raise ValueError("invalid model type")
+    y_pred = np.array(preds_df[labels]).astype("int64")
     # Calculate various metrics
     model_metrics["exact_accuracy"] = metrics.accuracy_score(y_test, y_pred)
     model_metrics["hamming_loss"] = metrics.hamming_loss(y_test, y_pred)
     model_metrics["macro_jaccard_score"] = metrics.jaccard_score(
         y_test, y_pred, average="macro"
     )
-    y_probs = y_pred_df.filter(like="Probability", axis=1)
+    y_probs = preds_df.filter(like="Probability", axis=1)
     model_metrics["macro_roc_auc"] = metrics.roc_auc_score(
         y_test, y_probs, multi_class="ovr"
     )
@@ -164,13 +136,7 @@ def get_multilabel_metrics(
         y_probs,
     )
     # Model summary
-    if model_type in ("bert", "tf"):
-        stringlist = []
-        model.summary(print_fn=lambda x: stringlist.append(x))
-        model_summary = "\n".join(stringlist)
-        metrics_string += f"\n{model_summary}\n"
-    else:
-        metrics_string += f"\n{model}\n"
+    metrics_string += f"\n{model_summary}\n"
     metrics_string += f"\n\nTraining time: {training_time}\n"
     for k, v in model_metrics.items():
         metrics_string += f"\n{k}: {v}"
@@ -257,7 +223,7 @@ def get_y_score(probs):
     return score
 
 
-def additional_analysis(preds_df, y_true, labels):
+def additional_analysis(preds_df, y_true, labels, custom_threshold_dict=None):
     """For given predictions, returns dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
 
     Args:
@@ -268,7 +234,6 @@ def additional_analysis(preds_df, y_true, labels):
     Returns:
         (pd.DataFrame): dataframe containing: macro one-vs-one ROC AUC score, number of True Positives, True Negatives, False Positives, and False Negatives.
     """
-    # include threshold?? (later)
     y_score = np.array(preds_df.filter(like="Probability", axis=1))
     cm = metrics.multilabel_confusion_matrix(y_true, np.array(preds_df[labels]))
     cm_dict = {}
@@ -288,4 +253,6 @@ def additional_analysis(preds_df, y_true, labels):
     df = pd.DataFrame.from_dict(cm_dict, orient="index")
     average_precision = pd.Series(average_precision)
     df["average_precision_score"] = average_precision
+    if custom_threshold_dict is not None:
+        df["custom_threshold"] = custom_threshold_dict
     return df

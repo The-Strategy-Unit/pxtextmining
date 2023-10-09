@@ -1,1 +1,1 @@
-[{"comment_id": "1", "sentiment": 2.0}, {"comment_id": "2", "sentiment": 4.0}, {"comment_id": "3", "sentiment": "Labelling not possible"}, {"comment_id": "4", "sentiment": 1.0}]
+[{"comment_id": "1", "sentiment": 5.0, "labels": ["Staff manner & personal attributes"]}, {"comment_id": "2", "sentiment": 4.0, "labels": ["Sensory experience"]}, {"comment_id": "3", "sentiment": "Labelling not possible", "labels": ["Labelling not possible"]}, {"comment_id": "4", "sentiment": 1.0, "labels": ["Positive experience & gratitude"]}]

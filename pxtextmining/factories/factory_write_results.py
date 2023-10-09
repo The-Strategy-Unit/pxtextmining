@@ -12,8 +12,6 @@ from pxtextmining.factories.factory_model_performance import (
 from pxtextmining.factories.factory_predict_unlabelled_text import (
     get_labels,
     get_probabilities,
-    predict_multilabel_bert,
-    predict_multilabel_sklearn,
 )
 
 
@@ -42,70 +40,28 @@ def write_multilabel_models_and_metrics(models, model_metrics, path):
     print(f"{len(models)} models have been written to {path}")
 
 
-def write_model_preds(
-    x,
-    y,
-    model,
-    labels,
-    additional_features=True,
-    path="labels.xlsx",
-    enhance_with_rules=False,
-    return_df=False,
-):
+def write_model_preds(x, y_true, preds_df, labels, path="labels.xlsx", return_df=False):
     """Writes an Excel file to enable easier analysis of model outputs using the test set. Columns of the Excel file are: comment_id, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.
 
     Currently only works with sklearn models.
 
     Args:
-        x (pd.DataFrame): Features to be used to make the prediction.
-        y (np.array): Numpy array containing the targets, in one-hot encoded format
-        model (sklearn.base): Trained sklearn multilabel classifier.
-        labels (list): List of labels for the categories to be predicted.
-        additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to True.
-        path (str, optional): Filename for the outputted file. Defaults to 'labels.xlsx'.
     """
-    actual_labels = pd.DataFrame(y, columns=labels).apply(
+    assert len(x) == len(y_true) == len(preds_df)
+    actual_labels = pd.DataFrame(y_true, columns=labels).apply(
         get_labels, args=(labels,), axis=1
     )
     actual_labels.name = "actual_labels"
-    if isinstance(model, Model) is True:
-        preds_df = predict_multilabel_bert(
-            x,
-            model,
-            labels=labels,
-            additional_features=additional_features,
-            label_fix=True,
-            enhance_with_rules=enhance_with_rules,
-        )
-
-    else:
-        preds_df = predict_multilabel_sklearn(
-            x,
-            model,
-            labels=labels,
-            additional_features=additional_features,
-            label_fix=True,
-            enhance_with_probs=True,
-            enhance_with_rules=enhance_with_rules,
-        )
-    predicted_labels = preds_df.reset_index()["labels"]
+    predicted_labels = preds_df["labels"]
     predicted_labels.name = "predicted_labels"
     df = x.reset_index()
     probabilities = np.array(preds_df.filter(like="Probability", axis=1))
-    if isinstance(model, Model) is True:
-        model_type = "bert"
-    else:
-        model_type = "sklearn"
-    probs_actual = get_probabilities(
-        actual_labels, labels, probabilities, model_type=model_type
-    )
-    probs_predicted = get_probabilities(
-        predicted_labels, labels, probabilities, model_type=model_type
-    )
+    probs_actual = get_probabilities(actual_labels, labels, probabilities)
+    probs_predicted = get_probabilities(predicted_labels, labels, probabilities)
     df = df.merge(actual_labels, left_index=True, right_index=True)
-    df = df.merge(predicted_labels, left_index=True, right_index=True)
+    df = df.merge(predicted_labels, left_on="Comment ID", right_index=True)
     df = df.merge(probs_actual, left_index=True, right_index=True)
-    df = df.merge(probs_predicted, left_index=True, right_index=True)
+    df = df.merge(probs_predicted, left_on="Comment ID", right_index=True)
     # Deal with any rogue characters
     df.applymap(
         lambda x: x.encode("unicode_escape").decode("utf-8")
@@ -113,12 +69,19 @@ def write_model_preds(
         else x
     )
     df.to_excel(path, index=False)
-    print(f"Successfully completed, written to {path}")
     if return_df is True:
-        return preds_df
+        return df
 
 
-def write_model_analysis(model_name, labels, dataset, path, preds_df=None, y_true=None):
+def write_model_analysis(
+    model_name,
+    labels,
+    dataset,
+    path,
+    preds_df=None,
+    y_true=None,
+    custom_threshold_dict=None,
+):
     """Writes an Excel file with the performance metrics of each label, as well as the counts of samples for each label.
 
     Args:
@@ -135,6 +98,8 @@ def write_model_analysis(model_name, labels, dataset, path, preds_df=None, y_tru
     )
     metrics_df = metrics_df.merge(label_counts, on="label").set_index("label")
     if preds_df is not None and y_true is not None:
-        more_metrics = additional_analysis(preds_df, y_true, labels)
+        more_metrics = additional_analysis(
+            preds_df, y_true, labels, custom_threshold_dict
+        )
         metrics_df = pd.concat([metrics_df, more_metrics], axis=1)
     metrics_df.to_excel(f"{path}/{model_name}_perf.xlsx", index=True)

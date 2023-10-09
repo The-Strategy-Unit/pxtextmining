@@ -1,0 +1,104 @@
+
+ *****************
+ Random state seed for train test split is: 42
+
+
+Pipeline(steps=[('tfidfvectorizer', TfidfVectorizer()),
+                ('multioutputclassifier',
+                 MultiOutputClassifier(estimator=SVC(C=15, cache_size=1000,
+                                                     class_weight='balanced',
+                                                     max_iter=1000,
+                                                     probability=True)))])
+Model: "DistilBERT"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #
+=================================================================
+ input_ids (InputLayer)      [(None, 150)]             0
+
+ distilbert (TFDistilBertMai  TFBaseModelOutput(last_h  66362880
+ nLayer)                     idden_state=(None, 150,
+                             768),
+                              hidden_states=None, att
+                             entions=None)
+
+ tf.__operators__.getitem (S  (None, 768)              0
+ licingOpLambda)
+
+ pooled_output (Dropout)     (None, 768)               0
+
+ output (Dense)              (None, 32)                24608
+
+=================================================================
+Total params: 66,387,488
+Trainable params: 66,387,488
+Non-trainable params: 0
+_________________________________________________________________
+
+Pipeline(steps=[('tfidfvectorizer',
+                 TfidfVectorizer(max_df=0.99, min_df=6, ngram_range=(1, 2))),
+                ('xgbclassifier',
+                 XGBClassifier(base_score=None, booster=None, callbacks=None,
+                               colsample_bylevel=None, colsample_bynode=None,
+                               colsample_bytree=None,
+                               early_stopping_rounds=None,
+                               enable_categorical=False, eval_metric=None,
+                               feature_types=None, gamma=0.3, gpu_id=None,
+                               grow_policy=None, importance_type=None,
+                               interaction_constraints=None, learning_rate=None,
+                               max_bin=None, max_cat_threshold=None,
+                               max_cat_to_onehot=None, max_delta_step=None,
+                               max_depth=4, max_leaves=None,
+                               min_child_weight=0.5, missing=nan,
+                               monotone_constraints=None, n_estimators=200,
+                               n_jobs=None, num_parallel_tree=None,
+                               predictor=None, random_state=None, ...))])
+
+
+Ensembling method: Average of predicted probabilities for each model taken. Threshold set at 0.3
+
+exact_accuracy: 0.560019965061143
+hamming_loss: 0.023146992762665335
+macro_jaccard_score: 0.5644485328931894
+macro_roc_auc: 0.9709795934716587
+Label ranking average precision: 0.8805306557959275
+
+ Classification report:
+                                                           precision    recall  f1-score   support
+
+                                Organisation & efficiency       0.49      0.75      0.59       102
+                     Funding & use of financial resources       0.64      0.64      0.64        25
+                       Staff manner & personal attributes       0.90      0.90      0.90      1431
+                                    Competence & training       0.74      0.57      0.64       164
+                                Unspecified communication       0.61      0.64      0.62        36
+      Staff listening, understanding & involving patients       0.64      0.75      0.69       361
+              Information directly from staff during care       0.73      0.80      0.76       390
+                         Information provision & guidance       0.64      0.51      0.57        90
+Being kept informed, clarity & consistency of information       0.56      0.66      0.60       183
+                                      Contacting services       0.72      0.65      0.68       100
+                                 Appointment arrangements       0.73      0.69      0.71       261
+                                       Appointment method       0.65      0.65      0.65        31
+                                       Timeliness of care       0.67      0.82      0.74       529
+                                          Pain management       0.86      0.72      0.78        43
+                                                Discharge       0.80      0.52      0.63        46
+                Cleanliness, tidiness & infection control       0.91      0.86      0.88       107
+                                         Service location       0.85      0.59      0.70        86
+                              Transport to/ from services       0.74      0.64      0.68        78
+                                                  Parking       0.94      0.94      0.94        18
+                                 Electronic entertainment       0.94      0.65      0.77        23
+                                             Feeling safe       0.69      0.87      0.77        23
+                                        Mental Health Act       0.75      0.23      0.35        13
+                                   Labelling not possible       1.00      1.00      1.00       238
+                     Supplying & understanding medication       0.73      0.69      0.71        59
+                         Activities & access to fresh air       0.76      0.76      0.76        54
+                      Food & drink provision & facilities       0.87      0.85      0.86       106
+                                       Sensory experience       0.80      0.79      0.80        67
+                          Interaction with family/ carers       0.59      0.45      0.51       123
+                          Positive experience & gratitude       0.80      0.91      0.85       938
+                                       Continuity of care       0.65      0.58      0.61       290
+                      Environment, facilities & equipment       0.71      0.67      0.69       202
+                         Staffing levels & responsiveness       0.55      0.56      0.56       194
+
+                                                micro avg       0.76      0.78      0.77      6411
+                                                macro avg       0.74      0.70      0.71      6411
+                                             weighted avg       0.76      0.78      0.77      6411
+                                              samples avg       0.79      0.83      0.79      6411

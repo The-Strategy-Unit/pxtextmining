@@ -104,7 +104,8 @@ def test_multiclass_metrics_bert(
     assert isinstance(metrics_string, str) is True
 
 
-def test_multilabel_metrics_sklearn(grab_test_X_additional_feats):
+def test_multilabel_metrics_sklearn(grab_preds_df, grab_test_X_additional_feats):
+    preds_df = grab_preds_df
     x = grab_test_X_additional_feats
     y = np.array(
         [
@@ -115,27 +116,21 @@ def test_multilabel_metrics_sklearn(grab_test_X_additional_feats):
             [0, 0, 0, 0, 1],
         ]
     )
-    labels = ["A", "B", "C", "D", "E"]
+    labels = ["one", "two", "three", "four", "five"]
     random_state = 42
-    model_type = "sklearn"
-    additional_features = True
     model = factory_model_performance.get_dummy_model(x, y)
     metrics_string = factory_model_performance.get_multilabel_metrics(
-        x,
+        preds_df,
         y,
         labels,
         random_state,
-        model_type,
         model,
-        additional_features=additional_features,
     )
     assert isinstance(metrics_string, str) is True
 
 
-def test_multilabel_metrics_bert(
-    grab_test_X_additional_feats, grab_test_bert_multilabel
-):
-    x = grab_test_X_additional_feats
+def test_multilabel_metrics_bert(grab_test_bert_multilabel, grab_preds_df):
+    preds_df = grab_preds_df
     y = np.array(
         [
             [0, 1, 0, 1, 0],
@@ -145,19 +140,15 @@ def test_multilabel_metrics_bert(
             [0, 0, 0, 0, 1],
         ]
     )
-    labels = ["A", "B", "C", "D", "E"]
+    labels = ["one", "two", "three", "four", "five"]
     random_state = 42
-    model_type = "bert"
-    additional_features = True
     model = grab_test_bert_multilabel
     metrics_string = factory_model_performance.get_multilabel_metrics(
-        x,
+        preds_df,
         y,
         labels,
         random_state,
-        model_type,
         model,
-        additional_features=additional_features,
     )
     assert isinstance(metrics_string, str) is True
 
@@ -170,7 +161,150 @@ def test_accuracy_per_class():
 
 
 def test_parse_metrics_file():
-    metrics_file = "current_best_multilabel/bert_sentiment.txt"
+    metrics_file = "current_best_model/sentiment/bert_sentiment.txt"
     labels = ["very positive", "positive", "neutral", "negative", "very negative"]
     metrics_df = factory_model_performance.parse_metrics_file(metrics_file, labels)
     assert metrics_df.shape == (5, 5)
+
+
+@pytest.mark.parametrize(
+    "custom_threshold_dict",
+    [None, {"one": 0.6, "two": 0.5, "three": 0.75, "four": 0.6, "five": 0.5}],
+)
+def test_additional_analysis(custom_threshold_dict, grab_preds_df):
+    y_true = np.array(
+        [
+            [0.0, 1.0, 0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0, 1.0, 1.0],
+            [1.0, 0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 1.0],
+        ]
+    )
+    labels = ["one", "two", "three", "four", "five"]
+    preds_df = grab_preds_df
+    analysis_df = factory_model_performance.additional_analysis(
+        preds_df, y_true, labels, custom_threshold_dict
+    )
+    assert list(analysis_df.index) == labels
+    if custom_threshold_dict is None:
+        assert len(analysis_df.columns) == 5
+    else:
+        assert len(analysis_df.columns) == 6
+
+
+def test_multiclass_metrics_valueerror(
+    grab_test_X_additional_feats,
+):
+    x = grab_test_X_additional_feats
+    y = np.array(
+        [
+            [0],
+            [4],
+            [1],
+            [3],
+            [3],
+        ]
+    )
+    labels = ["A", "B", "C", "D"]
+    model = Mock(spec=None)
+    random_state = 42
+    additional_features = True
+    with pytest.raises(ValueError):
+        factory_model_performance.get_multiclass_metrics(
+            x, y, labels, random_state, model, additional_features
+        )
+
+
+def test_multilabel_metrics_valueerror(
+    grab_preds_df,
+):
+    preds_df = grab_preds_df
+    y = np.array(
+        [
+            [0, 1, 0, 1, 0],
+            [1, 0, 0, 1, 0],
+            [1, 0, 0, 0, 0],
+            [1, 0, 1, 1, 0],
+            [0, 0, 0, 0, 1],
+        ]
+    )
+    labels = ["one", "two", "three", "four", "five"]
+    random_state = 42
+    model = Mock(spec=None)
+    with pytest.raises(ValueError):
+        factory_model_performance.get_multilabel_metrics(
+            preds_df,
+            y,
+            labels,
+            random_state,
+            model,
+        )
+
+
+def test_get_y_score_2d():
+    test_probs = np.array(
+        [
+            [
+                6.2770307e-01,
+                2.3520987e-02,
+                1.3149388e-01,
+                2.7835215e-02,
+                1.8944685e-01,
+            ],
+            [
+                9.8868138e-01,
+                1.9990385e-03,
+                5.4453085e-03,
+                9.0726715e-04,
+                2.9669846e-03,
+            ],
+            [
+                4.2310607e-01,
+                5.6546849e-01,
+                9.3136989e-03,
+                1.3205722e-03,
+                7.9117226e-04,
+            ],
+            [
+                2.0081511e-01,
+                7.0609129e-04,
+                1.1107661e-03,
+                7.9677838e-01,
+                5.8961433e-04,
+            ],
+            [
+                1.4777037e-03,
+                5.1493715e-03,
+                2.8268427e-03,
+                7.4673461e-04,
+                9.8979920e-01,
+            ],
+        ]
+    )
+    probs = factory_model_performance.get_y_score(test_probs)
+    assert probs.ndim == 2
+
+
+def test_get_y_score_3d():
+    test_probs = np.array(
+        [
+            [
+                [0.80465788, 0.19534212],
+                [0.94292979, 0.05707021],
+                [0.33439024, 0.66560976],
+            ],
+            [
+                [0.33439024, 0.66560976],
+                [0.9949298, 0.0050702],
+                [0.99459238, 0.00540762],
+            ],
+            [
+                [0.97472981, 0.02527019],
+                [0.25069129, 0.74930871],
+                [0.33439024, 0.66560976],
+            ],
+        ]
+    )
+    probs = factory_model_performance.get_y_score(test_probs)
+    assert probs.ndim == 2

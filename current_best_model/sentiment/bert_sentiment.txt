@@ -1,0 +1,57 @@
+
+ *****************
+ Random state seed for train test split is: 75
+
+
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to
+==================================================================================================
+ input_ids (InputLayer)         [(None, 150)]        0           []
+
+ distilbert (TFDistilBertMainLa  TFBaseModelOutput(l  66362880   ['input_ids[0][0]']
+ yer)                           ast_hidden_state=(N
+                                one, 150, 768),
+                                 hidden_states=None
+                                , attentions=None)
+
+ input_cat (InputLayer)         [(None, 1)]          0           []
+
+ tf.__operators__.getitem (Slic  (None, 768)         0           ['distilbert[0][0]']
+ ingOpLambda)
+
+ category_encoding (CategoryEnc  (None, 3)           0           ['input_cat[0][0]']
+ oding)
+
+ pooled_output (Dropout)        (None, 768)          0           ['tf.__operators__.getitem[0][0]'
+                                                                 ]
+
+ dense (Dense)                  (None, 10)           40          ['category_encoding[0][0]']
+
+ concatenate (Concatenate)      (None, 778)          0           ['pooled_output[0][0]',
+                                                                  'dense[0][0]']
+
+ output (Dense)                 (None, 5)            3895        ['concatenate[0][0]']
+
+==================================================================================================
+Total params: 66,366,815
+Trainable params: 66,366,815
+Non-trainable params: 0
+__________________________________________________________________________________________________
+
+
+Training time: 5:20:56
+
+
+ Classification report:
+               precision    recall  f1-score   support
+
+very positive       0.80      0.79      0.80      1746
+     positive       0.63      0.52      0.57       841
+      neutral       0.52      0.71      0.60       551
+     negative       0.79      0.68      0.73       639
+very negative       0.52      0.64      0.57       166
+
+     accuracy                           0.70      3943
+    macro avg       0.65      0.67      0.65      3943
+ weighted avg       0.71      0.70      0.70      3943
