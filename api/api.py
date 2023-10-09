@@ -3,9 +3,9 @@ import pickle
 from typing import List
 
 import pandas as pd
+import schemas
 from fastapi import FastAPI
 
-from api import schemas
 from pxtextmining.factories.factory_predict_unlabelled_text import (
     predict_multilabel_sklearn,
 )
