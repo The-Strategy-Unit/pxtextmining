@@ -1,6 +1,8 @@
 # Slow API
 
-This API is slower but uses the best performing models. The transformer-based Distilbert model consumes a lot of hardware resource, and as such we needed to isolate it.
+This API is slower but uses the best performing models. The transformer-based Distilbert model consumes a lot of hardware resource, and as such required a different approach.
+
+![Diagram showing Slow API architecture](https://cdu-data-science-team.github.io/PatientExperience-QDC/pxtextmining/slow_API.png)
 
 For predicting the multilabel categories, the API endpoint ensembles together Support Vector Classifier, Gradient Boosted Decision Trees (XGBoost), and Distilbert models.
 
@@ -54,6 +56,7 @@ text_data <- toJSON(df)
 2\. Send the JSON containing the text data in a POST request to the API. Ensure that you include your API key, which should be stored securely.
 
 The model(s) used to make predictions can be selected with the `target` param. The options for this param are:
+
 - `m`: multilabel
 - `s`: sentiment
 - `ms`: both multilabel and sentiment.
