@@ -8,7 +8,7 @@ For predicting the multilabel categories, the API endpoint ensembles together Su
 
 For predicting text sentiment , the API endpoint utilises a Distilbert model.
 
-The API URL endpoint is `https://pxtextmining-docker-api.azurewebsites.net/api/StartContainerInstance`. You will need an API key, please contact the project team to obtain one. The key should be passed as a `code` param with your API request.
+The API URL endpoint is available on request. You will need an API key, please contact the project team to obtain one. The key should be passed as a `code` param with your API request.
 
 ## How to make an API call
 
@@ -67,7 +67,7 @@ The model(s) used to make predictions can be selected with the `target` param. T
 api_key = os.getenv('API_KEY')
 params_dict = {'code': api_key, 'target': 'ms'}
 
-url = f"https://pxtextmining-docker-api.azurewebsites.net/api/StartContainerInstance?"
+url = os.getenv('API_URL')
 
 response = requests.post(url, params= params_dict, json = text_data)
 ```
@@ -78,7 +78,7 @@ library(httr)
 
 api_key <- Sys.getenv("API_KEY")
 params_dict <- list(code = api_key, target = "ms")
-url <- "https://pxtextmining-docker-api.azurewebsites.net/api/StartContainerInstance"
+url <- Sys.getenv("API_URL")
 
 response <- POST(url, query = params_dict, body = text_data, encode = "json")
 ```

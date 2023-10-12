@@ -1,4 +1,4 @@
-# pxtextmining APIs
+# pxtextmining API overview
 
 We have created two different APIs for labelling patient experience feedback. Both APIs are free to use and completely open source. For help and support with using them, please contact [Chris Beeley](mailto:chris.beeley1@nhs.net).
 
