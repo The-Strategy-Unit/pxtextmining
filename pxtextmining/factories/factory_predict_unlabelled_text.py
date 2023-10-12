@@ -50,7 +50,8 @@ def predict_multilabel_sklearn(
         labels (list, optional): List containing target labels. Defaults to major_cats.
         additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
         label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
-        rules_dict
+        rules_dict (dict, optional): If supplied, enhances predicted probabilities of specific classes with rules based on the text vocabulary.
+        custom_threshold_dict (dict, optional): If supplied, binary predictions are based on custom thresholds for specific classes. If not specified, defaults to threshold of 0.5.
 
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.
@@ -116,7 +117,8 @@ def predict_multilabel_bert(
         additional_features (bool, optional): Whether or not FFT_q_standardised is included in data. Defaults to False.
         label_fix (bool, optional): Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.
         custom_threshold_dict (dict, optional): If custom thresholds for each label probability should be used. If none provided, default of 0.5 is used where a label is given if the probability is > 0.5. Keys of dict should correspond to labels.
-        rules_dict
+        rules_dict (dict, optional): If supplied, enhances predicted probabilities of specific classes with rules based on the text vocabulary.
+
 
     Returns:
         (pd.DataFrame): DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.

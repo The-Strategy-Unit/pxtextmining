@@ -52,6 +52,8 @@ def run_sklearn_pipeline(
         target (list, optional): The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.
         models_to_try (list, optional): List of the estimators to try. Defaults to ["mnb", "knn", "svm", "rfc"]. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).
         path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
+        include_analysis (bool, optional): Whether or not additional Excel files showing model performance and predicted labels are generated. Defaults to False.
+        custom_threshold (bool, optional): Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.
     """
     # random_state = random.randint(1, 999)
     if target == major_cats:
@@ -154,6 +156,7 @@ def run_svc_pipeline(
         target (list, optional): The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.
         path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
         include_analysis (bool, optional): Whether or not to create Excel files including further analysis of the model's performance. Defaults to False. If True, writes two Excel files to the specified folder, one containing the labels and the performance metrics for each label, and one containing the predicted labels and the actual labels for the test set, with the model's probabilities for both.
+        custom_threshold (bool, optional): Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.
 
     """
     # random_state = random.randint(1, 999)
@@ -240,9 +243,10 @@ def run_bert_pipeline(
     Args:
         additional_features (bool, optional): Whether or not additional features (question type and text length) are used. Defaults to False.
         path (str, optional): Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.
-        target
-        include_analysis
-        custom_threshold
+        target (list, optional): The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.
+        include_analysis (bool, optional): Whether or not to create Excel files including further analysis of the model's performance. Defaults to False. If True, writes two Excel files to the specified folder, one containing the labels and the performance metrics for each label, and one containing the predicted labels and the actual labels for the test set, with the model's probabilities for both.
+        custom_threshold (bool, optional): Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.
+
     """
     # random_state = random.randint(1, 999)
     print(f"random_state is: {random_state}")
