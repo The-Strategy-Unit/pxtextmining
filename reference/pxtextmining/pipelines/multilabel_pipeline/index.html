@@ -65,7 +65,17 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="#">API</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../../API/API/">pxtextmining API</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../../API/API/">pxtextmining API overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../API/quick_API/">Quick API</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../API/slow_API/">Slow API</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Docker</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../Docker/docker_README/">Using our Docker container</a>
                 </li>
     </ul>
                   </li>
@@ -89,8 +99,6 @@
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../../helpers/text_preprocessor/">Text preprocessor</a>
                 </li>
-                <li class="toctree-l3"><a class="reference internal" href="../../helpers/tokenization/">Tokenization</a>
-                </li>
     </ul>
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="#">Pipelines</a>
@@ -102,8 +110,6 @@
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_svc_pipeline">run_svc_pipeline()</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_bert_pipeline">run_bert_pipeline()</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_two_layer_sklearn_pipeline">run_two_layer_sklearn_pipeline()</a>
     </li>
     </ul>
                 </li>
@@ -169,7 +175,7 @@
 
 
 <h5 id="pxtextmining.pipelines.multilabel_pipeline.run_sklearn_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_sklearn_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">models_to_try</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;mnb&#39;</span><span class="p">,</span> <span class="s1">&#39;knn&#39;</span><span class="p">,</span> <span class="s1">&#39;svm&#39;</span><span class="p">,</span> <span class="s1">&#39;rfc&#39;</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel&#39;</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">run_sklearn_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">models_to_try</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;mnb&#39;</span><span class="p">,</span> <span class="s1">&#39;knn&#39;</span><span class="p">,</span> <span class="s1">&#39;svm&#39;</span><span class="p">,</span> <span class="s1">&#39;rfc&#39;</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel&#39;</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_threshold</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h5>
 
@@ -234,6 +240,26 @@ and the performance metrics to a specified folder.</p>
                 <code>&#39;test_multilabel&#39;</code>
           </td>
         </tr>
+        <tr>
+          <td><code>include_analysis</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not additional Excel files showing model performance and predicted labels are generated. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>custom_threshold</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
     </tbody>
   </table>
 
@@ -246,7 +272,7 @@ and the performance metrics to a specified folder.</p>
 
 
 <h5 id="pxtextmining.pipelines.multilabel_pipeline.run_svc_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_svc_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel&#39;</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">run_svc_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel&#39;</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_threshold</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h5>
 
@@ -309,6 +335,16 @@ Evaluates the performance of the refitted estimator with the best hyperparameter
                 <code>False</code>
           </td>
         </tr>
+        <tr>
+          <td><code>custom_threshold</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
     </tbody>
   </table>
 
@@ -321,7 +357,7 @@ Evaluates the performance of the refitted estimator with the best hyperparameter
 
 
 <h5 id="pxtextmining.pipelines.multilabel_pipeline.run_bert_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_bert_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/bert&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">run_bert_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/bert&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_threshold</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h5>
 
@@ -364,24 +400,38 @@ and the performance metrics to a specified folder.</p>
                 <code>&#39;test_multilabel/bert&#39;</code>
           </td>
         </tr>
+        <tr>
+          <td><code>target</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.</p></td>
+          <td>
+                <code>major_cats</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>include_analysis</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not to create Excel files including further analysis of the model's performance. Defaults to False. If True, writes two Excel files to the specified folder, one containing the labels and the performance metrics for each label, and one containing the predicted labels and the actual labels for the test set, with the model's probabilities for both.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>custom_threshold</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
     </tbody>
   </table>
-
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-
-<h5 id="pxtextmining.pipelines.multilabel_pipeline.run_two_layer_sklearn_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_two_layer_sklearn_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">models_to_try</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;mnb&#39;</span><span class="p">,</span> <span class="s1">&#39;knn&#39;</span><span class="p">,</span> <span class="s1">&#39;xgb&#39;</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/230605&#39;</span><span class="p">)</span></code>
-
-</h5>
-
-
-  <div class="doc doc-contents ">
 
   </div>
 
@@ -398,7 +448,7 @@ and the performance metrics to a specified folder.</p>
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../helpers/tokenization/" class="btn btn-neutral float-left" title="Tokenization"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../helpers/text_preprocessor/" class="btn btn-neutral float-left" title="Text preprocessor"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../sentiment_pipeline/" class="btn btn-neutral float-right" title="Sentiment pipeline">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -422,7 +472,7 @@ and the performance metrics to a specified folder.</p>
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../../helpers/tokenization/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../../helpers/text_preprocessor/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../sentiment_pipeline/" style="color: #fcfcfc">Next &raquo;</a></span>

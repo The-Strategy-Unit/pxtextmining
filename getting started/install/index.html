@@ -71,7 +71,17 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="#">API</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../reference/API/API/">pxtextmining API</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/API/API/">pxtextmining API overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/API/quick_API/">Quick API</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/API/slow_API/">Slow API</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Docker</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../reference/Docker/docker_README/">Using our Docker container</a>
                 </li>
     </ul>
                   </li>
@@ -94,8 +104,6 @@
                 <li class="toctree-l2"><a class="reference internal" href="#">Helpers</a>
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../../reference/pxtextmining/helpers/text_preprocessor/">Text preprocessor</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../../reference/pxtextmining/helpers/tokenization/">Tokenization</a>
                 </li>
     </ul>
                 </li>
@@ -144,11 +152,6 @@
 <li><code>pip install pxtextmining</code></li>
 </ul>
 </li>
-<li>We also need to install the <a href="https://github.com/explosion/spacy-models"><code>spaCy</code></a> model used in <a href="../../reference/pxtextmining/helpers/tokenization/"><code>pxtextmining.helpers.tokenization</code></a>
-   Note that the second model is pretty large, so the installation may take a while.<ul>
-<li><code>python -m spacy download en_core_web_lg</code></li>
-</ul>
-</li>
 </ol>
 <h3 id="option-2-recommended-install-from-github">Option 2 (RECOMMENDED): Install from GitHub</h3>
 <p>This option is recommended as it gives you access to the full datasets and already trained models.</p>
@@ -164,13 +167,6 @@
 </li>
 <li>
 <p>Then, run <code>poetry install --with dev</code>.</p>
-</li>
-<li>
-<p>We also need to install the <a href="https://github.com/explosion/spacy-models"><code>spaCy</code></a> model used in <a href="../../reference/pxtextmining/helpers/tokenization/"><code>pxtextmining.helpers.tokenization</code></a>
-   Note that the second model is pretty large, so the installation may take a while.</p>
-<ul>
-<li><code>python -m spacy download en_core_web_lg</code></li>
-</ul>
 </li>
 </ol>
               

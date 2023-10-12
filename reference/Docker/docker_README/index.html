@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/API/API/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/Docker/docker_README/" />
       <link rel="shortcut icon" href="../../../img/favicon.ico" />
-    <title>pxtextmining API overview - pxtextmining</title>
+    <title>Using our Docker container - pxtextmining</title>
     <link rel="stylesheet" href="../../../css/theme.css" />
     <link rel="stylesheet" href="../../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
@@ -14,9 +14,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "pxtextmining API overview";
-        var mkdocs_page_input_path = "reference/API/API.md";
-        var mkdocs_page_url = "/pxtextmining/reference/API/API/";
+        var mkdocs_page_name = "Using our Docker container";
+        var mkdocs_page_input_path = "reference/Docker/docker_README.md";
+        var mkdocs_page_url = "/pxtextmining/reference/Docker/docker_README/";
       </script>
     
     <script src="../../../js/jquery-3.6.0.min.js" defer></script>
@@ -63,23 +63,21 @@
               </ul>
               <p class="caption"><span class="caption-text">Reference</span></p>
               <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">API</a>
-    <ul class="current">
-                <li class="toctree-l2 current"><a class="reference internal current" href="./">pxtextmining API overview</a>
-    <ul class="current">
-    <li class="toctree-l3"><a class="reference internal" href="#security">Security</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="#">API</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../API/API/">pxtextmining API overview</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../quick_API/">Quick API</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../API/quick_API/">Quick API</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../slow_API/">Slow API</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../API/slow_API/">Slow API</a>
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="#">Docker</a>
-    <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../Docker/docker_README/">Using our Docker container</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Docker</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="./">Using our Docker container</a>
+    <ul class="current">
+    </ul>
                 </li>
     </ul>
                   </li>
@@ -131,8 +129,8 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>Reference &raquo;</li>
-          <li>API &raquo;</li>
-      <li>pxtextmining API overview</li>
+          <li>Docker &raquo;</li>
+      <li>Using our Docker container</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -141,18 +139,94 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="pxtextmining-api-overview">pxtextmining API overview</h1>
-<p>We have created two different APIs for labelling patient experience feedback. Both APIs are free to use and completely open source. For help and support with using them, please contact <a href="mailto:chris.beeley1@nhs.net">Chris Beeley</a>.</p>
-<p>The "Quick API" is faster and simpler, as it uses an sklearn model which is quicker to make predictions. The performance of predictions from this API can be seen on our project documentation website. It is less accurate than the slow API. This API is a more 'traditional' style of API.</p>
-<p>The "Slow API" utilises sklearn models as well as the slower but more powerful transformer-based Distilbert model. Due to the demanding hardware requirements of this model, we have set up a slower and slightly more complex API which combines (ensembles) together these models but has higher performance overall.</p>
-<h2 id="security">Security</h2>
-<p>The data is submitted via a secure HTTPS connection. All data is encrypted in transit with HTTPS, using the SSL/TLS protocol for encryption and authentication. The data is stored in blob storage on a UK-based Azure container instance for the duration of the model predictions, and is then immediately deleted. Ad hoc support is provided where possible, no uptime or other guarantees exist.</p>
+                <h1 id="using-our-docker-container">Using our Docker container</h1>
+<p>This Docker container contains the pxtextmining machine learning models trained as part of the <a href="https://cdu-data-science-team.github.io/PatientExperience-QDC/">Patient Experience Qualitative Data Categorisation project</a>.</p>
+<p>To use this Docker container to predict your unlabelled text:</p>
+<p>1. Set up your folders. You will need to set up a folder containing two other folders, data_in and data_out, as below.</p>
+<pre><code>docker_data/
+├─ data_in/
+├─ data_out/
+
+</code></pre>
+<p>2. Prepare your data. Save the data you wish to pass through the machine learning models as json, in the data_in folder. The data should be in the following format:</p>
+<p>In Python, a <code>list</code> containing as many <code>dict</code>s as there are comments to be predicted. Each <code>dict</code> has three compulsory keys:</p>
+<ul>
+<li><code>comment_id</code>: Unique ID associated with the comment, in <code>str</code> format. Each Comment ID per API call must be unique.</li>
+<li><code>comment_text</code>: Text to be classified, in <code>str</code> format.</li>
+<li><code>question_type</code>: The type of question asked to elicit the comment text. Questions are different from trust to trust, but they all fall into one of three categories:<ul>
+<li><code>what_good</code>: Any variation on the question "What was good about the service?", or "What did we do well?"</li>
+<li><code>could_improve</code>: Any variation on the question "Please tell us about anything that we could have done better", or "How could we improve?"</li>
+<li><code>nonspecific</code>: Any other type of nonspecific question, e.g. "Please can you tell us why you gave your answer?", or "What were you satisfied and/or dissatisfied with?".</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-python"># In Python
+
+text_data = [
+              { 'comment_id': '1', # The comment_id values in each dict must be unique.
+                'comment_text': 'This is the first comment. Nurse was great.',
+                'question_type': 'what_good' },
+              { 'comment_id': '2',
+                'comment_text': 'This is the second comment. The ward was freezing.',
+                'question_type': 'could_improve' },
+              { 'comment_id': '3',
+                'comment_text': '',  # This comment is an empty string.
+                'question_type': 'nonspecific' }
+            ]
+
+</code></pre>
+<pre><code class="language-R"># In R
+
+library(jsonlite)
+
+comment_id &lt;- c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;)
+comment_text &lt;- c(
+  &quot;This is the first comment. Nurse was great.&quot;,
+  &quot;This is the second comment. The ward was freezing.&quot;,
+  &quot;&quot;
+)
+question_type &lt;- c(&quot;what_good&quot;, &quot;could_improve&quot;, &quot;nonspecific&quot;)
+df &lt;- data.frame(comment_id, comment_text, question_type)
+text_data &lt;- toJSON(df)
+</code></pre>
+<p>3. Save the JSON data in the data_in folder, as follows:</p>
+<pre><code class="language-python"># In Python
+
+json_data = json.dumps(text_data)
+with open(&quot;data_in/file_01.json&quot;, &quot;w&quot;) as outfile:
+    outfile.write(json_data)
+</code></pre>
+<pre><code class="language-R"># In R
+
+json_data &lt;- toJSON(text_data, pretty = TRUE)
+write(json_data, file = &quot;data_in/file_01.json&quot;)
+</code></pre>
+<p>4. Your file structure should now look like this:</p>
+<pre><code>docker_data/
+├─ data_in/
+│  ├─ file_01.json
+├─ data_out/
+</code></pre>
+<p>5. Mount the docker_data folder as the <code>data</code> volume for the Docker container and run the container. Pass the filename for the input JSON as the first argument. The following arguments are also available:</p>
+<ul>
+<li><code>--local-storage</code> or <code>-l</code> flag for local storage (does not delete the files in data_in after completing predictions)</li>
+<li><code>--target</code> or <code>-t</code> to select the machine learning models used. Options are <code>m</code> for multilabel, <code>s</code> for <code>sentiment</code>, or <code>ms</code> for both. Defaults to <code>ms</code> if nothing is selected.</li>
+</ul>
+<p>A sample command would be:
+<code>docker run --rm -it -v /docker_data:/data ghcr.io/cdu-data-science-team/pxtextmining:latest file_01.json -l</code></p>
+<p>6. The predictions will be outputted as a json file in the data_out folder, with the same filename. After running successfully, the final folder structure should be:</p>
+<pre><code>docker_data/
+├─ data_in/
+│  ├─ file_01.json
+├─ data_out/
+   ├─ file_01.json
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../../getting%20started/using_trained_model/" class="btn btn-neutral float-left" title="Using a trained model"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../quick_API/" class="btn btn-neutral float-right" title="Quick API">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../API/slow_API/" class="btn btn-neutral float-left" title="Slow API"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../pxtextmining/factories/factory_data_load_and_split/" class="btn btn-neutral float-right" title="Factory data load and split">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -175,10 +249,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../../../getting%20started/using_trained_model/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../../API/slow_API/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../quick_API/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../pxtextmining/factories/factory_data_load_and_split/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -65,7 +65,17 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="#">API</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../../API/API/">pxtextmining API</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../../API/API/">pxtextmining API overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../API/quick_API/">Quick API</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../API/slow_API/">Slow API</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Docker</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../Docker/docker_README/">Using our Docker container</a>
                 </li>
     </ul>
                   </li>
@@ -96,8 +106,6 @@
                 <li class="toctree-l2"><a class="reference internal" href="#">Helpers</a>
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../../helpers/text_preprocessor/">Text preprocessor</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../../helpers/tokenization/">Tokenization</a>
                 </li>
     </ul>
                 </li>
@@ -229,7 +237,7 @@
 
 
 <h5 id="pxtextmining.factories.factory_write_results.write_model_preds" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_model_preds</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;labels.xlsx&#39;</span><span class="p">,</span> <span class="n">enhance_with_rules</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_df</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_model_preds</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">preds_df</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;labels.xlsx&#39;</span><span class="p">,</span> <span class="n">return_df</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h5>
 
@@ -237,7 +245,6 @@
   <div class="doc doc-contents ">
   
       <p>Writes an Excel file to enable easier analysis of model outputs using the test set. Columns of the Excel file are: comment_id, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.</p>
-<p>Currently only works with sklearn models.</p>
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -253,29 +260,29 @@
         <tr>
           <td><code>x</code></td>
           <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+                <code>pd.Series OR pd.DataFrame</code>
           </td>
-          <td><p>Features to be used to make the prediction.</p></td>
+          <td><p>Text data used for predictions</p></td>
           <td>
               <em>required</em>
           </td>
         </tr>
         <tr>
-          <td><code>y</code></td>
+          <td><code>y_true</code></td>
           <td>
                 <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
           </td>
-          <td><p>Numpy array containing the targets, in one-hot encoded format</p></td>
+          <td><p>Onehot encoded targets</p></td>
           <td>
               <em>required</em>
           </td>
         </tr>
         <tr>
-          <td><code>model</code></td>
+          <td><code>preds_df</code></td>
           <td>
-                <code>sklearn.<span title="sklearn.base">base</span></code>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
           </td>
-          <td><p>Trained sklearn multilabel classifier.</p></td>
+          <td><p>DataFrame containing predictions, predicted probabilities, and labels. Should be produced by predict_multilabel_sklearn or predict_multilabel_bert</p></td>
           <td>
               <em>required</em>
           </td>
@@ -285,19 +292,9 @@
           <td>
                 <code>list</code>
           </td>
-          <td><p>List of labels for the categories to be predicted.</p></td>
+          <td><p>List containing target labels.</p></td>
           <td>
               <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not FFT_q_standardised is included in data. Defaults to True.</p></td>
-          <td>
-                <code>True</code>
           </td>
         </tr>
         <tr>
@@ -305,10 +302,38 @@
           <td>
                 <code>str</code>
           </td>
-          <td><p>Filename for the outputted file. Defaults to 'labels.xlsx'.</p></td>
+          <td><p>Filename and path for file to be saved. Defaults to "labels.xlsx".</p></td>
           <td>
                 <code>&#39;labels.xlsx&#39;</code>
           </td>
+        </tr>
+        <tr>
+          <td><code>return_df</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>Whether or not the processed data should be returned as a DataFrame. Defaults to False.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>DataFrame containing comment_id, comment text, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.</p></td>
         </tr>
     </tbody>
   </table>
@@ -322,7 +347,7 @@
 
 
 <h5 id="pxtextmining.factories.factory_write_results.write_model_analysis" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_model_analysis</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">preds_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_true</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_model_analysis</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">preds_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_true</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">custom_threshold_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h5>
 

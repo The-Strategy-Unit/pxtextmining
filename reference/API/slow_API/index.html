@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/API/slow_API/" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Slow API - pxtextmining</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../../main.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Slow API";
+        var mkdocs_page_input_path = "reference/API/slow_API.md";
+        var mkdocs_page_url = "/pxtextmining/reference/API/slow_API/";
+      </script>
+    
+    <script src="../../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> pxtextmining
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../about/">Project background</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting%20started/install/">Install</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting%20started/package/">Package structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting%20started/training_new_model/">Training a new model</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting%20started/using_trained_model/">Using a trained model</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reference</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">API</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../API/">pxtextmining API overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../quick_API/">Quick API</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="./">Slow API</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#how-to-make-an-api-call">How to make an API call</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Docker</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../Docker/docker_README/">Using our Docker container</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Pxtextmining</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="#">Factories</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../pxtextmining/factories/factory_data_load_and_split/">Factory data load and split</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../pxtextmining/factories/factory_model_performance/">Factory model performance</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../pxtextmining/factories/factory_pipeline/">Factory pipeline</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../pxtextmining/factories/factory_predict_unlabelled_text/">Factory predict unlabelled text</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../pxtextmining/factories/factory_write_results/">Factory write results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Helpers</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../pxtextmining/helpers/text_preprocessor/">Text preprocessor</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Pipelines</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../pxtextmining/pipelines/multilabel_pipeline/">Multilabel pipeline</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../pxtextmining/pipelines/sentiment_pipeline/">Sentiment pipeline</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">pxtextmining</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Reference &raquo;</li>
+          <li>API &raquo;</li>
+      <li>Slow API</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="slow-api">Slow API</h1>
+<p>This API is slower but uses the best performing models. The transformer-based Distilbert model consumes a lot of hardware resource, and as such required a different approach.</p>
+<p><img alt="Diagram showing Slow API architecture" src="https://cdu-data-science-team.github.io/PatientExperience-QDC/pxtextmining/slow_API.png" /></p>
+<p>For predicting the multilabel categories, the API endpoint ensembles together Support Vector Classifier, Gradient Boosted Decision Trees (XGBoost), and Distilbert models.</p>
+<p>For predicting text sentiment , the API endpoint utilises a Distilbert model.</p>
+<p>The API URL endpoint is available on request. You will need an API key, please contact the project team to obtain one. The key should be passed as a <code>code</code> param with your API request.</p>
+<h2 id="how-to-make-an-api-call">How to make an API call</h2>
+<p>1. Prepare the data in JSON format. In Python, this is a <code>list</code> containing as many <code>dict</code>s as there are comments to be predicted. Each <code>dict</code> has three compulsory keys:</p>
+<ul>
+<li><code>comment_id</code>: Unique ID associated with the comment, in <code>str</code> format. Each Comment ID per API call must be unique.</li>
+<li><code>comment_text</code>: Text to be classified, in <code>str</code> format.</li>
+<li><code>question_type</code>: The type of question asked to elicit the comment text. Questions are different from trust to trust, but they all fall into one of three categories:<ul>
+<li><code>what_good</code>: Any variation on the question "What was good about the service?", or "What did we do well?"</li>
+<li><code>could_improve</code>: Any variation on the question "Please tell us about anything that we could have done better", or "How could we improve?"</li>
+<li><code>nonspecific</code>: Any other type of nonspecific question, e.g. "Please can you tell us why you gave your answer?", or "What were you satisfied and/or dissatisfied with?".</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-python"># In Python
+
+text_data = [
+              { 'comment_id': '1', # The comment_id values in each dict must be unique.
+                'comment_text': 'This is the first comment. Nurse was great.',
+                'question_type': 'what_good' },
+              { 'comment_id': '2',
+                'comment_text': 'This is the second comment. The ward was freezing.',
+                'question_type': 'could_improve' },
+              { 'comment_id': '3',
+                'comment_text': '',  # This comment is an empty string.
+                'question_type': 'nonspecific' }
+            ]
+</code></pre>
+<pre><code class="language-R"># In R
+
+library(jsonlite)
+
+comment_id &lt;- c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;)
+comment_text &lt;- c(
+  &quot;This is the first comment. Nurse was great.&quot;,
+  &quot;This is the second comment. The ward was freezing.&quot;,
+  &quot;&quot;
+)
+question_type &lt;- c(&quot;what_good&quot;, &quot;could_improve&quot;, &quot;nonspecific&quot;)
+df &lt;- data.frame(comment_id, comment_text, question_type)
+text_data &lt;- toJSON(df)
+</code></pre>
+<p>2. Send the JSON containing the text data in a POST request to the API. Ensure that you include your API key, which should be stored securely.</p>
+<p>The model(s) used to make predictions can be selected with the <code>target</code> param. The options for this param are:</p>
+<ul>
+<li><code>m</code>: multilabel</li>
+<li><code>s</code>: sentiment</li>
+<li><code>ms</code>: both multilabel and sentiment.</li>
+</ul>
+<pre><code class="language-python"># In Python
+
+api_key = os.getenv('API_KEY')
+params_dict = {'code': api_key, 'target': 'ms'}
+
+url = os.getenv('API_URL')
+
+response = requests.post(url, params= params_dict, json = text_data)
+</code></pre>
+<pre><code class="language-R"># In R
+library(httr)
+
+api_key &lt;- Sys.getenv(&quot;API_KEY&quot;)
+params_dict &lt;- list(code = api_key, target = &quot;ms&quot;)
+url &lt;- Sys.getenv(&quot;API_URL&quot;)
+
+response &lt;- POST(url, query = params_dict, body = text_data, encode = &quot;json&quot;)
+</code></pre>
+<p>3. If the POST request is successful, you will receive a response with a 202 code, and a URL to retrieve your results, called the <code>results URL</code>. For example:</p>
+<pre><code class="language-python"># In Python
+
+if response.status_code == 202:
+    results_url = response.text
+
+    print(f&quot;URL for results is {results_url}&quot;)
+</code></pre>
+<pre><code class="language-R"># In R
+
+if (http_status(response) == 202) {
+    results_url &lt;- content(response, as = &quot;text&quot;)
+    }
+    print(results_url)
+</code></pre>
+<p>4. Use a GET request to check the results URL. If your predictions are not yet ready, you will receive a 202 response. If they are ready, you will receive a 200 response.</p>
+<p>What is happening behind the scenes? The API has received your data and has started up a secure Azure container instance with your data stored in blob storage. The Docker container will install the pxtextmining package and make predictions using your data. Starting up a fresh container instance can take up to 5 minutes, and predictions using the slow transformer models can some time, up to 5 further minutes per 1000 comments. Once the predictions are complete, it will delete your data and save the predictions in blob storage.</p>
+<p>Once you receive a 200 response, your results are available in JSON format. Please note that this will only be available once; once you have collected the data, it will be deleted due to security reasons and your results URL will no longer be valid.</p>
+<p>You can set up a loop to check if your results are ready every 5 minutes, as follows.</p>
+<pre><code class="language-python"># In Python
+
+while True:
+    results_response = requests.get(results_url)
+    if results_response.status_code == 200:
+        final_labels = results_response.json()
+        break
+    else:
+        print('Not ready! Trying again in 300 seconds...')
+        time.sleep(300)
+
+print('Predicted labels':)
+print(final_labels)
+</code></pre>
+<pre><code class="language-R"># In R
+
+while (TRUE) {
+  results_response &lt;- GET(results_url)
+  if (results_response$status_code == 200) {
+    final_labels &lt;- fromJSON(content(results_response, &quot;text&quot;))
+    break
+  } else {
+    cat(&quot;Not ready! Trying again in 300 seconds...\n&quot;)
+    Sys.sleep(300)
+  }
+}
+
+cat(&quot;Predicted labels:\n&quot;)
+print(final_labels)
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../quick_API/" class="btn btn-neutral float-left" title="Quick API"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../Docker/docker_README/" class="btn btn-neutral float-right" title="Using our Docker container">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../quick_API/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../Docker/docker_README/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme_extra.js" defer></script>
+    <script src="../../../js/theme.js" defer></script>
+      <script src="../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

@@ -65,7 +65,17 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="#">API</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../../API/API/">pxtextmining API</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../../API/API/">pxtextmining API overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../API/quick_API/">Quick API</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../API/slow_API/">Slow API</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Docker</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../Docker/docker_README/">Using our Docker container</a>
                 </li>
     </ul>
                   </li>
@@ -105,6 +115,10 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.rulebased_probs">rulebased_probs()</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.get_thresholds">get_thresholds()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.combine_predictions">combine_predictions()</a>
+    </li>
     </ul>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../factory_write_results/">Factory write results</a>
@@ -114,8 +128,6 @@
                 <li class="toctree-l2"><a class="reference internal" href="#">Helpers</a>
     <ul>
                 <li class="toctree-l3"><a class="reference internal" href="../../helpers/text_preprocessor/">Text preprocessor</a>
-                </li>
-                <li class="toctree-l3"><a class="reference internal" href="../../helpers/tokenization/">Tokenization</a>
                 </li>
     </ul>
                 </li>
@@ -245,7 +257,7 @@
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_sklearn" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_multilabel_sklearn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">minor_cats</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">label_fix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enhance_with_probs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enhance_with_rules</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">predict_multilabel_sklearn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">minor_cats</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">label_fix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rules_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">custom_threshold_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h5>
 
@@ -319,23 +331,23 @@ been predicted, if fix_no_labels = True.</p>
           </td>
         </tr>
         <tr>
-          <td><code>enhance_with_probs</code></td>
+          <td><code>rules_dict</code></td>
           <td>
-                <code>bool</code>
+                <code>dict</code>
           </td>
-          <td><p>Whether or not to enhance predicted classes with predictions utilising the model's outputted probabilities.</p></td>
+          <td><p>If supplied, enhances predicted probabilities of specific classes with rules based on the text vocabulary.</p></td>
           <td>
-                <code>True</code>
+                <code>None</code>
           </td>
         </tr>
         <tr>
-          <td><code>enhance_with_rules</code></td>
+          <td><code>custom_threshold_dict</code></td>
           <td>
-                <code>bool</code>
+                <code>dict</code>
           </td>
-          <td><p>Whether or not to use custom rules which boost probability of specific classes if specific words are seen. This is based on the rules_dict found in params.py</p></td>
+          <td><p>If supplied, binary predictions are based on custom thresholds for specific classes. If not specified, defaults to threshold of 0.5.</p></td>
           <td>
-                <code>False</code>
+                <code>None</code>
           </td>
         </tr>
     </tbody>
@@ -368,7 +380,7 @@ been predicted, if fix_no_labels = True.</p>
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_bert" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_multilabel_bert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">minor_cats</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">label_fix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enhance_with_rules</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">already_encoded</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">predict_multilabel_bert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">minor_cats</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">label_fix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">custom_threshold_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rules_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h5>
 
@@ -442,23 +454,23 @@ been predicted, if fix_no_labels = True.</p>
           </td>
         </tr>
         <tr>
-          <td><code>enhance_with_rules</code></td>
+          <td><code>custom_threshold_dict</code></td>
           <td>
-                <code>bool</code>
+                <code>dict</code>
           </td>
-          <td><p>Whether or not to use custom rules which boost probability of specific classes if specific words are seen. This is based on the rules_dict found in params.py</p></td>
+          <td><p>If custom thresholds for each label probability should be used. If none provided, default of 0.5 is used where a label is given if the probability is &gt; 0.5. Keys of dict should correspond to labels.</p></td>
           <td>
-                <code>False</code>
+                <code>None</code>
           </td>
         </tr>
         <tr>
-          <td><code>already_encoded</code></td>
+          <td><code>rules_dict</code></td>
           <td>
-                <code>bool</code>
+                <code>dict</code>
           </td>
-          <td><p>Whether or not the data has already been encoded into a Tensorflow.</p></td>
+          <td><p>If supplied, enhances predicted probabilities of specific classes with rules based on the text vocabulary.</p></td>
           <td>
-                <code>False</code>
+                <code>None</code>
           </td>
         </tr>
     </tbody>
@@ -584,7 +596,7 @@ been predicted, if fix_no_labels = True.</p>
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_multiclass_bert" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_multiclass_bert</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">additional_features</span><span class="p">,</span> <span class="n">already_encoded</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">predict_multiclass_bert</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">additional_features</span><span class="p">)</span></code>
 
 </h5>
 
@@ -630,16 +642,6 @@ been predicted, if fix_no_labels = True.</p>
                 <code>bool</code>
           </td>
           <td><p>Whether or not additional features (e.g. question type) are included. Defaults to False.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>already_encoded</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not the input data needs to be encoded. Defaults to False.</p></td>
           <td>
               <em>required</em>
           </td>
@@ -758,7 +760,7 @@ Currently only works with sklearn models.</p>
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.get_probabilities" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_probabilities</span><span class="p">(</span><span class="n">label_series</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">predicted_probabilities</span><span class="p">,</span> <span class="n">model_type</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_probabilities</span><span class="p">(</span><span class="n">label_series</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">predicted_probabilities</span><span class="p">)</span></code>
 
 </h5>
 
@@ -805,16 +807,6 @@ create a dictionary containing the label and the predicted probability of that l
                 <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
           </td>
           <td><p>Predicted probabilities for each label</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model_type</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Model architecture, if sklearn or otherwise.</p></td>
           <td>
               <em>required</em>
           </td>
@@ -920,7 +912,7 @@ returns a list containing the actual predicted labels as a <code>str</code>.</p>
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_with_bert" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_with_bert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">already_encoded</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">predict_with_bert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h5>
 
@@ -980,16 +972,6 @@ returns a list containing the actual predicted labels as a <code>str</code>.</p>
                 <code>False</code>
           </td>
         </tr>
-        <tr>
-          <td><code>already_encoded</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not the input data needs to be encoded. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
     </tbody>
   </table>
 
@@ -1020,7 +1002,7 @@ returns a list containing the actual predicted labels as a <code>str</code>.</p>
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.fix_no_labels" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">fix_no_labels</span><span class="p">(</span><span class="n">binary_preds</span><span class="p">,</span> <span class="n">predicted_probs</span><span class="p">,</span> <span class="n">model_type</span><span class="o">=</span><span class="s1">&#39;sklearn&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">fix_no_labels</span><span class="p">(</span><span class="n">binary_preds</span><span class="p">,</span> <span class="n">predicted_probs</span><span class="p">)</span></code>
 
 </h5>
 
@@ -1062,16 +1044,6 @@ as the predicted label.</p>
               <em>required</em>
           </td>
         </tr>
-        <tr>
-          <td><code>model_type</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Whether the model is a sklearn or tensorflow keras model; options are 'tf', 'bert', or 'sklearn. Defaults to "sklearn".</p></td>
-          <td>
-                <code>&#39;sklearn&#39;</code>
-          </td>
-        </tr>
     </tbody>
   </table>
 
@@ -1102,7 +1074,7 @@ as the predicted label.</p>
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.turn_probs_into_binary" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">turn_probs_into_binary</span><span class="p">(</span><span class="n">predicted_probs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">turn_probs_into_binary</span><span class="p">(</span><span class="n">predicted_probs</span><span class="p">,</span> <span class="n">custom_threshold_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h5>
 
@@ -1129,7 +1101,7 @@ is prioritised for that label.</p>
           <td>
                 <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
           </td>
-          <td><p>Array containing the predicted probabilities for each class. Shape of array corresponds to the number of inputs and the number of target classes; if shape is (100, 13) then there are 100 datapoints, and 13 target classes. Predicted probabilities should range from 0 to 1.</p></td>
+          <td><p>Array containing the predicted probabilities for each class. Shape of array should be (num_samples, num_classes). Predicted probabilities should range from 0 to 1.</p></td>
           <td>
               <em>required</em>
           </td>
@@ -1164,7 +1136,7 @@ is prioritised for that label.</p>
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.rulebased_probs" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">rulebased_probs</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pred_probs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">rulebased_probs</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pred_probs</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">rules_dict</span><span class="o">=</span><span class="n">rules_dict</span><span class="p">)</span></code>
 
 </h5>
 
@@ -1221,6 +1193,167 @@ is prioritised for that label.</p>
                 <code><span title="numpy">np</span>.<span title="numpy.ndarray">ndarray</span></code>
           </td>
           <td><p>Numpy array with the modified predicted probabilities of the text.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.get_thresholds" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_thresholds</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_probs</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Uses <code>sklearn.metrics.precision_recall_curve</code> to calculate the best threshold to use to maximise F1 score for each of the labels, on a binary one-vs-rest basis.
+If zero division error occurs, the threshold is set to 0.5 automatically.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>y_true</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>Array containing true one-hot encoded labels, of shape (num_samples, num_labels)</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>y_probs</code></td>
+          <td>
+                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
+          </td>
+          <td><p>Array containing predicted probabilities labels. Can be 2d or 3d depending on whether sklearn or tensorflow.keras output.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>labels</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>List of labels in target class.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>dict</code>
+          </td>
+          <td><p>Dict with key value pairs (label, recommended threshold) for maximising the F1 score.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h5 id="pxtextmining.factories.factory_predict_unlabelled_text.combine_predictions" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">combine_predictions</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;probabilities&#39;</span><span class="p">)</span></code>
+
+</h5>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Combines outputted prediction dataframes from different models, using different methods.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>df_list</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>List of predictions in pd.DataFrame format, produced with either <code>predict_multilabel_sklearn</code> or <code>predict_multilabel_bert</code></p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>labels</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td><p>List of labels in the prediction dataframes.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>method</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Method to use for combining the predictions. Defaults to "probabilities", which uses the average of predicted probabilities from all models. This results in higher precision, lower recall, and the prediction threshold is lowered to 0.3. Otherwise, takes all predicted classes from all models (high recall, low precision).</p></td>
+          <td>
+                <code>&#39;probabilities&#39;</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
+          </td>
+          <td><p>New predictions.</p></td>
         </tr>
     </tbody>
   </table>
