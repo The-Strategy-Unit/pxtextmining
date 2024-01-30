@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/about/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://the-strategy-unit.github.io/pxtextmining/about/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
     <title>Project background - pxtextmining</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
         <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
         <link href="../main.css" rel="stylesheet" />
     
@@ -19,12 +19,11 @@
         var mkdocs_page_url = "/pxtextmining/about/";
       </script>
     
-    <script src="../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -36,7 +35,7 @@
           <a href=".." class="icon icon-home"> pxtextmining
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -127,8 +126,8 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-      <li>Project background</li>
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Project background</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -138,9 +137,9 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="project-background">Project background</h1>
-<p>The <code>pxtextmining</code> package is part of <a href="https://cdu-data-science-team.github.io/PatientExperience-QDC/">the Patient Experience Qualitative Data Categorisation project</a>. This project is is hosted by Nottinghamshire Healthcare NHS Foundation Trust's Clinical Development Unit Data Science Team, and funded by NHS England's Insight and Feedback Team.</p>
+<p>The <code>pxtextmining</code> package is part of <a href="https://the-strategy-unit.github.io/PatientExperience-QDC/">the Patient Experience Qualitative Data Categorisation project</a>. This project is is hosted by Nottinghamshire Healthcare NHS Foundation Trust's Clinical Development Unit Data Science Team, and funded by NHS England's Insight and Feedback Team.</p>
 <p>The primary objective of the <code>pxtextmining</code> element is to create a machine learning model capable of categorising the free text data obtained through the <a href="https://www.england.nhs.uk/fft/">NHS England Friends and Family Test</a> (FFT). It is a multilabel classification problem, with one or more categories applied to each patient feedback comment. In this way, we hope to support better use of qualitative patient experience feedback by NHS provider organisations.</p>
-<p>This package works together with the <a href="https://github.com/CDU-data-science-team/experiencesdashboard">experiencesdashboard</a>, a frontend coded in R/Shiny.</p>
+<p>This package works together with the <a href="https://github.com/the-strategy-unit/experiencesdashboard">experiencesdashboard</a>, a frontend coded in R/Shiny.</p>
               
             </div>
           </div><footer>
@@ -176,14 +175,15 @@
     
   </span>
 </div>
-    <script>var base_url = '..';</script>
-    <script src="../js/theme_extra.js" defer></script>
-    <script src="../js/theme.js" defer></script>
-      <script src="../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

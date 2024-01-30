@@ -3,28 +3,27 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pxtextmining/factories/factory_predict_unlabelled_text/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://the-strategy-unit.github.io/pxtextmining/reference/pxtextmining/factories/factory_predict_unlabelled_text/" />
       <link rel="shortcut icon" href="../../../../img/favicon.ico" />
     <title>Factory predict unlabelled text - pxtextmining</title>
     <link rel="stylesheet" href="../../../../css/theme.css" />
     <link rel="stylesheet" href="../../../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
         <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
         <link href="../../../../main.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Factory predict unlabelled text";
-        var mkdocs_page_input_path = "reference/pxtextmining/factories/factory_predict_unlabelled_text.md";
+        var mkdocs_page_input_path = "reference\\pxtextmining\\factories\\factory_predict_unlabelled_text.md";
         var mkdocs_page_url = "/pxtextmining/reference/pxtextmining/factories/factory_predict_unlabelled_text/";
       </script>
     
-    <script src="../../../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -36,7 +35,7 @@
           <a href="../../../.." class="icon icon-home"> pxtextmining
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -91,33 +90,33 @@
                 </li>
                 <li class="toctree-l3 current"><a class="reference internal current" href="./">Factory predict unlabelled text</a>
     <ul class="current">
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.process_text">process_text()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.process_text">process_text</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_sklearn">predict_multilabel_sklearn()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_sklearn">predict_multilabel_sklearn</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_bert">predict_multilabel_bert()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_bert">predict_multilabel_bert</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_sentiment_bert">predict_sentiment_bert()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_sentiment_bert">predict_sentiment_bert</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_multiclass_bert">predict_multiclass_bert()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_multiclass_bert">predict_multiclass_bert</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_with_probs">predict_with_probs()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_with_probs">predict_with_probs</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.get_probabilities">get_probabilities()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.get_probabilities">get_probabilities</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.get_labels">get_labels()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.get_labels">get_labels</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_with_bert">predict_with_bert()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.predict_with_bert">predict_with_bert</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.fix_no_labels">fix_no_labels()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.fix_no_labels">fix_no_labels</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.turn_probs_into_binary">turn_probs_into_binary()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.turn_probs_into_binary">turn_probs_into_binary</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.rulebased_probs">rulebased_probs()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.rulebased_probs">rulebased_probs</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.get_thresholds">get_thresholds()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.get_thresholds">get_thresholds</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.combine_predictions">combine_predictions()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_predict_unlabelled_text.combine_predictions">combine_predictions</a>
     </li>
     </ul>
                 </li>
@@ -155,11 +154,11 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Reference &raquo;</li>
-          <li>Pxtextmining &raquo;</li>
-          <li>Factories &raquo;</li>
-      <li>Factory predict unlabelled text</li>
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Reference</li>
+          <li class="breadcrumb-item">Pxtextmining</li>
+          <li class="breadcrumb-item">Factories</li>
+      <li class="breadcrumb-item active">Factory predict unlabelled text</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -192,12 +191,13 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.process_text" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">process_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></code>
+          <code class="highlight language-python">process_text(text)</code>
 
 </h5>
 
@@ -206,58 +206,66 @@
   
       <p>Enacts same text preprocessing as is found in factory_data_load_and_split when creating training data. Converts to string, removes trailing whitespaces, null values, punctuation and numbers. Converts to lowercase.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>text</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.Series">Series</span></code>
-          </td>
-          <td><p>Series containing data to be cleaned.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.Series">Series</span></code>
-          </td>
-          <td><p>Processed text data</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>text</code></b>
+                  (<code><span title="pandas.Series">Series</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Series containing data to be cleaned.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="pandas.Series">Series</span></code>
+            –
+            <div class="doc-md-description">
+              <p>Processed text data</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_sklearn" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_multilabel_sklearn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">minor_cats</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">label_fix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rules_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">custom_threshold_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+          <code class="highlight language-python">predict_multilabel_sklearn(data, model, labels=minor_cats, additional_features=False, label_fix=True, rules_dict=None, custom_threshold_dict=None)</code>
 
 </h5>
 
@@ -269,118 +277,124 @@ Utilises a pretrained sklearn machine learning model to make multilabel predicti
 Also takes the class with the highest predicted probability as the predicted class in cases where no class has
 been predicted, if fix_no_labels = True.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>data</code></td>
-          <td>
-                <code>pd.Series OR pd.DataFrame</code>
-          </td>
-          <td><p>DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model</code></td>
-          <td>
-                <code>sklearn.<span title="sklearn.base">base</span></code>
-          </td>
-          <td><p>Trained sklearn estimator able to perform multilabel classification.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>labels</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List containing target labels. Defaults to major_cats.</p></td>
-          <td>
-                <code>minor_cats</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not FFT_q_standardised is included in data. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>label_fix</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.</p></td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>rules_dict</code></td>
-          <td>
-                <code>dict</code>
-          </td>
-          <td><p>If supplied, enhances predicted probabilities of specific classes with rules based on the text vocabulary.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>custom_threshold_dict</code></td>
-          <td>
-                <code>dict</code>
-          </td>
-          <td><p>If supplied, binary predictions are based on custom thresholds for specific classes. If not specified, defaults to threshold of 0.5.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>data</code></b>
+                  (<code>pd.Series OR pd.DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model</code></b>
+                  (<code><span title="sklearn.base">base</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Trained sklearn estimator able to perform multilabel classification.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>labels</code></b>
+                  (<code>list</code>, default:
+                      <code><span title="pxtextmining.params.minor_cats">minor_cats</span></code>
+)
+              –
+              <div class="doc-md-description">
+                <p>List containing target labels. Defaults to major_cats.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not FFT_q_standardised is included in data. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>label_fix</code></b>
+                  (<code>bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>rules_dict</code></b>
+                  (<code>dict</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>If supplied, enhances predicted probabilities of specific classes with rules based on the text vocabulary.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>custom_threshold_dict</code></b>
+                  (<code>dict</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>If supplied, binary predictions are based on custom thresholds for specific classes. If not specified, defaults to threshold of 0.5.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="pandas.DataFrame">DataFrame</span></code>
+            –
+            <div class="doc-md-description">
+              <p>DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_multilabel_bert" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_multilabel_bert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">minor_cats</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">label_fix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">custom_threshold_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rules_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+          <code class="highlight language-python">predict_multilabel_bert(data, model, labels=minor_cats, additional_features=False, label_fix=True, custom_threshold_dict=None, rules_dict=None)</code>
 
 </h5>
 
@@ -392,118 +406,124 @@ Utilises a pretrained transformer-based machine learning model to make multilabe
 Also takes the class with the highest predicted probability as the predicted class in cases where no class has
 been predicted, if fix_no_labels = True.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>data</code></td>
-          <td>
-                <code>pd.Series, pd.DataFrame, or tf.data.Dataset</code>
-          </td>
-          <td><p>DataFrame, Series, or Tensorflow Dataset containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model</code></td>
-          <td>
-                <code>tf.<span title="tf.Model">Model</span></code>
-          </td>
-          <td><p>Trained tensorflow estimator able to perform multilabel classification.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>labels</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List containing target labels. Defaults to major_cats.</p></td>
-          <td>
-                <code>minor_cats</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not FFT_q_standardised is included in data. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>label_fix</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.</p></td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>custom_threshold_dict</code></td>
-          <td>
-                <code>dict</code>
-          </td>
-          <td><p>If custom thresholds for each label probability should be used. If none provided, default of 0.5 is used where a label is given if the probability is &gt; 0.5. Keys of dict should correspond to labels.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>rules_dict</code></td>
-          <td>
-                <code>dict</code>
-          </td>
-          <td><p>If supplied, enhances predicted probabilities of specific classes with rules based on the text vocabulary.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>data</code></b>
+                  (<code>pd.Series, pd.DataFrame, or tf.data.Dataset</code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame, Series, or Tensorflow Dataset containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model</code></b>
+                  (<code><span title="tf.Model">Model</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Trained tensorflow estimator able to perform multilabel classification.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>labels</code></b>
+                  (<code>list</code>, default:
+                      <code><span title="pxtextmining.params.minor_cats">minor_cats</span></code>
+)
+              –
+              <div class="doc-md-description">
+                <p>List containing target labels. Defaults to major_cats.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not FFT_q_standardised is included in data. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>label_fix</code></b>
+                  (<code>bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not the class with the highest probability is taken as the predicted class in cases where no classes are predicted. Defaults to True.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>custom_threshold_dict</code></b>
+                  (<code>dict</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>If custom thresholds for each label probability should be used. If none provided, default of 0.5 is used where a label is given if the probability is &gt; 0.5. Keys of dict should correspond to labels.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>rules_dict</code></b>
+                  (<code>dict</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>If supplied, enhances predicted probabilities of specific classes with rules based on the text vocabulary.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="pandas.DataFrame">DataFrame</span></code>
+            –
+            <div class="doc-md-description">
+              <p>DataFrame containing one hot encoded predictions, and a column with a list of the predicted labels.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_sentiment_bert" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_sentiment_bert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">preprocess_text</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python">predict_sentiment_bert(data, model, additional_features=False, preprocess_text=False)</code>
 
 </h5>
 
@@ -515,88 +535,94 @@ Utilises a pretrained transformer-based machine learning model to make multilabe
 Also takes the class with the highest predicted probability as the predicted class in cases where no class has
 been predicted, if fix_no_labels = True.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>data</code></td>
-          <td>
-                <code>pd.Series OR pd.DataFrame</code>
-          </td>
-          <td><p>DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model</code></td>
-          <td>
-                <code>tf.<span title="tf.Model">Model</span></code>
-          </td>
-          <td><p>Trained tensorflow estimator able to perform multilabel classification.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not FFT_q_standardised is included in data. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>preprocess_text</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not text is to be preprocessed (punctuation and numbers removed).</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing input data and predicted sentiment</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>data</code></b>
+                  (<code>pd.Series OR pd.DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame or Series containing data to be processed and utilised for predictions. Must be DataFrame with columns 'FFT answer' and 'FFT_q_standardised' if additional_features = True</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model</code></b>
+                  (<code><span title="tf.Model">Model</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Trained tensorflow estimator able to perform multilabel classification.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not FFT_q_standardised is included in data. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>preprocess_text</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not text is to be preprocessed (punctuation and numbers removed).</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="pandas.DataFrame">DataFrame</span></code>
+            –
+            <div class="doc-md-description">
+              <p>DataFrame containing input data and predicted sentiment</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_multiclass_bert" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_multiclass_bert</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">additional_features</span><span class="p">)</span></code>
+          <code class="highlight language-python">predict_multiclass_bert(x, model, additional_features)</code>
 
 </h5>
 
@@ -605,78 +631,82 @@ been predicted, if fix_no_labels = True.</p>
   
       <p>Makes multiclass predictions using a transformer-based model. Can encode the data if not already encoded.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>x</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing features to be passed through model.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model</code></td>
-          <td>
-                <code>tf.<span title="tf.keras">keras</span>.<span title="tf.keras.models">models</span>.<span title="tf.keras.models.Model">Model</span></code>
-          </td>
-          <td><p>Pretrained transformer based model in tensorflow keras.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not additional features (e.g. question type) are included. Defaults to False.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Predicted labels in one-hot encoded format.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>x</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing features to be passed through model.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model</code></b>
+                  (<code><span title="tf.keras.models.Model">Model</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Pretrained transformer based model in tensorflow keras.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not additional features (e.g. question type) are included. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="numpy.array">array</span></code>
+            –
+            <div class="doc-md-description">
+              <p>Predicted labels in one-hot encoded format.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_with_probs" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_with_probs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></code>
+          <code class="highlight language-python">predict_with_probs(x, model, labels)</code>
 
 </h5>
 
@@ -689,78 +719,82 @@ label with the highest probability is taken.
 Converts into one-hot encoded format (similar to what model.predict would output).
 Currently only works with sklearn models.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>x</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>Features to be used to make the prediction.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model</code></td>
-          <td>
-                <code>sklearn.<span title="sklearn.base">base</span></code>
-          </td>
-          <td><p>Trained sklearn multilabel classifier.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>labels</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List of labels for the categories to be predicted.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Predicted labels in one hot encoded format based on model probability estimates.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>x</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Features to be used to make the prediction.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model</code></b>
+                  (<code><span title="sklearn.base">base</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Trained sklearn multilabel classifier.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>labels</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of labels for the categories to be predicted.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="numpy.array">array</span></code>
+            –
+            <div class="doc-md-description">
+              <p>Predicted labels in one hot encoded format based on model probability estimates.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.get_probabilities" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_probabilities</span><span class="p">(</span><span class="n">label_series</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">predicted_probabilities</span><span class="p">)</span></code>
+          <code class="highlight language-python">get_probabilities(label_series, labels, predicted_probabilities)</code>
 
 </h5>
 
@@ -770,78 +804,82 @@ Currently only works with sklearn models.</p>
       <p>Given a pd.Series containing labels, the list of labels, and a model's outputted predicted_probabilities for each label,
 create a dictionary containing the label and the predicted probability of that label.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>label_series</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.Series">Series</span></code>
-          </td>
-          <td><p>Series containing labels in the format <code>['label_one', 'label_two']</code></p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>labels</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List of the label names</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>predicted_probabilities</code></td>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Predicted probabilities for each label</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.Series">Series</span></code>
-          </td>
-          <td><p>Series, each line containing a dict with the predicted probabilities for each label.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>label_series</code></b>
+                  (<code><span title="pandas.Series">Series</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Series containing labels in the format <code>['label_one', 'label_two']</code></p>
+              </div>
+            </li>
+            <li>
+              <b><code>labels</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of the label names</p>
+              </div>
+            </li>
+            <li>
+              <b><code>predicted_probabilities</code></b>
+                  (<code><span title="numpy.array">array</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Predicted probabilities for each label</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="pandas.Series">Series</span></code>
+            –
+            <div class="doc-md-description">
+              <p>Series, each line containing a dict with the predicted probabilities for each label.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.get_labels" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_labels</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></code>
+          <code class="highlight language-python">get_labels(row, labels)</code>
 
 </h5>
 
@@ -851,68 +889,74 @@ create a dictionary containing the label and the predicted probability of that l
       <p>Given a one-hot encoded row of predictions from a dataframe,
 returns a list containing the actual predicted labels as a <code>str</code>.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>row</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>Row in a DataFrame containing one-hot encoded predicted labels.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>labels</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List containing all the target labels, which should also be columns in the dataframe.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List of the labels that have been predicted for the given text.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>row</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Row in a DataFrame containing one-hot encoded predicted labels.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>labels</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List containing all the target labels, which should also be columns in the dataframe.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code>list</code>
+            –
+            <div class="doc-md-description">
+              <p>List of the labels that have been predicted for the given text.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.predict_with_bert" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">predict_with_bert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python">predict_with_bert(data, model, max_length=150, additional_features=False)</code>
 
 </h5>
 
@@ -921,88 +965,94 @@ returns a list containing the actual predicted labels as a <code>str</code>.</p>
   
       <p>Makes predictions using a transformer-based model. Can encode the data if not already encoded.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>data</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing features to be passed through model.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model</code></td>
-          <td>
-                <code>tf.<span title="tf.keras">keras</span>.<span title="tf.keras.models">models</span>.<span title="tf.keras.models.Model">Model</span></code>
-          </td>
-          <td><p>Pretrained transformer based model in tensorflow keras.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>max_length</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td><p>If encoding is required, maximum length of input text. Defaults to 150.</p></td>
-          <td>
-                <code>150</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not additional features (e.g. question type) are included. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Predicted probabilities for each label.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>data</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing features to be passed through model.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model</code></b>
+                  (<code><span title="tf.keras.models.Model">Model</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Pretrained transformer based model in tensorflow keras.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>max_length</code></b>
+                  (<code>int</code>, default:
+                      <code>150</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>If encoding is required, maximum length of input text. Defaults to 150.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not additional features (e.g. question type) are included. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="numpy.array">array</span></code>
+            –
+            <div class="doc-md-description">
+              <p>Predicted probabilities for each label.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.fix_no_labels" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">fix_no_labels</span><span class="p">(</span><span class="n">binary_preds</span><span class="p">,</span> <span class="n">predicted_probs</span><span class="p">)</span></code>
+          <code class="highlight language-python">fix_no_labels(binary_preds, predicted_probs)</code>
 
 </h5>
 
@@ -1013,68 +1063,74 @@ returns a list containing the actual predicted labels as a <code>str</code>.</p>
 all the labels classes. Where no labels have been predicted for a particular input, takes the label with the highest predicted probability
 as the predicted label.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>binary_preds</code></td>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Predicted labels, in a one-hot encoded binary format. Some rows may not have any predicted labels.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>predicted_probs</code></td>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Predicted probability of each label.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Predicted labels in one-hot encoded format, with all rows containing at least one predicted label.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>binary_preds</code></b>
+                  (<code><span title="numpy.array">array</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Predicted labels, in a one-hot encoded binary format. Some rows may not have any predicted labels.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>predicted_probs</code></b>
+                  (<code><span title="numpy.array">array</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Predicted probability of each label.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="numpy.array">array</span></code>
+            –
+            <div class="doc-md-description">
+              <p>Predicted labels in one-hot encoded format, with all rows containing at least one predicted label.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.turn_probs_into_binary" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">turn_probs_into_binary</span><span class="p">(</span><span class="n">predicted_probs</span><span class="p">,</span> <span class="n">custom_threshold_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+          <code class="highlight language-python">turn_probs_into_binary(predicted_probs, custom_threshold_dict=None)</code>
 
 </h5>
 
@@ -1085,58 +1141,66 @@ as the predicted label.</p>
 Scope to finetune this in later iterations of the project depending on the label and whether recall/precision
 is prioritised for that label.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>predicted_probs</code></td>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Array containing the predicted probabilities for each class. Shape of array should be (num_samples, num_classes). Predicted probabilities should range from 0 to 1.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Array containing binary outcomes for each label. Shape should remain the same as input, but values will be either 0 or 1.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>predicted_probs</code></b>
+                  (<code><span title="numpy.array">array</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Array containing the predicted probabilities for each class. Shape of array should be (num_samples, num_classes). Predicted probabilities should range from 0 to 1.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="numpy.array">array</span></code>
+            –
+            <div class="doc-md-description">
+              <p>Array containing binary outcomes for each label. Shape should remain the same as input, but values will be either 0 or 1.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.rulebased_probs" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">rulebased_probs</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pred_probs</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">rules_dict</span><span class="o">=</span><span class="n">rules_dict</span><span class="p">)</span></code>
+          <code class="highlight language-python">rulebased_probs(text, pred_probs, labels, rules_dict=rules_dict)</code>
 
 </h5>
 
@@ -1145,68 +1209,74 @@ is prioritised for that label.</p>
   
       <p>Uses the <code>rules_dict</code> in <code>pxtextmining.params</code> to boost the probabilities of specific classes, given the appearance of specific words.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>text</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.Series">Series</span></code>
-          </td>
-          <td><p>Series containing the text</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>pred_probs</code></td>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.ndarray">ndarray</span></code>
-          </td>
-          <td><p>Numpy array containing the outputted predicted probabilities for the text.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.ndarray">ndarray</span></code>
-          </td>
-          <td><p>Numpy array with the modified predicted probabilities of the text.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>text</code></b>
+                  (<code><span title="pandas.Series">Series</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Series containing the text</p>
+              </div>
+            </li>
+            <li>
+              <b><code>pred_probs</code></b>
+                  (<code><span title="numpy.ndarray">ndarray</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Numpy array containing the outputted predicted probabilities for the text.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+            –
+            <div class="doc-md-description">
+              <p>Numpy array with the modified predicted probabilities of the text.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.get_thresholds" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_thresholds</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_probs</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></code>
+          <code class="highlight language-python">get_thresholds(y_true, y_probs, labels)</code>
 
 </h5>
 
@@ -1216,78 +1286,82 @@ is prioritised for that label.</p>
       <p>Uses <code>sklearn.metrics.precision_recall_curve</code> to calculate the best threshold to use to maximise F1 score for each of the labels, on a binary one-vs-rest basis.
 If zero division error occurs, the threshold is set to 0.5 automatically.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>y_true</code></td>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Array containing true one-hot encoded labels, of shape (num_samples, num_labels)</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>y_probs</code></td>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Array containing predicted probabilities labels. Can be 2d or 3d depending on whether sklearn or tensorflow.keras output.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>labels</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List of labels in target class.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>y_true</code></b>
+                  (<code><span title="numpy.array">array</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Array containing true one-hot encoded labels, of shape (num_samples, num_labels)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>y_probs</code></b>
+                  (<code><span title="numpy.array">array</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Array containing predicted probabilities labels. Can be 2d or 3d depending on whether sklearn or tensorflow.keras output.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>labels</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of labels in target class.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
                 <code>dict</code>
-          </td>
-          <td><p>Dict with key value pairs (label, recommended threshold) for maximising the F1 score.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
+            –
+            <div class="doc-md-description">
+              <p>Dict with key value pairs (label, recommended threshold) for maximising the F1 score.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_predict_unlabelled_text.combine_predictions" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">combine_predictions</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;probabilities&#39;</span><span class="p">)</span></code>
+          <code class="highlight language-python">combine_predictions(df_list, labels, method='probabilities')</code>
 
 </h5>
 
@@ -1296,68 +1370,73 @@ If zero division error occurs, the threshold is set to 0.5 automatically.</p>
   
       <p>Combines outputted prediction dataframes from different models, using different methods.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>df_list</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List of predictions in pd.DataFrame format, produced with either <code>predict_multilabel_sklearn</code> or <code>predict_multilabel_bert</code></p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>labels</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List of labels in the prediction dataframes.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>method</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Method to use for combining the predictions. Defaults to "probabilities", which uses the average of predicted probabilities from all models. This results in higher precision, lower recall, and the prediction threshold is lowered to 0.3. Otherwise, takes all predicted classes from all models (high recall, low precision).</p></td>
-          <td>
-                <code>&#39;probabilities&#39;</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>New predictions.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>df_list</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of predictions in pd.DataFrame format, produced with either <code>predict_multilabel_sklearn</code> or <code>predict_multilabel_bert</code></p>
+              </div>
+            </li>
+            <li>
+              <b><code>labels</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of labels in the prediction dataframes.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>method</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;probabilities&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Method to use for combining the predictions. Defaults to "probabilities", which uses the average of predicted probabilities from all models. This results in higher precision, lower recall, and the prediction threshold is lowered to 0.3. Otherwise, takes all predicted classes from all models (high recall, low precision).</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="pandas.DataFrame">DataFrame</span></code>
+            –
+            <div class="doc-md-description">
+              <p>New predictions.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
@@ -1404,14 +1483,15 @@ If zero division error occurs, the threshold is set to 0.5 automatically.</p>
     
   </span>
 </div>
-    <script>var base_url = '../../../..';</script>
-    <script src="../../../../js/theme_extra.js" defer></script>
-    <script src="../../../../js/theme.js" defer></script>
-      <script src="../../../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

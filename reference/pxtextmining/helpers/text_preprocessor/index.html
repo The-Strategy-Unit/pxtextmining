@@ -3,28 +3,27 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pxtextmining/helpers/text_preprocessor/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://the-strategy-unit.github.io/pxtextmining/reference/pxtextmining/helpers/text_preprocessor/" />
       <link rel="shortcut icon" href="../../../../img/favicon.ico" />
     <title>Text preprocessor - pxtextmining</title>
     <link rel="stylesheet" href="../../../../css/theme.css" />
     <link rel="stylesheet" href="../../../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
         <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
         <link href="../../../../main.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Text preprocessor";
-        var mkdocs_page_input_path = "reference/pxtextmining/helpers/text_preprocessor.md";
+        var mkdocs_page_input_path = "reference\\pxtextmining\\helpers\\text_preprocessor.md";
         var mkdocs_page_url = "/pxtextmining/reference/pxtextmining/helpers/text_preprocessor/";
       </script>
     
-    <script src="../../../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -36,7 +35,7 @@
           <a href="../../../.." class="icon icon-home"> pxtextmining
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -99,7 +98,7 @@
     <ul class="current">
                 <li class="toctree-l3 current"><a class="reference internal current" href="./">Text preprocessor</a>
     <ul class="current">
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.helpers.text_preprocessor.tf_preprocessing">tf_preprocessing()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.helpers.text_preprocessor.tf_preprocessing">tf_preprocessing</a>
     </li>
     </ul>
                 </li>
@@ -129,11 +128,11 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Reference &raquo;</li>
-          <li>Pxtextmining &raquo;</li>
-          <li>Helpers &raquo;</li>
-      <li>Text preprocessor</li>
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Reference</li>
+          <li class="breadcrumb-item">Pxtextmining</li>
+          <li class="breadcrumb-item">Helpers</li>
+      <li class="breadcrumb-item active">Text preprocessor</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -166,12 +165,13 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.helpers.text_preprocessor.tf_preprocessing" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">tf_preprocessing</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">max_sentence_length</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span></code>
+          <code class="highlight language-python">tf_preprocessing(X, max_sentence_length=150)</code>
 
 </h5>
 
@@ -180,97 +180,86 @@
   
       <p>Conducts preprocessing with tensorflow tokenizer which vectorizes text and standardizes length.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>X</code></td>
-          <td>
-                <code>pd.<span title="pd.Series">Series</span></code>
-          </td>
-          <td><p>Series containing the text to be processed</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>max_sentence_length</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td><p>Maximum number of words. Defaults to 150.</p></td>
-          <td>
-                <code>150</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>X</code></b>
+                  (<code><span title="pd.Series">Series</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Series containing the text to be processed</p>
+              </div>
+            </li>
+            <li>
+              <b><code>max_sentence_length</code></b>
+                  (<code>int</code>, default:
+                      <code>150</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Maximum number of words. Defaults to 150.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
                 <code>tuple</code>
-          </td>
-          <td><p>Tuple containing <code>np.array</code> of padded, tokenized, vectorized texts, and <code>int</code> showing number of unique words in vocabulary.</p></td>
-        </tr>
-    </tbody>
-  </table>
+            –
+            <div class="doc-md-description">
+              <p>Tuple containing <code>np.array</code> of padded, tokenized, vectorized texts, and <code>int</code> showing number of unique words in vocabulary.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
+          <details class="quote">
+            <summary>Source code in <code>pxtextmining\helpers\text_preprocessor.py</code></summary>
+            <pre class="highlight"><code class="language-python">def tf_preprocessing(X, max_sentence_length = 150):
+    """Conducts preprocessing with tensorflow tokenizer which vectorizes text and standardizes length.
 
-      <details class="quote">
-        <summary>Source code in <code>pxtextmining/helpers/text_preprocessor.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">tf_preprocessing</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">max_sentence_length</span> <span class="o">=</span> <span class="mi">150</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Conducts preprocessing with tensorflow tokenizer which vectorizes text and standardizes length.</span>
+    Args:
+        X (pd.Series): Series containing the text to be processed
+        max_sentence_length (int, optional): Maximum number of words. Defaults to 150.
 
-<span class="sd">    Args:</span>
-<span class="sd">        X (pd.Series): Series containing the text to be processed</span>
-<span class="sd">        max_sentence_length (int, optional): Maximum number of words. Defaults to 150.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        (tuple): Tuple containing `np.array` of padded, tokenized, vectorized texts, and `int` showing number of unique words in vocabulary.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">tk</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">()</span>
-    <span class="n">tk</span><span class="o">.</span><span class="n">fit_on_texts</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="n">vocab_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">word_index</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;There are </span><span class="si">{</span><span class="n">vocab_size</span><span class="si">}</span><span class="s1"> different words in your corpus&#39;</span><span class="p">)</span>
-    <span class="n">X_token</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">texts_to_sequences</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="c1">### Pad the inputs</span>
-    <span class="n">X_pad</span> <span class="o">=</span> <span class="n">pad_sequences</span><span class="p">(</span><span class="n">X_token</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="n">maxlen</span> <span class="o">=</span> <span class="n">max_sentence_length</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">X_pad</span><span class="p">,</span> <span class="n">vocab_size</span>
-</code></pre></div></td></tr></table></div>
-      </details>
+    Returns:
+        (tuple): Tuple containing `np.array` of padded, tokenized, vectorized texts, and `int` showing number of unique words in vocabulary.
+    """
+    tk = Tokenizer()
+    tk.fit_on_texts(X)
+    vocab_size = len(tk.word_index)
+    print(f'There are {vocab_size} different words in your corpus')
+    X_token = tk.texts_to_sequences(X)
+    ### Pad the inputs
+    X_pad = pad_sequences(X_token, dtype='float32', padding='post', maxlen = max_sentence_length)
+    return X_pad, vocab_size</code></pre>
+          </details>
   </div>
 
 </div>
@@ -317,14 +306,15 @@
     
   </span>
 </div>
-    <script>var base_url = '../../../..';</script>
-    <script src="../../../../js/theme_extra.js" defer></script>
-    <script src="../../../../js/theme.js" defer></script>
-      <script src="../../../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

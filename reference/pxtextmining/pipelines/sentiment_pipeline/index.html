@@ -3,28 +3,27 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pxtextmining/pipelines/sentiment_pipeline/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://the-strategy-unit.github.io/pxtextmining/reference/pxtextmining/pipelines/sentiment_pipeline/" />
       <link rel="shortcut icon" href="../../../../img/favicon.ico" />
     <title>Sentiment pipeline - pxtextmining</title>
     <link rel="stylesheet" href="../../../../css/theme.css" />
     <link rel="stylesheet" href="../../../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
         <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
         <link href="../../../../main.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Sentiment pipeline";
-        var mkdocs_page_input_path = "reference/pxtextmining/pipelines/sentiment_pipeline.md";
+        var mkdocs_page_input_path = "reference\\pxtextmining\\pipelines\\sentiment_pipeline.md";
         var mkdocs_page_url = "/pxtextmining/reference/pxtextmining/pipelines/sentiment_pipeline/";
       </script>
     
-    <script src="../../../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -36,7 +35,7 @@
           <a href="../../../.." class="icon icon-home"> pxtextmining
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -109,9 +108,9 @@
     <ul class="current">
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.sentiment_pipeline.random_state">random_state</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.sentiment_pipeline.run_sentiment_pipeline">run_sentiment_pipeline()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.sentiment_pipeline.run_sentiment_pipeline">run_sentiment_pipeline</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.sentiment_pipeline.run_sentiment_bert_pipeline">run_sentiment_bert_pipeline()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.sentiment_pipeline.run_sentiment_bert_pipeline">run_sentiment_bert_pipeline</a>
     </li>
     </ul>
                 </li>
@@ -133,11 +132,11 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Reference &raquo;</li>
-          <li>Pxtextmining &raquo;</li>
-          <li>Pipelines &raquo;</li>
-      <li>Sentiment pipeline</li>
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Reference</li>
+          <li class="breadcrumb-item">Pxtextmining</li>
+          <li class="breadcrumb-item">Pipelines</li>
+      <li class="breadcrumb-item active">Sentiment pipeline</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -173,7 +172,7 @@
 
 
 <h5 id="pxtextmining.pipelines.sentiment_pipeline.random_state" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">random_state</span> <span class="o">=</span> <span class="mi">75</span></code>
+          <code class="highlight language-python">random_state = 75</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
@@ -189,12 +188,13 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.pipelines.sentiment_pipeline.run_sentiment_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_sentiment_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">models_to_try</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;svm&#39;</span><span class="p">,</span> <span class="s1">&#39;xgb&#39;</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/sentiment&#39;</span><span class="p">)</span></code>
+          <code class="highlight language-python">run_sentiment_pipeline(additional_features=False, models_to_try=('svm', 'xgb'), path='test_multilabel/sentiment')</code>
 
 </h5>
 
@@ -206,60 +206,64 @@ Creates sklearn model and hyperparameter grid to search, and trains it on the tr
 Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
 and the performance metrics to a specified folder.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not additional features (question type and text length) are used. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>models_to_try</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>Which model types to try. Defaults to ["svm", "xgb"].</p></td>
-          <td>
-                <code>(&#39;svm&#39;, &#39;xgb&#39;)</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>path</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
-          <td>
-                <code>&#39;test_multilabel/sentiment&#39;</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not additional features (question type and text length) are used. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>models_to_try</code></b>
+                  (<code>list</code>, default:
+                      <code>(&#39;svm&#39;, &#39;xgb&#39;)</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Which model types to try. Defaults to ["svm", "xgb"].</p>
+              </div>
+            </li>
+            <li>
+              <b><code>path</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;test_multilabel/sentiment&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.pipelines.sentiment_pipeline.run_sentiment_bert_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_sentiment_bert_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/sentiment_bert&#39;</span><span class="p">)</span></code>
+          <code class="highlight language-python">run_sentiment_bert_pipeline(additional_features=True, path='test_multilabel/sentiment_bert')</code>
 
 </h5>
 
@@ -271,40 +275,43 @@ Creates tf.keras Transformer model with additional layers specific to the classi
 Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
 and the performance metrics to a specified folder.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not additional features (question type and text length) are used. Defaults to False.</p></td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>path</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
-          <td>
-                <code>&#39;test_multilabel/sentiment_bert&#39;</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not additional features (question type and text length) are used. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>path</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;test_multilabel/sentiment_bert&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
@@ -348,14 +355,15 @@ and the performance metrics to a specified folder.</p>
     
   </span>
 </div>
-    <script>var base_url = '../../../..';</script>
-    <script src="../../../../js/theme_extra.js" defer></script>
-    <script src="../../../../js/theme.js" defer></script>
-      <script src="../../../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

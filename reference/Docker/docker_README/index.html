@@ -3,28 +3,27 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/Docker/docker_README/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://the-strategy-unit.github.io/pxtextmining/reference/Docker/docker_README/" />
       <link rel="shortcut icon" href="../../../img/favicon.ico" />
     <title>Using our Docker container - pxtextmining</title>
     <link rel="stylesheet" href="../../../css/theme.css" />
     <link rel="stylesheet" href="../../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
         <link href="../../../assets/_mkdocstrings.css" rel="stylesheet" />
         <link href="../../../main.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Using our Docker container";
-        var mkdocs_page_input_path = "reference/Docker/docker_README.md";
+        var mkdocs_page_input_path = "reference\\Docker\\docker_README.md";
         var mkdocs_page_url = "/pxtextmining/reference/Docker/docker_README/";
       </script>
     
-    <script src="../../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -36,7 +35,7 @@
           <a href="../../.." class="icon icon-home"> pxtextmining
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -127,10 +126,10 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Reference &raquo;</li>
-          <li>Docker &raquo;</li>
-      <li>Using our Docker container</li>
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Reference</li>
+          <li class="breadcrumb-item">Docker</li>
+      <li class="breadcrumb-item active">Using our Docker container</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -140,7 +139,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="using-our-docker-container">Using our Docker container</h1>
-<p>This Docker container contains the pxtextmining machine learning models trained as part of the <a href="https://cdu-data-science-team.github.io/PatientExperience-QDC/">Patient Experience Qualitative Data Categorisation project</a>.</p>
+<p>This Docker container contains the pxtextmining machine learning models trained as part of the <a href="https://the-strategy-unit.github.io/PatientExperience-QDC/">Patient Experience Qualitative Data Categorisation project</a>.</p>
 <p>To use this Docker container to predict your unlabelled text:</p>
 <p>1. Set up your folders. You will need to set up a folder containing two other folders, data_in and data_out, as below.</p>
 <pre><code>docker_data/
@@ -213,7 +212,7 @@ write(json_data, file = &quot;data_in/file_01.json&quot;)
 <li><code>--target</code> or <code>-t</code> to select the machine learning models used. Options are <code>m</code> for multilabel, <code>s</code> for <code>sentiment</code>, or <code>ms</code> for both. Defaults to <code>ms</code> if nothing is selected.</li>
 </ul>
 <p>A sample command would be:
-<code>docker run --rm -it -v /docker_data:/data ghcr.io/cdu-data-science-team/pxtextmining:latest file_01.json -l</code></p>
+<code>docker run --rm -it -v /docker_data:/data ghcr.io/the-strategy-unit/pxtextmining:latest file_01.json -l</code></p>
 <p>6. The predictions will be outputted as a json file in the data_out folder, with the same filename. After running successfully, the final folder structure should be:</p>
 <pre><code>docker_data/
 ├─ data_in/
@@ -256,14 +255,15 @@ write(json_data, file = &quot;data_in/file_01.json&quot;)
     
   </span>
 </div>
-    <script>var base_url = '../../..';</script>
-    <script src="../../../js/theme_extra.js" defer></script>
-    <script src="../../../js/theme.js" defer></script>
-      <script src="../../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

@@ -3,28 +3,27 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pxtextmining/factories/factory_write_results/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://the-strategy-unit.github.io/pxtextmining/reference/pxtextmining/factories/factory_write_results/" />
       <link rel="shortcut icon" href="../../../../img/favicon.ico" />
     <title>Factory write results - pxtextmining</title>
     <link rel="stylesheet" href="../../../../css/theme.css" />
     <link rel="stylesheet" href="../../../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
         <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
         <link href="../../../../main.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Factory write results";
-        var mkdocs_page_input_path = "reference/pxtextmining/factories/factory_write_results.md";
+        var mkdocs_page_input_path = "reference\\pxtextmining\\factories\\factory_write_results.md";
         var mkdocs_page_url = "/pxtextmining/reference/pxtextmining/factories/factory_write_results/";
       </script>
     
-    <script src="../../../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -36,7 +35,7 @@
           <a href="../../../.." class="icon icon-home"> pxtextmining
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -93,11 +92,11 @@
                 </li>
                 <li class="toctree-l3 current"><a class="reference internal current" href="./">Factory write results</a>
     <ul class="current">
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_write_results.write_multilabel_models_and_metrics">write_multilabel_models_and_metrics()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_write_results.write_multilabel_models_and_metrics">write_multilabel_models_and_metrics</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_write_results.write_model_preds">write_model_preds()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_write_results.write_model_preds">write_model_preds</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_write_results.write_model_analysis">write_model_analysis()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_write_results.write_model_analysis">write_model_analysis</a>
     </li>
     </ul>
                 </li>
@@ -133,11 +132,11 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Reference &raquo;</li>
-          <li>Pxtextmining &raquo;</li>
-          <li>Factories &raquo;</li>
-      <li>Factory write results</li>
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Reference</li>
+          <li class="breadcrumb-item">Pxtextmining</li>
+          <li class="breadcrumb-item">Factories</li>
+      <li class="breadcrumb-item active">Factory write results</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -170,12 +169,13 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_write_results.write_multilabel_models_and_metrics" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_multilabel_models_and_metrics</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">model_metrics</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></code>
+          <code class="highlight language-python">write_multilabel_models_and_metrics(models, model_metrics, path)</code>
 
 </h5>
 
@@ -184,60 +184,58 @@
   
       <p>Saves models and their associated performance metrics into a specified folder</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>models</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List containing the trained tf.keras or sklearn models to be saved.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model_metrics</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List containing the model metrics in <code>str</code> format</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>path</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Path where model is to be saved.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>models</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List containing the trained tf.keras or sklearn models to be saved.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model_metrics</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List containing the model metrics in <code>str</code> format</p>
+              </div>
+            </li>
+            <li>
+              <b><code>path</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Path where model is to be saved.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_write_results.write_model_preds" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_model_preds</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">preds_df</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;labels.xlsx&#39;</span><span class="p">,</span> <span class="n">return_df</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python">write_model_preds(x, y_true, preds_df, labels, path='labels.xlsx', return_df=False)</code>
 
 </h5>
 
@@ -246,108 +244,110 @@
   
       <p>Writes an Excel file to enable easier analysis of model outputs using the test set. Columns of the Excel file are: comment_id, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>x</code></td>
-          <td>
-                <code>pd.Series OR pd.DataFrame</code>
-          </td>
-          <td><p>Text data used for predictions</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>y_true</code></td>
-          <td>
-                <code><span title="numpy">np</span>.<span title="numpy.array">array</span></code>
-          </td>
-          <td><p>Onehot encoded targets</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>preds_df</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing predictions, predicted probabilities, and labels. Should be produced by predict_multilabel_sklearn or predict_multilabel_bert</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>labels</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List containing target labels.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>path</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Filename and path for file to be saved. Defaults to "labels.xlsx".</p></td>
-          <td>
-                <code>&#39;labels.xlsx&#39;</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>return_df</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not the processed data should be returned as a DataFrame. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing comment_id, comment text, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>x</code></b>
+                  (<code>pd.Series OR pd.DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>Text data used for predictions</p>
+              </div>
+            </li>
+            <li>
+              <b><code>y_true</code></b>
+                  (<code><span title="numpy.array">array</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Onehot encoded targets</p>
+              </div>
+            </li>
+            <li>
+              <b><code>preds_df</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing predictions, predicted probabilities, and labels. Should be produced by predict_multilabel_sklearn or predict_multilabel_bert</p>
+              </div>
+            </li>
+            <li>
+              <b><code>labels</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List containing target labels.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>path</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;labels.xlsx&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Filename and path for file to be saved. Defaults to "labels.xlsx".</p>
+              </div>
+            </li>
+            <li>
+              <b><code>return_df</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not the processed data should be returned as a DataFrame. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="pandas.DataFrame">DataFrame</span></code>
+            –
+            <div class="doc-md-description">
+              <p>DataFrame containing comment_id, comment text, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_write_results.write_model_analysis" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_model_analysis</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">preds_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_true</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">custom_threshold_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+          <code class="highlight language-python">write_model_analysis(model_name, labels, dataset, path, preds_df=None, y_true=None, custom_threshold_dict=None)</code>
 
 </h5>
 
@@ -356,60 +356,55 @@
   
       <p>Writes an Excel file with the performance metrics of each label, as well as the counts of samples for each label.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>model_name</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Model name used in the performance metrics file</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>labels</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List of labels for the categories to be predicted.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>dataset</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>Original dataset before train test split</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>path</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Filepath where model and performance metrics file are saved.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>model_name</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Model name used in the performance metrics file</p>
+              </div>
+            </li>
+            <li>
+              <b><code>labels</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of labels for the categories to be predicted.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>dataset</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Original dataset before train test split</p>
+              </div>
+            </li>
+            <li>
+              <b><code>path</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Filepath where model and performance metrics file are saved.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
@@ -456,14 +451,15 @@
     
   </span>
 </div>
-    <script>var base_url = '../../../..';</script>
-    <script src="../../../../js/theme_extra.js" defer></script>
-    <script src="../../../../js/theme.js" defer></script>
-      <script src="../../../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

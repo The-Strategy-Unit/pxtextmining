@@ -3,28 +3,27 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pxtextmining/factories/factory_data_load_and_split/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://the-strategy-unit.github.io/pxtextmining/reference/pxtextmining/factories/factory_data_load_and_split/" />
       <link rel="shortcut icon" href="../../../../img/favicon.ico" />
     <title>Factory data load and split - pxtextmining</title>
     <link rel="stylesheet" href="../../../../css/theme.css" />
     <link rel="stylesheet" href="../../../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
         <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
         <link href="../../../../main.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Factory data load and split";
-        var mkdocs_page_input_path = "reference/pxtextmining/factories/factory_data_load_and_split.md";
+        var mkdocs_page_input_path = "reference\\pxtextmining\\factories\\factory_data_load_and_split.md";
         var mkdocs_page_url = "/pxtextmining/reference/pxtextmining/factories/factory_data_load_and_split/";
       </script>
     
-    <script src="../../../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -36,7 +35,7 @@
           <a href="../../../.." class="icon icon-home"> pxtextmining
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -87,21 +86,21 @@
     <ul class="current">
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.df">df</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.merge_categories">merge_categories()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.merge_categories">merge_categories</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.bert_data_to_dataset">bert_data_to_dataset()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.bert_data_to_dataset">bert_data_to_dataset</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.load_multilabel_data">load_multilabel_data()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.load_multilabel_data">load_multilabel_data</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.clean_empty_features">clean_empty_features()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.clean_empty_features">clean_empty_features</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.onehot">onehot()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.onehot">onehot</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.process_data">process_data()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.process_data">process_data</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.process_and_split_data">process_and_split_data()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.process_and_split_data">process_and_split_data</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.remove_punc_and_nums">remove_punc_and_nums()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_data_load_and_split.remove_punc_and_nums">remove_punc_and_nums</a>
     </li>
     </ul>
                 </li>
@@ -145,11 +144,11 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Reference &raquo;</li>
-          <li>Pxtextmining &raquo;</li>
-          <li>Factories &raquo;</li>
-      <li>Factory data load and split</li>
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Reference</li>
+          <li class="breadcrumb-item">Pxtextmining</li>
+          <li class="breadcrumb-item">Factories</li>
+      <li class="breadcrumb-item active">Factory data load and split</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -185,7 +184,7 @@
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.df" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">df</span> <span class="o">=</span> <span class="n">load_multilabel_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;major_categories&#39;</span><span class="p">)</span></code>
+          <code class="highlight language-python">df = load_multilabel_data(dataset, target='major_categories')</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
@@ -201,12 +200,13 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.merge_categories" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">merge_categories</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">new_cat</span><span class="p">,</span> <span class="n">cats_to_merge</span><span class="p">)</span></code>
+          <code class="highlight language-python">merge_categories(df, new_cat, cats_to_merge)</code>
 
 </h5>
 
@@ -216,78 +216,82 @@
       <p>Merges categories together in a dataset. Assumes all categories are all in the
 right format, one hot encoded with int values.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>df</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame with labelled data.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>new_cat</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Name for new column of merged data.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>cats_to_merge</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List containing columns to be merged.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame with new columns</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>df</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame with labelled data.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>new_cat</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Name for new column of merged data.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>cats_to_merge</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List containing columns to be merged.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="pandas.DataFrame">DataFrame</span></code>
+            –
+            <div class="doc-md-description">
+              <p>DataFrame with new columns</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.bert_data_to_dataset" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">bert_data_to_dataset</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="s1">&#39;distilbert-base-uncased&#39;</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python">bert_data_to_dataset(X, Y=None, max_length=150, model_name='distilbert-base-uncased', additional_features=False)</code>
 
 </h5>
 
@@ -298,100 +302,108 @@ right format, one hot encoded with int values.</p>
 If Y is provided then it returns a TensorFlow dataset for training the model.
 If Y is not provided, then it returns a dict which can be used to make predictions by an already trained model.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>X</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>Data to be converted to text data. Text should be in column 'FFT answer',
-FFT question should be in column 'FFT_q_standardised'.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>Y</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>One Hot Encoded targets. Defaults to None.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>max_length</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td><p>Maximum length of text to be encoded. Defaults to 150.</p></td>
-          <td>
-                <code>150</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model_name</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Type of transformer model. Defaults to 'distilbert-base-uncased'.</p></td>
-          <td>
-                <code>&#39;distilbert-base-uncased&#39;</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether additional features are to be included, currently this is only question type
-in 'FFT_q_standardised' column. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>X</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Data to be converted to text data. Text should be in column 'FFT answer',
+FFT question should be in column 'FFT_q_standardised'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>Y</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>One Hot Encoded targets. Defaults to None.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>max_length</code></b>
+                  (<code>int</code>, default:
+                      <code>150</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Maximum length of text to be encoded. Defaults to 150.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model_name</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;distilbert-base-uncased&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Type of transformer model. Defaults to 'distilbert-base-uncased'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether additional features are to be included, currently this is only question type
+in 'FFT_q_standardised' column. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
                 <code>tf.data.Dataset OR dict</code>
-          </td>
-          <td><p><code>tf.data.Dataset</code> if Y is provided, <code>dict</code> otherwise.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
+            –
+            <div class="doc-md-description">
+              <p><code>tf.data.Dataset</code> if Y is provided, <code>dict</code> otherwise.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.load_multilabel_data" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">load_multilabel_data</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;major_categories&#39;</span><span class="p">)</span></code>
+          <code class="highlight language-python">load_multilabel_data(filename, target='major_categories')</code>
 
 </h5>
 
@@ -402,68 +414,76 @@ in 'FFT_q_standardised' column. Defaults to False.</p></td>
 including standardisation of the question types, calculation of text length, and drops rows with no labels. Depending on
 selected <code>target</code>, returned dataframe contains different columns.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>filename</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Path to file containing multilabel data, in csv format</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>target</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Options are 'minor_categories', 'major_categories', or 'sentiment'. Defaults to 'major_categories'.</p></td>
-          <td>
-                <code>&#39;major_categories&#39;</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing the columns 'FFT categorical answer', 'FFT question', and 'FFT answer'. Also conducts some</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>filename</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to file containing multilabel data, in csv format</p>
+              </div>
+            </li>
+            <li>
+              <b><code>target</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;major_categories&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Options are 'minor_categories', 'major_categories', or 'sentiment'. Defaults to 'major_categories'.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="pandas.DataFrame">DataFrame</span></code>
+            –
+            <div class="doc-md-description">
+              <p>DataFrame containing the columns 'FFT categorical answer', 'FFT question', and 'FFT answer'. Also conducts some</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.clean_empty_features" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">clean_empty_features</span><span class="p">(</span><span class="n">text_dataframe</span><span class="p">)</span></code>
+          <code class="highlight language-python">clean_empty_features(text_dataframe)</code>
 
 </h5>
 
@@ -472,58 +492,66 @@ selected <code>target</code>, returned dataframe contains different columns.</p>
   
       <p>Replaces all empty whitespaces in a dataframe with np.NaN.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>text_dataframe</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing text data with labels.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame with all empty whitespaces replaced with np.NaN</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>text_dataframe</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing text data with labels.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="pandas.DataFrame">DataFrame</span></code>
+            –
+            <div class="doc-md-description">
+              <p>DataFrame with all empty whitespaces replaced with np.NaN</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.onehot" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">onehot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col_to_onehot</span><span class="p">)</span></code>
+          <code class="highlight language-python">onehot(df, col_to_onehot)</code>
 
 </h5>
 
@@ -532,68 +560,74 @@ selected <code>target</code>, returned dataframe contains different columns.</p>
   
       <p>Function to one-hot encode specified columns in a dataframe.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>df</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing data to be one-hot encoded</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>col_to_onehot</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List of column names to be one-hot encoded</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>One-hot encoded data</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>df</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing data to be one-hot encoded</p>
+              </div>
+            </li>
+            <li>
+              <b><code>col_to_onehot</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of column names to be one-hot encoded</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="pandas.DataFrame">DataFrame</span></code>
+            –
+            <div class="doc-md-description">
+              <p>One-hot encoded data</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.process_data" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">process_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">preprocess_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python">process_data(df, target, preprocess_text=True, additional_features=False)</code>
 
 </h5>
 
@@ -604,90 +638,96 @@ selected <code>target</code>, returned dataframe contains different columns.</p>
 drop any rows that are only whitespace after cleaning. Also fills one-hot encoded columns with
 0s rather than NaNs so that Y target is not sparse.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>df</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing text data, any additional features, and targets</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>target</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List of column names of targets</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>preprocess_text</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not text is to be processed with remove_punc_and_nums. If utilising
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>df</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing text data, any additional features, and targets</p>
+              </div>
+            </li>
+            <li>
+              <b><code>target</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of column names of targets</p>
+              </div>
+            </li>
+            <li>
+              <b><code>preprocess_text</code></b>
+                  (<code>bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not text is to be processed with remove_punc_and_nums. If utilising
 an sklearn model then should be True. If utilising transformer-based BERT model then should be set to False.
-Defaults to True.</p></td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not 'question type' feature should be included. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
+Defaults to True.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not 'question type' feature should be included. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
                 <code>tuple</code>
-          </td>
-          <td><p>Tuple containing two pd.DataFrames. The first contains the X features (text, with or without question type depending on additional_features), the second contains the one-hot encoded Y targets</p></td>
-        </tr>
-    </tbody>
-  </table>
-
+            –
+            <div class="doc-md-description">
+              <p>Tuple containing two pd.DataFrames. The first contains the X features (text, with or without question type depending on additional_features), the second contains the one-hot encoded Y targets</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.process_and_split_data" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">process_and_split_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">preprocess_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span></code>
+          <code class="highlight language-python">process_and_split_data(df, target, preprocess_text=True, additional_features=False, random_state=42)</code>
 
 </h5>
 
@@ -696,100 +736,106 @@ Defaults to True.</p></td>
   
       <p>Combines the process_multilabel_data and train_test_split functions into one function</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>df</code></td>
-          <td>
-                <code><span title="pandas">pd</span>.<span title="pandas.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing text data, any additional features, and targets</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>target</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List of column names of targets</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>preprocess_text</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not text is to be processed with remove_punc_and_nums. If utilising
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>df</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing text data, any additional features, and targets</p>
+              </div>
+            </li>
+            <li>
+              <b><code>target</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of column names of targets</p>
+              </div>
+            </li>
+            <li>
+              <b><code>preprocess_text</code></b>
+                  (<code>bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not text is to be processed with remove_punc_and_nums. If utilising
 an sklearn model then should be True. If utilising transformer-based BERT model then should be set to False.
-Defaults to True.</p></td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not 'question type' feature should be included. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>random_state</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td><p>Controls the shuffling applied to the data before applying the split. Enables reproducible output across multiple function calls. Defaults to 42.</p></td>
-          <td>
-                <code>42</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
+Defaults to True.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not 'question type' feature should be included. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>random_state</code></b>
+                  (<code>int</code>, default:
+                      <code>42</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Controls the shuffling applied to the data before applying the split. Enables reproducible output across multiple function calls. Defaults to 42.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
                 <code>list</code>
-          </td>
-          <td><p>List containing train-test split of preprocessed X features and Y targets.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
+            –
+            <div class="doc-md-description">
+              <p>List containing train-test split of preprocessed X features and Y targets.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_data_load_and_split.remove_punc_and_nums" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">remove_punc_and_nums</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></code>
+          <code class="highlight language-python">remove_punc_and_nums(text)</code>
 
 </h5>
 
@@ -799,48 +845,55 @@ Defaults to True.</p></td>
       <p>Function to conduct basic preprocessing of text, removing punctuation and numbers, converting
 all text to lowercase, removing trailing whitespace.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>text</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Str containing the text to be cleaned</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Cleaned text, all lowercased with no punctuation, numbers or trailing whitespace.</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>text</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Str containing the text to be cleaned</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code>str</code>
+            –
+            <div class="doc-md-description">
+              <p>Cleaned text, all lowercased with no punctuation, numbers or trailing whitespace.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
@@ -887,14 +940,15 @@ all text to lowercase, removing trailing whitespace.</p>
     
   </span>
 </div>
-    <script>var base_url = '../../../..';</script>
-    <script src="../../../../js/theme_extra.js" defer></script>
-    <script src="../../../../js/theme.js" defer></script>
-      <script src="../../../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

@@ -3,28 +3,27 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pxtextmining/factories/factory_pipeline/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://the-strategy-unit.github.io/pxtextmining/reference/pxtextmining/factories/factory_pipeline/" />
       <link rel="shortcut icon" href="../../../../img/favicon.ico" />
     <title>Factory pipeline - pxtextmining</title>
     <link rel="stylesheet" href="../../../../css/theme.css" />
     <link rel="stylesheet" href="../../../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
         <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
         <link href="../../../../main.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Factory pipeline";
-        var mkdocs_page_input_path = "reference/pxtextmining/factories/factory_pipeline.md";
+        var mkdocs_page_input_path = "reference\\pxtextmining\\factories\\factory_pipeline.md";
         var mkdocs_page_url = "/pxtextmining/reference/pxtextmining/factories/factory_pipeline/";
       </script>
     
-    <script src="../../../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -36,7 +35,7 @@
           <a href="../../../.." class="icon icon-home"> pxtextmining
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -91,23 +90,23 @@
     <ul class="current">
     <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.model_name">model_name</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_sklearn_pipeline_sentiment">create_sklearn_pipeline_sentiment()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_sklearn_pipeline_sentiment">create_sklearn_pipeline_sentiment</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_bert_model">create_bert_model()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_bert_model">create_bert_model</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_bert_model_additional_features">create_bert_model_additional_features()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_bert_model_additional_features">create_bert_model_additional_features</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.train_bert_model">train_bert_model()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.train_bert_model">train_bert_model</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.calculating_class_weights">calculating_class_weights()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.calculating_class_weights">calculating_class_weights</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_sklearn_vectorizer">create_sklearn_vectorizer()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_sklearn_vectorizer">create_sklearn_vectorizer</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_sklearn_pipeline">create_sklearn_pipeline()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_sklearn_pipeline">create_sklearn_pipeline</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.search_sklearn_pipelines">search_sklearn_pipelines()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.search_sklearn_pipelines">search_sklearn_pipelines</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_and_train_svc_model">create_and_train_svc_model()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.factories.factory_pipeline.create_and_train_svc_model">create_and_train_svc_model</a>
     </li>
     </ul>
                 </li>
@@ -147,11 +146,11 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Reference &raquo;</li>
-          <li>Pxtextmining &raquo;</li>
-          <li>Factories &raquo;</li>
-      <li>Factory pipeline</li>
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Reference</li>
+          <li class="breadcrumb-item">Pxtextmining</li>
+          <li class="breadcrumb-item">Factories</li>
+      <li class="breadcrumb-item active">Factory pipeline</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -187,7 +186,7 @@
 
 
 <h5 id="pxtextmining.factories.factory_pipeline.model_name" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">model_name</span> <span class="o">=</span> <span class="n">model_name</span></code>
+          <code class="highlight language-python">model_name = model_name</code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
@@ -203,12 +202,13 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_pipeline.create_sklearn_pipeline_sentiment" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_sklearn_pipeline_sentiment</span><span class="p">(</span><span class="n">model_type</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python">create_sklearn_pipeline_sentiment(model_type, num_classes, additional_features=False)</code>
 
 </h5>
 
@@ -217,78 +217,84 @@
   
       <p>Creates sklearn pipeline and hyperparameter grid for searching, for a multiclass target.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>model_type</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Allows for selection of different estimators. Permitted values are "svm" (Support Vector Classifier), or "xgb" (XGBoost).</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>num_classes</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td><p>Number of target classes.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>model_type</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Allows for selection of different estimators. Permitted values are "svm" (Support Vector Classifier), or "xgb" (XGBoost).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>num_classes</code></b>
+                  (<code>int</code>)
+              –
+              <div class="doc-md-description">
+                <p>Number of target classes.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
                 <code>tuple</code>
-          </td>
-          <td><p>Tuple containing the <code>sklearn.pipeline.Pipeline</code> with the selected estimator, and a <code>dict</code> containing the hyperparameters to be tuned.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
+            –
+            <div class="doc-md-description">
+              <p>Tuple containing the <code>sklearn.pipeline.Pipeline</code> with the selected estimator, and a <code>dict</code> containing the hyperparameters to be tuned.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_pipeline.create_bert_model" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_bert_model</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">multilabel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+          <code class="highlight language-python">create_bert_model(Y_train, model_name=model_name, max_length=150, multilabel=True)</code>
 
 </h5>
 
@@ -298,88 +304,96 @@
       <p>Creates Transformer based model trained on text data, with last layer added on
 for multilabel classification task. Number of neurons in last layer depends on number of labels in Y target.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>Y_train</code></td>
-          <td>
-                <code>pd.<span title="pd.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing one-hot encoded targets</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model_name</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Type of pretrained transformer model to load. Defaults to <code>model_name</code> set in <code>pxtextmining.params</code></p></td>
-          <td>
-                <code>model_name</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>max_length</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td><p>Maximum length of text to be passed through transformer model. Defaults to 150.</p></td>
-          <td>
-                <code>150</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>multilabel</code></td>
-          <td>
-                <code>Bool</code>
-          </td>
-          <td><p>Whether the target is multilabel or not. If set to False, target is multiclass. Defaults to True.</p></td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code>tensorflow.<span title="tensorflow.keras">keras</span>.<span title="tensorflow.keras.models">models</span>.<span title="tensorflow.keras.models.Model">Model</span></code>
-          </td>
-          <td><p>Compiled Tensforflow Keras model with pretrained transformer layers and last layer suited for multilabel classification task</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>Y_train</code></b>
+                  (<code><span title="pd.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing one-hot encoded targets</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model_name</code></b>
+                  (<code>str</code>, default:
+                      <code><a class="autorefs autorefs-internal" title="pxtextmining.factories.factory_pipeline.model_name" href="#pxtextmining.factories.factory_pipeline.model_name">model_name</a></code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Type of pretrained transformer model to load. Defaults to <code>model_name</code> set in <code>pxtextmining.params</code></p>
+              </div>
+            </li>
+            <li>
+              <b><code>max_length</code></b>
+                  (<code>int</code>, default:
+                      <code>150</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Maximum length of text to be passed through transformer model. Defaults to 150.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>multilabel</code></b>
+                  (<code>Bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether the target is multilabel or not. If set to False, target is multiclass. Defaults to True.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="tensorflow.keras.models.Model">Model</span></code>
+            –
+            <div class="doc-md-description">
+              <p>Compiled Tensforflow Keras model with pretrained transformer layers and last layer suited for multilabel classification task</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_pipeline.create_bert_model_additional_features" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_bert_model_additional_features</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">multilabel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+          <code class="highlight language-python">create_bert_model_additional_features(Y_train, model_name=model_name, max_length=150, multilabel=True)</code>
 
 </h5>
 
@@ -389,88 +403,96 @@ for multilabel classification task. Number of neurons in last layer depends on n
       <p>Creates Transformer based model trained on text data, concatenated with an additional Dense layer taking additional inputs, with last layer added on
 for multilabel classification task. Number of neurons in last layer depends on number of labels in Y target.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>Y_train</code></td>
-          <td>
-                <code>pd.<span title="pd.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing one-hot encoded targets</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model_name</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Type of pretrained transformer model to load. Defaults to <code>model_name</code> set in <code>pxtextmining.params</code></p></td>
-          <td>
-                <code>model_name</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>max_length</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td><p>Maximum length of text to be passed through transformer model. Defaults to 150.</p></td>
-          <td>
-                <code>150</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>multilabel</code></td>
-          <td>
-                <code>Bool</code>
-          </td>
-          <td><p>Whether the target is multilabel or not. If set to False, target is multiclass. Defaults to True.</p></td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code>tensorflow.<span title="tensorflow.keras">keras</span>.<span title="tensorflow.keras.models">models</span>.<span title="tensorflow.keras.models.Model">Model</span></code>
-          </td>
-          <td><p>Compiled Tensforflow Keras model with pretrained transformer layers, three question_type inputs passed through a Dense layer, and last layer suited for multilabel classification task</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>Y_train</code></b>
+                  (<code><span title="pd.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing one-hot encoded targets</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model_name</code></b>
+                  (<code>str</code>, default:
+                      <code><a class="autorefs autorefs-internal" title="pxtextmining.factories.factory_pipeline.model_name" href="#pxtextmining.factories.factory_pipeline.model_name">model_name</a></code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Type of pretrained transformer model to load. Defaults to <code>model_name</code> set in <code>pxtextmining.params</code></p>
+              </div>
+            </li>
+            <li>
+              <b><code>max_length</code></b>
+                  (<code>int</code>, default:
+                      <code>150</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Maximum length of text to be passed through transformer model. Defaults to 150.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>multilabel</code></b>
+                  (<code>Bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether the target is multilabel or not. If set to False, target is multiclass. Defaults to True.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="tensorflow.keras.models.Model">Model</span></code>
+            –
+            <div class="doc-md-description">
+              <p>Compiled Tensforflow Keras model with pretrained transformer layers, three question_type inputs passed through a Dense layer, and last layer suited for multilabel classification task</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_pipeline.train_bert_model" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">train_bert_model</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">val_dataset</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">class_weights_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span></code>
+          <code class="highlight language-python">train_bert_model(train_dataset, val_dataset, model, class_weights_dict=None, epochs=30)</code>
 
 </h5>
 
@@ -479,98 +501,102 @@ for multilabel classification task. Number of neurons in last layer depends on n
   
       <p>Trains compiled transformer model with early stopping.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>train_dataset</code></td>
-          <td>
-                <code>tf.<span title="tf.data">data</span>.<span title="tf.data.Dataset">Dataset</span></code>
-          </td>
-          <td><p>Train dataset, tokenized with huggingface tokenizer, in tf.data.Dataset format</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>val_dataset</code></td>
-          <td>
-                <code>tf.<span title="tf.data">data</span>.<span title="tf.data.Dataset">Dataset</span></code>
-          </td>
-          <td><p>Validation dataset, tokenized with huggingface tokenizer, in tf.data.Dataset format</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>model</code></td>
-          <td>
-                <code>tf.<span title="tf.keras">keras</span>.<span title="tf.keras.models">models</span>.<span title="tf.keras.models.Model">Model</span></code>
-          </td>
-          <td><p>Compiled transformer model with additional layers for specific task.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>class_weights_dict</code></td>
-          <td>
-                <code>dict</code>
-          </td>
-          <td><p>Dict containing class weights for each target class. Defaults to None.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>epochs</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td><p>Number of epochs to train model for. Defaults to 30.</p></td>
-          <td>
-                <code>30</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>train_dataset</code></b>
+                  (<code><span title="tf.data.Dataset">Dataset</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Train dataset, tokenized with huggingface tokenizer, in tf.data.Dataset format</p>
+              </div>
+            </li>
+            <li>
+              <b><code>val_dataset</code></b>
+                  (<code><span title="tf.data.Dataset">Dataset</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Validation dataset, tokenized with huggingface tokenizer, in tf.data.Dataset format</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model</code></b>
+                  (<code><span title="tf.keras.models.Model">Model</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Compiled transformer model with additional layers for specific task.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>class_weights_dict</code></b>
+                  (<code>dict</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Dict containing class weights for each target class. Defaults to None.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>epochs</code></b>
+                  (<code>int</code>, default:
+                      <code>30</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Number of epochs to train model for. Defaults to 30.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
                 <code>tuple</code>
-          </td>
-          <td><p>Tuple containing trained model and the training time as a str.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
+            –
+            <div class="doc-md-description">
+              <p>Tuple containing trained model and the training time as a str.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_pipeline.calculating_class_weights" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">calculating_class_weights</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span></code>
+          <code class="highlight language-python">calculating_class_weights(y_true)</code>
 
 </h5>
 
@@ -579,58 +605,66 @@ for multilabel classification task. Number of neurons in last layer depends on n
   
       <p>Function for calculating class weights for target classes, to be used when fitting a model.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>y_true</code></td>
-          <td>
-                <code>pd.<span title="pd.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>Dataset containing onehot encoded multilabel targets</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>y_true</code></b>
+                  (<code><span title="pd.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Dataset containing onehot encoded multilabel targets</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
                 <code>dict</code>
-          </td>
-          <td><p>Dict containing calculated class weights for each target label.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
+            –
+            <div class="doc-md-description">
+              <p>Dict containing calculated class weights for each target label.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_pipeline.create_sklearn_vectorizer" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_sklearn_vectorizer</span><span class="p">()</span></code>
+          <code class="highlight language-python">create_sklearn_vectorizer()</code>
 
 </h5>
 
@@ -639,34 +673,41 @@ for multilabel classification task. Number of neurons in last layer depends on n
   
       <p>Creates vectorizer for use with sklearn models, using sklearn tokenizer</p>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code>sklearn.<span title="sklearn.feature_extraction">feature_extraction</span>.<span title="sklearn.feature_extraction.text">text</span>.<span title="sklearn.feature_extraction.text.TfidfVectorizer">TfidfVectorizer</span></code>
-          </td>
-          <td><p>sklearn TfidfVectorizer</p></td>
-        </tr>
-    </tbody>
-  </table>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
+                <code><span title="sklearn.feature_extraction.text.TfidfVectorizer">TfidfVectorizer</span></code>
+            –
+            <div class="doc-md-description">
+              <p>sklearn TfidfVectorizer</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_pipeline.create_sklearn_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_sklearn_pipeline</span><span class="p">(</span><span class="n">model_type</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+          <code class="highlight language-python">create_sklearn_pipeline(model_type, additional_features=True)</code>
 
 </h5>
 
@@ -675,68 +716,76 @@ for multilabel classification task. Number of neurons in last layer depends on n
   
       <p>Creates sklearn pipeline and hyperparameter grid for searching, depending on model_type selected.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>model_type</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Allows for selection of different estimators. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.</p></td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>model_type</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Allows for selection of different estimators. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
                 <code>tuple</code>
-          </td>
-          <td><p>Tuple containing the <code>sklearn.pipeline.Pipeline</code> with the selected estimator, and a <code>dict</code> containing the hyperparameters to be tuned.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
+            –
+            <div class="doc-md-description">
+              <p>Tuple containing the <code>sklearn.pipeline.Pipeline</code> with the selected estimator, and a <code>dict</code> containing the hyperparameters to be tuned.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_pipeline.search_sklearn_pipelines" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">search_sklearn_pipelines</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">models_to_try</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+          <code class="highlight language-python">search_sklearn_pipelines(X_train, Y_train, models_to_try, target=None, additional_features=True)</code>
 
 </h5>
 
@@ -745,106 +794,116 @@ for multilabel classification task. Number of neurons in last layer depends on n
   
       <p>Iterates through selected estimators, instantiating the relevant sklearn pipelines and searching for the optimum hyperparameters.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>X_train</code></td>
-          <td>
-                <code>pd.<span title="pd.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing the features to be fed into the estimator</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>Y_train</code></td>
-          <td>
-                <code>pd.<span title="pd.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing the targets</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>models_to_try</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List containing the estimator types to be tried. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.</p></td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Raises:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code>ValueError</code>
-          </td>
-          <td><p>If model_type includes value other than permitted values "mnb", "knn", "svm", or "rfc"</p></td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>X_train</code></b>
+                  (<code><span title="pd.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing the features to be fed into the estimator</p>
+              </div>
+            </li>
+            <li>
+              <b><code>Y_train</code></b>
+                  (<code><span title="pd.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing the targets</p>
+              </div>
+            </li>
+            <li>
+              <b><code>models_to_try</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List containing the estimator types to be tried. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not additional features (question type, text length) are to be included in the features fed into the model. Defaults to True.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>ValueError</code>
+              –
+              <div class="doc-md-description">
+                <p>If model_type includes value other than permitted values "mnb", "knn", "svm", or "rfc"</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
                 <code>tuple</code>
-          </td>
-          <td><p>Tuple containing: a <code>list</code> containing the refitted pipelines with the best hyperparameters identified in the search, and a <code>list</code> containing the training times for each of the pipelines.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
+            –
+            <div class="doc-md-description">
+              <p>Tuple containing: a <code>list</code> containing the refitted pipelines with the best hyperparameters identified in the search, and a <code>list</code> containing the training times for each of the pipelines.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.factories.factory_pipeline.create_and_train_svc_model" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_and_train_svc_model</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python">create_and_train_svc_model(X_train, Y_train, additional_features=False)</code>
 
 </h5>
 
@@ -853,58 +912,63 @@ for multilabel classification task. Number of neurons in last layer depends on n
   
       <p>Creates pipeline with a Support Vector Classifier using specific hyperparameters identified through previous gridsearching.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>X_train</code></td>
-          <td>
-                <code>pd.<span title="pd.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing the features to be fed into the estimator</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>Y_train</code></td>
-          <td>
-                <code>pd.<span title="pd.DataFrame">DataFrame</span></code>
-          </td>
-          <td><p>DataFrame containing the targets</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>X_train</code></b>
+                  (<code><span title="pd.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing the features to be fed into the estimator</p>
+              </div>
+            </li>
+            <li>
+              <b><code>Y_train</code></b>
+                  (<code><span title="pd.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame containing the targets</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">
+      <ul class="first simple">
+          <li>
                 <code>tuple</code>
-          </td>
-          <td><p>Tuple containing: a fitted <code>pipeline</code> with a MultiOutputClassifier utilising a Support Vector Classifier estimator, and a <code>str</code> of the training time taken for the fitting of the pipeline.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
+            –
+            <div class="doc-md-description">
+              <p>Tuple containing: a fitted <code>pipeline</code> with a MultiOutputClassifier utilising a Support Vector Classifier estimator, and a <code>str</code> of the training time taken for the fitting of the pipeline.</p>
+            </div>
+          </li>
+      </ul>
+    </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
@@ -951,14 +1015,15 @@ for multilabel classification task. Number of neurons in last layer depends on n
     
   </span>
 </div>
-    <script>var base_url = '../../../..';</script>
-    <script src="../../../../js/theme_extra.js" defer></script>
-    <script src="../../../../js/theme.js" defer></script>
-      <script src="../../../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

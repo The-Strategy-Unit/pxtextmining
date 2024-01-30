@@ -3,28 +3,27 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cdu-data-science-team.github.io/pxtextmining/reference/pxtextmining/pipelines/multilabel_pipeline/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://the-strategy-unit.github.io/pxtextmining/reference/pxtextmining/pipelines/multilabel_pipeline/" />
       <link rel="shortcut icon" href="../../../../img/favicon.ico" />
     <title>Multilabel pipeline - pxtextmining</title>
     <link rel="stylesheet" href="../../../../css/theme.css" />
     <link rel="stylesheet" href="../../../../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
         <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
         <link href="../../../../main.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "Multilabel pipeline";
-        var mkdocs_page_input_path = "reference/pxtextmining/pipelines/multilabel_pipeline.md";
+        var mkdocs_page_input_path = "reference\\pxtextmining\\pipelines\\multilabel_pipeline.md";
         var mkdocs_page_url = "/pxtextmining/reference/pxtextmining/pipelines/multilabel_pipeline/";
       </script>
     
-    <script src="../../../../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -36,7 +35,7 @@
           <a href="../../../.." class="icon icon-home"> pxtextmining
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -105,11 +104,11 @@
     <ul class="current">
                 <li class="toctree-l3 current"><a class="reference internal current" href="./">Multilabel pipeline</a>
     <ul class="current">
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_sklearn_pipeline">run_sklearn_pipeline()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_sklearn_pipeline">run_sklearn_pipeline</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_svc_pipeline">run_svc_pipeline()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_svc_pipeline">run_svc_pipeline</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_bert_pipeline">run_bert_pipeline()</a>
+    <li class="toctree-l4"><a class="reference internal" href="#pxtextmining.pipelines.multilabel_pipeline.run_bert_pipeline">run_bert_pipeline</a>
     </li>
     </ul>
                 </li>
@@ -133,11 +132,11 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Reference &raquo;</li>
-          <li>Pxtextmining &raquo;</li>
-          <li>Pipelines &raquo;</li>
-      <li>Multilabel pipeline</li>
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Reference</li>
+          <li class="breadcrumb-item">Pxtextmining</li>
+          <li class="breadcrumb-item">Pipelines</li>
+      <li class="breadcrumb-item active">Multilabel pipeline</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -170,12 +169,13 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.pipelines.multilabel_pipeline.run_sklearn_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_sklearn_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">models_to_try</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;mnb&#39;</span><span class="p">,</span> <span class="s1">&#39;knn&#39;</span><span class="p">,</span> <span class="s1">&#39;svm&#39;</span><span class="p">,</span> <span class="s1">&#39;rfc&#39;</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel&#39;</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_threshold</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python">run_sklearn_pipeline(additional_features=False, target=major_cats, models_to_try=('mnb', 'knn', 'svm', 'rfc'), path='test_multilabel', include_analysis=False, custom_threshold=False)</code>
 
 </h5>
 
@@ -189,90 +189,94 @@ results on the holdout data within the randomized search.
 Evaluates the performance of the refitted estimator with the best hyperparameters on the test set, and saves the model
 and the performance metrics to a specified folder.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not additional features (question type and text length) are used. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>target</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.</p></td>
-          <td>
-                <code>major_cats</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>models_to_try</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>List of the estimators to try. Defaults to ["mnb", "knn", "svm", "rfc"]. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).</p></td>
-          <td>
-                <code>(&#39;mnb&#39;, &#39;knn&#39;, &#39;svm&#39;, &#39;rfc&#39;)</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>path</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
-          <td>
-                <code>&#39;test_multilabel&#39;</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>include_analysis</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not additional Excel files showing model performance and predicted labels are generated. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>custom_threshold</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not additional features (question type and text length) are used. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>target</code></b>
+                  (<code>list</code>, default:
+                      <code><span title="pxtextmining.params.major_cats">major_cats</span></code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>models_to_try</code></b>
+                  (<code>list</code>, default:
+                      <code>(&#39;mnb&#39;, &#39;knn&#39;, &#39;svm&#39;, &#39;rfc&#39;)</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>List of the estimators to try. Defaults to ["mnb", "knn", "svm", "rfc"]. Permitted values are "mnb" (Multinomial Naive Bayes), "knn" (K Nearest Neighbours), "svm" (Support Vector Classifier), or "rfc" (Random Forest Classifier).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>path</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;test_multilabel&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>include_analysis</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not additional Excel files showing model performance and predicted labels are generated. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>custom_threshold</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.pipelines.multilabel_pipeline.run_svc_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_svc_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel&#39;</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_threshold</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python">run_svc_pipeline(additional_features=False, target=major_cats, path='test_multilabel', include_analysis=False, custom_threshold=False)</code>
 
 </h5>
 
@@ -284,80 +288,84 @@ Creates sklearn pipeline using a MultiOutputClassifier and Support Vector Classi
 Fits the pipeline on the training data.
 Evaluates the performance of the refitted estimator with the best hyperparameters on the test set, and saves the model and the performance metrics to a specified folder, together with optional further analysis in the form of Excel files.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not additional features (question type and text length) are used. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>target</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.</p></td>
-          <td>
-                <code>major_cats</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>path</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
-          <td>
-                <code>&#39;test_multilabel&#39;</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>include_analysis</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not to create Excel files including further analysis of the model's performance. Defaults to False. If True, writes two Excel files to the specified folder, one containing the labels and the performance metrics for each label, and one containing the predicted labels and the actual labels for the test set, with the model's probabilities for both.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>custom_threshold</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not additional features (question type and text length) are used. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>target</code></b>
+                  (<code>list</code>, default:
+                      <code><span title="pxtextmining.params.major_cats">major_cats</span></code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>path</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;test_multilabel&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>include_analysis</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not to create Excel files including further analysis of the model's performance. Defaults to False. If True, writes two Excel files to the specified folder, one containing the labels and the performance metrics for each label, and one containing the predicted labels and the actual labels for the test set, with the model's probabilities for both.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>custom_threshold</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h5 id="pxtextmining.pipelines.multilabel_pipeline.run_bert_pipeline" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run_bert_pipeline</span><span class="p">(</span><span class="n">additional_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;test_multilabel/bert&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">major_cats</span><span class="p">,</span> <span class="n">include_analysis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_threshold</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python">run_bert_pipeline(additional_features=False, path='test_multilabel/bert', target=major_cats, include_analysis=False, custom_threshold=False)</code>
 
 </h5>
 
@@ -369,70 +377,73 @@ Creates tf.keras Transformer model with additional layers specific to the classi
 Evaluates the performance of trained model with the best hyperparameters on the test set, and saves the model
 and the performance metrics to a specified folder.</p>
 
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>additional_features</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not additional features (question type and text length) are used. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>path</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p></td>
-          <td>
-                <code>&#39;test_multilabel/bert&#39;</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>target</code></td>
-          <td>
-                <code>list</code>
-          </td>
-          <td><p>The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.</p></td>
-          <td>
-                <code>major_cats</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>include_analysis</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not to create Excel files including further analysis of the model's performance. Defaults to False. If True, writes two Excel files to the specified folder, one containing the labels and the performance metrics for each label, and one containing the predicted labels and the actual labels for the test set, with the model's probabilities for both.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>custom_threshold</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td><p>Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.</p></td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>additional_features</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not additional features (question type and text length) are used. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>path</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;test_multilabel/bert&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Path where the models are to be saved. If path does not exist, it will be created. Defaults to 'test_multilabel'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>target</code></b>
+                  (<code>list</code>, default:
+                      <code><span title="pxtextmining.params.major_cats">major_cats</span></code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The target labels, which should be columns in the dataset DataFrame. Defaults to major_cats.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>include_analysis</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not to create Excel files including further analysis of the model's performance. Defaults to False. If True, writes two Excel files to the specified folder, one containing the labels and the performance metrics for each label, and one containing the predicted labels and the actual labels for the test set, with the model's probabilities for both.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>custom_threshold</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether or not a custom classification threshold maximising the F1 score is to be calculated. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
   </div>
 
 </div>
@@ -479,14 +490,15 @@ and the performance metrics to a specified folder.</p>
     
   </span>
 </div>
-    <script>var base_url = '../../../..';</script>
-    <script src="../../../../js/theme_extra.js" defer></script>
-    <script src="../../../../js/theme.js" defer></script>
-      <script src="../../../../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>
