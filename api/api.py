@@ -31,12 +31,12 @@ app = FastAPI(
     version="1.0.0",
     contact={
         "name": "Patient Experience Qualitative Data Categorisation",
-        "url": "https://cdu-data-science-team.github.io/PatientExperience-QDC/",
+        "url": "https://the-strategy-unit.github.io/PatientExperience-QDC/",
         "email": "chris.beeley1@nhs.net",
     },
     license_info={
         "name": "MIT License",
-        "url": "https://github.com/CDU-data-science-team/pxtextmining/blob/main/LICENSE",
+        "url": "https://github.com/the-strategy-unit/pxtextmining/blob/main/LICENSE",
     },
     openapi_tags=tags_metadata,
 )

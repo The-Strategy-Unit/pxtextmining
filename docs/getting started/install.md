@@ -1,6 +1,6 @@
 ## Installation
 
-You can install `pxtextmining` from either [PyPI](https://pypi.org/project/pxtextmining/) or [GitHub](https://github.com/CDU-data-science-team/pxtextmining).
+You can install `pxtextmining` from either [PyPI](https://pypi.org/project/pxtextmining/) or [GitHub](https://github.com/the-strategy-unit/pxtextmining).
 
 The recommended method is to clone the repository from GitHub, as this will also include the models and datasets.
 

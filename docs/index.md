@@ -2,7 +2,7 @@
 
 This site contains the project documentation for the `pxtextmining` python package.
 This provides a technical overview of the package; for a non-technical overview and further information, visit the
-[Patient Experience Qualitative Data Categorisation website](https://cdu-data-science-team.github.io/PatientExperience-QDC/pxtextmining/).
+[Patient Experience Qualitative Data Categorisation website](https://the-strategy-unit.github.io/PatientExperience-QDC/pxtextmining/).
 
 ## Table Of Contents
 

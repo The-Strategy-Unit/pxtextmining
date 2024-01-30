@@ -6,8 +6,8 @@ authors = ['CDU Data Science <phudatascience@nottshc.nhs.uk>',
 'YiWen Hon <yiwen.hon@nottshc.nhs.uk>']
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/CDU-data-science-team/pxtextmining"
-documentation = "https://cdu-data-science-team.github.io/pxtextmining"
+repository = "https://github.com/the-strategy-unit/pxtextmining"
+documentation = "https://the-strategy-unit.github.io/pxtextmining"
 
 [tool.poetry.dependencies]
 python = ">=3.8, <3.11"

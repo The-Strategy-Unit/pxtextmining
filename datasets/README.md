@@ -29,4 +29,4 @@ Person identifiable info?: Whether or not the FFT answer contains any person ide
 
 Comment sentiment: The sentiment score applied to the FFT answer by the labeller. 1 is "very positive", 5 is "very negative". Mixed comments have been labelled as "3", neutral.
 
-All other columns are the qualitative framework labels, in one hot encoded format. The version of the framework being used is reflected in the filename. Full details of the framework are available on the [project documentation website](https://cdu-data-science-team.github.io/PatientExperience-QDC/framework/framework3.html).
+All other columns are the qualitative framework labels, in one hot encoded format. The version of the framework being used is reflected in the filename. Full details of the framework are available on the [project documentation website](https://the-strategy-unit.github.io/PatientExperience-QDC/framework/framework3.html).

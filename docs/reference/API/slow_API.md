@@ -2,7 +2,7 @@
 
 This API is slower but uses the best performing models. The transformer-based Distilbert model consumes a lot of hardware resource, and as such required a different approach.
 
-![Diagram showing Slow API architecture](https://cdu-data-science-team.github.io/PatientExperience-QDC/pxtextmining/slow_API.png)
+![Diagram showing Slow API architecture](https://the-strategy-unit.github.io/PatientExperience-QDC/pxtextmining/slow_API.png)
 
 For predicting the multilabel categories, the API endpoint ensembles together Support Vector Classifier, Gradient Boosted Decision Trees (XGBoost), and Distilbert models.
 

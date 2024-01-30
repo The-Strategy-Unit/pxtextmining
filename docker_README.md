@@ -1,6 +1,6 @@
 # pxtextmining: Text Classification of Patient Experience feedback
 
-This Docker container contains the pxtextmining machine learning models trained as part of the [Patient Experience Qualitative Data Categorisation project](https://cdu-data-science-team.github.io/PatientExperience-QDC/).
+This Docker container contains the pxtextmining machine learning models trained as part of the [Patient Experience Qualitative Data Categorisation project](https://the-strategy-unit.github.io/PatientExperience-QDC/).
 
 To use this Docker container to predict your unlabelled text:
 
@@ -87,7 +87,7 @@ docker_data/
    - `--target` or `-t` to select the machine learning models used. Options are `m` for multilabel, `s` for `sentiment`, or `ms` for both. Defaults to `ms` if nothing is selected.
 
 A sample command would be:
-`docker run --rm -it -v /docker_data:/data ghcr.io/cdu-data-science-team/pxtextmining:latest file_01.json -l `
+`docker run --rm -it -v /docker_data:/data ghcr.io/the-strategy-unit/pxtextmining:latest file_01.json -l `
 
 6. The predictions will be outputted as a json file in the data_out folder, with the same filename. After running successfully, the final folder structure should be:
 
