@@ -10,7 +10,7 @@ repository = "https://github.com/the-strategy-unit/pxtextmining"
 documentation = "https://the-strategy-unit.github.io/pxtextmining"
 
 [tool.poetry.dependencies]
-python = ">=3.8, <3.11"
+python = ">3.8, <3.11"
 joblib = "^1.2.0"
 matplotlib = "^3.3.2"
 numpy = ">=1.22"
