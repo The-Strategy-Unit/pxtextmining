@@ -11,7 +11,7 @@ This module contains vast majority of the code in the package. There are five di
 
       - `factory_pipeline`: Construction and training of different models/estimators/algorithms using the `sklearn`, `tensorflow.keras` and `transformers` libraries.
 
-      - `factory_model_performance`: Evaluation of a trained model, comparing predicted targets with real target values, to produce performance metrics. The decision-making process behind the peformance metrics chosen can be seen on the [project documentation website](https://cdu-data-science-team.github.io/PatientExperience-QDC/pxtextmining/performance_metrics.html). The performance metrics for the current best models utilised in the API can be found in the `current_best_multilabel` folder in the main repository.
+      - `factory_model_performance`: Evaluation of a trained model, comparing predicted targets with real target values, to produce performance metrics. The decision-making process behind the peformance metrics chosen can be seen on the [project documentation website](https://the-strategy-unit.github.io/PatientExperience-QDC/pxtextmining/performance_metrics.html). The performance metrics for the current best models utilised in the API can be found in the `current_best_multilabel` folder in the main repository.
 
       - `factory_predict_unlabelled_text`: Prepares unlabelled text (with or without additional features such as question type) in a format suitable for each model type, and passes this through the selected models, to produce predicted labels.
 

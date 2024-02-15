@@ -1,6 +1,6 @@
-# pxtextmining APIs
+# pxtextmining API overview
 
-We have created two different APIs for labelling patient experience feedback. Both APIs are free to use and completely open source. For help and support with using them, please contact (Chris Beeley)[chris.beeley1@nhs.net].
+We have created two different APIs for labelling patient experience feedback. Both APIs are free to use and completely open source. For help and support with using them, please contact [Chris Beeley](mailto:chris.beeley1@nhs.net).
 
 The "Quick API" is faster and simpler, as it uses an sklearn model which is quicker to make predictions. The performance of predictions from this API can be seen on our project documentation website. It is less accurate than the slow API. This API is a more 'traditional' style of API.
 

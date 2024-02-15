@@ -1,10 +1,10 @@
-# pxtextmining: Text Classification of Patient Experience feedback
+# Using our Docker container
 
 This Docker container contains the pxtextmining machine learning models trained as part of the [Patient Experience Qualitative Data Categorisation project](https://the-strategy-unit.github.io/PatientExperience-QDC/).
 
 To use this Docker container to predict your unlabelled text:
 
-1. Set up your folders. You will need to set up a folder containing two other folders, data_in and data_out, as below.
+1\. Set up your folders. You will need to set up a folder containing two other folders, data_in and data_out, as below.
 ```
 docker_data/
 ├─ data_in/
@@ -12,7 +12,7 @@ docker_data/
 
 ```
 
-2. Prepare your data. Save the data you wish to pass through the machine learning models as json, in the data_in folder. The data should be in the following format:
+2\. Prepare your data. Save the data you wish to pass through the machine learning models as json, in the data_in folder. The data should be in the following format:
 
 In Python, a `list` containing as many `dict`s as there are comments to be predicted. Each `dict` has three compulsory keys:
 
@@ -56,7 +56,7 @@ df <- data.frame(comment_id, comment_text, question_type)
 text_data <- toJSON(df)
 ```
 
-3. Save the JSON data in the data_in folder, as follows:
+3\. Save the JSON data in the data_in folder, as follows:
 
 ```python
 # In Python
@@ -73,7 +73,7 @@ json_data <- toJSON(text_data, pretty = TRUE)
 write(json_data, file = "data_in/file_01.json")
 ```
 
-4. Your file structure should now look like this:
+4\. Your file structure should now look like this:
 
 ```
 docker_data/
@@ -82,14 +82,15 @@ docker_data/
 ├─ data_out/
 ```
 
-5. Mount the docker_data folder as the `data` volume for the Docker container and run the container. Pass the filename for the input JSON as the first argument. The following arguments are also available:
+5\. Mount the docker_data folder as the `data` volume for the Docker container and run the container. Pass the filename for the input JSON as the first argument. The following arguments are also available:
+
    - `--local-storage` or `-l` flag for local storage (does not delete the files in data_in after completing predictions)
    - `--target` or `-t` to select the machine learning models used. Options are `m` for multilabel, `s` for `sentiment`, or `ms` for both. Defaults to `ms` if nothing is selected.
 
 A sample command would be:
 `docker run --rm -it -v /docker_data:/data ghcr.io/the-strategy-unit/pxtextmining:latest file_01.json -l `
 
-6. The predictions will be outputted as a json file in the data_out folder, with the same filename. After running successfully, the final folder structure should be:
+6\. The predictions will be outputted as a json file in the data_out folder, with the same filename. After running successfully, the final folder structure should be:
 
 ```
 docker_data/

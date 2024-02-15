@@ -43,9 +43,16 @@ def write_multilabel_models_and_metrics(models, model_metrics, path):
 def write_model_preds(x, y_true, preds_df, labels, path="labels.xlsx", return_df=False):
     """Writes an Excel file to enable easier analysis of model outputs using the test set. Columns of the Excel file are: comment_id, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.
 
-    Currently only works with sklearn models.
-
     Args:
+        x (pd.Series OR pd.DataFrame): Text data used for predictions
+        y_true (np.array): Onehot encoded targets
+        preds_df (pd.DataFrame): DataFrame containing predictions, predicted probabilities, and labels. Should be produced by predict_multilabel_sklearn or predict_multilabel_bert
+        labels (list): List containing target labels.
+        path (str, optional): Filename and path for file to be saved. Defaults to "labels.xlsx".
+        return_df (bool, optional): Whether or not the processed data should be returned as a DataFrame. Defaults to False.
+
+    Returns:
+        (pd.DataFrame): DataFrame containing comment_id, comment text, actual_labels, predicted_labels, actual_label_probs, and predicted_label_probs.
     """
     assert len(x) == len(y_true) == len(preds_df)
     actual_labels = pd.DataFrame(y_true, columns=labels).apply(

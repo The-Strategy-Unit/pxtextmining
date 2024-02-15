@@ -13,6 +13,6 @@ COPY current_best_model/final_svc/final_svc.sav /final_svc.sav
 COPY current_best_model/final_xgb/final_xgb.sav /final_xgb.sav
 COPY --chmod=755 docker_run.py docker_run.py
 
-LABEL org.opencontainers.image.source=https://github.com/cdu-data-science-team/pxtextmining
+LABEL org.opencontainers.image.source=https://github.com/the-strategy-unit/pxtextmining
 
 ENTRYPOINT ["python3", "docker_run.py"]
