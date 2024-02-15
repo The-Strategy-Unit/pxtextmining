@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "pxtextmining"
-version = "1.0.0"
+version = "1.0.1"
 description = "Text classification of patient experience feedback."
 authors = ['CDU Data Science <phudatascience@nottshc.nhs.uk>',
-'YiWen Hon <yiwen.hon@nottshc.nhs.uk>']
+'YiWen Hon <yiwen.hon1@nhs.net>']
 readme = "README.md"
 license = "MIT"
 repository = "https://github.com/the-strategy-unit/pxtextmining"
