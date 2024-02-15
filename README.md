@@ -3,7 +3,7 @@
 ## Project description
 **pxtextmining** is a Python package for classifying patient feedback comments collected via the [NHS England Friends and Family Test](https://www.england.nhs.uk/fft/) (FFT). It is part of the [Patient Experience Qualitative Data Categorisation project](https://the-strategy-unit.github.io/PatientExperience-QDC/), funded by NHS England and hosted by Nottinghamshire Healthcare NHS Foundation Trust.
 
-__We are working openly by [open-sourcing](https://github.com/the-strategy-unit/pxtextmining/blob/main/LICENSE) the analysis code and data where possible to promote replication, reproducibility and further developments. Pull requests are more than welcome.__
+__We are working openly by [open-sourcing](https://github.com/The-Strategy-Unit/pxtextmining/blob/main/LICENSE) the analysis code and data where possible to promote replication, reproducibility and further developments. Pull requests are more than welcome.__
 
 ## Documentation and installation
 
