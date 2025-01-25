@@ -18,3 +18,7 @@ The documentation is split into three separate sections:
     - [Factories](reference/pxtextmining/factories/factory_data_load_and_split.md)
     - [Helpers](reference/pxtextmining/helpers/text_preprocessor.md)
     - [Pipelines](reference/pxtextmining/pipelines/multilabel_pipeline.md)
+
+### Other repos that use `pxtextmining`
+ - [nhs_fft_sentiment_analysis](https://github.com/yunus-m/nhs_fft_sentiment_analysis/blob/main/README.md)
+   - Exploratory analysis and sentiment modelling of FFT feedback using `scikit-learn`, TinyBERT, and hierarchical approaches.
