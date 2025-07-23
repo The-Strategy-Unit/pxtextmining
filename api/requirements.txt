@@ -22,7 +22,7 @@ google-auth-oauthlib==1.0.0 ; python_version >= "3.8" and python_version < "3.11
 google-auth==2.27.0 ; python_version >= "3.8" and python_version < "3.11"
 google-pasta==0.2.0 ; python_version >= "3.8" and python_version < "3.11"
 grpcio==1.60.1 ; python_version >= "3.8" and python_version < "3.11"
-h11==0.14.0 ; python_version >= "3.8" and python_version < "3.11"
+h11==0.16.0 ; python_version >= "3.8" and python_version < "3.11"
 h5py==3.10.0 ; python_version >= "3.8" and python_version < "3.11"
 httpcore==0.16.3 ; python_version >= "3.8" and python_version < "3.11"
 httpx==0.23.3 ; python_version >= "3.8" and python_version < "3.11"
